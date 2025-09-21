@@ -1,0 +1,5 @@
+// 1.21.1	2025-09-19T19:11:22.3351218	Tags for minecraft:damage_type mod id yagens_attributes
+f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_armor.json
+f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_effects.json
+f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_enchantments.json
+f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/yagens_attributes/tags/damage_type/slash_status.json

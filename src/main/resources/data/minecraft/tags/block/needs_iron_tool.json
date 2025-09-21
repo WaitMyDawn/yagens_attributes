@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "yagens_attributes:mod_essence_block",
+    "yagens_attributes:mod_operation_table",
+    "yagens_attributes:mod_recycle_table"
+  ]
+}

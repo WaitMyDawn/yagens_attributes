@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "yagens_attributes:mod_essence_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "mod_essence_block_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": "yagens_attributes:mod_essence"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "mod_essence_block_item"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "yagens_attributes:mod_essence_block"
+    ]
+  }
+}

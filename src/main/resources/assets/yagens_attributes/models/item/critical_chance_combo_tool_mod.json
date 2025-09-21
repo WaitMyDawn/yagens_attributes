@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "yagens_attributes:item/critical_chance_combo_tool_mod"
+  }
+}

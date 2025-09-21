@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "M": {
+      "item": "yagens_attributes:mod_essence"
+    },
+    "O": {
+      "item": "yagens_attributes:ordis"
+    }
+  },
+  "pattern": [
+    "MOM",
+    "MAM",
+    "   "
+  ],
+  "result": {
+    "count": 1,
+    "id": "yagens_attributes:mod_operation_table"
+  }
+}

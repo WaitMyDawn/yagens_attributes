@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/bastion_hoglin_stable"
+    }
+  ],
+  "key": "yagens_attributes:chests/additional_bastion_hoglin_stable_loot"
+}

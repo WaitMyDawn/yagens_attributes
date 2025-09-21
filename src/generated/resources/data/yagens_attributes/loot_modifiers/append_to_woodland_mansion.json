@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/woodland_mansion"
+    }
+  ],
+  "key": "yagens_attributes:chests/additional_woodland_mansion_loot"
+}

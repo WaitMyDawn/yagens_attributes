@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "yagens_attributes:mod_operation_table"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "mod_operation_table": {
+      "conditions": {
+        "items": [
+          {
+            "items": "yagens_attributes:ordis"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "mod_operation_table"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "yagens_attributes:mod_operation_table"
+    ]
+  }
+}

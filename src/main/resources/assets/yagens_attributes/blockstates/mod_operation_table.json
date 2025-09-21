@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "yagens_attributes:block/mod_operation_table"
+    }
+  }
+}

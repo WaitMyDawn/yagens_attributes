@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "yagens_attributes:block/mod_essence_block_top"
+  }
+}

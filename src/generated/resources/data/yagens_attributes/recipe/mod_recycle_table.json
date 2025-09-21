@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "minecraft:lava_bucket"
+    },
+    "M": {
+      "item": "yagens_attributes:mod_essence"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "W": {
+      "item": "minecraft:water_bucket"
+    }
+  },
+  "pattern": [
+    "OOO",
+    "LMW",
+    "OOO"
+  ],
+  "result": {
+    "count": 1,
+    "id": "yagens_attributes:mod_recycle_table"
+  }
+}

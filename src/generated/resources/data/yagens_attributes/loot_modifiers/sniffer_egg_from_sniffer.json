@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:add_item",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/sniffer"
+    }
+  ],
+  "item": "minecraft:sniffer_egg"
+}

@@ -1,0 +1,71 @@
+package yagen.waitmydawn.effect;
+
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+
+public class ElectricityStatusEffect extends MobEffect {
+    public ElectricityStatusEffect(MobEffectCategory mobEffectCategory, int color) {
+        super(mobEffectCategory, color);
+    }
+
+    private static final class Electricity {
+        final float damage;
+        int ticksLeft;
+
+        Electricity(float damage, int ticksLeft) {
+            this.damage = damage;
+            this.ticksLeft = ticksLeft;
+        }
+    }
+    
+    private static final Map<LivingEntity, List<Electricity>> ELECTRICITY_MAP = new WeakHashMap<>();
+
+    public static void addElectricity(LivingEntity entity, float damage, int ticksLeft) {
+        ELECTRICITY_MAP.computeIfAbsent(entity, k -> new ArrayList<>())
+                .add(new Electricity(damage, ticksLeft));
+    }
+
+    @Override
+    public void onEffectAdded(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        super.onEffectAdded(pLivingEntity, pAmplifier);
+    }
+
+
+    @Override
+    public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        List<Electricity> electricity = ELECTRICITY_MAP.get(pLivingEntity);
+        if (electricity == null || electricity.isEmpty()) return true;
+
+        Iterator<Electricity> it = electricity.iterator();
+        while (it.hasNext()) {
+            Electricity c = it.next();
+            c.ticksLeft--;
+            
+            if (c.ticksLeft % 20 == 0) {
+                List<LivingEntity> nearby = pLivingEntity.level()
+                        .getEntitiesOfClass(LivingEntity.class,
+                                pLivingEntity.getBoundingBox().inflate(3.0));
+                for (LivingEntity target : nearby) {
+                    if(target instanceof Player) continue;
+                    target.hurt(target.damageSources().generic(), c.damage);
+                    target.invulnerableTime = 0;
+                }
+            }
+
+            if (c.ticksLeft <= 0) {
+                it.remove();
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+        return true;
+    }
+}

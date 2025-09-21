@@ -1,0 +1,6 @@
+{
+  "parent" : "minecraft:block/cube_all",
+  "textures" : {
+    "all" : "yagens_attributes:block/mod_recycle_table"
+  }
+}
