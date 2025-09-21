@@ -140,7 +140,7 @@ public class AttackEventHandler {
             float factorViral = 1.5f;
             if (amp > 0)
                 factorViral = Math.min(2.5f, factorViral + amp * 0.125f);
-            System.out.println("TestDamage: amp " + amp + " factorV " + factorViral);
+//            System.out.println("TestDamage: amp " + amp + " factorV " + factorViral);
             adjustedTotal = adjustedTotal * factorViral;
         }
 
@@ -189,7 +189,7 @@ public class AttackEventHandler {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    public static void cancelBowInvulnerableTime(LivingDamageEvent.Post event) {
+    public static void cancelProjectileInvulnerableTime(LivingDamageEvent.Post event) {
         if (event.getEntity().level().isClientSide()) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
@@ -356,7 +356,7 @@ public class AttackEventHandler {
                 }
             }
             case ELECTRICITY -> {
-                addElectricity(target, finalDamage * 0.35f, (int) (20 * sd));
+                addElectricity(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
                 if (target.hasEffect(MobEffectRegistry.ELECTRICITY_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.ELECTRICITY_STATUS).getAmplifier();
                     forceEffect(target, new MobEffectInstance(

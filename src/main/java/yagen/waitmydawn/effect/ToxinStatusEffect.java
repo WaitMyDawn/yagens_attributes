@@ -54,7 +54,7 @@ public class ToxinStatusEffect extends MobEffect {
             Toxin c = it.next();
             c.ticksLeft--;
             if (c.ticksLeft % 20 == 0) {
-                pLivingEntity.hurt(pLivingEntity.damageSources().generic(), getDamageAfterAbsorbPure(10, (float) pLivingEntity.getArmorValue(), (float) pLivingEntity.getAttributeValue(Attributes.ARMOR_TOUGHNESS), c.sourceEntity));
+                pLivingEntity.hurt(pLivingEntity.damageSources().generic(), getDamageAfterAbsorbPure(c.damage, (float) pLivingEntity.getArmorValue(), (float) pLivingEntity.getAttributeValue(Attributes.ARMOR_TOUGHNESS), c.sourceEntity));
 
                 if(c.sourceEntity instanceof Player){
                     Vec3 pos = pLivingEntity.position().add(0, pLivingEntity.getBbHeight() * 0.7, 0);

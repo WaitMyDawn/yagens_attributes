@@ -3,10 +3,13 @@ package yagen.waitmydawn.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+
+import static yagen.waitmydawn.api.util.DamageCompat.getDamageAfterAbsorbPure;
 
 public class ElectricityStatusEffect extends MobEffect {
     public ElectricityStatusEffect(MobEffectCategory mobEffectCategory, int color) {
@@ -16,18 +19,20 @@ public class ElectricityStatusEffect extends MobEffect {
     private static final class Electricity {
         final float damage;
         int ticksLeft;
+        final LivingEntity sourceEntity;
 
-        Electricity(float damage, int ticksLeft) {
+        Electricity(float damage, int ticksLeft, LivingEntity sourceEntity) {
             this.damage = damage;
             this.ticksLeft = ticksLeft;
+            this.sourceEntity = sourceEntity;
         }
     }
     
     private static final Map<LivingEntity, List<Electricity>> ELECTRICITY_MAP = new WeakHashMap<>();
 
-    public static void addElectricity(LivingEntity entity, float damage, int ticksLeft) {
+    public static void addElectricity(LivingEntity entity, float damage, int ticksLeft, LivingEntity sourceEntity) {
         ELECTRICITY_MAP.computeIfAbsent(entity, k -> new ArrayList<>())
-                .add(new Electricity(damage, ticksLeft));
+                .add(new Electricity(damage, ticksLeft, sourceEntity));
     }
 
     @Override
@@ -52,7 +57,7 @@ public class ElectricityStatusEffect extends MobEffect {
                                 pLivingEntity.getBoundingBox().inflate(3.0));
                 for (LivingEntity target : nearby) {
                     if(target instanceof Player) continue;
-                    target.hurt(target.damageSources().generic(), c.damage);
+                    target.hurt(target.damageSources().generic(), getDamageAfterAbsorbPure(c.damage, (float) pLivingEntity.getArmorValue(), (float) pLivingEntity.getAttributeValue(Attributes.ARMOR_TOUGHNESS), c.sourceEntity));
                     target.invulnerableTime = 0;
                 }
             }
