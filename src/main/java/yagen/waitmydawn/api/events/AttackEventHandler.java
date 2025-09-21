@@ -254,7 +254,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了穿刺特效！"));
             }
             case SLASH -> {
                 addCut(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
@@ -278,7 +277,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了切割特效！").withStyle(ChatFormatting.GOLD));
             }
             case IMPACT -> {
                 forceEffect(target, new MobEffectInstance(
@@ -289,7 +287,6 @@ public class AttackEventHandler {
                         true,
                         true
                 ));
-                attacker.sendSystemMessage(Component.literal("触发了冲击特效！"));
             }
             case COLD -> {
                 if (target.hasEffect(MobEffectRegistry.COLD_STATUS)) {
@@ -312,7 +309,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了冰冻特效！"));
             }
             case TOXIN -> {
                 addToxin(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
@@ -336,7 +332,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了毒素特效！").withStyle(ChatFormatting.GOLD));
             }
             case CORROSIVE -> {
                 if (target.hasEffect(MobEffectRegistry.CORROSIVE_STATUS)) {
@@ -359,7 +354,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了腐蚀特效！").withStyle(ChatFormatting.GOLD));
             }
             case ELECTRICITY -> {
                 addElectricity(target, finalDamage * 0.35f, (int) (20 * sd));
@@ -383,7 +377,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了电击特效！").withStyle(ChatFormatting.AQUA));
             }
             case GAS -> {
                 List<LivingEntity> nearby = target.level()
@@ -413,7 +406,6 @@ public class AttackEventHandler {
                         ));
                     }
                 }
-                attacker.sendSystemMessage(Component.literal("触发了毒气特效！").withStyle(ChatFormatting.DARK_GREEN));
             }
             case HEAT -> {
                 addHeat(target, finalDamage * 0.35f, (int) (20 * sd));
@@ -437,7 +429,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了火焰特效！").withStyle(ChatFormatting.DARK_RED));
             }
             case VIRAL -> {
                 if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
@@ -460,7 +451,6 @@ public class AttackEventHandler {
                             true
                     ));
                 }
-                attacker.sendSystemMessage(Component.literal("触发了病毒特效！").withStyle(ChatFormatting.DARK_PURPLE));
             }
             case RADIATION -> {
                 forceEffect(target, new MobEffectInstance(
@@ -471,7 +461,6 @@ public class AttackEventHandler {
                         true,
                         true
                 ));
-                attacker.sendSystemMessage(Component.literal("触发了辐射特效！").withStyle(ChatFormatting.DARK_PURPLE));
             }
             case BLAST -> {
                 forceEffect(target, new MobEffectInstance(
@@ -482,7 +471,6 @@ public class AttackEventHandler {
                         true,
                         true
                 ));
-                attacker.sendSystemMessage(Component.literal("触发了爆炸特效！").withStyle(ChatFormatting.DARK_PURPLE));
             }
             case MAGNETIC -> {
                 forceEffect(target, new MobEffectInstance(
@@ -503,7 +491,6 @@ public class AttackEventHandler {
                         (int) (20 * sd),
                         0,
                         false, true, true));
-                attacker.sendSystemMessage(Component.literal("触发了磁力特效！").withStyle(ChatFormatting.DARK_PURPLE));
             }
         }
     }
