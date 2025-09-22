@@ -67,7 +67,6 @@ public class RivenModPool {
         }
 
         if (ModList.get().isLoaded("iceandfire")) {
-
             builder.add(new RivenEntry(IceAndFireCEItem.SILVER_SWORD.get(), 1.35f));
             builder.add(new RivenEntry(IceAndFireCEItem.SILVER_AXE.get(), 1.35f));
             builder.add(new RivenEntry(IceAndFireCEItem.COPPER_SWORD.get(), 1.4f));

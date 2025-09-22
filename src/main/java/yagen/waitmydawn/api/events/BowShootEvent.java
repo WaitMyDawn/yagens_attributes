@@ -37,7 +37,7 @@ public class BowShootEvent {
                 break;
             }
         }
-        if (bow.getItem() != Items.BOW) return;
+        if (!(bow.getItem() instanceof BowItem)) return;
 
         Player player = event.getEntity();
         Level level = player.level();

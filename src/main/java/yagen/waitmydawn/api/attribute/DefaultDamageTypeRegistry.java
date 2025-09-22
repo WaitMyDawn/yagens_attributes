@@ -475,10 +475,19 @@ public class DefaultDamageTypeRegistry {
 
         if (ModList.get().isLoaded("twilightforest")) {
             if (TwilightForestItem.FIERY_SWORD.get() != Items.AIR)
-                registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+                registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (TwilightForestItem.ICE_SWORD.get() != Items.AIR)
+                registerSingle(TwilightForestItem.ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (TwilightForestItem.TRIPLE_BOW.get() != Items.AIR)
+                registerSingle(TwilightForestItem.TRIPLE_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (TwilightForestItem.SEEKER_BOW.get() != Items.AIR)
+                registerSingle(TwilightForestItem.SEEKER_BOW.get(), simpleDamageMap(-1f, 1.0f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (TwilightForestItem.ENDER_BOW.get() != Items.AIR)
+                registerSingle(TwilightForestItem.ENDER_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (TwilightForestItem.ICE_BOW.get() != Items.AIR)
+                registerSingle(TwilightForestItem.ICE_BOW.get(), simpleDamageMap(0.05f, 0.3f, 0.05f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
         }
-
     }
 
 
