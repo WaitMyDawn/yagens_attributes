@@ -182,7 +182,7 @@ public class AttackEventHandler {
             factorPuncture = 0.8f;
             if (amp > 0)
                 factorPuncture = Math.max(0.2f, factorPuncture - amp * 0.1f);
-            System.out.println("TestDamage: amp " + amp + " factorP " + factorPuncture);
+//            System.out.println("TestDamage: amp " + amp + " factorP " + factorPuncture);
         }
 
         event.setNewDamage(Math.max(0, event.getNewDamage() * factorPuncture));
@@ -339,7 +339,7 @@ public class AttackEventHandler {
                     forceEffect(target, new MobEffectInstance(
                             MobEffectRegistry.CORROSIVE_STATUS,
                             (int) (20 * sd * 5),
-                            Math.min(amp + 1, 9),
+                            Math.min(amp + 1, 8),
                             false,
                             true,
                             true

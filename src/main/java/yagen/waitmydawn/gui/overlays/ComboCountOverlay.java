@@ -3,12 +3,11 @@ package yagen.waitmydawn.gui.overlays;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.world.entity.player.Player;
 
-import yagen.waitmydawn.config.ComboOverlayConfig;
+import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
 public class ComboCountOverlay implements LayeredDraw.Layer {
@@ -29,7 +28,6 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
             return;
         DataAttachmentRegistry.Combo combo = player.getData(DataAttachmentRegistry.COMBO.get());
         int comboLevel = DataAttachmentRegistry.getComboLevel(combo.count());
-        ComboOverlayConfig cfg = ComboOverlayConfig.load();
 
         String leftInfo = comboLevel + "/";
         String rightInfo = combo.count() + "  " + combo.leftDuration();
@@ -46,8 +44,8 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
         else
             color = ChatFormatting.GOLD.getColor();
 
-        int barX = cfg.x == -1 ? screenWidth / 2 : cfg.x;
-        int barY = cfg.y == -1 ? screenHeight / 2 : cfg.y;
+        int barX = ClientConfigs.COMBO_HUD_X.get() == -1 ? screenWidth  / 2 : ClientConfigs.COMBO_HUD_X.get();
+        int barY = ClientConfigs.COMBO_HUD_Y.get() == -1 ? screenHeight / 2 : ClientConfigs.COMBO_HUD_Y.get();
 
         guiHelper.pose().pushPose();
         float scale = 2f;

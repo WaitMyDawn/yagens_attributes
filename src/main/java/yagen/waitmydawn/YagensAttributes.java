@@ -4,6 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.neoforged.fml.config.ModConfig;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -16,6 +17,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.events.*;
 import yagen.waitmydawn.api.registry.ModRegistry;
+import yagen.waitmydawn.config.ClientConfigs;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.mod.SelfModItems;
 import yagen.waitmydawn.mixin.RangedAttributeAccessor;
 import yagen.waitmydawn.network.NetworkHandler;
@@ -56,6 +59,9 @@ public class YagensAttributes {
         NeoForge.EVENT_BUS.register(BowShootEvent.class);
         NeoForge.EVENT_BUS.register(LivingEntityDeathEvent.class);
         NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
+
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID,YagensAttributes.MODID));
 
     }
 

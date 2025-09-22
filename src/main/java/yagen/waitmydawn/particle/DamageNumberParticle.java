@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import yagen.waitmydawn.config.ClientConfigs;
 
 import static yagen.waitmydawn.api.util.DamageCompat.linearGrowth;
 import static yagen.waitmydawn.api.util.DamageCompat.logGrowth;
@@ -92,7 +93,7 @@ public class DamageNumberParticle extends Particle {
         ps.translate(px, py, pz);
 
         float distance = (float) cam.getPosition().distanceTo(new Vec3(x, y, z));
-        float distanceScale = fontScale * Math.max(1f, distance / 4);
+        float distanceScale = fontScale * Math.max(1f, distance / ClientConfigs.DAMAGE_NUMBER_ENLARGE.get());
 
         ps.mulPose(cam.rotation());
         ps.scale(distanceScale, -distanceScale, distanceScale);
