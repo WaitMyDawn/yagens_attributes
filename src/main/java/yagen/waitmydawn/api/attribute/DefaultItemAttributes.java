@@ -16,6 +16,7 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.item.weapon.TwilightForestItem;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -476,6 +477,93 @@ public class DefaultItemAttributes {
                 temp.put(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), Map.of(
                         YAttributes.CRITICAL_CHANCE.get(), 0.25,
                         YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+        }
+
+        if(ModList.get().isLoaded("twilightforest")){
+            if (TwilightForestItem.IRONWOOD_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.IRONWOOD_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.15
+                ));
+            if (TwilightForestItem.IRONWOOD_AXE.get() != Items.AIR)
+                temp.put(TwilightForestItem.IRONWOOD_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.15
+                ));
+            if (TwilightForestItem.FIERY_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.FIERY_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (TwilightForestItem.STEELEAF_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.STEELEAF_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.12,
+                        YAttributes.STATUS_CHANCE.get(), 0.18
+                ));
+            if (TwilightForestItem.STEELEAF_AXE.get() != Items.AIR)
+                temp.put(TwilightForestItem.STEELEAF_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.12,
+                        YAttributes.STATUS_CHANCE.get(), 0.18
+                ));
+            if (TwilightForestItem.GOLDEN_MINOTAUR_AXE.get() != Items.AIR)
+                temp.put(TwilightForestItem.GOLDEN_MINOTAUR_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.1,
+                        YAttributes.STATUS_CHANCE.get(), 0.3
+                ));
+            if (TwilightForestItem.DIAMOND_MINOTAUR_AXE.get() != Items.AIR)
+                temp.put(TwilightForestItem.DIAMOND_MINOTAUR_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.15
+                ));
+            if (TwilightForestItem.KNIGHTMETAL_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.KNIGHTMETAL_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (TwilightForestItem.KNIGHTMETAL_AXE.get() != Items.AIR)
+                temp.put(TwilightForestItem.KNIGHTMETAL_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (TwilightForestItem.ICE_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.ICE_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.18,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (TwilightForestItem.GLASS_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.GLASS_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.35,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.5
+                ));
+            if (TwilightForestItem.GIANT_SWORD.get() != Items.AIR)
+                temp.put(TwilightForestItem.GIANT_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.35,
+                        YAttributes.STATUS_CHANCE.get(), 0.08
+                ));
+            if (TwilightForestItem.TRIPLE_BOW.get() != Items.AIR)
+                temp.put(TwilightForestItem.TRIPLE_BOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.5,
+                        YAttributes.CRITICAL_DAMAGE.get(), -0.5,
+                        YAttributes.MULTISHOT.get(), 2.0,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (TwilightForestItem.SEEKER_BOW.get() != Items.AIR)
+                temp.put(TwilightForestItem.SEEKER_BOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (TwilightForestItem.ICE_BOW.get() != Items.AIR)
+                temp.put(TwilightForestItem.ICE_BOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.35,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.5,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (TwilightForestItem.ENDER_BOW.get() != Items.AIR)
+                temp.put(TwilightForestItem.ENDER_BOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
                 ));
         }
 

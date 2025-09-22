@@ -14,6 +14,7 @@ import net.neoforged.fml.ModList;
 import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.item.weapon.TwilightForestItem;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -220,7 +221,7 @@ public class DefaultDamageTypeRegistry {
     };
 
     public static float getTotalAttackDamage(Item item) {
-        if (item == Items.BOW) return 10f;      // return 1f to fix
+        if (item == Items.BOW) return 10f;      // return 10f to fix
         if (item == Items.CROSSBOW) return 10f;
         if (ModList.get().isLoaded("irons_spellbooks")) {
             if (item == IronsSpellbooksItem.AUTOLOADER_CROSSBOW.get()) return 10f;
@@ -236,6 +237,14 @@ public class DefaultDamageTypeRegistry {
         if (ModList.get().isLoaded("iceandfire")) {
             if (item == IceAndFireCEItem.DRAGONBONE_BOW.get()) return 10f;
         }
+        if (ModList.get().isLoaded("twilightforest")) {
+            if (item == TwilightForestItem.SEEKER_BOW.get() ||
+                    item == TwilightForestItem.TRIPLE_BOW.get() ||
+                    item == TwilightForestItem.ICE_BOW.get() ||
+                    item == TwilightForestItem.ENDER_BOW.get())
+                return 10f;
+        }
+
         ItemStack stack = new ItemStack(item);
         double damage = 0.0;
 
@@ -463,6 +472,13 @@ public class DefaultDamageTypeRegistry {
             if (IceAndFireCEItem.DRAGONBONE_BOW.get() != Items.AIR)
                 registerSingle(IceAndFireCEItem.DRAGONBONE_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
+
+        if (ModList.get().isLoaded("twilightforest")) {
+            if (TwilightForestItem.FIERY_SWORD.get() != Items.AIR)
+                registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+
+        }
+
     }
 
 
