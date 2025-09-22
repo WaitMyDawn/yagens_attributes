@@ -95,7 +95,13 @@ public class RivenModPool {
             builder.add(new RivenEntry(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), 0.9f));
             builder.add(new RivenEntry(IceAndFireCEItem.TIDE_TRIDENT.get(), 0.75f));
             builder.add(new RivenEntry(IceAndFireCEItem.GHOST_SWORD.get(), 0.75f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), 1.2f));
         }
 
         return builder.build();

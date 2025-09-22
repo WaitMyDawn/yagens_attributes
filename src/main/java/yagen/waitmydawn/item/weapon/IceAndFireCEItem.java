@@ -7,7 +7,8 @@ import net.minecraft.world.item.Item;
 import java.util.function.Supplier;
 
 public class IceAndFireCEItem {
-    private IceAndFireCEItem(){}
+    private IceAndFireCEItem() {
+    }
 
     public static final Supplier<Item> SILVER_SWORD =
             () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "silver_sword"));
@@ -172,6 +173,25 @@ public class IceAndFireCEItem {
     public static final Supplier<Item> GHOST_SWORD =
             () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "ghost_sword"));
 
-    public static final Supplier<Item> TROLL_WEAPON =
-            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon"));
+    public static final Supplier<Item> TROLL_WEAPON_AXE =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_axe"));
+
+    public static final Supplier<Item> TROLL_WEAPON_COLUMN =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_column"));
+
+    public static final Supplier<Item> TROLL_WEAPON_COLUMN_FOREST =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_column_forest"));
+
+    public static final Supplier<Item> TROLL_WEAPON_COLUMN_FROST =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_column_frost"));
+
+    public static final Supplier<Item> TROLL_WEAPON_HAMMER =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_hammer"));
+
+    public static final Supplier<Item> TROLL_WEAPON_TRUNK =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_trunk"));
+
+    public static final Supplier<Item> TROLL_WEAPON_TRUNK_FROST =
+            () -> BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("iceandfire", "troll_weapon_trunk_frost"));
+
 }

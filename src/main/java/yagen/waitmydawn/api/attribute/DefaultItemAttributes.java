@@ -442,8 +442,38 @@ public class DefaultItemAttributes {
                         YAttributes.CRITICAL_CHANCE.get(), 0.15,
                         YAttributes.STATUS_CHANCE.get(), 0.25
                 ));
-            if (IceAndFireCEItem.TROLL_WEAPON.get() != Items.AIR)
-                temp.put(IceAndFireCEItem.TROLL_WEAPON.get(), Map.of(
+            if (IceAndFireCEItem.TROLL_WEAPON_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_HAMMER.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), Map.of(
                         YAttributes.CRITICAL_CHANCE.get(), 0.25,
                         YAttributes.STATUS_CHANCE.get(), 0.1
                 ));

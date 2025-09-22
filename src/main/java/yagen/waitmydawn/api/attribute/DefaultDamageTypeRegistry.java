@@ -2,7 +2,6 @@ package yagen.waitmydawn.api.attribute;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
@@ -234,6 +233,9 @@ public class DefaultDamageTypeRegistry {
                     item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get())
                 return 10f;
         }
+        if (ModList.get().isLoaded("iceandfire")) {
+            if (item == IceAndFireCEItem.DRAGONBONE_BOW.get()) return 10f;
+        }
         ItemStack stack = new ItemStack(item);
         double damage = 0.0;
 
@@ -424,9 +426,42 @@ public class DefaultDamageTypeRegistry {
             if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get() != Items.AIR)
                 registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+
+            if (IceAndFireCEItem.COCKATRICE_SCEPTER.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), simpleDamageMap(-1f, 0.2f, -1f, 0f, 0.8f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), simpleDamageMap(0.6f, 0.2f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TIDE_TRIDENT.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TIDE_TRIDENT.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_AXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), simpleDamageMap(0.4f, 0.2f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_HAMMER.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), simpleDamageMap(0.5f, -1f, -1f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONBONE_BOW.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONBONE_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
     }
 
