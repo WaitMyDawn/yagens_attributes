@@ -17,7 +17,8 @@
   "item.yagens_attributes.mod_essence": "Mod Essence",
   "item.yagens_attributes.mod_essence.tooltip1": "It can be used to upgrade Mod",
   "item.yagens_attributes.forma": "Forma",
-  "item.yagens_attributes.forma.tooltip1": "apply to polarity: %s",
+  "item.yagens_attributes.forma.tooltip1": "Apply to polarity: %s",
+  "item.yagens_attributes.forma.tooltip2": "Right click to change polarity",
   "item.yagens_attributes.unknown_riven": "Unknown Riven",
   "item.yagens_attributes.unknown_riven.tooltip1": "Right click to reveal the Riven.",
   "item.yagens_attributes.kuva": "Kuva",
@@ -97,7 +98,6 @@
   "ui.yagens_attributes.combo_count": "%dx/%d",
   "ui.yagens_attributes.combo_position_title": "Configuration of Combo Count",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
-
 
   "mod.yagens_attributes.none": "None",
   "mod.yagens_attributes.riven_tool_mod": "Riven",

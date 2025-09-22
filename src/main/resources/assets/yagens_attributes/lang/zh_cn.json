@@ -18,6 +18,7 @@
   "item.yagens_attributes.mod_essence.tooltip1": "可以用来升级Mod",
   "item.yagens_attributes.forma": "Forma",
   "item.yagens_attributes.forma.tooltip1": "可以极化Mod槽位类型: %s",
+  "item.yagens_attributes.forma.tooltip2": "右键以改变极性",
   "item.yagens_attributes.unknown_riven": "未知裂罅",
   "item.yagens_attributes.unknown_riven.tooltip1": "右键以揭示裂罅",
   "item.yagens_attributes.kuva": "赤毒",

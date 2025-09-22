@@ -45,6 +45,8 @@ public class ItemRegistry {
                     if (!type.isEmpty()) {
                         tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip1", type)
                                 .withStyle(ChatFormatting.GOLD));
+                        tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip2")
+                                .withStyle(ChatFormatting.GOLD));
                     }
                 }
             });

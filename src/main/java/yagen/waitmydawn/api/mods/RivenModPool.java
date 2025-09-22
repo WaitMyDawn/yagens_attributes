@@ -5,11 +5,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.ModList;
+import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-
-import java.util.List;
-import java.util.Set;
 
 public class RivenModPool {
     private RivenModPool() {
@@ -17,28 +15,6 @@ public class RivenModPool {
 
     public static record RivenEntry(Item item, double disposition) {
     }
-
-    /* 实际用于随机选取的列表 */
-//    public static final List<Item> POOL = List.of(
-//            Items.DIAMOND_SWORD,
-//            Items.DIAMOND_AXE,
-//            Items.NETHERITE_SWORD,
-//            Items.NETHERITE_AXE,
-//            Items.BOW,
-//            Items.TRIDENT,
-//            Items.CROSSBOW,
-//
-//            IronsSpellbooksItem.KEEPER_FLAMBERGE.get(),
-//            IronsSpellbooksItem.MAGEHUNTER.get(),
-//            LEndersCataclysmItem.THE_INCINERATOR.get(),
-//            LEndersCataclysmItem.ASTRAPE.get()
-//    );
-//
-//    public static final Set<Item> LOOKUP = Set.copyOf(POOL);
-//
-//    public static Item randomWeapon(RandomSource random) {
-//        return POOL.get(random.nextInt(POOL.size()));
-//    }
 
     private static final ImmutableList<RivenEntry> buildEntries() {
         ImmutableList.Builder<RivenEntry> builder = ImmutableList.builder();
@@ -90,6 +66,38 @@ public class RivenModPool {
             builder.add(new RivenEntry(LEndersCataclysmItem.BLACK_STEEL_AXE.get(), 1.35f));
         }
 
+        if (ModList.get().isLoaded("iceandfire")) {
+
+            builder.add(new RivenEntry(IceAndFireCEItem.SILVER_SWORD.get(), 1.35f));
+            builder.add(new RivenEntry(IceAndFireCEItem.SILVER_AXE.get(), 1.35f));
+            builder.add(new RivenEntry(IceAndFireCEItem.COPPER_SWORD.get(), 1.4f));
+            builder.add(new RivenEntry(IceAndFireCEItem.COPPER_AXE.get(), 1.4f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD.get(), 1.25f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_AXE.get(), 1.25f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_BOW.get(), 0.95f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), 0.55f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DREAD_SWORD.get(), 1.35f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DREAD_KNIGHT_SWORD.get(), 0.75f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.HIPPOGRYPH_SWORD.get(), 1.2f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), 0.95f));
+            builder.add(new RivenEntry(IceAndFireCEItem.STYMPHALIAN_DAGGER.get(), 1.0f));
+            builder.add(new RivenEntry(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), 0.9f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TIDE_TRIDENT.get(), 0.75f));
+            builder.add(new RivenEntry(IceAndFireCEItem.GHOST_SWORD.get(), 0.75f));
+            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON.get(), 1.2f));
+        }
+
         return builder.build();
     }
 
@@ -107,7 +115,7 @@ public class RivenModPool {
     /* 随机选一把武器 */
     public static Item randomWeapon(RandomSource random) {
         Item item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
-        while(item==Items.AIR) item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
+        while (item == Items.AIR) item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
         return item;
     }
 

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
+import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 
@@ -387,7 +388,44 @@ public class DefaultDamageTypeRegistry {
 
             if (LEndersCataclysmItem.CORAL_SPEAR.get() != Items.AIR)
                 registerSingle(LEndersCataclysmItem.CORAL_SPEAR.get(), simpleDamageMap(0.2f, 0.75f, 0.05f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+        }
 
+        if (ModList.get().isLoaded("iceandfire")) {
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_PICKAXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_SHOVEL.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_HOE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_PICKAXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_SHOVEL.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_HOE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_PICKAXE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SHOVEL.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get() != Items.AIR)
+                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
         }
     }

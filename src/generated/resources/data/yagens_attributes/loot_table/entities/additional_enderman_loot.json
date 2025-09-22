@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "type": "Cth",
+              "function": "yagens_attributes:set_forma"
+            }
+          ],
+          "name": "yagens_attributes:forma"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "yagens_attributes:entities/additional_enderman_loot"
+}

@@ -13,6 +13,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.fml.ModList;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 
@@ -148,8 +149,8 @@ public class DefaultItemAttributes {
                 ));
         }
 
-        if(ModList.get().isLoaded("cataclysm")){
-            if(LEndersCataclysmItem.THE_INCINERATOR.get() != Items.AIR)
+        if (ModList.get().isLoaded("cataclysm")) {
+            if (LEndersCataclysmItem.THE_INCINERATOR.get() != Items.AIR)
                 temp.put(LEndersCataclysmItem.THE_INCINERATOR.get(), Map.of(
                         YAttributes.CRITICAL_CHANCE.get(), 0.25,
                         YAttributes.STATUS_CHANCE.get(), 0.15,
@@ -301,6 +302,153 @@ public class DefaultItemAttributes {
                 ));
 
         }
+
+        if (ModList.get().isLoaded("iceandfire")) {
+            if (IceAndFireCEItem.SILVER_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.SILVER_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.1,
+                        YAttributes.STATUS_CHANCE.get(), 0.28
+                ));
+            if (IceAndFireCEItem.SILVER_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.SILVER_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.1,
+                        YAttributes.STATUS_CHANCE.get(), 0.28
+                ));
+            if (IceAndFireCEItem.COPPER_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.COPPER_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.12,
+                        YAttributes.STATUS_CHANCE.get(), 0.28
+                ));
+            if (IceAndFireCEItem.COPPER_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.COPPER_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.12,
+                        YAttributes.STATUS_CHANCE.get(), 0.28
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.18,
+                        YAttributes.STATUS_CHANCE.get(), 0.18
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.18,
+                        YAttributes.STATUS_CHANCE.get(), 0.18
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_BOW.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_BOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.45,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.3,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.3,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.24,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.25
+                ));
+            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.25
+                ));
+            if (IceAndFireCEItem.DREAD_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DREAD_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.3,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DREAD_KNIGHT_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DREAD_KNIGHT_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.CRITICAL_DAMAGE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+            if (IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (IceAndFireCEItem.HIPPOGRYPH_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.HIPPOGRYPH_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.15
+                ));
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                        YAttributes.STATUS_CHANCE.get(), 0.2
+                ));
+            if (IceAndFireCEItem.COCKATRICE_SCEPTER.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.05,
+                        YAttributes.STATUS_CHANCE.get(), 0.25
+                ));
+            if (IceAndFireCEItem.STYMPHALIAN_DAGGER.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.STYMPHALIAN_DAGGER.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.1,
+                        YAttributes.STATUS_CHANCE.get(), 0.22
+                ));
+            if (IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.22,
+                        YAttributes.STATUS_CHANCE.get(), 0.14
+                ));
+            if (IceAndFireCEItem.TIDE_TRIDENT.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TIDE_TRIDENT.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.15
+                ));
+            if (IceAndFireCEItem.GHOST_SWORD.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.GHOST_SWORD.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.15,
+                        YAttributes.STATUS_CHANCE.get(), 0.25
+                ));
+            if (IceAndFireCEItem.TROLL_WEAPON.get() != Items.AIR)
+                temp.put(IceAndFireCEItem.TROLL_WEAPON.get(), Map.of(
+                        YAttributes.CRITICAL_CHANCE.get(), 0.25,
+                        YAttributes.STATUS_CHANCE.get(), 0.1
+                ));
+        }
+
         DEFAULTS = Map.copyOf(temp);
     }
 

@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.level.Level;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.*;
@@ -51,7 +52,7 @@ public class UnknownRivenItem extends Item {
                     penalty = 1;
                 }
             }
-            ItemStack modStack = createRandomModItem(bonus, penalty, 1, "random",null);
+            ItemStack modStack = createRandomModItem(bonus, penalty, 1, "random", null);
 //            System.out.println("Create riven mod 1 ");
             player.getItemInHand(hand).shrink(1);
             if (!player.addItem(modStack)) {
@@ -74,8 +75,13 @@ public class UnknownRivenItem extends Item {
         }
 
         List<RivenUniqueInfo> lines = new ArrayList<>();
-        lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.POSITIVE, bonus, rnd));
-        lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.NEGATIVE, penalty, rnd));
+        if (targetWeapon instanceof ProjectileWeaponItem) {
+            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.PROJECTILE_POSITIVE, bonus, rnd));
+            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.PROJECTILE_NEGATIVE, penalty, rnd));
+        } else {
+            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.MELEE_POSITIVE, bonus, rnd));
+            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.MELEE_NEGATIVE, penalty, rnd));
+        }
 
         List<RivenUniqueInfo> scaledLines = scaleLines(lines, bonus, penalty, targetWeapon, rnd);
 

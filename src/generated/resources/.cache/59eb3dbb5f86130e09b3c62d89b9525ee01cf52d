@@ -1,4 +1,4 @@
-// 1.21.1	2025-09-06T22:26:10.1538898	Loot Tables
+// 1.21.1	2025-09-22T10:47:59.9503961	Loot Tables
 87801c3fa46a132ea2a0df5fd2da76584323656e data/yagens_attributes/loot_table/blocks/mod_essence_block.json
 17468e47afc302a5a4a0e1a95767ff17f33f5802 data/yagens_attributes/loot_table/blocks/mod_operation_table.json
 51cf3f0925e185fc27c4d1d69b5eac638fd6dbac data/yagens_attributes/loot_table/blocks/mod_recycle_table.json
@@ -27,6 +27,7 @@ e804e433c65e0f3702afc3976b0b43f8fc30f0ca data/yagens_attributes/loot_table/chest
 b868f3869e713fdf1c2c098fdd5e92367fbb98a4 data/yagens_attributes/loot_table/chests/trial_chamber/additional_reward_ominous_loot.json
 f9d11047336614d521701541157ba51cc6e224bd data/yagens_attributes/loot_table/entities/additional_breeze_loot.json
 09eea876242cb731f10338b93375c71d12bf4ec6 data/yagens_attributes/loot_table/entities/additional_elder_guardian_loot.json
+b24de6ab69fb954da4b2ca57b241a85414e79fe7 data/yagens_attributes/loot_table/entities/additional_enderman_loot.json
 23ccea6edae034d0fb42775c8a476aec822b4f17 data/yagens_attributes/loot_table/entities/additional_ender_dragon_loot.json
 79c717bb1bc97eadd22a786a462b5614ac39a65d data/yagens_attributes/loot_table/entities/additional_warden_loot.json
 6d1cd98ce6f1acf7352ddb7942c5fe5413ac021b data/yagens_attributes/loot_table/entities/additional_witch_loot.json

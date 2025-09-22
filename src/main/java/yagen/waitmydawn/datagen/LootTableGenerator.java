@@ -31,6 +31,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.loot.*;
@@ -702,6 +703,18 @@ public class LootTableGenerator {
             consumer.accept(
                     ResourceKey.create(
                             Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "entities/additional_enderman_loot")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.FORMA.get())
+                                                    .apply(SetFormaFunction.builder(FormaType.CTH.getValue())))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
                                     "entities/additional_warden_loot")),
                     LootTable.lootTable()
                             .withPool(LootPool.lootPool()
@@ -1031,6 +1044,13 @@ public class LootTableGenerator {
                                     new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:entities/breeze")).build()
                             },
                             "yagens_attributes:entities/additional_breeze_loot"
+                    ));
+            this.add("append_to_enderman",
+                    new AppendLootModifier(
+                            new LootItemCondition[]{
+                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:entities/enderman")).build()
+                            },
+                            "yagens_attributes:entities/additional_enderman_loot"
                     ));
             this.add("append_to_elder_guardian",
                     new AppendLootModifier(
