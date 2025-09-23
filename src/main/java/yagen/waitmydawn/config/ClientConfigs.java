@@ -25,7 +25,7 @@ public class ClientConfigs {
                 Damage_Number_Enlarge decides amplification factor of Damage Number Particle.
                 The distance between the player and the target divided by this value equals the Damage Number Particle enlargement rate.
                 The larger this value is, the smaller the Damage Number Particle enlargement rate will be. (default = 4.0)""");
-        DAMAGE_NUMBER_ENLARGE = BUILDER.define("Damage_Number_Enlarge", 4.0f);
+        DAMAGE_NUMBER_ENLARGE = BUILDER.define("Damage Number Enlarge", 4.0f);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

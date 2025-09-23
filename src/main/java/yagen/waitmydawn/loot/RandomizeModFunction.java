@@ -42,12 +42,12 @@ public class RandomizeModFunction extends LootItemConditionalFunction {
                                 int commonWeight, int uncommonWeight, int rareWeight,
                                 int legendaryWeight, int levelPercentInf, int levelPercentSup) {
         super(conditions);
-        this.commonWeight = commonWeight;
-        this.uncommonWeight = uncommonWeight;
-        this.rareWeight = rareWeight;
-        this.legendaryWeight = legendaryWeight;
-        this.levelPercentInf = levelPercentInf;
-        this.levelPercentSup = levelPercentSup;
+        this.commonWeight = Math.max(commonWeight, 0);
+        this.uncommonWeight = Math.max(uncommonWeight, 0);
+        this.rareWeight = Math.max(rareWeight, 0);
+        this.legendaryWeight = Math.max(legendaryWeight, 0);
+        this.levelPercentInf = Math.min(levelPercentInf, 100);
+        this.levelPercentSup = Math.max(Math.min(levelPercentSup, 100), levelPercentInf);
     }
 
     @Override
@@ -69,7 +69,11 @@ public class RandomizeModFunction extends LootItemConditionalFunction {
 
         AbstractMod mod = pool.get(rand.nextInt(pool.size()));
         // Sup - Inf can't be 0
-        int modLevel = Math.max(1, (int) Math.round(mod.getMaxLevel() * (levelPercentInf + rand.nextInt(levelPercentSup - levelPercentInf)) / 100.0));
+        int fix = 0;
+        if (levelPercentInf == levelPercentSup) fix = 1;
+        int modLevel = Math.max(1, (int) Math.round(mod.getMaxLevel() * (levelPercentInf + rand.nextInt(levelPercentSup - levelPercentInf + fix)) / 100.0));
+
+        if (modLevel > mod.getMaxLevel()) modLevel = mod.getMaxLevel();
 
         IModContainer.createModContainer(mod, modLevel, stack);
         return stack;

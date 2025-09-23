@@ -1,19 +1,11 @@
 package yagen.waitmydawn.api.events;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -24,11 +16,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import net.minecraft.world.entity.projectile.*;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
@@ -36,8 +28,6 @@ import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
@@ -75,12 +65,8 @@ public class AttackEventHandler {
 
         float total = dmgMap.values().stream().reduce(0f, Float::sum);
 //        System.out.println("TestDamage: total " + total);
-        dmgMap.forEach((type, value) ->
-                System.out.println(type.name() + ": " + String.format("%.2f", value))
-        );
-
-//        player.sendSystemMessage(
-//                Component.literal("Compose: " + dmgMap.toString())
+//        dmgMap.forEach((type, value) ->
+//                System.out.println(type.name() + ": " + String.format("%.2f", value))
 //        );
 
         if (total <= 0) return;
@@ -117,7 +103,6 @@ public class AttackEventHandler {
         // critical
         if (cc > 1) {
             double ccTocd = (int) cc;
-            System.out.println("TestDamage: cc " + cc + " ccTocd " + ccTocd);
             cc = cc - ccTocd;
             if (player.getRandom().nextDouble() <= cc) {
                 adjustedTotal = adjustedTotal * ((float) (cd + ccTocd + 1) + coldTocd);
@@ -218,7 +203,9 @@ public class AttackEventHandler {
         Item weapon = weaponStack.getItem();
 
         if (weapon instanceof ProjectileWeaponItem) return;
-        if (ModList.get().isLoaded("cataclysm")) if (weapon == LEndersCataclysmItem.MEAT_SHREDDER.get()) return;
+        if (ModList.get().isLoaded("cataclysm"))
+            if (weapon == LEndersCataclysmItem.MEAT_SHREDDER.get() && ServerConfigs.BAN_MEAT_SHREDDER_COMBO.get())
+                return;
 
         double comboDuration = 20 * player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_DURATION.get())).getValue();
 

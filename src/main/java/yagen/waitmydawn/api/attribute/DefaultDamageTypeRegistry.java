@@ -2,14 +2,14 @@ package yagen.waitmydawn.api.attribute;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.neoforged.fml.ModList;
 import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
@@ -18,6 +18,7 @@ import yagen.waitmydawn.item.weapon.TwilightForestItem;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class DefaultDamageTypeRegistry {
@@ -190,42 +191,22 @@ public class DefaultDamageTypeRegistry {
         return Map.copyOf(map);
     }
 
-    private static final Item[] SWORDS = {
-//            Items.WOODEN_SWORD, Items.STONE_SWORD, Items.IRON_SWORD,
-//            Items.GOLDEN_SWORD, Items.DIAMOND_SWORD, Items.NETHERITE_SWORD
-    };
-    private static final Item[] PICKAXES = {
-//            Items.WOODEN_PICKAXE, Items.STONE_PICKAXE, Items.IRON_PICKAXE,
-//            Items.GOLDEN_PICKAXE, Items.DIAMOND_PICKAXE, Items.NETHERITE_PICKAXE
-    };
-    private static final Item[] AXES = {
-//            Items.WOODEN_AXE, Items.STONE_AXE, Items.IRON_AXE,
-//            Items.GOLDEN_AXE, Items.DIAMOND_AXE, Items.NETHERITE_AXE
-    };
-    private static final Item[] SHOVELS = {
-//            Items.WOODEN_SHOVEL, Items.STONE_SHOVEL, Items.IRON_SHOVEL,
-//            Items.GOLDEN_SHOVEL, Items.DIAMOND_SHOVEL, Items.NETHERITE_SHOVEL
-    };
-    private static final Item[] HOES = {
-//            Items.WOODEN_HOE, Items.STONE_HOE, Items.IRON_HOE,
-//            Items.GOLDEN_HOE, Items.DIAMOND_HOE, Items.NETHERITE_HOE
-    };
-    private static final Item[] TRIDENTS = {
-            Items.TRIDENT
-    };
-    private static final Item[] MACES = {
-            Items.MACE
-    };
-    private static final Item[] BOWS = {
-            Items.BOW, Items.CROSSBOW
-    };
+    private static final Item[] TRIDENTS =
+            BuiltInRegistries.ITEM.stream()
+            .filter(item -> item instanceof TridentItem)
+            .toArray(Item[]::new);
+    private static final Item[] MACES =
+            BuiltInRegistries.ITEM.stream()
+            .filter(item -> item instanceof MaceItem)
+            .toArray(Item[]::new);
+    private static final Item[] BOWS =
+            BuiltInRegistries.ITEM.stream()
+                    .filter(item -> item instanceof BowItem || item instanceof CrossbowItem)
+                    .toArray(Item[]::new);
 
     public static float getTotalAttackDamage(Item item) {
-        if (item == Items.BOW) return 10f;      // return 10f to fix
-        if (item == Items.CROSSBOW) return 10f;
-        if (ModList.get().isLoaded("irons_spellbooks")) {
-            if (item == IronsSpellbooksItem.AUTOLOADER_CROSSBOW.get()) return 10f;
-        }
+        if (item instanceof BowItem) return 10f;
+        if (item instanceof CrossbowItem) return 10f;
         if (ModList.get().isLoaded("cataclysm")) {
             if (item == LEndersCataclysmItem.CURSED_BOW.get() ||
                     item == LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() ||
@@ -234,16 +215,16 @@ public class DefaultDamageTypeRegistry {
                     item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get())
                 return 10f;
         }
-        if (ModList.get().isLoaded("iceandfire")) {
-            if (item == IceAndFireCEItem.DRAGONBONE_BOW.get()) return 10f;
-        }
-        if (ModList.get().isLoaded("twilightforest")) {
-            if (item == TwilightForestItem.SEEKER_BOW.get() ||
-                    item == TwilightForestItem.TRIPLE_BOW.get() ||
-                    item == TwilightForestItem.ICE_BOW.get() ||
-                    item == TwilightForestItem.ENDER_BOW.get())
-                return 10f;
-        }
+//        if (ModList.get().isLoaded("iceandfire")) {
+//            if (item == IceAndFireCEItem.DRAGONBONE_BOW.get()) return 10f;
+//        }
+//        if (ModList.get().isLoaded("twilightforest")) {
+//            if (item == TwilightForestItem.SEEKER_BOW.get() ||
+//                    item == TwilightForestItem.TRIPLE_BOW.get() ||
+//                    item == TwilightForestItem.ICE_BOW.get() ||
+//                    item == TwilightForestItem.ENDER_BOW.get())
+//                return 10f;
+//        }
 
         ItemStack stack = new ItemStack(item);
         double damage = 0.0;
@@ -317,9 +298,6 @@ public class DefaultDamageTypeRegistry {
 
             if (IronsSpellbooksItem.MISERY.get() != Items.AIR)
                 registerSingle(IronsSpellbooksItem.MISERY.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.AUTOLOADER_CROSSBOW.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.AUTOLOADER_CROSSBOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
             if (IronsSpellbooksItem.HELLRAZOR.get() != Items.AIR)
                 registerSingle(IronsSpellbooksItem.HELLRAZOR.get(), simpleDamageMap(-1f, 0.05f, 0.25f, 0f, 0f, 0f, 0.7f, 0f, 0f, 0f, 0f, 0f, 0f));
@@ -469,8 +447,6 @@ public class DefaultDamageTypeRegistry {
                 registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
             if (IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get() != Items.AIR)
                 registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONBONE_BOW.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONBONE_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
 
         if (ModList.get().isLoaded("twilightforest")) {
@@ -478,12 +454,8 @@ public class DefaultDamageTypeRegistry {
                 registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
             if (TwilightForestItem.ICE_SWORD.get() != Items.AIR)
                 registerSingle(TwilightForestItem.ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (TwilightForestItem.TRIPLE_BOW.get() != Items.AIR)
-                registerSingle(TwilightForestItem.TRIPLE_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
             if (TwilightForestItem.SEEKER_BOW.get() != Items.AIR)
                 registerSingle(TwilightForestItem.SEEKER_BOW.get(), simpleDamageMap(-1f, 1.0f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (TwilightForestItem.ENDER_BOW.get() != Items.AIR)
-                registerSingle(TwilightForestItem.ENDER_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
             if (TwilightForestItem.ICE_BOW.get() != Items.AIR)
                 registerSingle(TwilightForestItem.ICE_BOW.get(), simpleDamageMap(0.05f, 0.3f, 0.05f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 

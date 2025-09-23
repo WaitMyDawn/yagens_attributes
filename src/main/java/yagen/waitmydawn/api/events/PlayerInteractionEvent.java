@@ -7,18 +7,19 @@ import net.minecraft.world.item.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class PlayerInteractionEvent {
     @SubscribeEvent
     public static void onPlayerInteractMeatShredder(PlayerInteractEvent.RightClickItem event) {
         if (!(ModList.get().isLoaded("cataclysm"))) return;
+        if (!ServerConfigs.BAN_MEAT_SHREDDER_OFFHAND.get()) return;
         if (!(event.getEntity() instanceof Player player)) return;
+
         if (event.getHand() == InteractionHand.OFF_HAND) {
             ItemStack itemStack = player.getItemInHand(InteractionHand.OFF_HAND);
             if (itemStack.getItem() == LEndersCataclysmItem.MEAT_SHREDDER.get()) {
@@ -43,7 +44,7 @@ public class PlayerInteractionEvent {
             return;
         }
 
-        player.getCooldowns().addCooldown(item, 20);
+        player.getCooldowns().addCooldown(item, ServerConfigs.SPLASH_POTION_COOLDOWN.get());
     }
 
 //    @SubscribeEvent
