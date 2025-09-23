@@ -3,12 +3,16 @@ package yagen.waitmydawn.api.events;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundUpdateAttributesPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -31,9 +35,9 @@ import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
@@ -225,157 +229,139 @@ public class AttackEventHandler {
         PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncComboPacket(updated));
     }
 
-    public static void forceEffect(LivingEntity target, MobEffectInstance instance) {
-        target.activeEffects.put(instance.getEffect(), instance);
-        target.addEffect(instance);
-    }
-
     private static void statusEffect(DamageType type, Player attacker, LivingEntity target, float finalDamage) {
         double sd = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_DURATION.get())).getValue();
         switch (type) {
             case PUNCTURE -> {
                 if (target.hasEffect(MobEffectRegistry.PUNCTURE_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.PUNCTURE_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.PUNCTURE_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 6),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.PUNCTURE_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case SLASH -> {
                 addCut(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
                 if (target.hasEffect(MobEffectRegistry.SLASH_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.SLASH_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.SLASH_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 255),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.SLASH_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case IMPACT -> {
-                forceEffect(target, new MobEffectInstance(
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffectRegistry.IMPACT_STATUS,
                         (int) (20 * sd / 8),
                         0,
                         false,
                         true,
-                        true
-                ));
+                        true), attacker);
             }
             case COLD -> {
                 if (target.hasEffect(MobEffectRegistry.COLD_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.COLD_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.COLD_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 5),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.COLD_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case TOXIN -> {
                 addToxin(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
                 if (target.hasEffect(MobEffectRegistry.TOXIN_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.TOXIN_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.TOXIN_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 255),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.TOXIN_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case CORROSIVE -> {
                 if (target.hasEffect(MobEffectRegistry.CORROSIVE_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.CORROSIVE_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.CORROSIVE_STATUS,
                             (int) (20 * sd * 5),
                             Math.min(amp + 1, 8),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.CORROSIVE_STATUS,
                             (int) (20 * sd * 5),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case ELECTRICITY -> {
                 addElectricity(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
                 if (target.hasEffect(MobEffectRegistry.ELECTRICITY_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.ELECTRICITY_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.ELECTRICITY_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 255),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.ELECTRICITY_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case GAS -> {
@@ -387,23 +373,21 @@ public class AttackEventHandler {
                     addGas(entity, finalDamage * 0.35f, (int) (20 * sd), attacker);
                     if (entity.hasEffect(MobEffectRegistry.GAS_STATUS)) {
                         int amp = entity.getEffect(MobEffectRegistry.GAS_STATUS).getAmplifier();
-                        forceEffect(entity, new MobEffectInstance(
+                        entity.forceAddEffect(new MobEffectInstance(
                                 MobEffectRegistry.GAS_STATUS,
                                 (int) (20 * sd),
                                 Math.min(amp + 1, 255),
                                 false,
                                 true,
-                                true
-                        ));
+                                true), attacker);
                     } else {
-                        forceEffect(entity, new MobEffectInstance(
+                        entity.forceAddEffect(new MobEffectInstance(
                                 MobEffectRegistry.GAS_STATUS,
                                 (int) (20 * sd),
                                 0,
                                 false,
                                 true,
-                                true
-                        ));
+                                true), attacker);
                     }
                 }
             }
@@ -411,86 +395,79 @@ public class AttackEventHandler {
                 addHeat(target, finalDamage * 0.35f, (int) (20 * sd));
                 if (target.hasEffect(MobEffectRegistry.HEAT_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.HEAT_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.HEAT_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 3),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.HEAT_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case VIRAL -> {
                 if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.VIRAL_STATUS).getAmplifier();
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.VIRAL_STATUS,
                             (int) (20 * sd),
                             Math.min(amp + 1, 8),
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 } else {
-                    forceEffect(target, new MobEffectInstance(
+                    target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.VIRAL_STATUS,
                             (int) (20 * sd),
                             0,
                             false,
                             true,
-                            true
-                    ));
+                            true), attacker);
                 }
             }
             case RADIATION -> {
-                forceEffect(target, new MobEffectInstance(
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffectRegistry.RADIATION_STATUS,
                         (int) (20 * sd),
                         0,
                         false,
                         true,
-                        true
-                ));
+                        true), attacker);
             }
             case BLAST -> {
-                forceEffect(target, new MobEffectInstance(
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffectRegistry.BLAST_STATUS,
                         0,
                         Math.min(Math.round((finalDamage + 3) / 7), 255),
                         false,
                         true,
-                        true
-                ));
+                        true), attacker);
             }
             case MAGNETIC -> {
-                forceEffect(target, new MobEffectInstance(
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffectRegistry.MAGNETIC_STATUS,
                         (int) (20 * sd),
                         0,
                         false,
                         true,
-                        true
-                ));
-                forceEffect(target, new MobEffectInstance(
+                        true), attacker);
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffects.BLINDNESS,
                         (int) (20 * sd),
                         0,
-                        false, true, true));
-                forceEffect(target, new MobEffectInstance(
+                        false, true, true), attacker);
+                target.forceAddEffect(new MobEffectInstance(
                         MobEffects.DARKNESS,
                         (int) (20 * sd),
                         0,
-                        false, true, true));
+                        false, true, true), attacker);
             }
         }
     }
