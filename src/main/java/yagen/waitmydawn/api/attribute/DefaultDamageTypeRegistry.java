@@ -15,6 +15,7 @@ import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.item.weapon.TwilightForestItem;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -280,186 +281,93 @@ public class DefaultDamageTypeRegistry {
         /**
          * Iron's Spells 'n Spellbooks
          */
-        if (ModList.get().isLoaded("irons_spellbooks")) {
-            if (IronsSpellbooksItem.KEEPER_FLAMBERGE.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0, 0, 0, 0.3f, 0, 0, 0, 0, 0, 0));
-
-            if (IronsSpellbooksItem.MAGEHUNTER.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.MAGEHUNTER.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0, 0, 0, 0f, 0, 0, 0, 0, 0, 0));
-
-            if (IronsSpellbooksItem.SPELLBREAKER.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.SPELLBREAKER.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0, 0, 0.3f, 0f, 0, 0, 0, 0, 0, 0));
-
-            if (IronsSpellbooksItem.LEGIONNAIRE_FLAMBERGE.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.LEGIONNAIRE_FLAMBERGE.get(), simpleDamageMap(-1f, 0.25f, 0.25f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.AMETHYST_RAPIER.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.AMETHYST_RAPIER.get(), simpleDamageMap(-1f, 1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.MISERY.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.MISERY.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.HELLRAZOR.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.HELLRAZOR.get(), simpleDamageMap(-1f, 0.05f, 0.25f, 0f, 0f, 0f, 0.7f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.DECREPIT_SCYTHE.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.DECREPIT_SCYTHE.get(), simpleDamageMap(-1f, 0.1f, 0.4f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (IronsSpellbooksItem.ICE_GREATSWORD.get() != Items.AIR)
-                registerSingle(IronsSpellbooksItem.ICE_GREATSWORD.get(), simpleDamageMap(0.1f, 0.15f, 0.15f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOK.getValue())) {
+            registerSingle(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0, 0, 0, 0.3f, 0, 0, 0, 0, 0, 0));
+            registerSingle(IronsSpellbooksItem.MAGEHUNTER.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0, 0, 0, 0f, 0, 0, 0, 0, 0, 0));
+            registerSingle(IronsSpellbooksItem.SPELLBREAKER.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0, 0, 0.3f, 0f, 0, 0, 0, 0, 0, 0));
+            registerSingle(IronsSpellbooksItem.LEGIONNAIRE_FLAMBERGE.get(), simpleDamageMap(-1f, 0.25f, 0.25f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.AMETHYST_RAPIER.get(), simpleDamageMap(-1f, 1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.MISERY.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.HELLRAZOR.get(), simpleDamageMap(-1f, 0.05f, 0.25f, 0f, 0f, 0f, 0.7f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.DECREPIT_SCYTHE.get(), simpleDamageMap(-1f, 0.1f, 0.4f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.ICE_GREATSWORD.get(), simpleDamageMap(0.1f, 0.15f, 0.15f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
         /**
          * L_Ender's Cataclysm
          */
-        if (ModList.get().isLoaded("cataclysm")) {
-            if (LEndersCataclysmItem.THE_INCINERATOR.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.THE_INCINERATOR.get(), simpleDamageMap(0.1f, 0.2f, 0.3f, 0f, 0f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.WRATH_OF_THE_DESERT.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.GAUNTLET_OF_MAELSTROM.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.GAUNTLET_OF_MAELSTROM.get(), simpleDamageMap(0.8f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.GAUNTLET_OF_BULWARK.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.GAUNTLET_OF_BULWARK.get(), simpleDamageMap(0.6f, 0.2f, -1f, 0f, 0f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.GAUNTLET_OF_GUARD.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.GAUNTLET_OF_GUARD.get(), simpleDamageMap(0.8f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.MEAT_SHREDDER.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.MEAT_SHREDDER.get(), simpleDamageMap(-1f, 0.1f, 0.9f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get(), simpleDamageMap(-1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.2f, 0.8f));
-
-            if (LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get(), simpleDamageMap(-1f, -1f, -1f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.8f));
-
-            if (LEndersCataclysmItem.CURSED_BOW.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.CURSED_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.LASER_GATLING.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.LASER_GATLING.get(), simpleDamageMap(0.1f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.7f, 0f, 0f));
-
-            if (LEndersCataclysmItem.THE_ANNIHILATOR.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.THE_ANNIHILATOR.get(), simpleDamageMap(0.8f, -1f, -1f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.SOUL_RENDER.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.SOUL_RENDER.get(), simpleDamageMap(0.2f, 0.3f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.CERAUNUS.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.CERAUNUS.get(), simpleDamageMap(0.5f, -1f, -1f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.ASTRAPE.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.ASTRAPE.get(), simpleDamageMap(0.1f, 0.2f, 0.3f, 0f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.ANCIENT_SPEAR.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.ANCIENT_SPEAR.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.TIDAL_CLAWS.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.TIDAL_CLAWS.get(), simpleDamageMap(0.2f, 0.4f, -1f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.THE_IMMOLATOR.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.THE_IMMOLATOR.get(), simpleDamageMap(0.6f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.4f));
-
-            if (LEndersCataclysmItem.VOID_FORGE.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.VOID_FORGE.get(), simpleDamageMap(0.8f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.2f, 0f));
-
-            if (LEndersCataclysmItem.INFERNAL_FORGE.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.INFERNAL_FORGE.get(), simpleDamageMap(0.8f, -1f, -1f, 0f, 0f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.ATHAME.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.ATHAME.get(), simpleDamageMap(-1f, -1f, 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.CORAL_BARDICHE.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.CORAL_BARDICHE.get(), simpleDamageMap(0.2f, 0.75f, 0.05f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
-            if (LEndersCataclysmItem.CORAL_SPEAR.get() != Items.AIR)
-                registerSingle(LEndersCataclysmItem.CORAL_SPEAR.get(), simpleDamageMap(0.2f, 0.75f, 0.05f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+        if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {
+            registerSingle(LEndersCataclysmItem.THE_INCINERATOR.get(), simpleDamageMap(0.1f, 0.2f, 0.3f, 0f, 0f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.WRATH_OF_THE_DESERT.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.GAUNTLET_OF_MAELSTROM.get(), simpleDamageMap(0.8f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.GAUNTLET_OF_BULWARK.get(), simpleDamageMap(0.6f, 0.2f, -1f, 0f, 0f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.GAUNTLET_OF_GUARD.get(), simpleDamageMap(0.8f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.MEAT_SHREDDER.get(), simpleDamageMap(-1f, 0.1f, 0.9f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get(), simpleDamageMap(-1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.2f, 0.8f));
+            registerSingle(LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get(), simpleDamageMap(-1f, -1f, -1f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.8f));
+            registerSingle(LEndersCataclysmItem.CURSED_BOW.get(), simpleDamageMap(0.1f, 0.8f, 0.1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.LASER_GATLING.get(), simpleDamageMap(0.1f, 0.2f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.7f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.THE_ANNIHILATOR.get(), simpleDamageMap(0.8f, -1f, -1f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.SOUL_RENDER.get(), simpleDamageMap(0.2f, 0.3f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.CERAUNUS.get(), simpleDamageMap(0.5f, -1f, -1f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.ASTRAPE.get(), simpleDamageMap(0.1f, 0.2f, 0.3f, 0f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.ANCIENT_SPEAR.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.TIDAL_CLAWS.get(), simpleDamageMap(0.2f, 0.4f, -1f, 0f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.THE_IMMOLATOR.get(), simpleDamageMap(0.6f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.4f));
+            registerSingle(LEndersCataclysmItem.VOID_FORGE.get(), simpleDamageMap(0.8f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0.2f, 0f));
+            registerSingle(LEndersCataclysmItem.INFERNAL_FORGE.get(), simpleDamageMap(0.8f, -1f, -1f, 0f, 0f, 0f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.ATHAME.get(), simpleDamageMap(-1f, -1f, 1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.CORAL_BARDICHE.get(), simpleDamageMap(0.2f, 0.75f, 0.05f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(LEndersCataclysmItem.CORAL_SPEAR.get(), simpleDamageMap(0.2f, 0.75f, 0.05f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
 
-        if (ModList.get().isLoaded("iceandfire")) {
-            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_PICKAXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_SHOVEL.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_FIRE_HOE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+        if (ModList.get().isLoaded(SupportedMod.IAF.getValue())) {
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_FIRE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_ICE_PICKAXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_ICE_SHOVEL.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_ICE_HOE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_ICE_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_PICKAXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SHOVEL.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), simpleDamageMap(0.08f, 0.08f, 0.24f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_PICKAXE.get(), simpleDamageMap(0.24f, 0.08f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SHOVEL.get(), simpleDamageMap(0.08f, 0.24f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_HOE.get(), simpleDamageMap(0.16f, 0.16f, 0.08f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0f, 0.3f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
 
-            if (IceAndFireCEItem.COCKATRICE_SCEPTER.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), simpleDamageMap(-1f, 0.2f, -1f, 0f, 0.8f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), simpleDamageMap(0.6f, 0.2f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TIDE_TRIDENT.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TIDE_TRIDENT.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_AXE.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), simpleDamageMap(0.4f, 0.2f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_HAMMER.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), simpleDamageMap(0.5f, -1f, -1f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get() != Items.AIR)
-                registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), simpleDamageMap(-1f, 0.2f, -1f, 0f, 0.8f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), simpleDamageMap(0.6f, 0.2f, 0.2f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TIDE_TRIDENT.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), simpleDamageMap(0.4f, 0.2f, 0.4f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), simpleDamageMap(1f, -1f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), simpleDamageMap(0.5f, -1f, -1f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), simpleDamageMap(0.5f, -1f, -1f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
 
-        if (ModList.get().isLoaded("twilightforest")) {
-            if (TwilightForestItem.FIERY_SWORD.get() != Items.AIR)
-                registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (TwilightForestItem.ICE_SWORD.get() != Items.AIR)
-                registerSingle(TwilightForestItem.ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (TwilightForestItem.SEEKER_BOW.get() != Items.AIR)
-                registerSingle(TwilightForestItem.SEEKER_BOW.get(), simpleDamageMap(-1f, 1.0f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-            if (TwilightForestItem.ICE_BOW.get() != Items.AIR)
-                registerSingle(TwilightForestItem.ICE_BOW.get(), simpleDamageMap(0.05f, 0.3f, 0.05f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
-
+        if (ModList.get().isLoaded(SupportedMod.TWILIGHTFOREST.getValue())) {
+            registerSingle(TwilightForestItem.FIERY_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(TwilightForestItem.ICE_SWORD.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(TwilightForestItem.SEEKER_BOW.get(), simpleDamageMap(-1f, 1.0f, -1f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(TwilightForestItem.ICE_BOW.get(), simpleDamageMap(0.05f, 0.3f, 0.05f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
+
+
+
     }
 
 

@@ -46,6 +46,7 @@ public class GasStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        if (pLivingEntity.level().isClientSide) return true;
         List<Gas> gas = GAS_MAP.get(pLivingEntity);
         if (gas == null || gas.isEmpty()) return true;
 

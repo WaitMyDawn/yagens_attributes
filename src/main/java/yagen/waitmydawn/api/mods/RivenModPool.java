@@ -8,6 +8,8 @@ import net.neoforged.fml.ModList;
 import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.item.weapon.TwilightForestItem;
+import yagen.waitmydawn.util.SupportedMod;
 
 public class RivenModPool {
     private RivenModPool() {
@@ -27,7 +29,7 @@ public class RivenModPool {
         builder.add(new RivenEntry(Items.TRIDENT, 1.2f));
         builder.add(new RivenEntry(Items.CROSSBOW, 0.95f));
 
-        if (ModList.get().isLoaded("irons_spellbooks")) {
+        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOK.getValue())) {
             builder.add(new RivenEntry(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), 0.9f));
             builder.add(new RivenEntry(IronsSpellbooksItem.MAGEHUNTER.get(), 1.0f));
             builder.add(new RivenEntry(IronsSpellbooksItem.SPELLBREAKER.get(), 0.9f));
@@ -39,7 +41,7 @@ public class RivenModPool {
             builder.add(new RivenEntry(IronsSpellbooksItem.ICE_GREATSWORD.get(), 0.75f));
         }
 
-        if (ModList.get().isLoaded("cataclysm")) {
+        if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {
             builder.add(new RivenEntry(LEndersCataclysmItem.THE_INCINERATOR.get(), 0.65f));
             builder.add(new RivenEntry(LEndersCataclysmItem.ASTRAPE.get(), 0.7f));
             builder.add(new RivenEntry(LEndersCataclysmItem.THE_ANNIHILATOR.get(), 0.95f));
@@ -66,7 +68,7 @@ public class RivenModPool {
             builder.add(new RivenEntry(LEndersCataclysmItem.BLACK_STEEL_AXE.get(), 1.35f));
         }
 
-        if (ModList.get().isLoaded("iceandfire")) {
+        if (ModList.get().isLoaded(SupportedMod.IAF.getValue())) {
             builder.add(new RivenEntry(IceAndFireCEItem.SILVER_SWORD.get(), 1.35f));
             builder.add(new RivenEntry(IceAndFireCEItem.SILVER_AXE.get(), 1.35f));
             builder.add(new RivenEntry(IceAndFireCEItem.COPPER_SWORD.get(), 1.4f));
@@ -103,12 +105,30 @@ public class RivenModPool {
             builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), 1.2f));
         }
 
+        if(ModList.get().isLoaded(SupportedMod.TWILIGHTFOREST.getValue())) {
+            builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_SWORD.get(), 1.35f));
+            builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_AXE.get(), 1.35f));
+            builder.add(new RivenEntry(TwilightForestItem.FIERY_SWORD.get(), 1.1f));
+            builder.add(new RivenEntry(TwilightForestItem.STEELEAF_SWORD.get(), 1.3f));
+            builder.add(new RivenEntry(TwilightForestItem.STEELEAF_AXE.get(), 1.3f));
+            builder.add(new RivenEntry(TwilightForestItem.GOLDEN_MINOTAUR_AXE.get(), 1.05f));
+            builder.add(new RivenEntry(TwilightForestItem.DIAMOND_MINOTAUR_AXE.get(), 0.95f));
+            builder.add(new RivenEntry(TwilightForestItem.KNIGHTMETAL_SWORD.get(), 1.0f));
+            builder.add(new RivenEntry(TwilightForestItem.KNIGHTMETAL_AXE.get(), 1.0f));
+            builder.add(new RivenEntry(TwilightForestItem.ICE_SWORD.get(), 1.1f));
+            builder.add(new RivenEntry(TwilightForestItem.GLASS_SWORD.get(), 0.5f));
+            builder.add(new RivenEntry(TwilightForestItem.GIANT_SWORD.get(), 0.75f));
+            builder.add(new RivenEntry(TwilightForestItem.TRIPLE_BOW.get(), 0.7f));
+            builder.add(new RivenEntry(TwilightForestItem.SEEKER_BOW.get(), 0.9f));
+            builder.add(new RivenEntry(TwilightForestItem.ICE_BOW.get(), 0.8f));
+            builder.add(new RivenEntry(TwilightForestItem.ENDER_BOW.get(), 0.8f));
+        }
+
         return builder.build();
     }
 
     public static final ImmutableList<RivenEntry> ENTRIES = buildEntries();
 
-    /* 快速取 disposition */
     public static double getDisposition(Item item) {
         return ENTRIES.stream()
                 .filter(e -> e.item() == item)
@@ -117,14 +137,12 @@ public class RivenModPool {
                 .orElse(0.01);
     }
 
-    /* 随机选一把武器 */
     public static Item randomWeapon(RandomSource random) {
         Item item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
         while (item == Items.AIR) item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
         return item;
     }
 
-    /* 如果你想随机拿到整行记录，也可以： */
     public static RivenEntry randomRivenEntry(RandomSource random) {
         return ENTRIES.get(random.nextInt(ENTRIES.size()));
     }

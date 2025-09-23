@@ -44,6 +44,7 @@ public class SlashStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        if (pLivingEntity.level().isClientSide) return true;
         List<Cut> cuts = CUT_MAP.get(pLivingEntity);
         if (cuts == null || cuts.isEmpty()) return true;
 

@@ -379,7 +379,7 @@ public class AttackEventHandler {
                 }
             }
             case HEAT -> {
-                addHeat(target, finalDamage * 0.35f, (int) (20 * sd));
+                addHeat(target, finalDamage * 0.35f, (int) (20 * sd), attacker);
                 if (target.hasEffect(MobEffectRegistry.HEAT_STATUS)) {
                     int amp = target.getEffect(MobEffectRegistry.HEAT_STATUS).getAmplifier();
                     target.forceAddEffect(new MobEffectInstance(

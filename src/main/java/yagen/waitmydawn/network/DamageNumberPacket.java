@@ -29,7 +29,6 @@ public record DamageNumberPacket(Vec3 pos, double amount, double dColor, double 
                             buf.readDouble(), buf.readDouble(), buf.readDouble())
             );
 
-    /* 客户端收到后立刻生成粒子 */
     public static void handle(DamageNumberPacket packet, IPayloadContext ctx) {
         ctx.enqueueWork(() ->
                 Minecraft.getInstance().particleEngine.createParticle(

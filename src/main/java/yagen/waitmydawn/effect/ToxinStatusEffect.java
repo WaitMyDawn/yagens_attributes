@@ -46,6 +46,7 @@ public class ToxinStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        if (pLivingEntity.level().isClientSide) return true;
         List<Toxin> toxins = TOXIN_MAP.get(pLivingEntity);
         if (toxins == null || toxins.isEmpty()) return true;
 

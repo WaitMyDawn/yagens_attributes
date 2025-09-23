@@ -43,6 +43,7 @@ public class ElectricityStatusEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
+        if (pLivingEntity.level().isClientSide) return true;
         List<Electricity> electricity = ELECTRICITY_MAP.get(pLivingEntity);
         if (electricity == null || electricity.isEmpty()) return true;
 
