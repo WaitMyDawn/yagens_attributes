@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.loot.*;
+import yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables;
 import yagen.waitmydawn.registries.BlockRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 import net.minecraft.core.HolderLookup;
@@ -42,6 +43,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import yagen.waitmydawn.loot.RandomizeModFunction;
+import yagen.waitmydawn.util.SupportedMod;
+
+import static yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables.registerAllDungeonsArise;
 
 public class LootTableGenerator {
     static class BlocksGenerator extends BlockLootSubProvider {
@@ -345,7 +349,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
-                                                    .apply(RandomizeModFunction.builder(30, 20, 10, 1, 20, 70)))
+                                                    .apply(RandomizeModFunction.builder(30, 20, 10, 4, 20, 70)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.5f)))
             );
             consumer.accept(
@@ -767,7 +771,48 @@ public class LootTableGenerator {
                                                     .apply(RandomizeModFunction.builder(20, 50, 30, 0, 0, 50)))
                             )
             );
-            // generate bottom
+            /* ==========  Dungeons Arise – Chests  ========== */
+            for (String path : DungeonsAriseLootTables.CHESTS_LOOT_TABLES) {
+                String tableKey = "chests/dungeons_arise_additional_" + path.replace('/', '_');
+                consumer.accept(
+                        ResourceKey.create(Registries.LOOT_TABLE,
+                                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, tableKey)),
+                        LootTable.lootTable()
+                                .withPool(LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1))
+                                        .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                                .withPool(LootPool.lootPool()
+                                        .setRolls(ConstantValue.exactly(1))
+                                        .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                        .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                                ));
+            }
+            // override
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/" + SupportedMod.DUNGEONS_ARISE.getValue() + "_additional_aviary_aviary_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(16, 48))))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.UNKNOWN_RIVEN.get())
+                                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(20, 40, 40, 5, 90, 90)))
+                            )
+            );
         }
     }
 
@@ -1069,8 +1114,54 @@ public class LootTableGenerator {
                             },
                             "yagens_attributes:entities/additional_ender_dragon_loot"
                     ));
+
+            /**
+             * dungeons_arise
+             */
+            registerAllDungeonsArise(this);
+//            this.add("append_to_abandoned_temple_entrance",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_entrance")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_entrance_loot"
+//                    ));
+//            this.add("append_to_abandoned_temple_map",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_map")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_map_loot"
+//                    ));
+//            this.add("append_to_abandoned_temple_top",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_top")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_top_loot"
+//                    ));
+//            this.add("append_to_aviary_barrels",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_barrels")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_barrels_loot"
+//                    ));
+//            this.add("append_to_aviary_normal",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_normal")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_normal_loot"
+//                    ));
+//            this.add("append_to_aviary_treasure",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_treasure")).build()
+//                            },
+//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_treasure_loot"
+//                    ));
         }
 
     }
-
 }

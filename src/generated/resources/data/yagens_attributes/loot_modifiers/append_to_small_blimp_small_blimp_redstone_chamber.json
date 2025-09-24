@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/small_blimp/small_blimp_redstone_chamber"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_small_blimp_small_blimp_redstone_chamber"
+}

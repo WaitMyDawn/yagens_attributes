@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:spawners/infested_temple/infested_temple_normal"
+    }
+  ],
+  "key": "yagens_attributes:spawners/dungeons_arise_additional_infested_temple_infested_temple_normal"
+}

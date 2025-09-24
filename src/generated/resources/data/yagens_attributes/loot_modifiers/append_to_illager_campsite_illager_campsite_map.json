@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/illager_campsite/illager_campsite_map"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_illager_campsite_illager_campsite_map"
+}

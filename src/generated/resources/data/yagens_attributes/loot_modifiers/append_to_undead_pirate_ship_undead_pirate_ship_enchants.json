@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/undead_pirate_ship/undead_pirate_ship_enchants"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_undead_pirate_ship_undead_pirate_ship_enchants"
+}

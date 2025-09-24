@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/bandit_towers/bandit_towers_supply"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_bandit_towers_bandit_towers_supply"
+}

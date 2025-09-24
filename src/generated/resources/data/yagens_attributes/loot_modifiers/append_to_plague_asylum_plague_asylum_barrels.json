@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/plague_asylum/plague_asylum_barrels"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_plague_asylum_plague_asylum_barrels"
+}

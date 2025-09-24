@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:entities/gladiator_loot"
+    }
+  ],
+  "key": "yagens_attributes:entities/dungeons_arise_additional_gladiator_loot"
+}

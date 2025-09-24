@@ -5,10 +5,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.ModList;
-import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
-import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
-import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-import yagen.waitmydawn.item.weapon.TwilightForestItem;
+import yagen.waitmydawn.item.weapon.*;
 import yagen.waitmydawn.util.SupportedMod;
 
 public class RivenModPool {
@@ -105,7 +102,7 @@ public class RivenModPool {
             builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), 1.2f));
         }
 
-        if(ModList.get().isLoaded(SupportedMod.TWILIGHTFOREST.getValue())) {
+        if (ModList.get().isLoaded(SupportedMod.TWILIGHTFOREST.getValue())) {
             builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_SWORD.get(), 1.35f));
             builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_AXE.get(), 1.35f));
             builder.add(new RivenEntry(TwilightForestItem.FIERY_SWORD.get(), 1.1f));
@@ -122,6 +119,28 @@ public class RivenModPool {
             builder.add(new RivenEntry(TwilightForestItem.SEEKER_BOW.get(), 0.9f));
             builder.add(new RivenEntry(TwilightForestItem.ICE_BOW.get(), 0.8f));
             builder.add(new RivenEntry(TwilightForestItem.ENDER_BOW.get(), 0.8f));
+        }
+
+        if (ModList.get().isLoaded(SupportedMod.L2ARCHER.getValue())) {
+            builder.add(new RivenEntry(L2ArcheryItem.STARTER_BOW.get(), 0.99f));
+            builder.add(new RivenEntry(L2ArcheryItem.IRON_BOW.get(), 0.95f));
+            builder.add(new RivenEntry(L2ArcheryItem.MAGNIFY_BOW.get(), 0.9f));
+            builder.add(new RivenEntry(L2ArcheryItem.GLOW_AIM_BOW.get(), 0.8f));
+            builder.add(new RivenEntry(L2ArcheryItem.ENDER_AIM_BOW.get(), 0.8f));
+            builder.add(new RivenEntry(L2ArcheryItem.MAGNIFY_BOW.get(), 0.8f));
+            builder.add(new RivenEntry(L2ArcheryItem.EAGLE_BOW.get(), 0.8f));
+            builder.add(new RivenEntry(L2ArcheryItem.EXPLOSION_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.FLAME_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.FROZE_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.BLACKSTONE_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.STORM_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.TURTLE_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.EARTH_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.WIND_BOW.get(), 0.75f));
+            builder.add(new RivenEntry(L2ArcheryItem.WINTER_BOW.get(), 0.7f));
+            builder.add(new RivenEntry(L2ArcheryItem.GAIA_BOW.get(), 0.7f));
+            builder.add(new RivenEntry(L2ArcheryItem.VOID_BOW.get(), 0.7f));
+            builder.add(new RivenEntry(L2ArcheryItem.SUN_BOW.get(), 0.7f));
         }
 
         return builder.build();

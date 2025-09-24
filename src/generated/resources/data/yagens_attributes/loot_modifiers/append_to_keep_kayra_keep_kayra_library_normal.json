@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/keep_kayra/keep_kayra_library_normal"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_keep_kayra_keep_kayra_library_normal"
+}

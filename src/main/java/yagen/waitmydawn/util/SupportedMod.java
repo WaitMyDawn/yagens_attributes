@@ -5,7 +5,8 @@ public enum SupportedMod {
     CATACLYSM("cataclysm"),
     TWILIGHTFOREST("twilightforest"),
     IAF("iceandfire"),
-    L2ARCHER("l2archer");
+    L2ARCHER("l2archer"),
+    DUNGEONS_ARISE("dungeons_arise"),;
 
     private final String value;
 

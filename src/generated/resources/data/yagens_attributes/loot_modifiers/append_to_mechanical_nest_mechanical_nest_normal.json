@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/mechanical_nest/mechanical_nest_normal"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_mechanical_nest_mechanical_nest_normal"
+}

@@ -83,7 +83,7 @@
             {
               "common_weight": 30,
               "function": "yagens_attributes:randomize_mod",
-              "legendary_weight": 1,
+              "legendary_weight": 4,
               "level_percent_inf": 20,
               "level_percent_sup": 70,
               "uncommon_weight": 20

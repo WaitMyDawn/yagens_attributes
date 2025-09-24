@@ -13,10 +13,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.fml.ModList;
 import yagen.waitmydawn.YagensAttributes;
-import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
-import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
-import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-import yagen.waitmydawn.item.weapon.TwilightForestItem;
+import yagen.waitmydawn.item.weapon.*;
 import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.LinkedHashMap;
@@ -479,6 +476,104 @@ public class DefaultItemAttributes {
                     YAttributes.STATUS_CHANCE.get(), 0.1
             ));
             temp.put(TwilightForestItem.ENDER_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+        }
+
+        if (ModList.get().isLoaded(SupportedMod.L2ARCHER.getValue()))
+        {
+            temp.put(L2ArcheryItem.STARTER_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.IRON_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.MASTER_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.35,
+                    YAttributes.STATUS_CHANCE.get(), 0.25
+            ));
+
+            temp.put(L2ArcheryItem.GLOW_AIM_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.MAGNIFY_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.ENDER_AIM_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.EAGLE_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.EXPLOSION_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.3,
+                    YAttributes.STATUS_CHANCE.get(), 0.3
+            ));
+
+            temp.put(L2ArcheryItem.FLAME_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.FROZE_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.BLACKSTONE_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.5,
+                    YAttributes.STATUS_CHANCE.get(), 0.1
+            ));
+
+            temp.put(L2ArcheryItem.STORM_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.TURTLE_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.EARTH_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.5,
+                    YAttributes.STATUS_CHANCE.get(), 0.1
+            ));
+
+            temp.put(L2ArcheryItem.WIND_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.WINTER_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.GAIA_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.VOID_BOW.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.4,
+                    YAttributes.STATUS_CHANCE.get(), 0.2
+            ));
+
+            temp.put(L2ArcheryItem.SUN_BOW.get(), Map.of(
                     YAttributes.CRITICAL_CHANCE.get(), 0.4,
                     YAttributes.STATUS_CHANCE.get(), 0.2
             ));

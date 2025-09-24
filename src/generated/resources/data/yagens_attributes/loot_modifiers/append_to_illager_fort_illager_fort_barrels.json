@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "dungeons_arise:chests/illager_fort/illager_fort_barrels"
+    }
+  ],
+  "key": "yagens_attributes:chests/dungeons_arise_additional_illager_fort_illager_fort_barrels"
+}
