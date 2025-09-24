@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
+                "max": 16.0,
+                "min": 5.0
               },
               "function": "minecraft:set_count"
             }
@@ -24,12 +24,38 @@
     },
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.8,
+          "condition": "minecraft:random_chance"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "yagens_attributes:randomize_mod"
+              "type": "Cth",
+              "function": "yagens_attributes:set_forma"
+            }
+          ],
+          "name": "yagens_attributes:forma"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "common_weight": 30,
+              "function": "yagens_attributes:randomize_mod",
+              "legendary_weight": 1,
+              "rare_weight": 20,
+              "uncommon_weight": 30
             }
           ],
           "name": "yagens_attributes:mod"

@@ -1,19 +1,32 @@
 package yagen.waitmydawn.loot.loot_table;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.loot.AppendLootModifier;
+import yagen.waitmydawn.loot.RandomizeModFunction;
+import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class DungeonsAriseLootTables {
+    public static final String NAMESPACE = YagensAttributes.MODID;
+
     public static void registerAllDungeonsArise(GlobalLootModifierProvider provider) {
         final String SUPPORTED_MOD = SupportedMod.DUNGEONS_ARISE.getValue();
-        final String NAMESPACE = YagensAttributes.MODID;
 
         for (String path : CHESTS_LOOT_TABLES) {
             String appendId = "append_to_" + path.replace('/', '_');
@@ -78,6 +91,94 @@ public class DungeonsAriseLootTables {
                             },
                             poolId
                     ));
+        }
+    }
+
+    public static void acceptAllDungeonsArise(BiConsumer<ResourceKey<LootTable>, LootTable.Builder> consumer) {
+        for (String path : CHESTS_LOOT_TABLES) {
+            String tableKey = "chests/dungeons_arise_additional_" + path.replace('/', '_');
+            consumer.accept(
+                    ResourceKey.create(Registries.LOOT_TABLE,
+                            ResourceLocation.fromNamespaceAndPath(NAMESPACE, tableKey)),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                            .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            ));
+        }
+        for (String path : ENTITIES_LOOT_TABLES) {
+            String tableKey = "entities/dungeons_arise_additional_" + path.replace('/', '_');
+            consumer.accept(
+                    ResourceKey.create(Registries.LOOT_TABLE,
+                            ResourceLocation.fromNamespaceAndPath(NAMESPACE, tableKey)),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                            .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            ));
+        }
+        for (String path : POTS_LOOT_TABLES) {
+            String tableKey = "pots/dungeons_arise_additional_" + path.replace('/', '_');
+            consumer.accept(
+                    ResourceKey.create(Registries.LOOT_TABLE,
+                            ResourceLocation.fromNamespaceAndPath(NAMESPACE, tableKey)),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                            .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            ));
+        }
+        for (String path : SPAWNERS_LOOT_TABLES) {
+            String tableKey = "spawners/dungeons_arise_additional_" + path.replace('/', '_');
+            consumer.accept(
+                    ResourceKey.create(Registries.LOOT_TABLE,
+                            ResourceLocation.fromNamespaceAndPath(NAMESPACE, tableKey)),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                            .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            ));
+        }
+        for (String path : ARCHEOLOGY_LOOT_TABLES) {
+            String tableKey = "archeology/dungeons_arise_additional_" + path.replace('/', '_');
+            consumer.accept(
+                    ResourceKey.create(Registries.LOOT_TABLE,
+                            ResourceLocation.fromNamespaceAndPath(NAMESPACE, tableKey)),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                            .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                            .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            ));
         }
     }
 

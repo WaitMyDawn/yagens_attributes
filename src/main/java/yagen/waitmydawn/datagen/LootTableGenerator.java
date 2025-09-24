@@ -45,6 +45,7 @@ import java.util.stream.Stream;
 import yagen.waitmydawn.loot.RandomizeModFunction;
 import yagen.waitmydawn.util.SupportedMod;
 
+import static yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables.acceptAllDungeonsArise;
 import static yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables.registerAllDungeonsArise;
 
 public class LootTableGenerator {
@@ -771,24 +772,8 @@ public class LootTableGenerator {
                                                     .apply(RandomizeModFunction.builder(20, 50, 30, 0, 0, 50)))
                             )
             );
-            /* ==========  Dungeons Arise – Chests  ========== */
-            for (String path : DungeonsAriseLootTables.CHESTS_LOOT_TABLES) {
-                String tableKey = "chests/dungeons_arise_additional_" + path.replace('/', '_');
-                consumer.accept(
-                        ResourceKey.create(Registries.LOOT_TABLE,
-                                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, tableKey)),
-                        LootTable.lootTable()
-                                .withPool(LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1))
-                                        .add(LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
-                                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))))
-                                .withPool(LootPool.lootPool()
-                                        .setRolls(ConstantValue.exactly(1))
-                                        .add(LootItem.lootTableItem(ItemRegistry.MOD.get())
-                                                .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
-                                        .when(LootItemRandomChanceCondition.randomChance(0.5f))
-                                ));
-            }
+
+            acceptAllDungeonsArise(consumer);
             // override
             consumer.accept(
                     ResourceKey.create(
@@ -810,8 +795,250 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
-                                                    .apply(RandomizeModFunction.builder(20, 40, 40, 5, 90, 90)))
+                                                    .apply(RandomizeModFunction.builder(20, 40, 40, 5, 30, 90)))
                             )
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_abandoned_temple_abandoned_temple_top")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 5))))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.FORMA.get())
+                                                    .apply(SetFormaFunction.builder(FormaType.CTH.getValue()))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(50, 40, 10, 0, 0, 50)))
+                            )
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_aviary_aviary_barrels")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.8f))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 40, 20, 0, 0, 50)))
+                            )
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_aviary_aviary_normal")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.8f))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.KUVA.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 40, 20, 0, 0, 50)))
+                            )
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_bandit_towers_bandit_towers_normal")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 4))))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 40, 10, 0, 10, 50)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f))
+                            )
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_bandit_towers_bandit_towers_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.FORMA.get())
+                                                    .apply(SetFormaFunction.builder(FormaType.CTH.getValue()))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(20, 30, 10, 0, 20, 60))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_ceryneian_hind_ceryneian_hind_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(3, 9)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(50, 40, 10, 1, 20, 60))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_foundry_foundry_chains")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 50, 10, 0, 0, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_foundry_foundry_normal")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 50, 10, 0, 0, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_foundry_foundry_passage_exterior")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 50, 10, 0, 0, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_foundry_foundry_passage_normal")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(40, 50, 10, 0, 0, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_foundry_foundry_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(5, 16)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.FORMA.get())
+                                                    .apply(SetFormaFunction.builder(FormaType.CTH.getValue())))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.8f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(30, 30, 20, 1, 0, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_heavenly_challenger_heavenly_challenger_normal")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 8)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(30, 30, 10, 0, 20, 50))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/dungeons_arise_additional_heavenly_challenger_heavenly_challenger_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 7)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(30, 30, 20, 0, 20, 70))))
             );
         }
     }
@@ -1119,48 +1346,6 @@ public class LootTableGenerator {
              * dungeons_arise
              */
             registerAllDungeonsArise(this);
-//            this.add("append_to_abandoned_temple_entrance",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_entrance")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_entrance_loot"
-//                    ));
-//            this.add("append_to_abandoned_temple_map",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_map")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_map_loot"
-//                    ));
-//            this.add("append_to_abandoned_temple_top",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/abandoned_temple/abandoned_temple_top")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_abandoned_temple_top_loot"
-//                    ));
-//            this.add("append_to_aviary_barrels",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_barrels")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_barrels_loot"
-//                    ));
-//            this.add("append_to_aviary_normal",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_normal")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_normal_loot"
-//                    ));
-//            this.add("append_to_aviary_treasure",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse(SupportedMod.DUNGEONS_ARISE.getValue() + ":chests/aviary/aviary_treasure")).build()
-//                            },
-//                            "yagens_attributes:chests/"+SupportedMod.DUNGEONS_ARISE.getValue()+"additional_aviary_treasure_loot"
-//                    ));
         }
 
     }

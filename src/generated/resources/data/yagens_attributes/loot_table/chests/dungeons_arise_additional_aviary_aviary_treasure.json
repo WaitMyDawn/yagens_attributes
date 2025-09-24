@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 14.0,
-                "min": 3.0
+                "max": 48.0,
+                "min": 16.0
               },
               "function": "minecraft:set_count"
             }
@@ -49,7 +49,7 @@
               "common_weight": 20,
               "function": "yagens_attributes:randomize_mod",
               "legendary_weight": 5,
-              "level_percent_inf": 90,
+              "level_percent_inf": 30,
               "level_percent_sup": 90,
               "rare_weight": 40
             }

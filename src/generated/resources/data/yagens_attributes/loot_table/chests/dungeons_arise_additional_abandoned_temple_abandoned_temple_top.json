@@ -11,13 +11,29 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
+                "max": 5.0,
+                "min": 3.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "yagens_attributes:mod_essence"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "type": "Cth",
+              "function": "yagens_attributes:set_forma"
+            }
+          ],
+          "name": "yagens_attributes:forma"
         }
       ],
       "rolls": 1.0
