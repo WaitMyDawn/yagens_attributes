@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "twilightforest:chests/hill_3"
+    }
+  ],
+  "key": "yagens_attributes:chests/twilightforest_additional_hill_3"
+}

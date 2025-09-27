@@ -15,6 +15,7 @@ import yagen.waitmydawn.api.mods.RivenMod;
 import yagen.waitmydawn.item.mod.armor_mod.ArmorArmorMod;
 import yagen.waitmydawn.item.mod.armor_mod.ArmorToughnessArmorMod;
 import yagen.waitmydawn.item.mod.armor_mod.HealthArmorMod;
+import yagen.waitmydawn.item.mod.armor_mod.NourishArmorlMod;
 import yagen.waitmydawn.item.mod.general_mod.*;
 import yagen.waitmydawn.item.mod.tool_mod.*;
 
@@ -118,4 +119,9 @@ public class ModRegistry {
      * RIVEN
      */
     public static final Supplier<AbstractMod> RIVEN_MOD = registerMod(new RivenMod());
+
+    /**
+     * WARFRAME
+     */
+    public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorlMod());
 }

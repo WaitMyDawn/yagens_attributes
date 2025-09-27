@@ -75,8 +75,12 @@
   "effect.yagens_attributes.radiation_status": "辐射",
   "effect.yagens_attributes.blast_status": "爆炸",
   "effect.yagens_attributes.multishot_galvanized": "镀层 多重射击",
+  "effect.yagens_attributes.nourish": "消化滋养",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
+  "warframe.yagens_attributes.nourish_armor_mod.1": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
+  "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的饮食速度加快",
+  "warframe.yagens_attributes.nourish_armor_mod.3": "以上增幅受到效果持续时间内食物摄取量的影响",
 
   "key.yagens_attributes.group_1": "Yagen的属性 通用",
   "key.yagens_attributes.combo_count": "打开 连击计数配置",
@@ -85,6 +89,7 @@
   "rarity.yagens_attributes.rare": "稀有",
   "rarity.yagens_attributes.legendary": "传说",
   "rarity.yagens_attributes.riven": "裂罅",
+  "rarity.yagens_attributes.warframe": "天赋",
   "ui.yagens_attributes.no_selection": "未选定",
   "ui.yagens_attributes.empty_slot": "空Mod槽位",
   "ui.yagens_attributes.level": "等级%d",
@@ -139,6 +144,8 @@
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",
+
+  "mod.yagens_attributes.nourish_armor_mod": "消化滋养",
 
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "击杀后+30%%多重射击，持续20秒，最高5层",
 

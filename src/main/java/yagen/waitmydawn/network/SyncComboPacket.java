@@ -13,7 +13,6 @@ public record SyncComboPacket(DataAttachmentRegistry.Combo combo) implements Cus
     public static final Type<SyncComboPacket> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "sync_combo"));
 
-    /* 手动 StreamCodec：写 -> 读 */
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncComboPacket> STREAM_CODEC =
             StreamCodec.of(
                     (buf, pkt) -> {

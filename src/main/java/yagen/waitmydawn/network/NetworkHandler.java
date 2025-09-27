@@ -20,6 +20,13 @@ public class NetworkHandler {
         registrar.playToClient(
                 DamageNumberPacket.TYPE,
                 DamageNumberPacket.STREAM_CODEC,
-                DamageNumberPacket::handle);
+                DamageNumberPacket::handle
+        );
+
+        registrar.playToServer(
+                AddNourishEffectPacket.TYPE,
+                AddNourishEffectPacket.STREAM_CODEC,
+                AddNourishEffectPacket::handle
+        );
     }
 }

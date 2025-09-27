@@ -22,7 +22,7 @@ public class SlashStatusEffect extends MobEffect {
         int ticksLeft;
         final LivingEntity sourceEntity;
 
-        Cut(float damage, int ticksLeft,LivingEntity sourceEntity) {
+        Cut(float damage, int ticksLeft, LivingEntity sourceEntity) {
             this.damage = damage;
             this.ticksLeft = ticksLeft;
             this.sourceEntity = sourceEntity;
@@ -56,7 +56,7 @@ public class SlashStatusEffect extends MobEffect {
             if (c.ticksLeft % 20 == 0) {
                 pLivingEntity.hurt(pLivingEntity.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE), c.damage);
 
-                if(c.sourceEntity instanceof Player){
+                if (c.sourceEntity instanceof Player) {
                     Vec3 pos = pLivingEntity.position().add(0, pLivingEntity.getBbHeight() * 0.7, 0);
                     PacketDistributor.sendToPlayersTrackingEntity(pLivingEntity,
                             new DamageNumberPacket(pos, c.damage, 0x66FFFF, 0));

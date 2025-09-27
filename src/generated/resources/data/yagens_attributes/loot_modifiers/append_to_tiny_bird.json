@@ -1,0 +1,10 @@
+{
+  "type": "yagens_attributes:append_loot",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "twilightforest:entities/tiny_bird"
+    }
+  ],
+  "key": "yagens_attributes:entities/twilightforest_additional_tiny_bird"
+}

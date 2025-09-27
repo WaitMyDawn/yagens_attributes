@@ -1,0 +1,69 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 32.0,
+                "min": 4.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "yagens_attributes:mod_essence"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "common_weight": 30,
+              "function": "yagens_attributes:randomize_mod"
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.8,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "common_weight": 20,
+              "function": "yagens_attributes:randomize_mod",
+              "level_percent_inf": 20,
+              "level_percent_sup": 70,
+              "rare_weight": 30,
+              "uncommon_weight": 50
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "yagens_attributes:entities/bosses/twilightforest_additional_naga"
+}

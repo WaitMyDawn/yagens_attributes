@@ -81,7 +81,7 @@ public class BowShootEvent {
 
         if (isScattershot) {
             damageAverage = damageAverage * 0.4f;
-            System.out.println("isScattershot = " + isScattershot);
+//            System.out.println("isScattershot = " + isScattershot);
         }
 
         for (int i = 0; i < realCount; i++) {

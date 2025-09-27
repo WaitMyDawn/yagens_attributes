@@ -1,18 +1,16 @@
 package yagen.waitmydawn.api.mods;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-
-import java.util.List;
 
 public enum ModRarity {
     COMMON(0),
     UNCOMMON(1),
     RARE(2),
     LEGENDARY(3),
-    RIVEN(4);
+    RIVEN(4),
+    WARFRAME(5);
 
     private final int value;
 
@@ -28,12 +26,6 @@ public enum ModRarity {
         return DISPLAYS[getValue()];
     }
 
-    private static List<Double> rawRarityConfig;
-    private static List<Double> rarityConfig = null;
-
-    /**
-     * @return Returns positive if the other is less rare, negative if it is more rare, and zero if they are equal
-     */
     public int compareRarity(ModRarity other) {
         return Integer.compare(this.getValue(), other.getValue());
     }
@@ -45,6 +37,7 @@ public enum ModRarity {
             case RARE -> Style.EMPTY.withColor(0xFFD700);
             case LEGENDARY -> Style.EMPTY.withColor(0xFF4500);
             case RIVEN -> Style.EMPTY.withColor(0x8A2BE2);
+            case WARFRAME -> Style.EMPTY.withColor(0xFF1493);
         };
     }
 
@@ -58,6 +51,8 @@ public enum ModRarity {
             Component.translatable("rarity.yagens_attributes.legendary")
                     .withStyle(Style.EMPTY.withColor(0xFF4500)),
             Component.translatable("rarity.yagens_attributes.riven")
-                    .withStyle(Style.EMPTY.withColor(0x8A2BE2))
+                    .withStyle(Style.EMPTY.withColor(0x8A2BE2)),
+            Component.translatable("rarity.yagens_attributes.warframe")
+                    .withStyle(Style.EMPTY.withColor(0xFF1493))
     };
 }

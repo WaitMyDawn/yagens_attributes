@@ -1,10 +1,12 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,6 +22,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import net.minecraft.world.entity.projectile.*;
+import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
@@ -32,6 +36,7 @@ import java.util.*;
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
 import static yagen.waitmydawn.effect.HeatStatusEffect.addHeat;
+import static yagen.waitmydawn.effect.NourishEffect.getNourishEnhance;
 import static yagen.waitmydawn.effect.SlashStatusEffect.addCut;
 import static yagen.waitmydawn.effect.ToxinStatusEffect.addToxin;
 
@@ -126,11 +131,26 @@ public class AttackEventHandler {
         //float factorViral = 1f;
         if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
             int amp = target.getEffect(MobEffectRegistry.VIRAL_STATUS).getAmplifier();
-            float factorViral = 1.5f;
+            float factorViral = 1.75f;
             if (amp > 0)
-                factorViral = Math.min(2.5f, factorViral + amp * 0.125f);
+                factorViral = Math.min(4.0f, factorViral + amp * 0.25f);
 //            System.out.println("TestDamage: amp " + amp + " factorV " + factorViral);
             adjustedTotal = adjustedTotal * factorViral;
+        }
+
+        if (player.hasEffect(MobEffectRegistry.NOURISH)) {
+//            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+//            if (IModContainer.isModContainer(chest)) {
+//                var container = IModContainer.get(chest);
+//                for (ModSlot slot : container.getActiveMods()) {
+//                    if (slot.getMod().getModName().equals("nourish_armor_mod")) {
+//
+//                    }
+//                }
+//            }
+            float nourishEnhance = (float) getNourishEnhance(player);
+            player.sendSystemMessage(Component.literal("Nourish Enhance: " + nourishEnhance));
+            adjustedTotal = adjustedTotal * nourishEnhance;
         }
 
         event.setNewDamage(adjustedTotal);
@@ -214,6 +234,15 @@ public class AttackEventHandler {
                 .withDuration((int) comboDuration);
         player.setData(DataAttachmentRegistry.COMBO.get(), updated);
         PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncComboPacket(updated));
+    }
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void definitelyStatus(LivingDamageEvent.Post event) {
+        if (event.getEntity().level().isClientSide()) return;
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+
+        if(!(player.hasEffect(MobEffectRegistry.NOURISH))) return;
+        statusEffect(DamageType.VIRAL,player,target,event.getNewDamage());
     }
 
     private static void statusEffect(DamageType type, Player attacker, LivingEntity target, float finalDamage) {
@@ -405,7 +434,7 @@ public class AttackEventHandler {
                     target.forceAddEffect(new MobEffectInstance(
                             MobEffectRegistry.VIRAL_STATUS,
                             (int) (20 * sd),
-                            Math.min(amp + 1, 8),
+                            Math.min(amp + 1, 9),
                             false,
                             true,
                             true), attacker);

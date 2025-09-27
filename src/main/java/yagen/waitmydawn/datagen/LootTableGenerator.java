@@ -24,7 +24,6 @@ import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.loot.*;
-import yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables;
 import yagen.waitmydawn.registries.BlockRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 import net.minecraft.core.HolderLookup;
@@ -47,6 +46,8 @@ import yagen.waitmydawn.util.SupportedMod;
 
 import static yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables.acceptAllDungeonsArise;
 import static yagen.waitmydawn.loot.loot_table.DungeonsAriseLootTables.registerAllDungeonsArise;
+import static yagen.waitmydawn.loot.loot_table.TwilightforestLootTables.acceptAllTwilightforest;
+import static yagen.waitmydawn.loot.loot_table.TwilightforestLootTables.registerAllTwilightforest;
 
 public class LootTableGenerator {
     static class BlocksGenerator extends BlockLootSubProvider {
@@ -774,6 +775,7 @@ public class LootTableGenerator {
             );
 
             acceptAllDungeonsArise(consumer);
+            acceptAllTwilightforest(consumer);
             // override
             consumer.accept(
                     ResourceKey.create(
@@ -1346,6 +1348,7 @@ public class LootTableGenerator {
              * dungeons_arise
              */
             registerAllDungeonsArise(this);
+            registerAllTwilightforest(this);
         }
 
     }
