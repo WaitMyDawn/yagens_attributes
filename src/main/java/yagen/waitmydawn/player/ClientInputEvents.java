@@ -1,6 +1,8 @@
 package yagen.waitmydawn.player;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
@@ -11,19 +13,21 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.client.event.InputEvent;
+import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.gui.ComboPositionScreen;
 import yagen.waitmydawn.network.AddNourishEffectPacket;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
     private static final KeyState COMBO_COUNT_STATE = register(KeyMappings.COMBO_COUNT_KEYMAP);
-    private static final KeyState NOURISH_STATE = register(KeyMappings.NOURISH_KEYMAP);
+    private static final KeyState ABILITY_STATE = register(KeyMappings.ABILITY_KEYMAP);
 
     private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
@@ -48,17 +52,45 @@ public class ClientInputEvents {
             minecraft.setScreen(new ComboPositionScreen());
         }
 
-        if (NOURISH_STATE.wasPressed() && nourishCooldown <= 0) {
+        boolean isAbility = false;
+        String ability = null;
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (IModContainer.isModContainer(chest)) {
+            var container = IModContainer.get(chest);
+            for (ModSlot slot : container.getActiveMods()) {
+                ability = whichAbility(slot.getMod().getModName());
+                if (ability != null) {
+                    isAbility = true;
+                    break;
+                }
+            }
+        }
+        if (ABILITY_STATE.wasPressed() && abilityCooldown <= 0 && isAbility) {
             PacketDistributor.sendToServer(new AddNourishEffectPacket());
-            nourishCooldown = NOURISH_COOLDOWN;
-        } else if (NOURISH_STATE.wasPressed()) {
+            switch (ability){
+                case "nourish_armor_mod": abilityCooldown = NOURISH_COOLDOWN;
+            }
+        } else if (ABILITY_STATE.wasPressed()) {
             Minecraft.getInstance().gui.setOverlayMessage(
-                    Component.literal("Nourish 冷却中 " + (nourishCooldown / 20) + " 秒"), false);
+                    Component.translatable("overlay.yagens_attributes.ability_cooldown", abilityCooldown / 20), false);
         }
         update();
     }
 
-    private static int nourishCooldown = 0;
+    public static String whichAbility(String modName) {
+        for (String ability : ABILITIES) {
+            if (ability.equals(modName)) {
+                return ability;
+            }
+        }
+        return null;
+    }
+
+    public static final List<String> ABILITIES = List.of(
+            "nourish_armor_mod"
+    );
+
+    private static int abilityCooldown = 0;
     private static final int NOURISH_COOLDOWN = 900;
 
     private static void update() {
@@ -69,7 +101,7 @@ public class ClientInputEvents {
 
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
-        if (nourishCooldown > 0) nourishCooldown--;
+        if (abilityCooldown > 0) abilityCooldown--;
     }
 
     private static KeyState register(KeyMapping key) {

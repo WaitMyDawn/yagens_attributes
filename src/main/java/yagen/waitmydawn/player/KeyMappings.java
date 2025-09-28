@@ -17,8 +17,8 @@ public class KeyMappings {
             new KeyMapping(getResourceName("combo_count"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_G, KEY_BIND_GENERAL_CATEGORY);
 
-    public static final KeyMapping NOURISH_KEYMAP =
-            new KeyMapping(getResourceName("nourish"),
+    public static final KeyMapping ABILITY_KEYMAP =
+            new KeyMapping(getResourceName("ability"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
 
     private static String getResourceName(String name) {
@@ -28,7 +28,7 @@ public class KeyMappings {
     @SubscribeEvent
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
         event.register(COMBO_COUNT_KEYMAP);
-        event.register(NOURISH_KEYMAP);
+        event.register(ABILITY_KEYMAP);
     }
 
 }

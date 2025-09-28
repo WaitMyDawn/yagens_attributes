@@ -17,7 +17,6 @@ public class HomologyModGroup {
         }
     }
 
-    /* ---------- 静态入口 ---------- */
     public static HomologyModGroup instance() {
         if (INSTANCE == null) {
             synchronized (HomologyModGroup.class) {
@@ -29,7 +28,6 @@ public class HomologyModGroup {
         return INSTANCE;
     }
 
-    /* 默认分组数据，可抽配置 later */
     private static List<Set<String>> buildDefault() {
         return List.of(
                 Set.of("puncture", "slash", "impact"),
@@ -37,7 +35,6 @@ public class HomologyModGroup {
         );
     }
 
-    /* ---------- 业务方法 ---------- */
     public Set<String> getGroup(String member) {
         return memberToGroup.getOrDefault(member, Collections.emptySet());
     }
@@ -47,7 +44,6 @@ public class HomologyModGroup {
         return !ga.isEmpty() && ga.equals(getGroup(b));
     }
 
-    /* 测试 */
     public static void main(String[] args) {
         // create new Group
 //        List<Set<String>> newGroups = List.of(

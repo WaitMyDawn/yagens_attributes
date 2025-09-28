@@ -78,12 +78,14 @@
   "effect.yagens_attributes.nourish": "消化滋养",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
-  "warframe.yagens_attributes.nourish_armor_mod.1": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
-  "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的饮食速度加快",
-  "warframe.yagens_attributes.nourish_armor_mod.3": "以上增幅受到效果持续时间内食物摄取量的影响",
+  "warframe.yagens_attributes.nourish_armor_mod.1": "按下 %s 激活该天赋",
+  "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
+  "warframe.yagens_attributes.nourish_armor_mod.3": "效果持续时间内，你的饮食速度加快",
+  "warframe.yagens_attributes.nourish_armor_mod.4": "以上增幅受到效果持续时间内食物摄取量的影响",
 
   "key.yagens_attributes.group_1": "Yagen的属性 通用",
   "key.yagens_attributes.combo_count": "打开 连击计数配置",
+  "key.yagens_attributes.ability": "使用 天赋",
   "rarity.yagens_attributes.common": "常见",
   "rarity.yagens_attributes.uncommon": "罕见",
   "rarity.yagens_attributes.rare": "稀有",
@@ -104,6 +106,8 @@
   "ui.yagens_attributes.combo_count": "%dx/%d  %d",
   "ui.yagens_attributes.combo_position_title": "连击计数配置界面",
   "ui.yagens_attributes.combo_position_explain.1": "按住左键拖拽，ESC自动保存",
+
+  "overlay.yagens_attributes.ability_cooldown": "天赋 冷却%d秒",
 
   "mod.yagens_attributes.none": "空",
   "mod.yagens_attributes.riven_tool_mod": "裂罅",

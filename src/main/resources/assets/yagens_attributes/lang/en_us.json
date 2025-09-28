@@ -78,12 +78,14 @@
   "effect.yagens_attributes.nourish": "Nourish",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "Each arrow deals x0.4 damage.",
-  "warframe.yagens_attributes.nourish_armor_mod.1": "During the duration of the effect, your attack damage increases and will definitely status Virus.",
-  "warframe.yagens_attributes.nourish_armor_mod.2": "During the duration of the effect, your eating speed will increase.",
-  "warframe.yagens_attributes.nourish_armor_mod.3": "The above increase was influenced by the amount of food consumed during the duration of the effect.",
+  "warframe.yagens_attributes.nourish_armor_mod.1": "Press %s to active Nourish",
+  "warframe.yagens_attributes.nourish_armor_mod.2": "During the duration of the effect, your attack damage increases and will definitely status Virus.",
+  "warframe.yagens_attributes.nourish_armor_mod.3": "During the duration of the effect, your eating speed will increase.",
+  "warframe.yagens_attributes.nourish_armor_mod.4": "The above increase was influenced by the amount of food consumed during the duration of the effect.",
 
   "key.yagens_attributes.group_1": "Yagen's Attributes-General'",
-  "key.yagens_attributes.mod_operation": "Open Combo Count Configuration",
+  "key.yagens_attributes.combo_count": "Open Combo Count Configuration",
+  "key.yagens_attributes.ability": "Active Ability",
   "rarity.yagens_attributes.common": "Common",
   "rarity.yagens_attributes.uncommon": "Uncommon",
   "rarity.yagens_attributes.rare": "Rare",
@@ -104,6 +106,8 @@
   "ui.yagens_attributes.combo_count": "%dx/%d",
   "ui.yagens_attributes.combo_position_title": "Configuration of Combo Count",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
+
+  "overlay.yagens_attributes.ability_cooldown": "Ability Cooldown %d Seconds",
 
   "mod.yagens_attributes.none": "None",
   "mod.yagens_attributes.riven_tool_mod": "Riven",
