@@ -27,7 +27,6 @@ public class DataAttachmentRegistry {
 
         public static final Combo EMPTY = new Combo(0, 0);
 
-        /* 工具方法：快速构造 / 修改 */
         public Combo withCount(int newCount) {
             return new Combo(newCount, this.leftDuration);
         }

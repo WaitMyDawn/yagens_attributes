@@ -82,6 +82,7 @@
   "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
   "warframe.yagens_attributes.nourish_armor_mod.3": "效果持续时间内，你的饮食速度加快",
   "warframe.yagens_attributes.nourish_armor_mod.4": "以上增幅受到效果持续时间内食物摄取量的影响",
+  "warframe.yagens_attributes.collaborative_proficiency_armor_mod.1": "箭命中时有50%%概率增加连击数",
 
   "key.yagens_attributes.group_1": "Yagen的属性 通用",
   "key.yagens_attributes.combo_count": "打开 连击计数配置",
@@ -129,6 +130,7 @@
   "mod.yagens_attributes.reach_tool_mod": "延展",
   "mod.yagens_attributes.status_duration_tool_mod": "缠绞苦痛",
   "mod.yagens_attributes.status_chance_tool_mod": "苦痛之视",
+  "mod.yagens_attributes.combo_duration_tool_mod": "收割时刻",
   "mod.yagens_attributes.armor_armor_mod": "泥犀锐角",
   "mod.yagens_attributes.health_armor_mod": "生命力储备",
   "mod.yagens_attributes.armor_toughness_armor_mod": "缠丝腰带",
@@ -150,6 +152,7 @@
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",
 
   "mod.yagens_attributes.nourish_armor_mod": "消化滋养",
+  "mod.yagens_attributes.collaborative_proficiency_armor_mod": "连携精通",
 
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "击杀后+30%%多重射击，持续20秒，最高5层",
 

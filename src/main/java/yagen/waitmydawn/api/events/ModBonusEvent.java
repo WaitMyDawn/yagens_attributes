@@ -26,8 +26,6 @@ import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
-import static yagen.waitmydawn.effect.NourishEffect.NOURISH_MAP;
-
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class ModBonusEvent {
     @SubscribeEvent
@@ -66,17 +64,19 @@ public class ModBonusEvent {
                             new SyncComboPacket(updated));
             }
         } else {
+            updateCCModifier(player, 0);
+            updateSCModifier(player, 0);
             DataAttachmentRegistry.Combo updated = old.withCount(0);
             if (updated != old) {
                 player.setData(DataAttachmentRegistry.COMBO.get(), updated);
-                if (!player.level().isClientSide)
-                    PacketDistributor.sendToPlayer((ServerPlayer) player,
-                            new SyncComboPacket(updated));
+//                if (!player.level().isClientSide)
+                PacketDistributor.sendToPlayer((ServerPlayer) player,
+                        new SyncComboPacket(updated));
             }
         }
     }
 
-    private static void updateCCModifier(Player player, double bonus) {
+    public static void updateCCModifier(Player player, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_cc_modifier");
         AttributeInstance criticalChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
         if (criticalChance == null) return;
@@ -93,7 +93,7 @@ public class ModBonusEvent {
         }
     }
 
-    private static void updateSCModifier(Player player, double bonus) {
+    public static void updateSCModifier(Player player, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_sc_modifier");
         AttributeInstance statusChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get()));
         if (statusChance == null) return;

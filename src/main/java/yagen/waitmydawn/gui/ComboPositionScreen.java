@@ -47,7 +47,7 @@ public class ComboPositionScreen extends Screen {
             dragging = false;
             ClientConfigs.COMBO_HUD_X.set((int) mx - dragStartX);
             ClientConfigs.COMBO_HUD_Y.set((int) my - dragStartY);
-            ClientConfigs.SPEC.save();
+//            ClientConfigs.SPEC.save();
             return true;
         }
         return super.mouseReleased(mx, my, btn);

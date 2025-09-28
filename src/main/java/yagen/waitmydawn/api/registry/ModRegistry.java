@@ -1,6 +1,5 @@
 package yagen.waitmydawn.api.registry;
 
-import net.minecraft.util.RandomSource;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import net.minecraft.core.Registry;
@@ -12,11 +11,7 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import yagen.waitmydawn.api.mods.NoneMod;
 import yagen.waitmydawn.api.mods.RivenMod;
-import yagen.waitmydawn.item.mod.armor_mod.ArmorArmorMod;
-import yagen.waitmydawn.item.mod.armor_mod.ArmorToughnessArmorMod;
-import yagen.waitmydawn.item.mod.armor_mod.HealthArmorMod;
-import yagen.waitmydawn.item.mod.armor_mod.NourishArmorlMod;
-import yagen.waitmydawn.item.mod.general_mod.*;
+import yagen.waitmydawn.item.mod.armor_mod.*;
 import yagen.waitmydawn.item.mod.tool_mod.*;
 
 import java.util.List;
@@ -77,6 +72,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> REACH_TOOL_MOD = registerMod(new ReachToolMod());
     public static final Supplier<AbstractMod> STATUS_DURATION_TOOL_MOD = registerMod(new StatusDurationToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_TOOL_MOD = registerMod(new StatusChanceToolMod());
+    public static final Supplier<AbstractMod> COMBO_DURATION_TOOL_MOD = registerMod(new ComboDurationToolMod());
+
     public static final Supplier<AbstractMod> HEALTH_ARMOR_MOD = registerMod(new HealthArmorMod());
     public static final Supplier<AbstractMod> ARMOR_ARMOR_MOD = registerMod(new ArmorArmorMod());
     public static final Supplier<AbstractMod> ARMOR_TOUGHNESS_ARMOR_MOD = registerMod(new ArmorToughnessArmorMod());
@@ -124,4 +121,5 @@ public class ModRegistry {
      * WARFRAME
      */
     public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorlMod());
+    public static final Supplier<AbstractMod> COLLABORATIVE_PROFICIENCY_ARMOR_MOD = registerMod(new CollaborativeProficiencyArmorMod());
 }

@@ -67,10 +67,11 @@ public class ClientInputEvents {
         }
         if (ABILITY_STATE.wasPressed() && abilityCooldown <= 0 && isAbility) {
             PacketDistributor.sendToServer(new AddNourishEffectPacket());
-            switch (ability){
-                case "nourish_armor_mod": abilityCooldown = NOURISH_COOLDOWN;
+            switch (ability) {
+                case "nourish_armor_mod":
+                    abilityCooldown = NOURISH_COOLDOWN;
             }
-        } else if (ABILITY_STATE.wasPressed()) {
+        } else if (ABILITY_STATE.wasPressed() && abilityCooldown > 0) {
             Minecraft.getInstance().gui.setOverlayMessage(
                     Component.translatable("overlay.yagens_attributes.ability_cooldown", abilityCooldown / 20), false);
         }

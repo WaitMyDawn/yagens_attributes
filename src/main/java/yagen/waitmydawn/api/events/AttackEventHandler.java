@@ -5,13 +5,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,9 +17,6 @@ import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
-import net.minecraft.world.entity.projectile.*;
-import yagen.waitmydawn.api.mods.IModContainer;
-import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
@@ -33,6 +26,8 @@ import yagen.waitmydawn.registries.MobEffectRegistry;
 
 import java.util.*;
 
+import static yagen.waitmydawn.api.events.ModBonusEvent.updateCCModifier;
+import static yagen.waitmydawn.api.events.ModBonusEvent.updateSCModifier;
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
 import static yagen.waitmydawn.effect.HeatStatusEffect.addHeat;
@@ -50,14 +45,21 @@ public class AttackEventHandler {
         if (!(event.getSource().getEntity() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
-        ItemStack held = event.getSource().getWeaponItem();
-        if (held == null) held = player.getMainHandItem();
+        ItemStack weaponItem = event.getSource().getWeaponItem();
+        boolean isArrow = false;
+        boolean isThrownTrident = false;
+        if (weaponItem == null) weaponItem = player.getMainHandItem();
+        else {
+            Item item = weaponItem.getItem();
+            isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
+            isThrownTrident = item instanceof TridentItem;
+        }
 
         Map<DamageType, Float> dmgMap = new HashMap<>();
 
-        Entity direct = event.getContainer().getSource().getDirectEntity();
-        boolean isArrow = direct instanceof Arrow;
-        boolean isThrownTrident = direct instanceof ThrownTrident;
+//        Entity direct = event.getContainer().getSource().getDirectEntity();
+//        boolean isArrow = direct instanceof Arrow;
+//        boolean isThrownTrident = direct instanceof ThrownTrident;
         float baseForProjectile = 10f;
         if (!isArrow && !isThrownTrident)
             dmgMap.put(DamageType.IMPACT, 1f);
@@ -65,7 +67,7 @@ public class AttackEventHandler {
             baseForProjectile = 8f;
 
         // get damage map
-        Map<DamageType, Float> weaponMap = DamageTypeUtils.getDamageTypes(held);
+        Map<DamageType, Float> weaponMap = DamageTypeUtils.getDamageTypes(weaponItem);
         weaponMap.forEach((k, v) -> dmgMap.merge(k, v, Float::sum));
 
         float total = dmgMap.values().stream().reduce(0f, Float::sum);
@@ -87,6 +89,12 @@ public class AttackEventHandler {
             adjustedTotal = adjustedTotal + actual *
                     entry.getValue() / total
                     * DamageBonusTable.getBonus(mat, entry.getKey());
+        }
+
+        if(isArrow||isThrownTrident){
+            updateCCModifier(player, 0);
+            updateSCModifier(player, 0);
+            player.sendSystemMessage(Component.literal("Update Combo"));
         }
 
         double cc = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
@@ -128,7 +136,7 @@ public class AttackEventHandler {
             adjustedTotal = adjustedTotal * total / baseForProjectile;
 
         // viral
-        //float factorViral = 1f;
+//        float factorViral = 1f;
         if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
             int amp = target.getEffect(MobEffectRegistry.VIRAL_STATUS).getAmplifier();
             float factorViral = 1.75f;
@@ -149,7 +157,7 @@ public class AttackEventHandler {
 //                }
 //            }
             float nourishEnhance = (float) getNourishEnhance(player);
-            player.sendSystemMessage(Component.literal("Nourish Enhance: " + nourishEnhance));
+//            player.sendSystemMessage(Component.literal("Nourish Enhance: " + nourishEnhance));
             adjustedTotal = adjustedTotal * nourishEnhance;
         }
 
@@ -210,9 +218,9 @@ public class AttackEventHandler {
 
     @SubscribeEvent
     public static void combo(LivingDamageEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) return;
-        if (!(event.getEntity() instanceof LivingEntity target)) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide()) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
 
         ItemStack weaponStack = event.getSource().getWeaponItem();
         int isValidity = 0;
@@ -235,14 +243,15 @@ public class AttackEventHandler {
         player.setData(DataAttachmentRegistry.COMBO.get(), updated);
         PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncComboPacket(updated));
     }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void definitelyStatus(LivingDamageEvent.Post event) {
         if (event.getEntity().level().isClientSide()) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
-        if(!(player.hasEffect(MobEffectRegistry.NOURISH))) return;
-        statusEffect(DamageType.VIRAL,player,target,event.getNewDamage());
+        if (!(player.hasEffect(MobEffectRegistry.NOURISH))) return;
+        statusEffect(DamageType.VIRAL, player, target, event.getNewDamage());
     }
 
     private static void statusEffect(DamageType type, Player attacker, LivingEntity target, float finalDamage) {

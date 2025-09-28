@@ -2,22 +2,29 @@ package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.ArrowLooseEvent;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.network.SyncComboPacket;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -149,4 +156,32 @@ public class BowShootEvent {
 //        event.setDuration(event.getDuration() - 15);
 //    }
 
+    @SubscribeEvent
+    public static void shootCombo(LivingDamageEvent.Post event) {
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
+        ItemStack weaponStack = event.getSource().getWeaponItem();
+        if (weaponStack == null) return;
+        if (!(weaponStack.getItem() instanceof BowItem)) return;
+
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        boolean isAbility = false;
+        if (IModContainer.isModContainer(chest)) {
+            var container = IModContainer.get(chest);
+            for (ModSlot slot : container.getActiveMods()) {
+                if (slot.getMod().getModName().equals("collaborative_proficiency_armor_mod")) {
+                    isAbility = true;
+                    break;
+                }
+            }
+        }
+        if (!isAbility) return;
+        if (player.getRandom().nextFloat() > 0.5f) return;
+        double comboDuration = 20 * player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_DURATION.get())).getValue();
+        DataAttachmentRegistry.Combo old = player.getData(DataAttachmentRegistry.COMBO.get());
+        DataAttachmentRegistry.Combo updated = old.withCount(old.count() + 1)
+                .withDuration((int) comboDuration);
+        player.setData(DataAttachmentRegistry.COMBO.get(), updated);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncComboPacket(updated));
+    }
 }
