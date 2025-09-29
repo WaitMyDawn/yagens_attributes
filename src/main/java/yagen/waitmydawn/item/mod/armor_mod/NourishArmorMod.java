@@ -11,22 +11,23 @@ import yagen.waitmydawn.api.mods.ModRarity;
 
 import java.util.List;
 
-import static yagen.waitmydawn.player.KeyMappings.ABILITY_KEYMAP;
+import static yagen.waitmydawn.player.KeyMappings.ABILITY_1_KEYMAP;
+import static yagen.waitmydawn.player.KeyMappings.ABILITY_2_KEYMAP;
 
-public class NourishArmorlMod extends AbstractMod {
+public class NourishArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "nourish_armor_mod");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
-                Component.translatable("warframe.yagens_attributes.nourish_armor_mod.1", ABILITY_KEYMAP.getTranslatedKeyMessage().getString()),
+                Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(),ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
+                Component.translatable("warframe.yagens_attributes.nourish_armor_mod.1"),
                 Component.translatable("warframe.yagens_attributes.nourish_armor_mod.2"),
-                Component.translatable("warframe.yagens_attributes.nourish_armor_mod.3"),
-                Component.translatable("warframe.yagens_attributes.nourish_armor_mod.4")
+                Component.translatable("warframe.yagens_attributes.nourish_armor_mod.3")
         );
     }
 
-    public NourishArmorlMod() {
+    public NourishArmorMod() {
         super(1, FormaType.NYA.getValue(), ModRarity.WARFRAME);
         this.baseCapacityCost = 9;
     }

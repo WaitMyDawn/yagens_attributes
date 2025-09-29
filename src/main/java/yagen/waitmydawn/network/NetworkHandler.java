@@ -28,5 +28,11 @@ public class NetworkHandler {
                 AddNourishEffectPacket.STREAM_CODEC,
                 AddNourishEffectPacket::handle
         );
+
+        registrar.playToServer(
+                SendBladeStormTargetPacket.TYPE,
+                SendBladeStormTargetPacket.STREAM_CODEC,
+                SendBladeStormTargetPacket::handle
+        );
     }
 }

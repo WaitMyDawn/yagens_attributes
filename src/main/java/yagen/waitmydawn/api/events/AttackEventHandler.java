@@ -14,6 +14,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
@@ -23,6 +24,7 @@ import yagen.waitmydawn.network.DamageNumberPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
+import yagen.waitmydawn.util.BladeStormTargets;
 
 import java.util.*;
 
@@ -91,7 +93,7 @@ public class AttackEventHandler {
                     * DamageBonusTable.getBonus(mat, entry.getKey());
         }
 
-        if(isArrow||isThrownTrident){
+        if (isArrow || isThrownTrident) {
             updateCCModifier(player, 0);
             updateSCModifier(player, 0);
             player.sendSystemMessage(Component.literal("Update Combo"));
@@ -246,12 +248,22 @@ public class AttackEventHandler {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void definitelyStatus(LivingDamageEvent.Post event) {
-        if (event.getEntity().level().isClientSide()) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide()) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
         if (!(player.hasEffect(MobEffectRegistry.NOURISH))) return;
         statusEffect(DamageType.VIRAL, player, target, event.getNewDamage());
+    }
+
+    @SubscribeEvent
+    public static void doBladeStorm(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide()) return;
+
+        if (player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
+        if(BladeStormTargets.get((ServerPlayer) player).isEmpty()) return;
+        BladeStormTargets.sweep((ServerPlayer) player);
     }
 
     private static void statusEffect(DamageType type, Player attacker, LivingEntity target, float finalDamage) {

@@ -77,4 +77,7 @@ public class PlayerInteractionEvent {
         if (food == null) return;
         addNourishCount(player, Math.min(NOURISH_NEED, getNourishCount(player) + food.nutrition() * food.saturation()));
     }
+
+//    @SubscribeEvent
+//    public static void getBladeStormTargets(PlayerInteractEvent.RightClickItem event) {}
 }

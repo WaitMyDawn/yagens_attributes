@@ -120,6 +120,7 @@ public class ModRegistry {
     /**
      * WARFRAME
      */
-    public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorlMod());
+    public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorMod());
     public static final Supplier<AbstractMod> COLLABORATIVE_PROFICIENCY_ARMOR_MOD = registerMod(new CollaborativeProficiencyArmorMod());
+    public static final Supplier<AbstractMod> BLADE_STORM_ARMOR_MOD = registerMod(new BladeStormArmorMod());
 }

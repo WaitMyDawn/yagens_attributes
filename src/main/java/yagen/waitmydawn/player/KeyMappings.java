@@ -17,9 +17,13 @@ public class KeyMappings {
             new KeyMapping(getResourceName("combo_count"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_G, KEY_BIND_GENERAL_CATEGORY);
 
-    public static final KeyMapping ABILITY_KEYMAP =
-            new KeyMapping(getResourceName("ability"),
+    public static final KeyMapping ABILITY_1_KEYMAP =
+            new KeyMapping(getResourceName("ability_1"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_V, KEY_BIND_GENERAL_CATEGORY);
+
+    public static final KeyMapping ABILITY_2_KEYMAP =
+            new KeyMapping(getResourceName("ability_2"),
+                    KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_N, KEY_BIND_GENERAL_CATEGORY);
 
     private static String getResourceName(String name) {
         return String.format("key.yagens_attributes.%s", name);
@@ -28,7 +32,8 @@ public class KeyMappings {
     @SubscribeEvent
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
         event.register(COMBO_COUNT_KEYMAP);
-        event.register(ABILITY_KEYMAP);
+        event.register(ABILITY_1_KEYMAP);
+        event.register(ABILITY_2_KEYMAP);
     }
 
 }
