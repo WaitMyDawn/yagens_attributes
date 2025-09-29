@@ -263,7 +263,7 @@ public class AttackEventHandler {
 
         if (player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
         if(BladeStormTargets.get((ServerPlayer) player).isEmpty()) return;
-        BladeStormTargets.sweep((ServerPlayer) player);
+        BladeStormTargets.execute((ServerPlayer) player);
     }
 
     private static void statusEffect(DamageType type, Player attacker, LivingEntity target, float finalDamage) {

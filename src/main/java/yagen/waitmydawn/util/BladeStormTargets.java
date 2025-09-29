@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
+import static yagen.waitmydawn.render.BladeStormRenderer.spawnDaggerAndStab;
+
 public class BladeStormTargets {
     private static final WeakHashMap<ServerPlayer, List<LivingEntity>> TARGETS = new WeakHashMap<>();
 
@@ -26,12 +28,12 @@ public class BladeStormTargets {
         if (list != null) list.forEach(e -> e.removeEffect(MobEffects.GLOWING));
     }
 
-    public static void sweep(ServerPlayer player) {
+    public static void execute(ServerPlayer player) {
         List<LivingEntity> list = TARGETS.remove(player);
         if (list == null) return;
         for (LivingEntity e : list) {
             if (e.isAlive() && e.level() == player.level()) {
-                player.attack(e);
+                spawnDaggerAndStab(player,e);
             }
             e.removeEffect(MobEffects.GLOWING);
         }

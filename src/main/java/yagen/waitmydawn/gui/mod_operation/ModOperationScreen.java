@@ -531,7 +531,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
 
     private void generateModSlots() {
         /*
-         Reset Per-Book info
+         Reset Mods of Item
          */
         for (ModSlotInfo s : modSlots)
             removeWidget(s.button);

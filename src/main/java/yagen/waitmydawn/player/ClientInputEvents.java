@@ -100,32 +100,34 @@ public class ClientInputEvents {
 
         abilityIndex = Math.min(ability.length, abilityIndex);
 
-        for (int abilityStateIndex = 1;
-             abilityStateIndex <= abilityIndex;
+        for (int abilityStateIndex = 0;
+             abilityStateIndex < abilityIndex;
              abilityStateIndex++) {
             boolean isBladeStormEffect = false;
             if (player.hasEffect(MobEffectRegistry.BLADE_STORM))
                 isBladeStormEffect = true;
             if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[0] <= 0 && isAbility) {
-                switch (ability[abilityStateIndex - 1]) {
+                switch (ability[abilityStateIndex]) {
                     case "nourish_armor_mod": {
                         PacketDistributor.sendToServer(new AddNourishEffectPacket(BASIC_NOURISH_DURATION));
-                        abilityCooldown[abilityStateIndex - 1] = NOURISH_COOLDOWN;
+                        abilityCooldown[abilityStateIndex] = NOURISH_COOLDOWN;
                     }
                     case "blade_storm_armor_mod": {
-                        PacketDistributor.sendToServer(new AddBladeStormEffectPacket(BASIC_BLADE_STORM_DURATION));
-                        abilityCooldown[abilityStateIndex - 1] = BLADE_STORM_COOLDOWN;
+                        if(!isBladeStormEffect){
+                            PacketDistributor.sendToServer(new AddBladeStormEffectPacket(BASIC_BLADE_STORM_DURATION));
+                            abilityCooldown[abilityStateIndex] = BLADE_STORM_COOLDOWN;
+                        }
                     }
                 }
             } else if (abilityStates[abilityStateIndex].wasPressed()
-                    && abilityCooldown[abilityStateIndex - 1] > 0
+                    && abilityCooldown[abilityStateIndex] > 0
             && !isBladeStormEffect) {
                 player.sendSystemMessage(
                         Component.translatable("overlay.yagens_attributes.ability_cooldown",
                                 abilityStateIndex,
-                                Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex - 1]),
-                                abilityCooldown[abilityStateIndex - 1] / 20));
+                                Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
+                                abilityCooldown[abilityStateIndex] / 20));
             }
         }
 
@@ -149,10 +151,10 @@ public class ClientInputEvents {
     private static int[] abilityCooldown = {0, 0};
 
     private static final int BASIC_NOURISH_DURATION = 600;
-    private static final int BASIC_BLADE_STORM_DURATION = 60;
+    private static final int BASIC_BLADE_STORM_DURATION = 80;
 
     private static final int NOURISH_COOLDOWN = 900;
-    private static final int BLADE_STORM_COOLDOWN = 1200;
+    private static final int BLADE_STORM_COOLDOWN = 85;
 
     private static void update() {
         for (KeyState k : KEY_STATES) {

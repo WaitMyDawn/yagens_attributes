@@ -30,6 +30,12 @@ public class NetworkHandler {
         );
 
         registrar.playToServer(
+                AddBladeStormEffectPacket.TYPE,
+                AddBladeStormEffectPacket.STREAM_CODEC,
+                AddBladeStormEffectPacket::handle
+        );
+
+        registrar.playToServer(
                 SendBladeStormTargetPacket.TYPE,
                 SendBladeStormTargetPacket.STREAM_CODEC,
                 SendBladeStormTargetPacket::handle

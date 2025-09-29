@@ -1,16 +1,6 @@
 package yagen.waitmydawn.player;
 
-import net.minecraft.world.phys.Vec2;
-import org.apache.commons.compress.utils.Lists;
-
-import java.util.List;
-
 public class ClientRenderCache {
-
-    /**
-     * MOD BAR RENDER CACHING
-     *************************/
-    public static List<Vec2> relativeModBarSlotLocations = Lists.newArrayList();
 
     public static int[] getRowCounts(int modCount) {
         return new int[]{
@@ -20,9 +10,6 @@ public class ClientRenderCache {
                 MOD_LAYOUT[modCount - 1][3]};
     }
 
-    /**
-     * HELPER
-     *************************/
     public static final int[][] MOD_LAYOUT = {
             {1, 0, 0, 0}, //1
             {2, 0, 0, 0}, //2
