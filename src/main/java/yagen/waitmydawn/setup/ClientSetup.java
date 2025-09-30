@@ -1,6 +1,7 @@
 package yagen.waitmydawn.setup;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.NoneMod;
 import yagen.waitmydawn.api.registry.ModRegistry;
@@ -12,6 +13,7 @@ import yagen.waitmydawn.render.ModModel;
 import yagen.waitmydawn.render.ModOperationRenderer;
 import yagen.waitmydawn.util.IMinecraftInstanceHelper;
 import yagen.waitmydawn.util.MinecraftInstanceHelper;
+import yagen.waitmydawn.render.BladeEntityRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -53,6 +55,7 @@ public class ClientSetup {
                     return Minecraft.getInstance().player;
                 }
             };
+            EntityRenderers.register(EntityRegistry.DAGGER.get(), BladeEntityRenderer::new);
         });
         e.enqueueWork(ClientSetup::init);
     }

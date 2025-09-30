@@ -52,6 +52,7 @@ public class YagensAttributes {
         LootRegistry.register(modEventBus);
         DataAttachmentRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
+        EntityRegistry.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(AttackEventHandler.class);
         NeoForge.EVENT_BUS.register(TooltipsUtils.class);
