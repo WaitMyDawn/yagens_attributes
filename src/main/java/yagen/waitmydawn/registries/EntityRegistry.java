@@ -23,7 +23,7 @@ public class EntityRegistry {
             ENTITIES.register("blade_entity",
                     () -> EntityType.Builder.<BladeEntity>of(
                                     BladeEntity::new, MobCategory.MISC)
-                            .sized(1F, 1F)
+                            .sized(0.25F, 0.25F)
                             .clientTrackingRange(32)
                             .updateInterval(1)
                             .build("blade_entity"));

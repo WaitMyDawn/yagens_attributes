@@ -23,6 +23,7 @@ import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
+import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.loot.*;
 import yagen.waitmydawn.registries.BlockRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
@@ -774,6 +775,89 @@ public class LootTableGenerator {
                             )
             );
 
+            /**
+             * gameplay
+             */
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "gameplay/additional_gameplay_sniffer_digging_loot")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
+            );
+
+            /**
+             * archaeology
+             */
+//            consumer.accept(
+//                    ResourceKey.create(
+//                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+//                                    "archaeology/additional_archaeology_desert_pyramid_loot")),
+//                    LootTable.lootTable()
+//                            .withPool(LootPool.lootPool()
+//                                    .setRolls(ConstantValue.exactly(1))
+//                                    .add(
+//                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+//                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.15f)))
+//            );
+//            consumer.accept(
+//                    ResourceKey.create(
+//                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+//                                    "archaeology/additional_archaeology_ocean_ruin_cold_loot")),
+//                    LootTable.lootTable()
+//                            .withPool(LootPool.lootPool()
+//                                    .setRolls(ConstantValue.exactly(1))
+//                                    .add(
+//                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+//                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
+//            );
+//            consumer.accept(
+//                    ResourceKey.create(
+//                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+//                                    "archaeology/additional_archaeology_ocean_ruin_warm_loot")),
+//                    LootTable.lootTable()
+//                            .withPool(LootPool.lootPool()
+//                                    .setRolls(ConstantValue.exactly(1))
+//                                    .add(
+//                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+//                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
+//            );
+//            consumer.accept(
+//                    ResourceKey.create(
+//                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+//                                    "archaeology/additional_archaeology_trail_ruins_common_loot")),
+//                    LootTable.lootTable()
+//                            .withPool(LootPool.lootPool()
+//                                    .setRolls(ConstantValue.exactly(1))
+//                                    .add(
+//                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+//                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
+//            );
+//            consumer.accept(
+//                    ResourceKey.create(
+//                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+//                                    "archaeology/additional_archaeology_trail_ruins_rare_loot")),
+//                    LootTable.lootTable()
+//                            .withPool(LootPool.lootPool()
+//                                    .setRolls(ConstantValue.exactly(1))
+//                                    .add(
+//                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+//                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+//                                    .when(LootItemRandomChanceCondition.randomChance(0.2f)))
+//            );
+
+            /**
+             * accept for groups
+             */
             acceptAllDungeonsArise(consumer);
             acceptAllTwilightforest(consumer);
             // override
@@ -1041,6 +1125,24 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
                                                     .apply(RandomizeModFunction.builder(30, 30, 20, 0, 20, 70))))
+            );
+
+            // dark_doppelganger
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "entities/additional_dark_doppelganger_loot")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(24, 84)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100))))
             );
         }
     }
@@ -1345,10 +1447,64 @@ public class LootTableGenerator {
                     ));
 
             /**
-             * dungeons_arise
+             * archaeology
+             */
+//            this.add("append_to_archaeology_desert_pyramid",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:archaeology/desert_pyramid")).build()
+//                            },
+//                            "yagens_attributes:archaeology/additional_archaeology_desert_pyramid_loot"
+//                    ));
+//            this.add("append_to_archaeology_ocean_ruin_cold",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:archaeology/ocean_ruin_cold")).build()
+//                            },
+//                            "yagens_attributes:archaeology/additional_archaeology_ocean_ruin_cold_loot"
+//                    ));
+//            this.add("append_to_archaeology_ocean_ruin_warm",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:archaeology/ocean_ruin_warm")).build()
+//                            },
+//                            "yagens_attributes:archaeology/additional_archaeology_ocean_ruin_warm_loot"
+//                    ));
+//            this.add("append_to_archaeology_trail_ruins_common",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:archaeology/trail_ruins_common")).build()
+//                            },
+//                            "yagens_attributes:archaeology/additional_archaeology_trail_ruins_common_loot"
+//                    ));
+//            this.add("append_to_archaeology_trail_ruins_rare",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:archaeology/trail_ruins_rare")).build()
+//                            },
+//                            "yagens_attributes:archaeology/additional_archaeology_trail_ruins_rare_loot"
+//                    ));
+            this.add("append_to_gameplay_sniffer_digging",
+                    new AppendLootModifier(
+                            new LootItemCondition[]{
+                                    new LootTableIdCondition.Builder(ResourceLocation.parse("minecraft:gameplay/sniffer_digging")).build()
+                            },
+                            "yagens_attributes:gameplay/additional_gameplay_sniffer_digging_loot"
+                    ));
+
+            /**
+             * register for groups
              */
             registerAllDungeonsArise(this);
             registerAllTwilightforest(this);
+
+            this.add("append_to_dark_doppelganger",
+                    new AppendLootModifier(
+                            new LootItemCondition[]{
+                                    new LootTableIdCondition.Builder(ResourceLocation.parse("darkdoppelganger:entities/dark_doppelganger")).build()
+                            },
+                            "yagens_attributes:entities/additional_dark_doppelganger_loot"
+                    ));
         }
 
     }

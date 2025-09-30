@@ -41,6 +41,7 @@
     "yagens_attributes:append_to_warden",
     "yagens_attributes:append_to_wither",
     "yagens_attributes:append_to_ender_dragon",
+    "yagens_attributes:append_to_gameplay_sniffer_digging",
     "yagens_attributes:append_to_mines_treasure_big",
     "yagens_attributes:append_to_mines_treasure_medium",
     "yagens_attributes:append_to_mines_treasure_small",
@@ -191,7 +192,6 @@
     "yagens_attributes:append_to_infested_temple_infested_temple_normal",
     "yagens_attributes:append_to_infested_temple_infested_temple_ominous",
     "yagens_attributes:append_to_kisegi_sanctuary_kisegi_sanctuary_ominous",
-    "yagens_attributes:append_to_common_common_archeology",
     "yagens_attributes:append_to_kisegi_sanctuary_kisegi_sanctuary_archeology",
     "yagens_attributes:append_to_aurora_cache",
     "yagens_attributes:append_to_aurora_room",
@@ -283,7 +283,8 @@
     "yagens_attributes:append_to_knight_phantom",
     "yagens_attributes:append_to_ur_ghast",
     "yagens_attributes:append_to_alpha_yeti",
-    "yagens_attributes:append_to_snow_queen"
+    "yagens_attributes:append_to_snow_queen",
+    "yagens_attributes:append_to_dark_doppelganger"
   ],
   "replace": false
 }

@@ -5,7 +5,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -77,7 +76,4 @@ public class PlayerInteractionEvent {
         if (food == null) return;
         addNourishCount(player, Math.min(NOURISH_NEED, getNourishCount(player) + food.nutrition() * food.saturation()));
     }
-
-//    @SubscribeEvent
-//    public static void getBladeStormTargets(PlayerInteractEvent.RightClickItem event) {}
 }

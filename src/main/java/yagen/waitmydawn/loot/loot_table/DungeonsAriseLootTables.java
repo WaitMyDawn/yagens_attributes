@@ -242,7 +242,6 @@ public class DungeonsAriseLootTables {
     );
 
     public static final List<String> ARCHEOLOGY_LOOT_TABLES = List.of(
-            "common/common_archeology",
             "kisegi_sanctuary/kisegi_sanctuary_archeology"
     );
 }

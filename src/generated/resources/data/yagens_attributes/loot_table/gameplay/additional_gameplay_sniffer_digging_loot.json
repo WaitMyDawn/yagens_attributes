@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.1,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "yagens_attributes:rarity_mod",
+              "level_percent_sup": 100,
+              "rarity": 5
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "yagens_attributes:gameplay/additional_gameplay_sniffer_digging_loot"
+}

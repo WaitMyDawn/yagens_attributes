@@ -11,8 +11,8 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
+                "max": 84.0,
+                "min": 24.0
               },
               "function": "minecraft:set_count"
             }
@@ -24,18 +24,14 @@
     },
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "chance": 0.5,
-          "condition": "minecraft:random_chance"
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "yagens_attributes:randomize_mod"
+              "function": "yagens_attributes:rarity_mod",
+              "level_percent_sup": 100,
+              "rarity": 5
             }
           ],
           "name": "yagens_attributes:mod"
@@ -44,5 +40,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "yagens_attributes:archeology/dungeons_arise_additional_common_common_archeology"
+  "random_sequence": "yagens_attributes:entities/additional_dark_doppelganger_loot"
 }
