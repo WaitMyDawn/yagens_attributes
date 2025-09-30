@@ -115,17 +115,19 @@ public class ClientInputEvents {
             if (player.hasEffect(MobEffectRegistry.BLADE_STORM) && ability[abilityStateIndex].equals("blade_storm_armor_mod"))
                 isBladeStormEffect = true;
             if (abilityStates[abilityStateIndex].wasPressed()
-                    && abilityCooldown[0] <= 0 && isAbility) {
+                    && abilityCooldown[abilityStateIndex] <= 0 && isAbility) {
                 switch (ability[abilityStateIndex]) {
                     case "nourish_armor_mod": {
                         PacketDistributor.sendToServer(new AddNourishEffectPacket(BASIC_NOURISH_DURATION));
                         abilityCooldown[abilityStateIndex] = NOURISH_COOLDOWN;
+                        break;
                     }
                     case "blade_storm_armor_mod": {
                         if (!isBladeStormEffect) {
                             PacketDistributor.sendToServer(new AddBladeStormEffectPacket(BASIC_BLADE_STORM_DURATION));
                             abilityCooldown[abilityStateIndex] = BLADE_STORM_COOLDOWN;
                         }
+                        break;
                     }
                 }
             } else if (abilityStates[abilityStateIndex].wasPressed()

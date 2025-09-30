@@ -47,7 +47,7 @@ public class BladeEntity extends ThrowableProjectile {
         if (getOwner() instanceof ServerPlayer player &&
                 result.getEntity() instanceof LivingEntity target &&
                 target.isAlive()) {
-            target.hurt(player.damageSources().playerAttack(player), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            target.hurt(player.damageSources().playerAttack(player), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.8f);
 //            player.attack(target); // useful for first BladeEntity, the others make empty hand damages
 //            player.resetAttackStrengthTicker(); // useless
         }
