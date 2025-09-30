@@ -40,6 +40,7 @@ public class NetworkHandler {
                 SendBladeStormTargetPacket.STREAM_CODEC,
                 SendBladeStormTargetPacket::handle
         );
+
         registrar.playToServer(
                 ExecuteBladeStormPacket.TYPE,
                 ExecuteBladeStormPacket.STREAM_CODEC,

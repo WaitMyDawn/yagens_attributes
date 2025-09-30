@@ -3,8 +3,10 @@ package yagen.waitmydawn.entity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -45,7 +47,9 @@ public class BladeEntity extends ThrowableProjectile {
         if (getOwner() instanceof ServerPlayer player &&
                 result.getEntity() instanceof LivingEntity target &&
                 target.isAlive()) {
-            player.attack(target);
+            target.hurt(player.damageSources().playerAttack(player), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE));
+//            player.attack(target); // useful for first BladeEntity, the others make empty hand damages
+//            player.resetAttackStrengthTicker(); // useless
         }
         this.discard();
     }

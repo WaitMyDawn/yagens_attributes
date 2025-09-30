@@ -82,6 +82,8 @@
   "warframe.yagens_attributes.nourish_armor_mod.1": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
   "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的饮食速度加快",
   "warframe.yagens_attributes.nourish_armor_mod.3": "以上增幅受到效果持续时间内食物摄取量的影响",
+  "warframe.yagens_attributes.blade_storm_armor_mod.1": "效果持续时间内，你可以右键选取范围内的目标，在效果结束后对目标进行处刑",
+  "warframe.yagens_attributes.blade_storm_armor_mod.2": "你可以再次激活该天赋来提前处刑",
   "warframe.yagens_attributes.collaborative_proficiency_armor_mod.1": "箭命中时有50%%概率增加连击数",
 
   "key.yagens_attributes.group_1": "Yagen的属性 通用",

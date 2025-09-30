@@ -22,8 +22,7 @@ public class BladeStormArmorMod extends AbstractMod {
         return List.of(
                 Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
                 Component.translatable("warframe.yagens_attributes.blade_storm_armor_mod.1"),
-                Component.translatable("warframe.yagens_attributes.blade_storm_armor_mod.2"),
-                Component.translatable("warframe.yagens_attributes.blade_storm_armor_mod.3")
+                Component.translatable("warframe.yagens_attributes.blade_storm_armor_mod.2")
         );
     }
 

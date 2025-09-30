@@ -13,11 +13,13 @@ import yagen.waitmydawn.util.BladeStormTargets;
 
 public class ExecuteBladeStormPacket implements CustomPacketPayload {
 
+    public static final ExecuteBladeStormPacket INSTANCE = new ExecuteBladeStormPacket();
+
     public static final Type<ExecuteBladeStormPacket> TYPE =
-            new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "blade_storm_sweep"));
+            new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "execute_blade_storm"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ExecuteBladeStormPacket> STREAM_CODEC =
-            StreamCodec.unit(new ExecuteBladeStormPacket());
+            StreamCodec.unit(INSTANCE);
 
     public static void handle(ExecuteBladeStormPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
@@ -26,6 +28,21 @@ public class ExecuteBladeStormPacket implements CustomPacketPayload {
 
             BladeStormTargets.execute(sp);
             sp.removeEffect(MobEffectRegistry.BLADE_STORM);
+
+//            try {
+//                ServerPlayer sp = (ServerPlayer) ctx.player();
+//                if (sp == null) return;
+//
+//                if (!sp.hasEffect(MobEffectRegistry.BLADE_STORM)) {
+//                    return;
+//                }
+//
+//                BladeStormTargets.execute(sp);
+//                sp.removeEffect(MobEffectRegistry.BLADE_STORM);
+//
+//            } catch (Exception e) {
+//                YagensAttributes.LOGGER.error("ExecuteBladeStormPacket Error: ", e);
+//            }
         });
     }
 

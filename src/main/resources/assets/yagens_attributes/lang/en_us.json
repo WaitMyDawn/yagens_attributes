@@ -82,6 +82,8 @@
   "warframe.yagens_attributes.nourish_armor_mod.1": "During the duration of the effect, your attack damage increases and will definitely status Virus.",
   "warframe.yagens_attributes.nourish_armor_mod.2": "During the duration of the effect, your eating speed will increase.",
   "warframe.yagens_attributes.nourish_armor_mod.3": "The above increase was influenced by the amount of food consumed during the duration of the effect.",
+  "warframe.yagens_attributes.blade_storm_armor_mod.1": "During the duration of the effect, you can Right Click to select target in the range. The targets will be executed at the end.",
+  "warframe.yagens_attributes.blade_storm_armor_mod.2": "You can reactive this Ability to execute targets in advance.",
   "warframe.yagens_attributes.collaborative_proficiency_armor_mod.1": "Add combo count with 50%% chance when arrow hits",
 
   "key.yagens_attributes.group_1": "Yagen's Attributes-General'",

@@ -30,7 +30,6 @@ public record SendBladeStormTargetPacket(int targetId) implements CustomPacketPa
                     living.level() == sp.level() &&
                     sp.distanceTo(living) <= 20) {
                 BladeStormTargets.add(sp, living);
-                sp.displayClientMessage(Component.literal("Locked"), true);
             }
         });
     }

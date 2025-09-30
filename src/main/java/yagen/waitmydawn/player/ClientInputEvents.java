@@ -4,9 +4,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
@@ -23,11 +27,15 @@ import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.gui.ComboPositionScreen;
 import yagen.waitmydawn.network.AddBladeStormEffectPacket;
 import yagen.waitmydawn.network.AddNourishEffectPacket;
+import yagen.waitmydawn.network.ExecuteBladeStormPacket;
 import yagen.waitmydawn.network.SendBladeStormTargetPacket;
 import yagen.waitmydawn.registries.MobEffectRegistry;
+import yagen.waitmydawn.util.RayUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientInputEvents {
@@ -123,7 +131,7 @@ public class ClientInputEvents {
             } else if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[abilityStateIndex] > 0) {
                 if (isBladeStormEffect) {
-
+                    PacketDistributor.sendToServer(ExecuteBladeStormPacket.INSTANCE);
                 } else {
                     player.sendSystemMessage(
                             Component.translatable("overlay.yagens_attributes.ability_cooldown",
@@ -173,46 +181,42 @@ public class ClientInputEvents {
 
     private static final int MAX_BLADE_STORM_RANGE = 20;
 
-//    @SubscribeEvent
-//    public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
-//        if (event.isCanceled() || event.isAttack()) return;
-//        Minecraft instance = Minecraft.getInstance();
-//
-//        if (!instance.player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
-//
-//        if (instance.hitResult == null || instance.hitResult.getType() != HitResult.Type.ENTITY)
-//            return;
-//
-//        Entity target = ((EntityHitResult) instance.hitResult).getEntity();
-//        if (!(target instanceof LivingEntity living) || living == instance.player) return;
-//
-//        double dist = instance.player.distanceTo(target);
-//        if (dist > MAX_BLADE_STORM_RANGE) return;
-//
-//        PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
-//        event.setCanceled(true);
-//    }
-
     @SubscribeEvent
-    public static void getBladeStormTargets(ClientTickEvent.Post event) {
-
+    public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
+        if (event.isCanceled() || event.isAttack()) return;
         Minecraft instance = Minecraft.getInstance();
-        if (instance.player == null || instance.screen != null) return;
-        if (!instance.player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
+        Player player=instance.player;
 
-        while (instance.options.keyUse.consumeClick()) {
+        if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
 
-            HitResult hit = instance.hitResult;
-            if (hit == null || hit.getType() != HitResult.Type.ENTITY) continue;
+        LivingEntity target = RayUtils.getTargetedLiving(player, MAX_BLADE_STORM_RANGE);
 
-            Entity target = ((EntityHitResult) hit).getEntity();
-            if (!(target instanceof LivingEntity living) || living == instance.player) continue;
+        if (target == null || target == player) return;
 
-            if (instance.player.distanceTo(living) > MAX_BLADE_STORM_RANGE) continue;
+        if (player.distanceTo(target) > MAX_BLADE_STORM_RANGE) return;
 
-            PacketDistributor.sendToServer(new SendBladeStormTargetPacket(living.getId()));
-        }
+        PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
+        event.setCanceled(true);
     }
+
+//    @SubscribeEvent
+//    public static void getBladeStormTargets(ClientTickEvent.Post event) {
+//
+//        Minecraft instance = Minecraft.getInstance();
+//        Player player = instance.player;
+//        if (player == null || instance.screen != null) return;
+//        if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
+//
+//        if (instance.options.keyUse.isDown()) {
+//            LivingEntity target = RayUtils.getTargetedLiving(player, MAX_BLADE_STORM_RANGE);
+//
+//            if (target == null || target == player) return;
+//
+//            if (player.distanceTo(target) > MAX_BLADE_STORM_RANGE) return;
+//
+//            PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
+//        }
+//    }
 
     private static KeyState register(KeyMapping key) {
         var k = new KeyState(key);

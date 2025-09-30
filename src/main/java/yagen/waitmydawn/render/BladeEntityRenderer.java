@@ -37,7 +37,7 @@ public class BladeEntityRenderer extends EntityRenderer<BladeEntity> {
         float yRot = -(float) (Mth.atan2(motion.z, motion.x) * (180F / Math.PI));
         pose.mulPose(Axis.YP.rotationDegrees(yRot));
         pose.mulPose(Axis.XP.rotationDegrees(xRot));
-        pose.mulPose(Axis.ZP.rotationDegrees((entity.tickCount) * 40));
+        pose.mulPose(Axis.ZP.rotationDegrees((entity.tickCount) * 60));
 
         pose.scale(1.5F, 1.5F, 1.5F);
         itemRenderer.renderStatic(

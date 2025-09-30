@@ -14,19 +14,19 @@ public class BladeStormRenderer {
         Vec3 start = target.position()
                 .add(0, target.getBbHeight() * 1.5, 0)
                 .add(target.getLookAngle().scale(-1.5));
-        Vec3 end   = target.getBoundingBox().getCenter();
-        Vec3 vel   = end.subtract(start).normalize();
+        Vec3 end = target.getBoundingBox().getCenter();
+        Vec3 vel = end.subtract(start).normalize();
 
         level.sendParticles(ParticleTypes.LARGE_SMOKE,
-                start.x, start.y, start.z,
-                10,
+                start.x, start.y - target.getBbHeight() * 0.75, start.z,
+                20,
                 vel.x, vel.y, vel.z,
-                0.1);
+                0.05);
 
-        BladeEntity dagger = new BladeEntity(level, player);
-        dagger.moveTo(start.x, start.y, start.z);
-        dagger.shoot(vel.x, vel.y, vel.z, 0.15F, 0);
-        level.addFreshEntity(dagger);
+        BladeEntity blade = new BladeEntity(level, player);
+        blade.moveTo(start.x, start.y, start.z);
+        blade.shoot(vel.x, vel.y, vel.z, 0.3F, 0);
+        level.addFreshEntity(blade);
 
 
 //        int flightTicks = (int) (start.distanceTo(end) * 5);
