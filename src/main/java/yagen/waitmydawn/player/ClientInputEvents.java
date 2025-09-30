@@ -104,7 +104,7 @@ public class ClientInputEvents {
              abilityStateIndex < abilityIndex;
              abilityStateIndex++) {
             boolean isBladeStormEffect = false;
-            if (player.hasEffect(MobEffectRegistry.BLADE_STORM))
+            if (player.hasEffect(MobEffectRegistry.BLADE_STORM) && ability[abilityStateIndex].equals("blade_storm_armor_mod"))
                 isBladeStormEffect = true;
             if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[0] <= 0 && isAbility) {
@@ -114,20 +114,23 @@ public class ClientInputEvents {
                         abilityCooldown[abilityStateIndex] = NOURISH_COOLDOWN;
                     }
                     case "blade_storm_armor_mod": {
-                        if(!isBladeStormEffect){
+                        if (!isBladeStormEffect) {
                             PacketDistributor.sendToServer(new AddBladeStormEffectPacket(BASIC_BLADE_STORM_DURATION));
                             abilityCooldown[abilityStateIndex] = BLADE_STORM_COOLDOWN;
                         }
                     }
                 }
             } else if (abilityStates[abilityStateIndex].wasPressed()
-                    && abilityCooldown[abilityStateIndex] > 0
-            && !isBladeStormEffect) {
-                player.sendSystemMessage(
-                        Component.translatable("overlay.yagens_attributes.ability_cooldown",
-                                abilityStateIndex,
-                                Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
-                                abilityCooldown[abilityStateIndex] / 20));
+                    && abilityCooldown[abilityStateIndex] > 0) {
+                if (isBladeStormEffect) {
+
+                } else {
+                    player.sendSystemMessage(
+                            Component.translatable("overlay.yagens_attributes.ability_cooldown",
+                                    abilityStateIndex,
+                                    Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
+                                    abilityCooldown[abilityStateIndex] / 20));
+                }
             }
         }
 
@@ -170,23 +173,45 @@ public class ClientInputEvents {
 
     private static final int MAX_BLADE_STORM_RANGE = 20;
 
+//    @SubscribeEvent
+//    public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
+//        if (event.isCanceled() || event.isAttack()) return;
+//        Minecraft instance = Minecraft.getInstance();
+//
+//        if (!instance.player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
+//
+//        if (instance.hitResult == null || instance.hitResult.getType() != HitResult.Type.ENTITY)
+//            return;
+//
+//        Entity target = ((EntityHitResult) instance.hitResult).getEntity();
+//        if (!(target instanceof LivingEntity living) || living == instance.player) return;
+//
+//        double dist = instance.player.distanceTo(target);
+//        if (dist > MAX_BLADE_STORM_RANGE) return;
+//
+//        PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
+//        event.setCanceled(true);
+//    }
+
     @SubscribeEvent
-    public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
-        if (event.isCanceled() || event.isAttack()) return;
+    public static void getBladeStormTargets(ClientTickEvent.Post event) {
+
         Minecraft instance = Minecraft.getInstance();
-        if (instance.hitResult == null || instance.hitResult.getType() != HitResult.Type.ENTITY)
-            return;
-
-        Entity target = ((EntityHitResult) instance.hitResult).getEntity();
-        if (!(target instanceof LivingEntity living) || living == instance.player) return;
-
-        double dist = instance.player.distanceTo(target);
-        if (dist > MAX_BLADE_STORM_RANGE) return;
-
+        if (instance.player == null || instance.screen != null) return;
         if (!instance.player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
 
-        PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
-        event.setCanceled(true);
+        while (instance.options.keyUse.consumeClick()) {
+
+            HitResult hit = instance.hitResult;
+            if (hit == null || hit.getType() != HitResult.Type.ENTITY) continue;
+
+            Entity target = ((EntityHitResult) hit).getEntity();
+            if (!(target instanceof LivingEntity living) || living == instance.player) continue;
+
+            if (instance.player.distanceTo(living) > MAX_BLADE_STORM_RANGE) continue;
+
+            PacketDistributor.sendToServer(new SendBladeStormTargetPacket(living.getId()));
+        }
     }
 
     private static KeyState register(KeyMapping key) {

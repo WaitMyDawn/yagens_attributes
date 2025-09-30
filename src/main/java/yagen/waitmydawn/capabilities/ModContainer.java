@@ -76,7 +76,6 @@ public class ModContainer implements IModContainer {
         return hash;
     }
 
-    /* 新增：最终伤害组成 */
     public Map<DamageType, Float> damageProfile = new EnumMap<>(DamageType.class);
 
     @Override
@@ -90,7 +89,6 @@ public class ModContainer implements IModContainer {
         damageProfile.putAll(map);
     }
 
-    /* 新增字段 */
     public ComponentRegistry.AttributeProfile attributeProfile =
             new ComponentRegistry.AttributeProfile(Map.of());
 
@@ -131,7 +129,7 @@ public class ModContainer implements IModContainer {
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(IModContainer::mustEquip),
             Codec.BOOL.optionalFieldOf(IMPROVED, false).forGetter(IModContainer::isImproved),
             Codec.list(MOD_SLOT_CODEC).fieldOf(MOD_DATA).forGetter(IModContainer::getActiveMods),
-            /* 新增 ↓ */
+
             Codec.unboundedMap(DamageType.CODEC, Codec.FLOAT)
                     .optionalFieldOf("damage_profile", Map.of())
                     .forGetter(IModContainer::getDamageProfile),
@@ -166,7 +164,7 @@ public class ModContainer implements IModContainer {
             ModData.writeToBuffer(buf, mod.modData());
             buf.writeInt(mod.index());
         }
-        /* 新增 ↓ */
+
         var dmg = container.getDamageProfile();
         buf.writeInt(dmg.size());
         dmg.forEach((type, val) -> {
@@ -199,7 +197,7 @@ public class ModContainer implements IModContainer {
             container.slots[mod.index()] = mod;
         }
         container.activeSlots = i;
-        /* 新增 ↓ */
+
         int dmgCnt = buf.readInt();
         Map<DamageType, Float> dmg = new EnumMap<>(DamageType.class);
         for (int k = 0; k < dmgCnt; k++) {

@@ -43,7 +43,6 @@ public final class RivenMod extends AbstractMod {
         IModContainer container = IModContainer.get(stack);
         for (ModSlot slot : container.getActiveMods()) {
             if (slot.getMod() instanceof RivenMod) {
-                /* 读原始数据 */
                 ComponentRegistry.RivenRawInfoList raw =
                         stack.get(ComponentRegistry.RIVEN_RAW_INFO.get());
                 if (raw != null) {

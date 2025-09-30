@@ -3,6 +3,7 @@ package yagen.waitmydawn.api.mods;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import yagen.waitmydawn.api.item.FormaType;
 
 public enum ModRarity {
     COMMON(0),
@@ -24,6 +25,13 @@ public enum ModRarity {
 
     public MutableComponent getDisplayName() {
         return DISPLAYS[getValue()];
+    }
+
+    public static ModRarity fromInteger(Integer integer) {
+        for (ModRarity t : values()) {
+            if (t.getValue()==integer) return t;
+        }
+        throw new IllegalArgumentException("Unknown ModRarity: " + integer);
     }
 
     public int compareRarity(ModRarity other) {

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
-import static yagen.waitmydawn.render.BladeStormRenderer.spawnDaggerAndStab;
+import static yagen.waitmydawn.render.BladeStormRenderer.spawnBlade;
 
 public class BladeStormTargets {
     private static final WeakHashMap<ServerPlayer, List<LivingEntity>> TARGETS = new WeakHashMap<>();
@@ -33,7 +33,7 @@ public class BladeStormTargets {
         if (list == null) return;
         for (LivingEntity e : list) {
             if (e.isAlive() && e.level() == player.level()) {
-                spawnDaggerAndStab(player,e);
+                spawnBlade(player,e);
             }
             e.removeEffect(MobEffects.GLOWING);
         }

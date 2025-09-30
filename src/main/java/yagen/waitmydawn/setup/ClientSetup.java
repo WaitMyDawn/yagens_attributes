@@ -55,7 +55,7 @@ public class ClientSetup {
                     return Minecraft.getInstance().player;
                 }
             };
-            EntityRenderers.register(EntityRegistry.DAGGER.get(), BladeEntityRenderer::new);
+            EntityRenderers.register(EntityRegistry.BLADE.get(), BladeEntityRenderer::new);
         });
         e.enqueueWork(ClientSetup::init);
     }

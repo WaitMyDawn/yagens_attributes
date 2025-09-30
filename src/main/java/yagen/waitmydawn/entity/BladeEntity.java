@@ -7,7 +7,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,7 +24,7 @@ public class BladeEntity extends ThrowableProjectile {
     private static final ItemStack DEFAULT = new ItemStack(ItemRegistry.BLADE.get());
 
     public BladeEntity(Level lvl, LivingEntity shooter) {
-        super(EntityRegistry.DAGGER.get(), shooter, lvl);
+        super(EntityRegistry.BLADE.get(), shooter, lvl);
         this.entityData.set(DATA_ITEM, DEFAULT.copy());
     }
 

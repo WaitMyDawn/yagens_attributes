@@ -1,8 +1,5 @@
 package yagen.waitmydawn.api.mods;
 
-/**
- * (Spell Data + Index) for serialization
- */
 public record ModSlot(ModData modData, int index) {
 
     public AbstractMod getMod() {
