@@ -11,12 +11,6 @@ public class ItemStackMixin {
         Item item = ((ItemStack) (Object) this).getItem();
         if (item == Items.TOTEM_OF_UNDYING) {
             return 16;
-        } else if (item == Items.MILK_BUCKET) {
-            return 16;
-        } else if (item == Items.POTION || item == Items.SPLASH_POTION || item == Items.LINGERING_POTION) {
-            return 64;
-        } else if (item == Items.ENCHANTED_BOOK) {
-            return 64;
         }
         return item.getDefaultMaxStackSize();
     }

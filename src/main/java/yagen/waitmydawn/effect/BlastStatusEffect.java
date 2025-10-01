@@ -14,15 +14,26 @@ public class BlastStatusEffect extends MobEffect {
     @Override
     public void onEffectAdded(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
+    }
+
+    @Override
+    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+        if (pLivingEntity.level().isClientSide) return true;
+
         pLivingEntity.level().explode(
                 null,
-                pLivingEntity.getX(), pLivingEntity.getY(), pLivingEntity.getZ(),
+                pLivingEntity.getX(),
+                pLivingEntity.getY(),
+                pLivingEntity.getZ(),
                 pAmplifier,
                 Level.ExplosionInteraction.NONE
         );
-    }
-    @Override
-    public boolean isInstantenous() {
         return true;
     }
+
+    @Override
+    public boolean shouldApplyEffectTickThisTick(int pDuration, int pAmplifier) {
+        return pDuration <= 1 || pDuration % 20 == 0;
+    }
+
 }

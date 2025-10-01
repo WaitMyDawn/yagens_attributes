@@ -1,7 +1,7 @@
 package yagen.waitmydawn.api.events;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,12 +24,13 @@ public class XpChangeEvent {
 
         List<ItemStack> stacks = new ArrayList<>();
         for (ItemStack s : List.of(player.getMainHandItem(), player.getOffhandItem())) {
-            if (!s.isEmpty() && IModContainer.isModContainer(s)) stacks.add(s);
-        }
-        player.getArmorSlots().forEach(s -> {
             if (!s.isEmpty() && IModContainer.isModContainer(s) && !s.is(ItemRegistry.MOD)) stacks.add(s);
-        });
-        gained = (int) Math.ceil((float) gained / stacks.size() - 0.2f);
+        }
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+//        player.getArmorSlots().forEach(s -> {
+        if (!chest.isEmpty() && IModContainer.isModContainer(chest) && !chest.is(ItemRegistry.MOD)) stacks.add(chest);
+//        });
+        gained = (int) Math.ceil((float) gained / stacks.size());
         if (gained <= 0) return;
 
         ComponentRegistry.UpgradeData data;

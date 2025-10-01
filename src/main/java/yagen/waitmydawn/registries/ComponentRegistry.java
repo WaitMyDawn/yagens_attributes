@@ -1,20 +1,12 @@
 package yagen.waitmydawn.registries;
 
 import com.mojang.serialization.Codec;
-//import yagen.waitmydawn.YagensAttributes;
-//import yagen.waitmydawn.api.item.UpgradeData;
-//import yagen.waitmydawn.api.item.WaywardCompassData;
-//import yagen.waitmydawn.api.item.curios.AffinityData;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
@@ -22,16 +14,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import yagen.waitmydawn.api.attribute.DamageType;
 import yagen.waitmydawn.api.mods.IModContainer;
-//import yagen.waitmydawn.capabilities.magic.ModContainer;
-//import yagen.waitmydawn.fluids.PotionFluid;
-//import yagen.waitmydawn.item.FurledMapItem;
-//import yagen.waitmydawn.item.armor.UpgradeOrbType;
-//import yagen.waitmydawn.item.weapons.AutoloaderCrossbow;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.Unit;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -136,9 +122,9 @@ public class ComponentRegistry {
     }
 
     public record UpgradeData(
-            int exp,           // 当前经验
-            int polarity,      // 极化次数
-            int level          // 当前等级
+            int exp,
+            int polarity,
+            int level
     ) {
         public static final Codec<UpgradeData> CODEC = RecordCodecBuilder.create(
                 b -> b.group(
@@ -156,7 +142,6 @@ public class ComponentRegistry {
                         UpgradeData::new
                 );
 
-        /* 工具方法：新建 / 增量 */
         public UpgradeData withExp(int delta) {
             return new UpgradeData(exp + delta, polarity, level);
         }
@@ -183,7 +168,7 @@ public class ComponentRegistry {
 
         public static final StreamCodec<ByteBuf, StringListData> STREAM_CODEC =
                 StreamCodec.composite(
-                        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), // 不定长 String List
+                        ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
                         StringListData::strings,
                         StringListData::new
                 );
@@ -199,40 +184,10 @@ public class ComponentRegistry {
         }
     }
 
-//    /* ====== 新增：运行时词条列表 ====== */
-//    /* 新增：用字符串保存文本组件 */
-//    public record UniqueInfoList(List<MutableComponent> components) {
-//
-//        /* 只存取纯文本内容 */
-//        private static final Codec<MutableComponent> COMP_CODEC =
-//                Codec.STRING.xmap(
-//                        Component::literal,        // 读：String -> MutableComponent
-//                        comp -> comp.getString()   // 写：MutableComponent -> String
-//                );
-//
-//        public static final Codec<UniqueInfoList> CODEC =
-//                COMP_CODEC.listOf().xmap(UniqueInfoList::new, UniqueInfoList::components);
-//
-//        public static final StreamCodec<FriendlyByteBuf, UniqueInfoList> STREAM_CODEC =
-//                StreamCodec.of(
-//                        (buf, list) -> {
-//                            buf.writeInt(list.components.size());
-//                            list.components.forEach(c -> buf.writeUtf(c.getString()));
-//                        },
-//                        buf -> {
-//                            int n = buf.readInt();
-//                            List<MutableComponent> list = new ArrayList<>(n);
-//                            for (int i = 0; i < n; i++) {
-//                                list.add(Component.literal(buf.readUtf()));
-//                            }
-//                            return new UniqueInfoList(list);
-//                        }
-//                );
-//    }
-
     public record RivenRawInfoList(List<RivenRawInfo> raw) {
-        /* 只存 key + baseValue 两字段 */
-        public record RivenRawInfo(String key, double base) {}
+
+        public record RivenRawInfo(String key, double base) {
+        }
 
         private static final Codec<RivenRawInfo> RAW_CODEC =
                 RecordCodecBuilder.create(b -> b.group(
@@ -317,7 +272,7 @@ public class ComponentRegistry {
                     buf -> BuiltInRegistries.ITEM.byId(buf.readVarInt())
             ))
             .cacheEncoding());
-//    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UniqueInfoList>>
+    //    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UniqueInfoList>>
 //            UNIQUE_INFO_LIST = register("unique_info_list", b -> b
 //            .persistent(UniqueInfoList.CODEC)
 //            .networkSynchronized(UniqueInfoList.STREAM_CODEC)
