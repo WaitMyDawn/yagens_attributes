@@ -1,21 +1,33 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static yagen.waitmydawn.api.attribute.DefaultItemAttributes.DEFAULTS;
 import static yagen.waitmydawn.effect.NourishEffect.*;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
@@ -75,5 +87,33 @@ public class PlayerInteractionEvent {
         FoodProperties food = itemStack.get(DataComponents.FOOD);
         if (food == null) return;
         addNourishCount(player, Math.min(NOURISH_NEED, getNourishCount(player) + food.nutrition() * food.saturation()));
+    }
+
+    @SubscribeEvent
+    public static void modifierHandlerAfterCraft(PlayerEvent.ItemCraftedEvent event) {
+        ItemStack result = event.getCrafting();
+        if (!(result.getItem() instanceof BowItem)) return;
+
+        CustomData old = result.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag tag = old.copyTag();
+        if (tag.contains("yagens_attributes_default_applied")) {
+            var map = DEFAULTS.get(result.getItem());
+            if (map == null) return;
+
+            var existing = result.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+
+            Set<ResourceLocation> ourKeys = map.keySet().stream()
+                    .map(BuiltInRegistries.ATTRIBUTE::getKey)
+                    .map(key -> ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "default_" + key.getPath()))
+                    .collect(Collectors.toSet());
+
+            final ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+            existing.modifiers().stream().filter(e -> !ourKeys.contains(e.modifier().id()))
+                    .forEach(e -> builder.add(e.attribute(), e.modifier(), e.slot()));
+
+            result.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
+            tag.remove("yagens_attributes_default_applied");
+            result.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        }
     }
 }

@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class DefaultItemAttributes {
     // default map
-    private static final Map<Item, Map<Attribute, Double>> DEFAULTS;
+    public static final Map<Item, Map<Attribute, Double>> DEFAULTS;
 
     static {
         Map<Item, Map<Attribute, Double>> temp = new LinkedHashMap<>();
@@ -481,7 +481,7 @@ public class DefaultItemAttributes {
             ));
         }
 
-        if (ModList.get().isLoaded(SupportedMod.L2ARCHER.getValue()))
+        if (ModList.get().isLoaded(SupportedMod.L2ARCHERY.getValue()))
         {
             temp.put(L2ArcheryItem.STARTER_BOW.get(), Map.of(
                     YAttributes.CRITICAL_CHANCE.get(), 0.4,
@@ -622,5 +622,4 @@ public class DefaultItemAttributes {
                 stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
                         .update(tag -> tag.putBoolean("yagens_attributes_default_applied", true)));
     }
-
 }

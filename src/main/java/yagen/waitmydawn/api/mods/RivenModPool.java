@@ -121,7 +121,7 @@ public class RivenModPool {
             builder.add(new RivenEntry(TwilightForestItem.ENDER_BOW.get(), 0.8f));
         }
 
-        if (ModList.get().isLoaded(SupportedMod.L2ARCHER.getValue())) {
+        if (ModList.get().isLoaded(SupportedMod.L2ARCHERY.getValue())) {
             builder.add(new RivenEntry(L2ArcheryItem.STARTER_BOW.get(), 0.99f));
             builder.add(new RivenEntry(L2ArcheryItem.IRON_BOW.get(), 0.95f));
             builder.add(new RivenEntry(L2ArcheryItem.MAGNIFY_BOW.get(), 0.9f));

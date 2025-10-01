@@ -1131,7 +1131,7 @@ public class LootTableGenerator {
             consumer.accept(
                     ResourceKey.create(
                             Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
-                                    "entities/additional_dark_doppelganger_loot")),
+                                    "entities/bosses/darkdoppelganger_additional_dark_doppelganger_loot")),
                     LootTable.lootTable()
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
@@ -1503,7 +1503,7 @@ public class LootTableGenerator {
                             new LootItemCondition[]{
                                     new LootTableIdCondition.Builder(ResourceLocation.parse("darkdoppelganger:entities/dark_doppelganger")).build()
                             },
-                            "yagens_attributes:entities/additional_dark_doppelganger_loot"
+                            "yagens_attributes:entities/bosses/darkdoppelganger_additional_dark_doppelganger_loot"
                     ));
         }
 
