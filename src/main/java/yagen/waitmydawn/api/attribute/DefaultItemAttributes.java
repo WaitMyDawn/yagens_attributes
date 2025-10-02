@@ -84,7 +84,7 @@ public class DefaultItemAttributes {
                 YAttributes.STATUS_CHANCE.get(), 0.05
         ));
 
-        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOK.getValue())) {
+        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOKS.getValue())) {
             temp.put(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), Map.of(
                     YAttributes.CRITICAL_CHANCE.get(), 0.15,
                     YAttributes.CRITICAL_DAMAGE.get(), -0.2,

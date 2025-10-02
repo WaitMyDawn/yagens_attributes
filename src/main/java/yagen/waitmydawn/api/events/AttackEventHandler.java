@@ -18,6 +18,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
+import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
@@ -162,7 +164,17 @@ public class AttackEventHandler {
 //            player.sendSystemMessage(Component.literal("Nourish Enhance: " + nourishEnhance));
             adjustedTotal = adjustedTotal * nourishEnhance;
         }
-
+        if (isArrow) {
+            if (IModContainer.isModContainer(weaponItem)) {
+                var container = IModContainer.get(weaponItem);
+                for (ModSlot slot : container.getActiveMods()) {
+                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
+                        adjustedTotal = adjustedTotal * 0.4f;
+                        break;
+                    }
+                }
+            }
+        }
         event.setNewDamage(adjustedTotal);
         // status
         if (player.getRandom().nextDouble() < sc) {

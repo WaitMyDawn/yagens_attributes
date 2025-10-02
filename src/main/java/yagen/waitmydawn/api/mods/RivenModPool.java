@@ -26,7 +26,7 @@ public class RivenModPool {
         builder.add(new RivenEntry(Items.TRIDENT, 1.2f));
         builder.add(new RivenEntry(Items.CROSSBOW, 0.95f));
 
-        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOK.getValue())) {
+        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOKS.getValue())) {
             builder.add(new RivenEntry(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), 0.9f));
             builder.add(new RivenEntry(IronsSpellbooksItem.MAGEHUNTER.get(), 1.0f));
             builder.add(new RivenEntry(IronsSpellbooksItem.SPELLBREAKER.get(), 0.9f));

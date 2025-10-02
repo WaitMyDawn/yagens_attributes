@@ -281,7 +281,7 @@ public class DefaultDamageTypeRegistry {
         /**
          * Iron's Spells 'n Spellbooks
          */
-        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOK.getValue())) {
+        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOKS.getValue())) {
             registerSingle(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), simpleDamageMap(-1f, 0.35f, 0.35f, 0, 0, 0, 0.3f, 0, 0, 0, 0, 0, 0));
             registerSingle(IronsSpellbooksItem.MAGEHUNTER.get(), simpleDamageMap(0.2f, 0.4f, 0.4f, 0, 0, 0, 0f, 0, 0, 0, 0, 0, 0));
             registerSingle(IronsSpellbooksItem.SPELLBREAKER.get(), simpleDamageMap(0.1f, 0.3f, 0.3f, 0, 0, 0.3f, 0f, 0, 0, 0, 0, 0, 0));
