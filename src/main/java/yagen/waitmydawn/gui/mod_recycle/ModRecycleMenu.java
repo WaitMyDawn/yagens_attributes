@@ -1,6 +1,7 @@
 package yagen.waitmydawn.gui.mod_recycle;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -22,10 +23,7 @@ import yagen.waitmydawn.registries.BlockRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.registries.MenuRegistry;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
@@ -40,7 +38,7 @@ public class ModRecycleMenu extends AbstractContainerMenu {
         @Override
         public void setChanged() {
             super.setChanged();
-            ModRecycleMenu.this.slotsChanged(this); // 通知菜单容器变化
+            ModRecycleMenu.this.slotsChanged(this);
         }
 
         @Override
@@ -73,27 +71,6 @@ public class ModRecycleMenu extends AbstractContainerMenu {
         addPlayerInventory(inv);
         addPlayerHotbar(inv);
 
-//        // put in mod
-//        modSlot = new Slot(modContainer, 0, 7, 7) {
-//            @Override
-//            public boolean mayPlace(ItemStack stack) {
-//                return stack.is(ItemRegistry.MOD.get()); // only mod
-//            }
-//        };
-//
-//        // 初始化结果槽位
-//        resultSlot = new Slot(resultContainer, 2, 101, 16) {
-//            @Override
-//            public boolean mayPlace(ItemStack stack) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onTake(Player player, ItemStack stack) {
-//            }
-//        };
-
-        /* 4×4 输入槽：左上角 8,8 起始 */
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 int index = x + y * 4;
@@ -105,7 +82,7 @@ public class ModRecycleMenu extends AbstractContainerMenu {
                         return modContainer.canPlaceItem(this.getSlotIndex(), stack);
                     }
                 };
-                this.modSlots[index] = slot;   // 保存引用
+                this.modSlots[index] = slot;
                 this.addSlot(slot);
             }
         }
@@ -132,7 +109,6 @@ public class ModRecycleMenu extends AbstractContainerMenu {
 
     }
 
-    // 添加玩家物品栏槽位
     private void addPlayerInventory(Inventory playerInventory) {
         for (int i = 0; i < 3; ++i) {
             for (int l = 0; l < 9; ++l) {
@@ -141,7 +117,6 @@ public class ModRecycleMenu extends AbstractContainerMenu {
         }
     }
 
-    // 添加玩家快捷栏槽位
     private void addPlayerHotbar(Inventory playerInventory) {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 160));
@@ -178,6 +153,7 @@ public class ModRecycleMenu extends AbstractContainerMenu {
 
         for (int i = 0; i < 9 && recycle > 0; i++) {
             int put = Math.min(recycle, essence.getMaxStackSize());
+            if (!resultContainer.getItem(i).isEmpty()) continue;
             resultContainer.setItem(i, essence.copyWithCount(put));
             recycle -= put;
         }
@@ -190,52 +166,87 @@ public class ModRecycleMenu extends AbstractContainerMenu {
 
     public void doTransform() {
         List<ModData> consumedMod = new ArrayList<>(4);
+        boolean isRiven = false;
+        int realIndex = 0;
+        int[][] shrinkMap = new int[4][2];
         for (Slot slot : modSlots) {
             ItemStack stack = slot.getItem();
             if (!stack.is(ItemRegistry.MOD.get())) continue;
+            var modContainer = IModContainer.get(stack);
+            ModData mod = modContainer.getModAtIndex(0);
+
+            if (isRiven) if (mod.getRarity() != ModRarity.RIVEN) continue;
+
+            // the first Mod check
+            if (realIndex == 0 && mod.getRarity() == ModRarity.RIVEN) {
+                isRiven = true;
+            }
+
+            if (!isRiven) if (mod.getRarity() == ModRarity.RIVEN) continue;
+
+            if (mod.getRarity() == ModRarity.WARFRAME) continue;
 
             int need = 4 - consumedMod.size();
             int take = Math.min(need, stack.getCount());
 
-            var modContainer = IModContainer.get(stack);
-            ModData mod = modContainer.getModAtIndex(0);
-            for (int i = 0; i < take; i++) consumedMod.add(mod);
+            for (int i = 0; i < take; i++)
+                consumedMod.add(mod);
 
-            stack.shrink(take);
+//            stack.shrink(take);
+            shrinkMap[realIndex] = new int[]{slot.index-36, take};
+            player.sendSystemMessage(Component.literal("shrinkMap[realIndex]: " + Arrays.toString(shrinkMap[realIndex])));
+            realIndex++;
             if (consumedMod.size() == 4) break;
         }
         if (consumedMod.size() < 4) return;
-
-        Map<ModRarity, Integer> weight = new EnumMap<>(ModRarity.class);
-        for (ModData mod : consumedMod) {
-            int w = 4 - mod.getRarity().getValue();
-            weight.merge(mod.getRarity(), w, Integer::sum);
+        player.sendSystemMessage(Component.literal("consumedMod.size() < 4: "));
+        for (int i = 0; i < 4 && shrinkMap[i][1] != 0; i++) {
+            ItemStack itemStack = modSlots[shrinkMap[i][0]].getItem();
+            player.sendSystemMessage(Component.literal("before shrink ItemStack: "+itemStack));
+            itemStack.shrink(shrinkMap[i][1]);
         }
+        player.sendSystemMessage(Component.literal("after shrink"));
 
-        int totalWeight = weight.values().stream().mapToInt(Integer::intValue).sum();
-        int roll = player.level().random.nextInt(totalWeight);
-        ModRarity chosen = null;
-        int sum = 0;
-        for (var e : weight.entrySet()) {
-            sum += e.getValue();
-            if (roll < sum) {
-                chosen = e.getKey();
-                break;
+        if (!isRiven) {
+            Map<ModRarity, Integer> weight = new EnumMap<>(ModRarity.class);
+            for (ModData mod : consumedMod) {
+                int w = 4 - mod.getRarity().getValue();
+                weight.merge(mod.getRarity(), w, Integer::sum);
             }
-        }
 
-        List<AbstractMod> pool = TRANSFORM_POOL_BY_RARITY.get(chosen);
-        if (pool == null || pool.isEmpty()) return;
+            int totalWeight = weight.values().stream().mapToInt(Integer::intValue).sum();
+            int roll = player.level().random.nextInt(totalWeight);
+            ModRarity chosen = null;
+            int sum = 0;
+            for (var e : weight.entrySet()) {
+                sum += e.getValue();
+                if (roll < sum) {
+                    chosen = e.getKey();
+                    break;
+                }
+            }
 
-        AbstractMod newMod = pool.get(player.level().random.nextInt(pool.size()));
+            List<AbstractMod> pool = TRANSFORM_POOL_BY_RARITY.get(chosen);
+            if (pool == null || pool.isEmpty()) return;
 
-        ItemStack result = new ItemStack(ItemRegistry.MOD.get());
-        IModContainer.createModContainer(newMod, 1, result);
+            AbstractMod newMod = pool.get(player.level().random.nextInt(pool.size()));
 
-        for (Slot slot : resultSlots) {
-            if (!slot.hasItem()) {
-                slot.set(result);
-                return;
+            ItemStack result = new ItemStack(ItemRegistry.MOD.get());
+            IModContainer.createModContainer(newMod, 1, result);
+
+            for (Slot slot : resultSlots) {
+                if (!slot.hasItem()) {
+                    slot.set(result);
+                    return;
+                }
+            }
+        } else {
+            ItemStack result = new ItemStack(ItemRegistry.UNKNOWN_RIVEN.get(), 1);
+            for (Slot slot : resultSlots) {
+                if (!slot.hasItem()) {
+                    slot.set(result);
+                    return;
+                }
             }
         }
     }
@@ -248,7 +259,6 @@ public class ModRecycleMenu extends AbstractContainerMenu {
         return resultSlots;
     }
 
-    /* 区域常量 */
     final int PLAYER_INV_START = 0;
     final int PLAYER_INV_END = 35;
     final int MOD_SLOT_START = 36;

@@ -137,7 +137,7 @@ public class ClientInputEvents {
                 } else {
                     player.sendSystemMessage(
                             Component.translatable("overlay.yagens_attributes.ability_cooldown",
-                                    abilityStateIndex,
+                                    abilityStateIndex + 1,
                                     Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
                                     abilityCooldown[abilityStateIndex] / 20));
                 }
@@ -187,7 +187,7 @@ public class ClientInputEvents {
     public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
         if (event.isCanceled() || event.isAttack()) return;
         Minecraft instance = Minecraft.getInstance();
-        Player player=instance.player;
+        Player player = instance.player;
 
         if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
 

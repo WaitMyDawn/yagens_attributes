@@ -6,8 +6,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
@@ -19,6 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
@@ -68,6 +70,7 @@ public class PlayerInteractionEvent {
     @SubscribeEvent
     public static void EatAndDrink(LivingEntityUseItemEvent.Start event) {
         if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
         ItemStack itemStack = event.getItem();
 
         if (itemStack.getUseAnimation() != UseAnim.EAT && itemStack.getUseAnimation() != UseAnim.DRINK) return;
@@ -116,4 +119,37 @@ public class PlayerInteractionEvent {
             result.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         }
     }
+
+//    @SubscribeEvent
+//    public static void playerSlowDownStart(LivingEntityUseItemEvent.Start event) {
+//        if (!(event.getEntity() instanceof Player player)) return;
+//        if (player.level().isClientSide) return;
+//
+//        boolean isSlowDown = !player.onGround() && player.isUsingItem();
+//
+//        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
+//        if (gravity == null) return;
+//
+//        if (isSlowDown) {
+//            ResourceLocation SLOWFALL_GRAVITY_ID =
+//                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slow_down_gravity");
+//            if (gravity.getModifier(SLOWFALL_GRAVITY_ID) == null) {
+//                gravity.addPermanentModifier(new AttributeModifier(
+//                        SLOWFALL_GRAVITY_ID,
+//                        0D,
+//                        AttributeModifier.Operation.ADD_VALUE));
+//            }
+//        }
+//    }
+//    @SubscribeEvent
+//    public static void playerSlowDownStop(LivingEntityUseItemEvent.Stop event) {
+//        if (!(event.getEntity() instanceof Player player)) return;
+//        if (player.level().isClientSide) return;
+//        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
+//        if (gravity == null) return;
+//        ResourceLocation SLOWFALL_GRAVITY_ID =
+//                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slow_down_gravity");
+//        if (gravity.getModifier(SLOWFALL_GRAVITY_ID) != null)
+//            gravity.removeModifier(SLOWFALL_GRAVITY_ID);
+//    }
 }

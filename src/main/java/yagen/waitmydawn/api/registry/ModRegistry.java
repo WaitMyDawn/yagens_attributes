@@ -72,7 +72,6 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> REACH_TOOL_MOD = registerMod(new ReachToolMod());
     public static final Supplier<AbstractMod> STATUS_DURATION_TOOL_MOD = registerMod(new StatusDurationToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_TOOL_MOD = registerMod(new StatusChanceToolMod());
-    public static final Supplier<AbstractMod> COMBO_DURATION_TOOL_MOD = registerMod(new ComboDurationToolMod());
 
     public static final Supplier<AbstractMod> HEALTH_ARMOR_MOD = registerMod(new HealthArmorMod());
     public static final Supplier<AbstractMod> ARMOR_ARMOR_MOD = registerMod(new ArmorArmorMod());
@@ -105,6 +104,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> MULTISHOT_TOOL_MOD = registerMod(new MultishotToolMod());
     public static final Supplier<AbstractMod> CRITICAL_RARE_TOOL_MOD = registerMod(new CriticalRareToolMod());
     public static final Supplier<AbstractMod> SCATTERSHOT_TOOL_MOD = registerMod(new ScattershotToolMod());
+    public static final Supplier<AbstractMod> COMBO_DURATION_TOOL_MOD = registerMod(new ComboDurationToolMod());
+    public static final Supplier<AbstractMod> FIRERATE_TOOL_MOD = registerMod(new FirerateToolMod());
 
     /**
      * LEGENDARY
