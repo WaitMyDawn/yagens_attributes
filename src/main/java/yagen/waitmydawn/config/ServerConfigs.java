@@ -10,6 +10,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_COMBO;
     public static final ModConfigSpec.ConfigValue<Integer> SPLASH_POTION_COOLDOWN;
     public static final ModConfigSpec.ConfigValue<Integer> MAX_COMBO_LEVEL;
+    public static final ModConfigSpec.ConfigValue<Integer> COMBO_LEVEL_NEEDED_COUNT;
 
 //    public static final ModConfigSpec.ConfigValue<Integer> COMMON_WEIGHT;
 //    public static final ModConfigSpec.ConfigValue<Integer> UNCOMMON_WEIGHT;
@@ -88,7 +89,10 @@ public class ServerConfigs {
         BUILDER.push("Combo");
         BUILDER.comment("Max Combo Level bonuses your attributes by your Mods, this value is better not to be too large.");
         BUILDER.comment("Max Combo Level (default = 14)");
-        MAX_COMBO_LEVEL= BUILDER.define("Max Combo Level (Integer)", 14);
+        MAX_COMBO_LEVEL = BUILDER.define("Max Combo Level (Integer)", 14);
+        BUILDER.comment("The number of combo required for each level.");
+        BUILDER.comment("Combo Level Needed count (default = 10)");
+        COMBO_LEVEL_NEEDED_COUNT = BUILDER.define("Combo Level Needed count (Integer)", 10);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

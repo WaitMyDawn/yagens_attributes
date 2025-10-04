@@ -27,7 +27,7 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
         if (!shouldShowComboCount(player))
             return;
         DataAttachmentRegistry.Combo combo = player.getData(DataAttachmentRegistry.COMBO.get());
-        int comboLevel = DataAttachmentRegistry.getComboLevel(combo.count());
+        int comboLevel = combo.getComboLevel();
 
         String leftInfo = comboLevel + "/";
         String rightInfo = combo.count() + "  " + combo.leftDuration();
@@ -35,16 +35,16 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
         int color;
         if (comboLevel < 2)
             color = ChatFormatting.GRAY.getColor();
-        else if (comboLevel>=2 && comboLevel < 5)
+        else if (comboLevel >= 2 && comboLevel < 5)
             color = ChatFormatting.GREEN.getColor();
-        else if (comboLevel>=5 && comboLevel < 9)
+        else if (comboLevel >= 5 && comboLevel < 9)
             color = ChatFormatting.AQUA.getColor();
-        else if (comboLevel>=9 && comboLevel < 14)
+        else if (comboLevel >= 9 && comboLevel < 14)
             color = ChatFormatting.DARK_PURPLE.getColor();
         else
             color = ChatFormatting.GOLD.getColor();
 
-        int barX = ClientConfigs.COMBO_HUD_X.get() == -1 ? screenWidth  / 2 : ClientConfigs.COMBO_HUD_X.get();
+        int barX = ClientConfigs.COMBO_HUD_X.get() == -1 ? screenWidth / 2 : ClientConfigs.COMBO_HUD_X.get();
         int barY = ClientConfigs.COMBO_HUD_Y.get() == -1 ? screenHeight / 2 : ClientConfigs.COMBO_HUD_Y.get();
 
         guiHelper.pose().pushPose();

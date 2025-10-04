@@ -5,9 +5,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
@@ -25,7 +22,9 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.network.SyncComboPacket;
+import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
 import java.util.Map;
@@ -44,7 +43,7 @@ public class BowShootEvent {
     private static final Set<UUID> CLONES = ConcurrentHashMap.newKeySet();
 
     @SubscribeEvent
-    public static void onProjectileSpawn(EntityJoinLevelEvent event) {
+    public static void MultiShootSpawn(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide) return;
         if (!(event.getEntity() instanceof AbstractArrow arr)) return;
         if (CLONES.remove(arr.getUUID())) return;
@@ -100,7 +99,7 @@ public class BowShootEvent {
     }
 
     @SubscribeEvent
-    public static void MultiShot(ArrowLooseEvent event) {
+    public static void MultiShootPrepare(ArrowLooseEvent event) {
         ItemStack bow = event.getBow();
         Player player = event.getEntity();
         Level level = player.level();
@@ -166,17 +165,34 @@ public class BowShootEvent {
 
         fracFix.put(player, fix);
     }
-//    can be used to decline the time to draw bow
-//    @SubscribeEvent
-//    public static void FireRateTest(LivingEntityUseItemEvent.Start event) {
-//        if (!(event.getEntity() instanceof Player player)) return;
-//        ItemStack itemStack = event.getItem();
-//        Item item = itemStack.getItem();
-//        if (!(item instanceof ProjectileWeaponItem)) return;
-//        if (itemStack.getUseAnimation() != UseAnim.BOW) return;
-//
-//        event.setDuration(event.getDuration() - 15);
-//    }
+
+    //    can be used to decline the time to draw bow
+    @SubscribeEvent
+    public static void PreShootBonus(LivingEntityUseItemEvent.Start event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
+        ItemStack itemStack = event.getItem();
+        Item item = itemStack.getItem();
+        if (!(item instanceof ProjectileWeaponItem)) return;
+        if (itemStack.getUseAnimation() != UseAnim.BOW) return;
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (!ModCompat.isValidWarframeAbility(chest)) return; // already check isModContainer
+        int realCostCount = 0;
+        for (ModSlot slot : IModContainer.get(chest).getActiveMods()) {
+            if (slot.getMod().getModName().equals("pre_shoot_armor_mod")) {
+                DataAttachmentRegistry.PreShoot preShoot = player.getData(DataAttachmentRegistry.PRE_SHOOT_COUNT.get());
+                int costCount = 3 * (1 + preShoot.getPainLevel());
+                realCostCount = Math.min(costCount, preShoot.count());
+                DataAttachmentRegistry.PreShoot updated = preShoot.modifierCount(-realCostCount);
+//                player.sendSystemMessage(Component.literal("updated.count: " + updated.count()));
+                player.setData(DataAttachmentRegistry.PRE_SHOOT_COUNT.get(), updated);
+                PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncPreShootCountPacket(updated));
+                break;
+            }
+        }
+
+        event.setDuration(event.getDuration() - realCostCount);
+    }
 
     @SubscribeEvent
     public static void shootCombo(LivingDamageEvent.Post event) {

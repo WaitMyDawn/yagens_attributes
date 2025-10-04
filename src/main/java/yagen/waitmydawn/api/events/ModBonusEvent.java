@@ -1,28 +1,32 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.network.SyncComboPacket;
+import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
@@ -52,8 +56,7 @@ public class ModBonusEvent {
 
         DataAttachmentRegistry.Combo old = player.getData(DataAttachmentRegistry.COMBO.get());
         if (old.leftDuration() > 0) {
-            int comboCount = old.count();
-            int comboLevel = DataAttachmentRegistry.getComboLevel(comboCount);
+            int comboLevel = old.getComboLevel();
             updateCCModifier(player, comboBonusCC * comboLevel);
             updateSCModifier(player, comboBonusSC * comboLevel);
             DataAttachmentRegistry.Combo updated = old.decrement();
@@ -73,6 +76,77 @@ public class ModBonusEvent {
                 PacketDistributor.sendToPlayer((ServerPlayer) player,
                         new SyncComboPacket(updated));
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void gatherPreShootCount(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) return;
+        if (player.tickCount % 20 != 0) return;
+
+        if (!(player.getOffhandItem().getItem() instanceof BowItem)) return;
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (!ModCompat.isValidWarframeAbility(chest)) return;
+        boolean isPreShoot = false;
+        for (ModSlot slot : IModContainer.get(chest).getActiveMods()) {
+            if (slot.getMod().getModName().equals("pre_shoot_armor_mod")) {
+                isPreShoot = true;
+                break;
+            }
+        }
+        if (!isPreShoot) return;
+        DataAttachmentRegistry.PreShoot preShoot = player.getData(DataAttachmentRegistry.PRE_SHOOT_COUNT.get());
+        DataAttachmentRegistry.PreShoot updated = preShoot.modifierCount(2);
+        player.setData(DataAttachmentRegistry.PRE_SHOOT_COUNT.get(), updated);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncPreShootCountPacket(updated));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void PreShootCountModifier(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) return;
+        if (player.tickCount % 20 != 0) return;
+        AttributeInstance armor = player.getAttribute(Attributes.ARMOR);
+        AttributeInstance criticalChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
+        if (armor == null || criticalChance == null) return;
+        armor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "pre_shoot_pain_armor"));
+        criticalChance.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "pre_shoot_pain_cc"));
+
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        if (!ModCompat.isValidWarframeAbility(chest)) return;
+        boolean isPreShoot = false;
+        boolean isCollaborative = false;
+        for (ModSlot slot : IModContainer.get(chest).getActiveMods()) {
+            if (slot.getMod().getModName().equals("pre_shoot_armor_mod")) {
+                isPreShoot = true;
+                break;
+            }
+        }
+        for (ModSlot slot : IModContainer.get(chest).getActiveMods()) {
+            if (slot.getMod().getModName().equals("collaborative_proficiency_armor_mod")) {
+                isCollaborative = true;
+                break;
+            }
+        }
+        if (!isPreShoot) return;
+
+        DataAttachmentRegistry.PreShoot preShoot = player.getData(DataAttachmentRegistry.PRE_SHOOT_COUNT.get()).setMorePainLevel(0);
+        if (isCollaborative) preShoot = preShoot.modifierMorePainLevel(1);
+        if (player.getOffhandItem().getItem() instanceof BowItem
+                && player.getMainHandItem().getItem() instanceof SwordItem)
+            preShoot = preShoot.modifierMorePainLevel(1);
+
+        int painLevel = preShoot.getPainLevel();
+        if (painLevel == 0) return;
+        armor.addPermanentModifier(new AttributeModifier(
+                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "pre_shoot_pain_armor"),
+                -0.25 * painLevel, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        if (painLevel >= 3 && isCollaborative) {
+            DataAttachmentRegistry.Combo combo = player.getData(DataAttachmentRegistry.COMBO.get());
+            criticalChance.addPermanentModifier(new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "pre_shoot_pain_cc"),
+                    0.04 * (painLevel - 2) * (combo.getComboLevel() + 1), AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         }
     }
 

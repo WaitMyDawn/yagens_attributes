@@ -18,6 +18,12 @@ public class NetworkHandler {
         );
 
         registrar.playToClient(
+                SyncPreShootCountPacket.TYPE,
+                SyncPreShootCountPacket.STREAM_CODEC,
+                SyncPreShootCountPacket::handle
+        );
+
+        registrar.playToClient(
                 DamageNumberPacket.TYPE,
                 DamageNumberPacket.STREAM_CODEC,
                 DamageNumberPacket::handle

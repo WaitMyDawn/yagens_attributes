@@ -193,19 +193,15 @@ public class ModRecycleMenu extends AbstractContainerMenu {
                 consumedMod.add(mod);
 
 //            stack.shrink(take);
-            shrinkMap[realIndex] = new int[]{slot.index-36, take};
-            player.sendSystemMessage(Component.literal("shrinkMap[realIndex]: " + Arrays.toString(shrinkMap[realIndex])));
+            shrinkMap[realIndex] = new int[]{slot.index - 36, take};
             realIndex++;
             if (consumedMod.size() == 4) break;
         }
         if (consumedMod.size() < 4) return;
-        player.sendSystemMessage(Component.literal("consumedMod.size() < 4: "));
         for (int i = 0; i < 4 && shrinkMap[i][1] != 0; i++) {
             ItemStack itemStack = modSlots[shrinkMap[i][0]].getItem();
-            player.sendSystemMessage(Component.literal("before shrink ItemStack: "+itemStack));
             itemStack.shrink(shrinkMap[i][1]);
         }
-        player.sendSystemMessage(Component.literal("after shrink"));
 
         if (!isRiven) {
             Map<ModRarity, Integer> weight = new EnumMap<>(ModRarity.class);

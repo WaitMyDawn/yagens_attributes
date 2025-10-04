@@ -1,4 +1,4 @@
-package yagen.waitmydawn.item.mod.tool_mod;
+package yagen.waitmydawn.item.mod.armor_mod;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -10,19 +10,19 @@ import yagen.waitmydawn.api.mods.ModRarity;
 
 import java.util.List;
 
-public class FirerateToolMod extends AbstractMod {
-    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "firerate_tool_mod");
+public class MovementSpeedArmorMod extends AbstractMod {
+    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "movement_speed_armor_mod");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.firerate_multibase", 18f * modLevel)
+                Component.translatable("tooltips.yagens_attributes.movement_speed_multibase", 10f * modLevel)
         );
     }
 
-    public FirerateToolMod() {
-        super(5, "Nya", ModRarity.RARE);
-        this.baseCapacityCost = 6;
+    public MovementSpeedArmorMod() {
+        super(5, "Nya", ModRarity.UNCOMMON);
+        this.baseCapacityCost = 4;
     }
 
     @Override

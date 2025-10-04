@@ -89,6 +89,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> CRITICAL_HIT_TOOL_MOD = registerMod(new CriticalHitToolMod());
     public static final Supplier<AbstractMod> CRITICAL_CHANCE_COMBO_TOOL_MOD = registerMod(new CriticalChanceComboToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_COMBO_TOOL_MOD = registerMod(new StatusChanceComboToolMod());
+    public static final Supplier<AbstractMod> MOVEMENT_SPEED_ARMOR_MOD = registerMod(new MovementSpeedArmorMod());
 
     /**
      * RARE
@@ -106,6 +107,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> SCATTERSHOT_TOOL_MOD = registerMod(new ScattershotToolMod());
     public static final Supplier<AbstractMod> COMBO_DURATION_TOOL_MOD = registerMod(new ComboDurationToolMod());
     public static final Supplier<AbstractMod> FIRERATE_TOOL_MOD = registerMod(new FirerateToolMod());
+    public static final Supplier<AbstractMod> JUMP_STRENGTH_TOOL_MOD = registerMod(new JumpStrengthArmorMod());
 
     /**
      * LEGENDARY
@@ -124,4 +126,5 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorMod());
     public static final Supplier<AbstractMod> COLLABORATIVE_PROFICIENCY_ARMOR_MOD = registerMod(new CollaborativeProficiencyArmorMod());
     public static final Supplier<AbstractMod> BLADE_STORM_ARMOR_MOD = registerMod(new BladeStormArmorMod());
+    public static final Supplier<AbstractMod> PRE_SHOOT_TOOL_MOD = registerMod(new PreShootArmorMod());
 }

@@ -24,6 +24,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.gui.ComboPositionScreen;
 import yagen.waitmydawn.network.AddBladeStormEffectPacket;
 import yagen.waitmydawn.network.AddNourishEffectPacket;
@@ -81,18 +82,6 @@ public class ClientInputEvents {
         if (IModContainer.isModContainer(chest)) {
             var container = IModContainer.get(chest);
             for (ModSlot slot : container.getActiveMods()) {
-//                if (ability[0] == null) {
-//                    ability[0] = whichAbility(slot.getMod().getModName());
-//                    if (ability[0] != null) {
-//                        isAbility = true;
-//                    }
-//                }
-//                else if (ability[1] == null) {
-//                    ability[1] = whichAbility(slot.getMod().getModName());
-//                    if (ability[1] != null) {
-//                        break;
-//                    }
-//                }
                 if (abilityIndex >= ability.length) {
                     break;
                 }
@@ -114,7 +103,9 @@ public class ClientInputEvents {
             boolean isBladeStormEffect = false;
             if (player.hasEffect(MobEffectRegistry.BLADE_STORM) && ability[abilityStateIndex].equals("blade_storm_armor_mod"))
                 isBladeStormEffect = true;
-            if (abilityStates[abilityStateIndex].wasPressed()
+            if (abilityStates[abilityStateIndex].wasPressed() && !ModCompat.isValidWarframeAbility(chest)) {
+                player.sendSystemMessage(Component.translatable("overlay.yagens_attributes.not_valid_ability"));
+            } else if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[abilityStateIndex] <= 0 && isAbility) {
                 switch (ability[abilityStateIndex]) {
                     case "nourish_armor_mod": {
@@ -132,7 +123,7 @@ public class ClientInputEvents {
                 }
             } else if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[abilityStateIndex] > 0) {
-                if (isBladeStormEffect) {
+                if (isBladeStormEffect) {// execute in advance
                     PacketDistributor.sendToServer(ExecuteBladeStormPacket.INSTANCE);
                 } else {
                     player.sendSystemMessage(
@@ -164,10 +155,10 @@ public class ClientInputEvents {
     private static int[] abilityCooldown = {0, 0};
 
     private static final int BASIC_NOURISH_DURATION = 600;
-    private static final int BASIC_BLADE_STORM_DURATION = 80;
+    private static final int BASIC_BLADE_STORM_DURATION = 60;
 
     private static final int NOURISH_COOLDOWN = 900;
-    private static final int BLADE_STORM_COOLDOWN = 85;
+    private static final int BLADE_STORM_COOLDOWN = 1200;
 
     private static void update() {
         for (KeyState k : KEY_STATES) {

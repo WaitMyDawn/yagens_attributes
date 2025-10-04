@@ -8,6 +8,7 @@ import net.neoforged.fml.ModList;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.api.registry.ModRegistry;
@@ -79,7 +80,8 @@ public class ModCompat {
 
     public static ItemStack ensureModContainer(ItemStack stack, int maxSlots) {
         if (!IModContainer.isModContainer(stack) && isWeaponToolOrArmor(stack)) {
-            if (stack.getItem() instanceof ArmorItem armor && armor.getEquipmentSlot() == EquipmentSlot.CHEST) maxSlots = 12;
+            if (stack.getItem() instanceof ArmorItem armor && armor.getEquipmentSlot() == EquipmentSlot.CHEST)
+                maxSlots = 12;
             IModContainer container = IModContainer.create(maxSlots, false,
                     stack.getItem() instanceof ArmorItem);
             //if (level.isClientSide()) return stack;
@@ -96,6 +98,16 @@ public class ModCompat {
             IModContainer.set(stack, container);
         }
         return stack;
+    }
+
+    public static boolean isValidWarframeAbility(ItemStack stack) {
+        if (!IModContainer.isModContainer(stack)) return false;
+        int abilityCount = 0;
+        var container = IModContainer.get(stack);
+        for (ModSlot slot : container.getActiveMods())
+            if (slot.getMod().getRarity() == ModRarity.WARFRAME)
+                abilityCount++;
+        return abilityCount <= 2;
     }
 
     public static final Map<ModRarity, List<AbstractMod>> TRANSFORM_POOL_BY_RARITY = new EnumMap<>(ModRarity.class);
