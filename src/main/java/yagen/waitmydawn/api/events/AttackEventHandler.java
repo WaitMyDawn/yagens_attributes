@@ -1,12 +1,14 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.*;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
@@ -14,12 +16,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
@@ -41,7 +45,64 @@ import static yagen.waitmydawn.effect.ToxinStatusEffect.addToxin;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class AttackEventHandler {
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void modifierBowDamage(LivingIncomingDamageEvent event) {
+        if (event.getEntity().level().isClientSide()) return;
 
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+
+        ItemStack weaponItem = event.getSource().getWeaponItem();
+        boolean isArrow = false;
+        boolean isThrownTrident = false;
+        if (weaponItem == null) weaponItem = player.getMainHandItem();
+        else {
+            Item item = weaponItem.getItem();
+            isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
+            isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
+//            player.sendSystemMessage(Component.literal("isArrow: " + isArrow));
+//            player.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
+        }
+        DamageSource source = event.getContainer().getSource();
+        boolean isPlayerLeftClick = source.getDirectEntity() instanceof Player
+                && !source.is(DamageTypeTags.IS_PROJECTILE)
+                && source.getEntity() == player;
+        boolean isSpecialBow = false;
+        boolean isModifier = !isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow);
+        if (!isModifier) return;
+        if (weaponItem != null) isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
+        if (weaponItem.getItem() == Items.ARROW) weaponItem = player.getMainHandItem();//fix for cursed_bow
+        float baseForProjectile = 10f;
+        if (isThrownTrident)
+            baseForProjectile = 8f;
+        float damage = event.getAmount();
+        if (damage <= 0) return;
+        Map<DamageType, Float> dmgMap = new HashMap<>();
+        Map<DamageType, Float> weaponMap = DamageTypeUtils.getDamageTypes(weaponItem);
+        weaponMap.forEach((k, v) -> dmgMap.merge(k, v, Float::sum));
+
+        float total = dmgMap.values().stream().reduce(0f, Float::sum);
+        damage = damage * total / baseForProjectile;
+        if (isArrow) {
+            if (IModContainer.isModContainer(weaponItem)) {
+                var container = IModContainer.get(weaponItem);
+                for (ModSlot slot : container.getActiveMods()) {
+                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
+                        damage = damage * 0.4f;
+                        break;
+                    }
+                }
+            }
+        }
+        event.setAmount(damage);
+    }
+
+    /**
+     * in this event, the modifier damage of bow effects after ArmorAbsorb
+     * but bows are already op enough
+     * so I decide whether to fix this bug based on the subsequent situation
+     * now I just change base damage modifier
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void playerAttack(LivingDamageEvent.Pre event) {
         if (event.getEntity().level().isClientSide()) return;
@@ -56,12 +117,23 @@ public class AttackEventHandler {
         else {
             Item item = weaponItem.getItem();
             isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
-            isThrownTrident = item instanceof TridentItem;
+            isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
+//            player.sendSystemMessage(Component.literal("isArrow: " + isArrow));
+//            player.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
         }
-
+        DamageSource source = event.getContainer().getSource();
+        boolean isPlayerLeftClick = source.getDirectEntity() instanceof Player
+                && !source.is(DamageTypeTags.IS_PROJECTILE)
+                && source.getEntity() == player;
+        boolean isSpecialBow = false;
+        if (weaponItem != null) isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
+        if (weaponItem.getItem() == Items.ARROW) weaponItem = player.getMainHandItem();//fix for cursed_bow
+//        player.sendSystemMessage(Component.literal("isPlayerLeftClick: " + isPlayerLeftClick));
+//        player.sendSystemMessage(Component.literal("isSpecialBow: " + isSpecialBow));
+//        player.sendSystemMessage(Component.literal("weaponItem.getItem(): " + weaponItem.getItem()));
         Map<DamageType, Float> dmgMap = new HashMap<>();
 
-//        Entity direct = event.getContainer().getSource().getDirectEntity();
+//        Entity direct = source.getDirectEntity();
 //        boolean isArrow = direct instanceof Arrow;
 //        boolean isThrownTrident = direct instanceof ThrownTrident;
         float baseForProjectile = 10f;
@@ -75,10 +147,6 @@ public class AttackEventHandler {
         weaponMap.forEach((k, v) -> dmgMap.merge(k, v, Float::sum));
 
         float total = dmgMap.values().stream().reduce(0f, Float::sum);
-//        System.out.println("TestDamage: total " + total);
-//        dmgMap.forEach((type, value) ->
-//                System.out.println(type.name() + ": " + String.format("%.2f", value))
-//        );
 
         if (total <= 0) return;
 
@@ -95,7 +163,7 @@ public class AttackEventHandler {
                     * DamageBonusTable.getBonus(mat, entry.getKey());
         }
 
-        if (isArrow || isThrownTrident) {
+        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow)) {
             updateCCModifier(player, 0);
             updateSCModifier(player, 0);
 //            player.sendSystemMessage(Component.literal("Update Combo"));
@@ -136,45 +204,33 @@ public class AttackEventHandler {
         }
 
         // arrow and trident fix
-        if (isArrow || isThrownTrident)
-            adjustedTotal = adjustedTotal * total / baseForProjectile;
+//        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow))
+//            adjustedTotal = adjustedTotal * total / baseForProjectile;
 
         // viral
-//        float factorViral = 1f;
         if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
             int amp = target.getEffect(MobEffectRegistry.VIRAL_STATUS).getAmplifier();
             float factorViral = 1.75f;
             if (amp > 0)
                 factorViral = Math.min(4.0f, factorViral + amp * 0.25f);
-//            System.out.println("TestDamage: amp " + amp + " factorV " + factorViral);
             adjustedTotal = adjustedTotal * factorViral;
         }
 
         if (player.hasEffect(MobEffectRegistry.NOURISH)) {
-//            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-//            if (IModContainer.isModContainer(chest)) {
-//                var container = IModContainer.get(chest);
+            float nourishEnhance = (float) getNourishEnhance(player);
+            adjustedTotal = adjustedTotal * nourishEnhance;
+        }
+//        if (isArrow) {
+//            if (IModContainer.isModContainer(weaponItem)) {
+//                var container = IModContainer.get(weaponItem);
 //                for (ModSlot slot : container.getActiveMods()) {
-//                    if (slot.getMod().getModName().equals("nourish_armor_mod")) {
-//
+//                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
+//                        adjustedTotal = adjustedTotal * 0.4f;
+//                        break;
 //                    }
 //                }
 //            }
-            float nourishEnhance = (float) getNourishEnhance(player);
-//            player.sendSystemMessage(Component.literal("Nourish Enhance: " + nourishEnhance));
-            adjustedTotal = adjustedTotal * nourishEnhance;
-        }
-        if (isArrow) {
-            if (IModContainer.isModContainer(weaponItem)) {
-                var container = IModContainer.get(weaponItem);
-                for (ModSlot slot : container.getActiveMods()) {
-                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
-                        adjustedTotal = adjustedTotal * 0.4f;
-                        break;
-                    }
-                }
-            }
-        }
+//        }
         event.setNewDamage(adjustedTotal);
         // status
         if (player.getRandom().nextDouble() < sc) {

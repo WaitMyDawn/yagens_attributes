@@ -9,6 +9,7 @@ import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.api.registry.ModRegistry;
@@ -76,6 +77,20 @@ public class ModCompat {
     public static boolean isCataclysmShield(Item item) {
         if (item == LEndersCataclysmItem.BULWARK_OF_THE_FLAME.get()) return true;
         return false;
+    }
+
+    public static boolean isSpecialBow(Item item) {
+        return item == LEndersCataclysmItem.ASTRAPE.get() ||
+                item == IceAndFireCEItem.TIDE_TRIDENT.get() ||
+                item == Items.ARROW ||
+                item == LEndersCataclysmItem.ANCIENT_SPEAR.get() ||
+                item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get() ||
+                item == LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get() ||
+                item == LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() ||
+                item == LEndersCataclysmItem.CURSED_BOW.get() ||
+                item == LEndersCataclysmItem.LASER_GATLING.get() ||
+                item == LEndersCataclysmItem.CORAL_SPEAR.get() ||
+                item == LEndersCataclysmItem.CORAL_BARDICHE.get();
     }
 
     public static ItemStack ensureModContainer(ItemStack stack, int maxSlots) {

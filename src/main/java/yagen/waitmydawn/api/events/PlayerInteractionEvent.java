@@ -128,37 +128,4 @@ public class PlayerInteractionEvent {
             result.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         }
     }
-
-//    @SubscribeEvent
-//    public static void playerSlowDownStart(LivingEntityUseItemEvent.Start event) {
-//        if (!(event.getEntity() instanceof Player player)) return;
-//        if (player.level().isClientSide) return;
-//
-//        boolean isSlowDown = !player.onGround() && player.isUsingItem();
-//
-//        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-//        if (gravity == null) return;
-//
-//        if (isSlowDown) {
-//            ResourceLocation SLOWFALL_GRAVITY_ID =
-//                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slow_down_gravity");
-//            if (gravity.getModifier(SLOWFALL_GRAVITY_ID) == null) {
-//                gravity.addPermanentModifier(new AttributeModifier(
-//                        SLOWFALL_GRAVITY_ID,
-//                        0D,
-//                        AttributeModifier.Operation.ADD_VALUE));
-//            }
-//        }
-//    }
-//    @SubscribeEvent
-//    public static void playerSlowDownStop(LivingEntityUseItemEvent.Stop event) {
-//        if (!(event.getEntity() instanceof Player player)) return;
-//        if (player.level().isClientSide) return;
-//        AttributeInstance gravity = player.getAttribute(Attributes.GRAVITY);
-//        if (gravity == null) return;
-//        ResourceLocation SLOWFALL_GRAVITY_ID =
-//                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slow_down_gravity");
-//        if (gravity.getModifier(SLOWFALL_GRAVITY_ID) != null)
-//            gravity.removeModifier(SLOWFALL_GRAVITY_ID);
-//    }
 }

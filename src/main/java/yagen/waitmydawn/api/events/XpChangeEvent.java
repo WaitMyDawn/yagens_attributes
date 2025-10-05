@@ -20,6 +20,7 @@ public class XpChangeEvent {
     public static void onPlayerXpChange(PlayerXpEvent.XpChange event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         int gained = event.getAmount();
+        int cost = 0;
         if (gained <= 0) return;
 
         List<ItemStack> stacks = new ArrayList<>();
@@ -38,15 +39,17 @@ public class XpChangeEvent {
             //if (!IModContainer.isModContainer(itemStack)) return;
             //if (!itemStack.isEmpty()) {
             data = ComponentRegistry.getUpgrade(itemStack);
-            if (data.level() >= 30) return;
+            if (data.level() >= 30) continue;
             data = data.withExp(gained);
+            cost = cost + gained;
             ComponentRegistry.setUpgrade(itemStack, data);
             while (data.exp() >= data.nextLevelExpNeed()) {
-                if (data.level() >= 30) return;
+                if (data.level() >= 30) continue;
                 data = data.withLevel(data.level() + 1, data.exp() - data.nextLevelExpNeed());
                 ComponentRegistry.setUpgrade(itemStack, data);
             }
             //}
         }
+        event.setAmount(event.getAmount() - cost);
     }
 }

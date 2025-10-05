@@ -451,7 +451,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
         // get default attributes
         ItemAttributeModifiers defaultModifiers = stack.getItem().getDefaultAttributeModifiers(stack);
-        if (isWeapon)
+//        if (isWeapon) //fix bug of remove some added default attribute modifiers by other Modules
             defaultModifiers = stack.getOrDefault(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(defaultModifiers)).modifiers();
         //System.out.println("DefaultItemAttributes: " + defaultModifiers);
 
@@ -493,8 +493,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
         }
 
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
-        System.out.println("Final AttributeModifiers: " +
-                stack.get(DataComponents.ATTRIBUTE_MODIFIERS));
+//        System.out.println("Final AttributeModifiers: " +
+//                stack.get(DataComponents.ATTRIBUTE_MODIFIERS));
     }
 
     private static final Map<DamageType, Set<DamageType>> COMPOSITES = Map.of(

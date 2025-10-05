@@ -148,7 +148,8 @@ public class BowShootEvent {
     public static void FireRate(LivingEntityUseItemEvent.Tick event) {
         if (!(event.getEntity() instanceof Player player)) return;
         Item item = event.getItem().getItem();
-        if (!(item instanceof ProjectileWeaponItem)) return;
+        if (!(item instanceof ProjectileWeaponItem || item instanceof TridentItem || ModCompat.isSpecialBow(item)))
+            return;
 
         double rate = player.getAttribute(YAttributes.FIRE_RATE).getValue();
         if (rate == 1) return;
