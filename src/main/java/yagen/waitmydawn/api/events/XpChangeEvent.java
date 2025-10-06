@@ -2,6 +2,7 @@ package yagen.waitmydawn.api.events;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,15 +23,13 @@ public class XpChangeEvent {
         int gained = event.getAmount();
         int cost = 0;
         if (gained <= 0) return;
-
         List<ItemStack> stacks = new ArrayList<>();
         for (ItemStack s : List.of(player.getMainHandItem(), player.getOffhandItem())) {
             if (!s.isEmpty() && IModContainer.isModContainer(s) && !s.is(ItemRegistry.MOD)) stacks.add(s);
         }
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-//        player.getArmorSlots().forEach(s -> {
         if (!chest.isEmpty() && IModContainer.isModContainer(chest) && !chest.is(ItemRegistry.MOD)) stacks.add(chest);
-//        });
+        if (stacks.isEmpty()) return;
         gained = (int) Math.ceil((float) gained / stacks.size());
         if (gained <= 0) return;
 
@@ -44,12 +43,12 @@ public class XpChangeEvent {
             cost = cost + gained;
             ComponentRegistry.setUpgrade(itemStack, data);
             while (data.exp() >= data.nextLevelExpNeed()) {
-                if (data.level() >= 30) continue;
+                if (data.level() >= 30) break;
                 data = data.withLevel(data.level() + 1, data.exp() - data.nextLevelExpNeed());
                 ComponentRegistry.setUpgrade(itemStack, data);
             }
             //}
         }
-        event.setAmount(event.getAmount() - cost);
+        event.setAmount(Math.max(event.getAmount() - cost, 0));
     }
 }

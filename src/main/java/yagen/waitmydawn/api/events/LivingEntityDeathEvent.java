@@ -3,21 +3,29 @@ package yagen.waitmydawn.api.events;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
+import yagen.waitmydawn.registries.ItemRegistry;
+
+import java.util.List;
+
+import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class LivingEntityDeathEvent {
@@ -40,7 +48,7 @@ public class LivingEntityDeathEvent {
     }
 
     @SubscribeEvent
-    public static void onDeath(LivingExperienceDropEvent event) {
+    public static void BountyHunter(LivingExperienceDropEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide) return;
         if (!(event.getAttackingPlayer() instanceof Player player)) return;
@@ -57,15 +65,36 @@ public class LivingEntityDeathEvent {
         if (modLevel == 0) return;
         int originalExp = event.getDroppedExperience();
         if (originalExp <= 0) return;
-//        ExperienceOrb.award((ServerLevel) entity.level(), entity.position(), modLevel * itemCount);
         event.setDroppedExperience(0);
         int total = (int) (originalExp * (1 + 0.4f * modLevel));
-        while (total > 0) {
-            if (total > 100)
-                player.giveExperiencePoints(100);
-            else
-                player.giveExperiencePoints(total);
-            total -= 100;
+//        while (total > 0) {
+//            if (total > 100)
+//                player.giveExperiencePoints(100);
+//            else
+//                player.giveExperiencePoints(total);
+//            total -= 100;
+//        }
+        player.giveExperiencePoints(total);
+    }
+
+    @SubscribeEvent
+    public static void DarkDoppelgangerEntityDrop(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!ModList.get().isLoaded("darkdoppelganger")) return;
+        if (entity.level().isClientSide) return;
+        if (entity.getType() == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()) {
+            List<AbstractMod> pool = TRANSFORM_POOL_BY_RARITY.get(ModRarity.WARFRAME);
+            if (pool == null || pool.isEmpty()) return;
+            AbstractMod newMod = pool.get(entity.level().random.nextInt(pool.size()));
+            ItemStack result = new ItemStack(ItemRegistry.MOD.get());
+            IModContainer.createModContainer(newMod, 1, result);
+            ServerLevel level = (ServerLevel) entity.level();
+            Vec3 pos = entity.position();
+            level.addFreshEntity(
+                    new ItemEntity(level,
+                            pos.x, pos.y, pos.z,
+                            result)
+            );
         }
     }
 
