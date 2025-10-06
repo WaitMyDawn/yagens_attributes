@@ -5,8 +5,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
-import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -254,7 +252,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
         Map<DamageType, Float> base = new HashMap<>();
         boolean isWeapon = false;
-        if (ModCompat.vaildLocation(stack.getItem()) == 1) {
+        if (ModCompat.validLocation(stack.getItem()) == 1) {
             base = new HashMap<>(DefaultDamageTypeRegistry.get(stack.getItem()));
             if (base.isEmpty()) {
                 System.out.println("rebuild Item is Weapon but empty!!!");
@@ -460,7 +458,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 builder.add(e.attribute(), e.modifier(), e.slot());
         });
 
-        switch (ModCompat.vaildLocation(stack.getItem())) {
+        switch (ModCompat.validLocation(stack.getItem())) {
             case 1, 0 -> {
                 map.forEach((attr, list) ->
                         list.forEach(mod ->

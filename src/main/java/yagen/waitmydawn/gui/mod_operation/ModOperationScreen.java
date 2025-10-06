@@ -18,19 +18,16 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
-import yagen.waitmydawn.api.mods.RivenMod;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.item.Mod;
 import yagen.waitmydawn.player.ClientRenderCache;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
-import yagen.waitmydawn.util.TooltipsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -629,7 +626,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
 //            AbstractMod modSlotMod = modSlot.getMod();
 //            System.out.println("TestOperation: modName " + modSlotMod.getModName());
             boolean isHomo = modSlot.getMod().getModName().contains("general_mod");
-            switch (ModCompat.vaildLocation(menu.getItemSlot().getItem().getItem())) {
+            switch (ModCompat.validLocation(menu.getItemSlot().getItem().getItem())) {
                 case 1 -> {
                     if (modSlot.getMod().getModName().contains("tool_mod")) isHomo = true;
                 }

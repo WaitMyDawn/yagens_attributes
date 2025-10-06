@@ -236,6 +236,18 @@ public class AttackEventHandler {
         if (player.getRandom().nextDouble() < sc) {
             scCount++;
         }
+
+        int healthHeal = 0;
+        if (IModContainer.isModContainer(weaponItem)) {
+            var container = IModContainer.get(weaponItem);
+            for (ModSlot slot : container.getActiveMods()) {
+                if (slot.getMod().getModName().equals("health_heal_tool_mod")) {
+                    healthHeal = scCount * slot.getLevel();
+                    break;
+                }
+            }
+        }
+
         for (; scCount > 0; scCount--) {
             float rand = player.getRandom().nextFloat() * total;
             float acc = 0f;
@@ -249,6 +261,8 @@ public class AttackEventHandler {
         }
         if (lifeSteal > 0)
             player.setHealth(Math.min(player.getHealth() + adjustedTotal * (float) (lifeSteal), player.getMaxHealth()));
+        if (healthHeal > 0)
+            player.setHealth(Math.min(player.getHealth() + healthHeal, player.getMaxHealth()));
 
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
 

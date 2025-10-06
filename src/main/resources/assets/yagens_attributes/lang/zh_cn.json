@@ -78,6 +78,9 @@
   "effect.yagens_attributes.nourish": "消化滋养",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
+  "functions.yagens_attributes.xp_armor_mod.1": "击杀生物后掉落额外%d%%的经验",
+  "functions.yagens_attributes.xp_armor_mod.2": "击杀生物后的经验直接到你身上",
+  "functions.yagens_attributes.health_heal_tool_mod.1": "每次触发异况恢复%d生命值",
   "warframe.yagens_attributes.active": "按下%s或%s激活该天赋",
   "warframe.yagens_attributes.nourish_armor_mod.1": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
   "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的饮食速度加快",
@@ -157,9 +160,11 @@
   "mod.yagens_attributes.electricity_status_tool_mod": "蓄电笼",
   "mod.yagens_attributes.scattershot_tool_mod": "霰弹射击",
   "mod.yagens_attributes.firerate_tool_mod": "火翎羽",
+  "mod.yagens_attributes.xp_armor_mod": "赏金猎人",
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",
+  "mod.yagens_attributes.health_heal_tool_mod": "异况疗愈",
 
   "mod.yagens_attributes.nourish_armor_mod": "消化滋养",
   "mod.yagens_attributes.collaborative_proficiency_armor_mod": "连携精通",

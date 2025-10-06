@@ -31,7 +31,7 @@ public class ModCompat {
         return defaultTagItem;
     }
 
-    public static int vaildLocation(Item item) {
+    public static int validLocation(Item item) {
         if (item instanceof TieredItem || item instanceof MaceItem || item instanceof TridentItem || item instanceof ProjectileWeaponItem)
             return 1;
         else if (item instanceof ArmorItem)

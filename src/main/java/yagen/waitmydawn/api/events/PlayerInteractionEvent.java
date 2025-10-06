@@ -47,7 +47,7 @@ public class PlayerInteractionEvent {
     public static void onPlayerInteractMeatShredder(PlayerInteractEvent.RightClickItem event) {
         if (!(ModList.get().isLoaded("cataclysm"))) return;
         if (!ServerConfigs.BAN_MEAT_SHREDDER_OFFHAND.get()) return;
-        if (!(event.getEntity() instanceof Player player)) return;
+        Player player = event.getEntity();
 
         if (event.getHand() == InteractionHand.OFF_HAND) {
             ItemStack itemStack = player.getItemInHand(InteractionHand.OFF_HAND);
