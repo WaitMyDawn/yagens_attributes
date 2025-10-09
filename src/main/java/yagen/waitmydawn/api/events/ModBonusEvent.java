@@ -18,6 +18,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
@@ -49,31 +50,32 @@ public class ModBonusEvent {
 
     @SubscribeEvent
     public static void comboBonusEvent(PlayerTickEvent.Post event) {
-        Player player = event.getEntity();
-        if (player.level().isClientSide) return;
-        double comboBonusCC = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_BONUS_CC.get())).getValue();
-        double comboBonusSC = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_BONUS_SC.get())).getValue();
+        Player attacker = event.getEntity();
 
-        DataAttachmentRegistry.Combo old = player.getData(DataAttachmentRegistry.COMBO.get());
+        if (attacker.level().isClientSide) return;
+        double comboBonusCC = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_BONUS_CC.get())).getValue();
+        double comboBonusSC = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_BONUS_SC.get())).getValue();
+
+        DataAttachmentRegistry.Combo old = attacker.getData(DataAttachmentRegistry.COMBO.get());
         if (old.leftDuration() > 0) {
             int comboLevel = old.getComboLevel();
-            updateCCModifier(player, comboBonusCC * comboLevel);
-            updateSCModifier(player, comboBonusSC * comboLevel);
+            updateCCModifier(attacker, comboBonusCC * comboLevel);
+            updateSCModifier(attacker, comboBonusSC * comboLevel);
             DataAttachmentRegistry.Combo updated = old.decrement();
             if (updated != old) {
-                player.setData(DataAttachmentRegistry.COMBO.get(), updated);
-                if (!player.level().isClientSide)
-                    PacketDistributor.sendToPlayer((ServerPlayer) player,
+                attacker.setData(DataAttachmentRegistry.COMBO.get(), updated);
+                if (!attacker.level().isClientSide)
+                    PacketDistributor.sendToPlayer((ServerPlayer) attacker,
                             new SyncComboPacket(updated));
             }
         } else {
-            updateCCModifier(player, 0);
-            updateSCModifier(player, 0);
+            updateCCModifier(attacker, 0);
+            updateSCModifier(attacker, 0);
             DataAttachmentRegistry.Combo updated = old.withCount(0);
             if (updated != old) {
-                player.setData(DataAttachmentRegistry.COMBO.get(), updated);
-//                if (!player.level().isClientSide)
-                PacketDistributor.sendToPlayer((ServerPlayer) player,
+                attacker.setData(DataAttachmentRegistry.COMBO.get(), updated);
+//                if (!attacker.level().isClientSide)
+                PacketDistributor.sendToPlayer((ServerPlayer) attacker,
                         new SyncComboPacket(updated));
             }
         }

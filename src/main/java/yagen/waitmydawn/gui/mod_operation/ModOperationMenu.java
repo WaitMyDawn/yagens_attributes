@@ -475,7 +475,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                                 builder.add(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attr), mod, EquipmentSlotGroup.OFFHAND)));
             }
         }
-        if (stack.getItem() instanceof ProjectileWeaponItem) {
+        if (stack.getItem() instanceof ProjectileWeaponItem || ModCompat.isCancelAttackDamage(stack.getItem())) {
             total = 0;
         }
         if (isWeapon) {

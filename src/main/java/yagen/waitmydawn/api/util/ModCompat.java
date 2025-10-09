@@ -93,6 +93,16 @@ public class ModCompat {
                 item == LEndersCataclysmItem.CORAL_BARDICHE.get();
     }
 
+    public static boolean isCancelAttackDamage(Item item) {
+        return
+                item == Items.ARROW ||
+                item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get() ||
+                item == LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get() ||
+                item == LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() ||
+                item == LEndersCataclysmItem.CURSED_BOW.get() ||
+                item == LEndersCataclysmItem.LASER_GATLING.get();
+    }
+
     public static ItemStack ensureModContainer(ItemStack stack, int maxSlots) {
         if (!IModContainer.isModContainer(stack) && isWeaponToolOrArmor(stack)) {
             if (stack.getItem() instanceof ArmorItem armor && armor.getEquipmentSlot() == EquipmentSlot.CHEST)

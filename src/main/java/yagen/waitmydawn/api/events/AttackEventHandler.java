@@ -33,7 +33,6 @@ import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.BladeStormTargets;
-import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.*;
 
@@ -52,28 +51,33 @@ public class AttackEventHandler {
     public static void modifierBowDamage(LivingIncomingDamageEvent event) {
         if (event.getEntity().level().isClientSide()) return;
 
-        if (!(event.getSource().getEntity() instanceof LivingEntity player)) return;
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
+
+        boolean isOthers = true;
+        if (attacker instanceof Player || attacker.getType() == ModularGolemsEntity.HUMANOID_GOLEM.get())
+            isOthers = false;
+        if (isOthers) return;
+
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
         ItemStack weaponItem = event.getSource().getWeaponItem();
         boolean isArrow = false;
         boolean isThrownTrident = false;
-        if (weaponItem == null) weaponItem = player.getMainHandItem();
+        if (weaponItem == null) weaponItem = attacker.getMainHandItem();
         else {
             Item item = weaponItem.getItem();
             isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
             isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
-//            player.sendSystemMessage(Component.literal("isArrow: " + isArrow));
-//            player.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
+//            attacker.sendSystemMessage(Component.literal("isArrow: " + isArrow));
+//            attacker.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
         }
         DamageSource source = event.getContainer().getSource();
-        boolean isPlayerLeftClick =
-//                source.getDirectEntity() instanceof Player &&
-                !source.is(DamageTypeTags.IS_PROJECTILE);
-//                && source.getEntity() == player;
+        boolean isMelee = source.getDirectEntity() instanceof LivingEntity &&
+                !source.is(DamageTypeTags.IS_PROJECTILE)
+                && source.getEntity() == attacker;
         boolean isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
-        if (weaponItem.getItem() == Items.ARROW) weaponItem = player.getMainHandItem();//fix for cursed_bow
-        boolean isModifier = !isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow);
+        if (weaponItem.getItem() == Items.ARROW) weaponItem = attacker.getMainHandItem();//fix for cursed_bow
+        boolean isModifier = !isMelee && (isArrow || isThrownTrident || isSpecialBow);
         if (!isModifier) return;
 
         float baseForProjectile = 10f;
@@ -111,41 +115,36 @@ public class AttackEventHandler {
     public static void playerAttack(LivingDamageEvent.Pre event) {
         if (event.getEntity().level().isClientSide()) return;
 
-        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
+        boolean isOthers = true;
+        if (attacker instanceof Player || attacker.getType() == ModularGolemsEntity.HUMANOID_GOLEM.get())
+            isOthers = false;
+
+        if (isOthers) return;
 
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
         ItemStack weaponItem = event.getSource().getWeaponItem();
         boolean isArrow = false;
         boolean isThrownTrident = false;
-        if (weaponItem == null) weaponItem = player.getMainHandItem();
+        if (weaponItem == null) weaponItem = attacker.getMainHandItem();
         else {
             Item item = weaponItem.getItem();
             isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
             isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
-//            player.sendSystemMessage(Component.literal("isArrow: " + isArrow));
-//            player.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
         }
         DamageSource source = event.getContainer().getSource();
-        boolean isPlayerLeftClick = source.getDirectEntity() instanceof Player
-                && !source.is(DamageTypeTags.IS_PROJECTILE)
-                && source.getEntity() == player;
+        boolean isMelee =
+                source.getDirectEntity() instanceof LivingEntity &&
+                        !source.is(DamageTypeTags.IS_PROJECTILE)
+                        && source.getEntity() == attacker;
         boolean isSpecialBow = false;
         if (weaponItem != null) isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
-        if (weaponItem.getItem() == Items.ARROW) weaponItem = player.getMainHandItem();//fix for cursed_bow
-//        player.sendSystemMessage(Component.literal("isPlayerLeftClick: " + isPlayerLeftClick));
-//        player.sendSystemMessage(Component.literal("isSpecialBow: " + isSpecialBow));
-//        player.sendSystemMessage(Component.literal("weaponItem.getItem(): " + weaponItem.getItem()));
+        if (weaponItem.getItem() == Items.ARROW) weaponItem = attacker.getMainHandItem();//fix for cursed_bow
         Map<DamageType, Float> dmgMap = new HashMap<>();
 
-//        Entity direct = source.getDirectEntity();
-//        boolean isArrow = direct instanceof Arrow;
-//        boolean isThrownTrident = direct instanceof ThrownTrident;
-//        float baseForProjectile = 10f;
         if (!isArrow && !isThrownTrident)
             dmgMap.put(DamageType.IMPACT, 1f);
-//        else if (isThrownTrident)
-//            baseForProjectile = 8f;
 
         // get damage map
         Map<DamageType, Float> weaponMap = DamageTypeUtils.getDamageTypes(weaponItem);
@@ -168,16 +167,15 @@ public class AttackEventHandler {
                     * DamageBonusTable.getBonus(mat, entry.getKey());
         }
 
-        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow)) {
-            updateCCModifier(player, 0);
-            updateSCModifier(player, 0);
-//            player.sendSystemMessage(Component.literal("Update Combo"));
+        if (!isMelee && (isArrow || isThrownTrident || isSpecialBow)) {
+            updateCCModifier(attacker, 0);
+            updateSCModifier(attacker, 0);
         }
 
-        double cc = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
-        double cd = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_DAMAGE.get())).getValue();
-        double sc = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get())).getValue();
-        double lifeSteal = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.LIFE_STEAL.get())).getValue();
+        double cc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
+        double cd = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_DAMAGE.get())).getValue();
+        double sc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get())).getValue();
+        double lifeSteal = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.LIFE_STEAL.get())).getValue();
         int scCount = (int) sc;
         sc = sc - scCount;
 
@@ -194,7 +192,7 @@ public class AttackEventHandler {
         if (cc > 1) {
             double ccTocd = (int) cc;
             cc = cc - ccTocd;
-            if (player.getRandom().nextDouble() <= cc) {
+            if (attacker.getRandom().nextDouble() <= cc) {
                 adjustedTotal = adjustedTotal * ((float) (cd + ccTocd + 1) + coldTocd);
                 criticalLevel = ccTocd + 1;
             } else {
@@ -202,15 +200,11 @@ public class AttackEventHandler {
                 criticalLevel = ccTocd;
             }
         } else {
-            if (player.getRandom().nextDouble() <= cc) {
+            if (attacker.getRandom().nextDouble() <= cc) {
                 adjustedTotal = adjustedTotal * ((float) cd + coldTocd);
                 criticalLevel++;
             }
         }
-
-        // arrow and trident fix
-//        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow))
-//            adjustedTotal = adjustedTotal * total / baseForProjectile;
 
         // viral
         if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
@@ -221,24 +215,13 @@ public class AttackEventHandler {
             adjustedTotal = adjustedTotal * factorViral;
         }
 
-        if (player.hasEffect(MobEffectRegistry.NOURISH)) {
-            float nourishEnhance = (float) getNourishEnhance(player);
+        if (attacker.hasEffect(MobEffectRegistry.NOURISH)) {
+            float nourishEnhance = (float) getNourishEnhance(attacker);
             adjustedTotal = adjustedTotal * nourishEnhance;
         }
-//        if (isArrow) {
-//            if (IModContainer.isModContainer(weaponItem)) {
-//                var container = IModContainer.get(weaponItem);
-//                for (ModSlot slot : container.getActiveMods()) {
-//                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
-//                        adjustedTotal = adjustedTotal * 0.4f;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
         event.setNewDamage(adjustedTotal);
         // status
-        if (player.getRandom().nextDouble() < sc) {
+        if (attacker.getRandom().nextDouble() < sc) {
             scCount++;
         }
 
@@ -254,195 +237,28 @@ public class AttackEventHandler {
         }
 
         for (; scCount > 0; scCount--) {
-            float rand = player.getRandom().nextFloat() * total;
+            float rand = attacker.getRandom().nextFloat() * total;
             float acc = 0f;
             for (var entry : dmgMap.entrySet()) {
                 acc += entry.getValue();
                 if (rand <= acc) {
-                    statusEffect(entry.getKey(), player, target, adjustedTotal);
+                    statusEffect(entry.getKey(), attacker, target, adjustedTotal);
                     break;
                 }
             }
         }
         if (lifeSteal > 0)
-            player.setHealth(Math.min(player.getHealth() + adjustedTotal * (float) (lifeSteal), player.getMaxHealth()));
+            attacker.setHealth(Math.min(attacker.getHealth() + adjustedTotal * (float) (lifeSteal), attacker.getMaxHealth()));
         if (healthHeal > 0)
-            player.setHealth(Math.min(player.getHealth() + healthHeal, player.getMaxHealth()));
+            attacker.setHealth(Math.min(attacker.getHealth() + healthHeal, attacker.getMaxHealth()));
 
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
-
-        PacketDistributor.sendToPlayersTrackingEntity(target,
-                new DamageNumberPacket(pos, adjustedTotal, 0xFFFFFF, criticalLevel));
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public static void golemAttack(LivingDamageEvent.Pre event) {
-        if (event.getEntity().level().isClientSide()) return;
-
-        if (!(event.getSource().getEntity() instanceof LivingEntity player)) return;
-        if (!ModList.get().isLoaded(SupportedMod.MODULAR_GOLEMS.getValue())
-                || player.getType() != ModularGolemsEntity.HUMANOID_GOLEM.get())
-            return;
-        if (!(event.getEntity() instanceof LivingEntity target)) return;
-
-        ItemStack weaponItem = event.getSource().getWeaponItem();
-        boolean isArrow = false;
-        boolean isThrownTrident = false;
-        if (weaponItem == null) weaponItem = player.getMainHandItem();
-        else {
-            Item item = weaponItem.getItem();
-            isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
-            isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
-//            player.sendSystemMessage(Component.literal("isArrow: " + isArrow));
-//            player.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
-        }
-        DamageSource source = event.getContainer().getSource();
-        boolean isPlayerLeftClick = source.getDirectEntity() instanceof Player
-                && !source.is(DamageTypeTags.IS_PROJECTILE)
-                && source.getEntity() == player;
-        boolean isSpecialBow = false;
-        if (weaponItem != null) isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
-        if (weaponItem.getItem() == Items.ARROW) weaponItem = player.getMainHandItem();//fix for cursed_bow
-//        player.sendSystemMessage(Component.literal("isPlayerLeftClick: " + isPlayerLeftClick));
-//        player.sendSystemMessage(Component.literal("isSpecialBow: " + isSpecialBow));
-//        player.sendSystemMessage(Component.literal("weaponItem.getItem(): " + weaponItem.getItem()));
-        Map<DamageType, Float> dmgMap = new HashMap<>();
-
-//        Entity direct = source.getDirectEntity();
-//        boolean isArrow = direct instanceof Arrow;
-//        boolean isThrownTrident = direct instanceof ThrownTrident;
-//        float baseForProjectile = 10f;
-        if (!isArrow && !isThrownTrident)
-            dmgMap.put(DamageType.IMPACT, 1f);
-//        else if (isThrownTrident)
-//            baseForProjectile = 8f;
-
-        // get damage map
-        Map<DamageType, Float> weaponMap = DamageTypeUtils.getDamageTypes(weaponItem);
-        weaponMap.forEach((k, v) -> dmgMap.merge(k, v, Float::sum));
-
-        float total = dmgMap.values().stream().reduce(0f, Float::sum);
-
-        if (total <= 0) return;
-
-        float actual = event.getNewDamage();
-        if (actual <= 0) return;
-
-        // health material
-        HealthMaterialType mat = HealthMaterialUtils.getMaterialType(target);
-        float adjustedTotal = 0f;
-
-        for (var entry : dmgMap.entrySet()) {
-            adjustedTotal = adjustedTotal + actual *
-                    entry.getValue() / total
-                    * DamageBonusTable.getBonus(mat, entry.getKey());
-        }
-
-        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow)) {
-            updateCCModifier(player, 0);
-            updateSCModifier(player, 0);
-//            player.sendSystemMessage(Component.literal("Update Combo"));
-        }
-
-        double cc = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
-        double cd = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_DAMAGE.get())).getValue();
-        double sc = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get())).getValue();
-        double lifeSteal = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.LIFE_STEAL.get())).getValue();
-        int scCount = (int) sc;
-        sc = sc - scCount;
-
-        // cold status
-        float coldTocd = 0;
-        if (target.hasEffect(MobEffectRegistry.COLD_STATUS)) {
-            int amp = target.getEffect(MobEffectRegistry.COLD_STATUS).getAmplifier();
-            coldTocd = Math.min(0.8f, coldTocd + amp * 0.1f + 0.3f);
-        }
-
-        double criticalLevel = 0;
-
-        // critical
-        if (cc > 1) {
-            double ccTocd = (int) cc;
-            cc = cc - ccTocd;
-            if (player.getRandom().nextDouble() <= cc) {
-                adjustedTotal = adjustedTotal * ((float) (cd + ccTocd + 1) + coldTocd);
-                criticalLevel = ccTocd + 1;
-            } else {
-                adjustedTotal = adjustedTotal * ((float) (cd + ccTocd) + coldTocd);
-                criticalLevel = ccTocd;
-            }
-        } else {
-            if (player.getRandom().nextDouble() <= cc) {
-                adjustedTotal = adjustedTotal * ((float) cd + coldTocd);
-                criticalLevel++;
-            }
-        }
-
-        // arrow and trident fix
-//        if (!isPlayerLeftClick && (isArrow || isThrownTrident || isSpecialBow))
-//            adjustedTotal = adjustedTotal * total / baseForProjectile;
-
-        // viral
-        if (target.hasEffect(MobEffectRegistry.VIRAL_STATUS)) {
-            int amp = target.getEffect(MobEffectRegistry.VIRAL_STATUS).getAmplifier();
-            float factorViral = 1.75f;
-            if (amp > 0)
-                factorViral = Math.min(4.0f, factorViral + amp * 0.25f);
-            adjustedTotal = adjustedTotal * factorViral;
-        }
-
-        if (player.hasEffect(MobEffectRegistry.NOURISH)) {
-            float nourishEnhance = (float) getNourishEnhance(player);
-            adjustedTotal = adjustedTotal * nourishEnhance;
-        }
-//        if (isArrow) {
-//            if (IModContainer.isModContainer(weaponItem)) {
-//                var container = IModContainer.get(weaponItem);
-//                for (ModSlot slot : container.getActiveMods()) {
-//                    if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
-//                        adjustedTotal = adjustedTotal * 0.4f;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-        event.setNewDamage(adjustedTotal);
-        // status
-        if (player.getRandom().nextDouble() < sc) {
-            scCount++;
-        }
-
-        int healthHeal = 0;
-        if (IModContainer.isModContainer(weaponItem)) {
-            var container = IModContainer.get(weaponItem);
-            for (ModSlot slot : container.getActiveMods()) {
-                if (slot.getMod().getModName().equals("health_heal_tool_mod")) {
-                    healthHeal = scCount * slot.getLevel();
-                    break;
-                }
-            }
-        }
-
-        for (; scCount > 0; scCount--) {
-            float rand = player.getRandom().nextFloat() * total;
-            float acc = 0f;
-            for (var entry : dmgMap.entrySet()) {
-                acc += entry.getValue();
-                if (rand <= acc) {
-                    statusEffect(entry.getKey(), player, target, adjustedTotal);
-                    break;
-                }
-            }
-        }
-        if (lifeSteal > 0)
-            player.setHealth(Math.min(player.getHealth() + adjustedTotal * (float) (lifeSteal), player.getMaxHealth()));
-        if (healthHeal > 0)
-            player.setHealth(Math.min(player.getHealth() + healthHeal, player.getMaxHealth()));
-
-        Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
-
-        PacketDistributor.sendToPlayersTrackingEntity(target,
-                new DamageNumberPacket(pos, adjustedTotal, 0xFFFFFF, criticalLevel));
+        if (source.is(DamageTypeTags.IS_EXPLOSION))
+            PacketDistributor.sendToPlayersTrackingEntity(target,
+                    new DamageNumberPacket(pos, adjustedTotal, 0xDAA520, 0));
+        else
+            PacketDistributor.sendToPlayersTrackingEntity(target,
+                    new DamageNumberPacket(pos, adjustedTotal, 0xFFFFFF, criticalLevel));
     }
 
     // puncture
@@ -523,17 +339,17 @@ public class AttackEventHandler {
         BladeStormTargets.execute((ServerPlayer) player);
     }
 
-    @SubscribeEvent
-    public static void onExplosionDamage(LivingDamageEvent.Post event) {
-        DamageSource source = event.getSource();
-        LivingEntity target = event.getEntity();
-        if (target.level().isClientSide()) return;
-        if (!source.is(DamageTypeTags.IS_EXPLOSION)) return;
-        Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
-
-        PacketDistributor.sendToPlayersTrackingEntity(target,
-                new DamageNumberPacket(pos, event.getNewDamage(), 0xDAA520, 0));
-    }
+//    @SubscribeEvent
+//    public static void onExplosionDamage(LivingDamageEvent.Post event) {
+//        DamageSource source = event.getSource();
+//        LivingEntity target = event.getEntity();
+//        if (target.level().isClientSide()) return;
+//        if (!source.is(DamageTypeTags.IS_EXPLOSION)) return;
+//        Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
+//
+//        PacketDistributor.sendToPlayersTrackingEntity(target,
+//                new DamageNumberPacket(pos, event.getNewDamage(), 0xDAA520, 0));
+//    }
 
     public static void forceEffect(LivingEntity target, MobEffectInstance instance) {
         target.activeEffects.put(instance.getEffect(), instance);
