@@ -6,7 +6,9 @@ public enum SupportedMod {
     TWILIGHTFOREST("twilightforest"),
     IAF("iceandfire"),
     L2ARCHERY("l2archery"),
-    DUNGEONS_ARISE("dungeons_arise"),;
+    DUNGEONS_ARISE("dungeons_arise"),
+    DARK_DOPPELGANGER("darkdoppelganger"),
+    MODULAR_GOLEMS("modulargolems"),;
 
     private final String value;
 

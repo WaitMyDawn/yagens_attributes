@@ -36,6 +36,7 @@ public class RivenModPool {
             builder.add(new RivenEntry(IronsSpellbooksItem.DECREPIT_SCYTHE.get(), 0.85f));
             builder.add(new RivenEntry(IronsSpellbooksItem.HELLRAZOR.get(), 0.75f));
             builder.add(new RivenEntry(IronsSpellbooksItem.ICE_GREATSWORD.get(), 0.75f));
+            builder.add(new RivenEntry(IronsSpellbooksItem.TWILIGHT_GALE.get(), 0.8f));
         }
 
         if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {

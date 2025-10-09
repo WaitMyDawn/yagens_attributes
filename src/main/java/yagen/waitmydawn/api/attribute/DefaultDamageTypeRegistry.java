@@ -291,6 +291,7 @@ public class DefaultDamageTypeRegistry {
             registerSingle(IronsSpellbooksItem.HELLRAZOR.get(), simpleDamageMap(-1f, 0.05f, 0.25f, 0f, 0f, 0f, 0.7f, 0f, 0f, 0f, 0f, 0f, 0f));
             registerSingle(IronsSpellbooksItem.DECREPIT_SCYTHE.get(), simpleDamageMap(-1f, 0.1f, 0.4f, 0f, 0f, 0f, 0.5f, 0f, 0f, 0f, 0f, 0f, 0f));
             registerSingle(IronsSpellbooksItem.ICE_GREATSWORD.get(), simpleDamageMap(0.1f, 0.15f, 0.15f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
+            registerSingle(IronsSpellbooksItem.TWILIGHT_GALE.get(), simpleDamageMap(-1f, 0.2f, 0.2f, 0f, 0f, 0.6f, 0f, 0f, 0f, 0f, 0f, 0f, 0f));
         }
         /**
          * L_Ender's Cataclysm

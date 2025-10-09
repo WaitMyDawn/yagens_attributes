@@ -81,6 +81,7 @@
   "functions.yagens_attributes.xp_armor_mod.1": "Gain %d%% extra Exp after killing Mobs.",
   "functions.yagens_attributes.xp_armor_mod.2": "Exp gained from killing Mobs goes directly to you.",
   "functions.yagens_attributes.health_heal_tool_mod.1": "Each Status heals %d Health.",
+  "functions.yagens_attributes.health_trans_tool_mod.1": "Take %d Damage after killing Mobs, players around you heal %d Health.",
   "warframe.yagens_attributes.active": "Press %s or %s to active Ability",
   "warframe.yagens_attributes.nourish_armor_mod.1": "During the duration of the effect, your attack damage increases and will definitely status Virus.",
   "warframe.yagens_attributes.nourish_armor_mod.2": "During the duration of the effect, your eating speed will increase.",
@@ -161,6 +162,7 @@
   "mod.yagens_attributes.scattershot_tool_mod": "Scattered Shot",
   "mod.yagens_attributes.firerate_tool_mod": "Flame Feather",
   "mod.yagens_attributes.xp_armor_mod": "Bounty Hunter",
+  "mod.yagens_attributes.health_trans_armor_mod": "Thorn Aura",
 
   "mod.yagens_attributes.slash_up_tool_mod": "Edge Disc",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "Galvanized Multiply Shot",

@@ -8,6 +8,12 @@ import java.util.function.Supplier;
 
 public class IronsSpellbooksItem {
     private IronsSpellbooksItem() {}
+
+    public static final Supplier<Item> TWILIGHT_GALE =
+            () -> BuiltInRegistries.ITEM.get(
+                    ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "twilight_gale")
+            );
+
     public static final Supplier<Item> KEEPER_FLAMBERGE =
             () -> BuiltInRegistries.ITEM.get(
                     ResourceLocation.fromNamespaceAndPath("irons_spellbooks", "keeper_flamberge")

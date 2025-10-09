@@ -136,6 +136,10 @@ public class DefaultItemAttributes {
                     YAttributes.CRITICAL_CHANCE.get(), 0.25,
                     YAttributes.STATUS_CHANCE.get(), 0.2
             ));
+            temp.put(IronsSpellbooksItem.TWILIGHT_GALE.get(), Map.of(
+                    YAttributes.CRITICAL_CHANCE.get(), 0.2,
+                    YAttributes.STATUS_CHANCE.get(), 0.3
+            ));
         }
 
         if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {

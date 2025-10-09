@@ -109,6 +109,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> FIRERATE_TOOL_MOD = registerMod(new FirerateToolMod());
     public static final Supplier<AbstractMod> JUMP_STRENGTH_TOOL_MOD = registerMod(new JumpStrengthArmorMod());
     public static final Supplier<AbstractMod> XP_ARMOR_MOD = registerMod(new XpArmorMod());
+    public static final Supplier<AbstractMod> HEALTH_TRANS_ARMOR_MOD = registerMod(new HealthTransArmorMod());
 
     /**
      * LEGENDARY

@@ -125,6 +125,26 @@ public class ModCompat {
         return abilityCount <= 2;
     }
 
+    public static boolean isModInItemStack(ItemStack stack, AbstractMod abstractMod) {
+        if (!IModContainer.isModContainer(stack)) return false;
+        for (ModSlot slot : IModContainer.get(stack).getActiveMods()) {
+            if (slot.getMod().getModName().equals(abstractMod.getModName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static int ModLevelInItemStack(ItemStack stack, AbstractMod abstractMod) {
+        if (!IModContainer.isModContainer(stack)) return 0;
+        for (ModSlot slot : IModContainer.get(stack).getActiveMods()) {
+            if (slot.getMod().getModName().equals(abstractMod.getModName())) {
+                return slot.getLevel();
+            }
+        }
+        return 0;
+    }
+
     public static final Map<ModRarity, List<AbstractMod>> TRANSFORM_POOL_BY_RARITY = new EnumMap<>(ModRarity.class);
 
     static {

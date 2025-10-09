@@ -150,7 +150,7 @@ public class ModBonusEvent {
         }
     }
 
-    public static void updateCCModifier(Player player, double bonus) {
+    public static void updateCCModifier(LivingEntity player, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_cc_modifier");
         AttributeInstance criticalChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
         if (criticalChance == null) return;
@@ -167,7 +167,7 @@ public class ModBonusEvent {
         }
     }
 
-    public static void updateSCModifier(Player player, double bonus) {
+    public static void updateSCModifier(LivingEntity player, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_sc_modifier");
         AttributeInstance statusChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get()));
         if (statusChance == null) return;

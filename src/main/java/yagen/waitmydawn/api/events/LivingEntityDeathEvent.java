@@ -1,6 +1,7 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -13,18 +14,20 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
+import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
 import java.util.List;
 
+import static yagen.waitmydawn.api.util.ModCompat.ModLevelInItemStack;
 import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
@@ -77,6 +80,9 @@ public class LivingEntityDeathEvent {
         player.giveExperiencePoints(total);
     }
 
+    /**
+     * append for the Mobs who prevent vanilla way of dropping Loots in `LivingDropsEvent`
+     */
     @SubscribeEvent
     public static void DarkDoppelgangerEntityDrop(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
@@ -96,6 +102,25 @@ public class LivingEntityDeathEvent {
                             result)
             );
         }
+    }
+
+    @SubscribeEvent
+    public static void HealthTrans(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (entity instanceof Player || !(entity instanceof Mob)) return;
+
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        int modLevel = ModLevelInItemStack(chest, ModRegistry.HEALTH_TRANS_ARMOR_MOD.get());
+        if (modLevel == 0) return;
+        List<LivingEntity> nearby = player.level()
+                .getEntitiesOfClass(LivingEntity.class,
+                        player.getBoundingBox().inflate(64.0));
+        for (LivingEntity target : nearby) {
+            if (target instanceof Player) target.heal(2 * modLevel);
+        }
+        player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE), modLevel);
     }
 
     private static ItemStack findTotem(Player player) {
