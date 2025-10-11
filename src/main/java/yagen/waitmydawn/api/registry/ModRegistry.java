@@ -76,6 +76,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> HEALTH_ARMOR_MOD = registerMod(new HealthArmorMod());
     public static final Supplier<AbstractMod> ARMOR_ARMOR_MOD = registerMod(new ArmorArmorMod());
     public static final Supplier<AbstractMod> ARMOR_TOUGHNESS_ARMOR_MOD = registerMod(new ArmorToughnessArmorMod());
+    public static final Supplier<AbstractMod> PILOT_ARMOR_MOD = registerMod(new PilotArmorMod());
 
     /**
      * UNCOMMON

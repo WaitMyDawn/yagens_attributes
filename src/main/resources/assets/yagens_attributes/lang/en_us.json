@@ -82,6 +82,7 @@
   "functions.yagens_attributes.xp_armor_mod.2": "Exp gained from killing Mobs goes directly to you.",
   "functions.yagens_attributes.health_heal_tool_mod.1": "Each Status heals %d Health.",
   "functions.yagens_attributes.health_trans_tool_mod.1": "Take %d Damage after killing Mobs, players around you heal %d Health.",
+  "functions.yagens_attributes.pilot_armor_mod.1": "When in the air, the incoming Damage will be reduced by %d%%",
   "warframe.yagens_attributes.active": "Press %s or %s to active Ability",
   "warframe.yagens_attributes.nourish_armor_mod.1": "During the duration of the effect, your attack damage increases and will definitely status Virus.",
   "warframe.yagens_attributes.nourish_armor_mod.2": "During the duration of the effect, your eating speed will increase.",
@@ -145,6 +146,7 @@
   "mod.yagens_attributes.armor_armor_mod": "Sharp Horn of Rhisoil",
   "mod.yagens_attributes.health_armor_mod": "Reserved Vitality",
   "mod.yagens_attributes.armor_toughness_armor_mod": "Nephila Silk Belt",
+  "mod.yagens_attributes.pilot_armor_mod": "Bear Wing",
 
   "mod.yagens_attributes.fury_tool_mod": "Fury",
   "mod.yagens_attributes.critical_hit_tool_mod": "Bone Finger Box",

@@ -1,11 +1,14 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +27,7 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.others.ModularGolemsEntity;
@@ -264,20 +268,28 @@ public class AttackEventHandler {
     // puncture
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void modifierFactorByStatus(LivingIncomingDamageEvent event) {
-        if (event.getEntity().level().isClientSide()) return;
-        if (!(event.getEntity() instanceof LivingEntity target)) return;
+        LivingEntity target = event.getEntity();
+        if (target.level().isClientSide) return;
         if (!(event.getSource().getEntity() instanceof LivingEntity sourceEntity)) return;
         float factorPuncture = 1f;
+        float factorPilot = 1f;
+
+        if(!target.onGround()) {
+            ItemStack chest = target.getItemBySlot(EquipmentSlot.CHEST);
+            int pilotLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.PILOT_ARMOR_MOD.get());
+            if (pilotLevel != 0)
+                factorPilot = 1f - pilotLevel * 0.08f;
+        }
 
         if (sourceEntity.hasEffect(MobEffectRegistry.PUNCTURE_STATUS)) {
             int amp = sourceEntity.getEffect(MobEffectRegistry.PUNCTURE_STATUS).getAmplifier();
             factorPuncture = 0.8f;
             if (amp > 0)
                 factorPuncture = Math.max(0.2f, factorPuncture - amp * 0.1f);
-//            System.out.println("TestDamage: amp " + amp + " factorP " + factorPuncture);
         }
 
-        event.setAmount(Math.max(0, event.getAmount() * factorPuncture));
+        float finalDamage = event.getAmount() * factorPuncture * factorPilot;
+        event.setAmount(Math.max(0, finalDamage));
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

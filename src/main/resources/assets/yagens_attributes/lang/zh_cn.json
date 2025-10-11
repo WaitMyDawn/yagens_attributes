@@ -82,6 +82,7 @@
   "functions.yagens_attributes.xp_armor_mod.2": "击杀生物后的经验直接到你身上",
   "functions.yagens_attributes.health_heal_tool_mod.1": "每次触发异况恢复%d生命值",
   "functions.yagens_attributes.health_trans_tool_mod.1": "击杀生物后受到%d点伤害，周围的玩家恢复%d点生命值",
+  "functions.yagens_attributes.pilot_armor_mod.1": "在空中时，即将到来的伤害减少%d%%",
   "warframe.yagens_attributes.active": "按下%s或%s激活该天赋",
   "warframe.yagens_attributes.nourish_armor_mod.1": "效果持续时间内，你的攻击伤害增加且必将触发病毒",
   "warframe.yagens_attributes.nourish_armor_mod.2": "效果持续时间内，你的饮食速度加快",
@@ -145,6 +146,7 @@
   "mod.yagens_attributes.armor_armor_mod": "泥犀锐角",
   "mod.yagens_attributes.health_armor_mod": "生命力储备",
   "mod.yagens_attributes.armor_toughness_armor_mod": "缠丝腰带",
+  "mod.yagens_attributes.pilot_armor_mod": "飞行员",
 
   "mod.yagens_attributes.fury_tool_mod": "狂怒",
   "mod.yagens_attributes.critical_hit_tool_mod": "骨指盒",
