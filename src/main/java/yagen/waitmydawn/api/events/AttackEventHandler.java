@@ -19,6 +19,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -30,10 +31,12 @@ import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
+import yagen.waitmydawn.datagen.DamageTypeTagGenerator;
 import yagen.waitmydawn.entity.others.ModularGolemsEntity;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
+import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.BladeStormTargets;
@@ -57,6 +60,14 @@ public class AttackEventHandler {
 
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
 
+        DamageSource source = event.getContainer().getSource();
+        if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+            return;
+
         boolean isOthers = true;
         if (attacker instanceof Player || attacker.getType() == ModularGolemsEntity.HUMANOID_GOLEM.get())
             isOthers = false;
@@ -71,11 +82,9 @@ public class AttackEventHandler {
         else {
             Item item = weaponItem.getItem();
             isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
-            isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
-//            attacker.sendSystemMessage(Component.literal("isArrow: " + isArrow));
-//            attacker.sendSystemMessage(Component.literal("isThrownTrident: " + isThrownTrident));
+            isThrownTrident = source.getDirectEntity() instanceof ThrownTrident;
         }
-        DamageSource source = event.getContainer().getSource();
+
         boolean isMelee = source.getDirectEntity() instanceof LivingEntity &&
                 !source.is(DamageTypeTags.IS_PROJECTILE)
                 && source.getEntity() == attacker;
@@ -120,6 +129,15 @@ public class AttackEventHandler {
         if (event.getEntity().level().isClientSide()) return;
 
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
+
+        DamageSource source = event.getContainer().getSource();
+        if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+            return;
+
         boolean isOthers = true;
         if (attacker instanceof Player || attacker.getType() == ModularGolemsEntity.HUMANOID_GOLEM.get())
             isOthers = false;
@@ -135,9 +153,8 @@ public class AttackEventHandler {
         else {
             Item item = weaponItem.getItem();
             isArrow = (item instanceof BowItem) || (item instanceof CrossbowItem);
-            isThrownTrident = event.getContainer().getSource().getDirectEntity() instanceof ThrownTrident;
+            isThrownTrident = source.getDirectEntity() instanceof ThrownTrident;
         }
-        DamageSource source = event.getContainer().getSource();
         boolean isMelee =
                 source.getDirectEntity() instanceof LivingEntity &&
                         !source.is(DamageTypeTags.IS_PROJECTILE)
@@ -219,6 +236,13 @@ public class AttackEventHandler {
             adjustedTotal = adjustedTotal * factorViral;
         }
 
+        // Condition Overload
+        int statusOverloadLevel = ModCompat.ModLevelInItemStack(weaponItem, ModRegistry.STATUS_OVERLOAD_TOOL_MOD.get());
+        if (isMelee && statusOverloadLevel > 0) {
+            int statusCount = ModCompat.getHarmfulEffects(target).size();
+            adjustedTotal = adjustedTotal * (1f + 0.12f * statusOverloadLevel * statusCount);
+        }
+
         if (attacker.hasEffect(MobEffectRegistry.NOURISH)) {
             float nourishEnhance = (float) getNourishEnhance(attacker);
             adjustedTotal = adjustedTotal * nourishEnhance;
@@ -256,13 +280,43 @@ public class AttackEventHandler {
         if (healthHeal > 0)
             attacker.setHealth(Math.min(attacker.getHealth() + healthHeal, attacker.getMaxHealth()));
 
+
+        int color = 0xFFFFFF;
+        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
+            criticalLevel = 0;
+            color = 0xDAA520;
+        }
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
-        if (source.is(DamageTypeTags.IS_EXPLOSION))
-            PacketDistributor.sendToPlayersTrackingEntity(target,
-                    new DamageNumberPacket(pos, adjustedTotal, 0xDAA520, 0));
-        else
-            PacketDistributor.sendToPlayersTrackingEntity(target,
-                    new DamageNumberPacket(pos, adjustedTotal, 0xFFFFFF, criticalLevel));
+        PacketDistributor.sendToPlayersTrackingEntity(target,
+                new DamageNumberPacket(pos, adjustedTotal, color, criticalLevel));
+    }
+
+    @SubscribeEvent
+    public static void sendDamageParticle(LivingDamageEvent.Post event) {
+        if (event.getEntity().level().isClientSide()) return;
+        DamageSource source = event.getSource();
+        int color = 0xFFFFFF;
+        if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE))
+            color = 0x66FFFF;
+        else if (source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE))
+            color = 0x7CFC00;
+        else if (source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE))
+            color = 0xFF7518;
+        else if (source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE))
+            color = 0xA020F0;
+        else if (source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+            color = 0x006400;
+        if (color == 0xFFFFFF) return;
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
+        boolean isOthers = true;
+        if (attacker instanceof Player || attacker.getType() == ModularGolemsEntity.HUMANOID_GOLEM.get())
+            isOthers = false;
+        if (isOthers) return;
+        if (!(event.getEntity() instanceof LivingEntity target)) return;
+
+        Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
+        PacketDistributor.sendToPlayersTrackingEntity(target,
+                new DamageNumberPacket(pos, event.getNewDamage(), color, 0));
     }
 
     // puncture
@@ -274,7 +328,7 @@ public class AttackEventHandler {
         float factorPuncture = 1f;
         float factorPilot = 1f;
 
-        if(!target.onGround()) {
+        if (!target.onGround()) {
             ItemStack chest = target.getItemBySlot(EquipmentSlot.CHEST);
             int pilotLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.PILOT_ARMOR_MOD.get());
             if (pilotLevel != 0)
@@ -309,6 +363,14 @@ public class AttackEventHandler {
         if (player.level().isClientSide()) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
+        DamageSource source = event.getSource();
+        if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+            return;
+
         ItemStack weaponStack = event.getSource().getWeaponItem();
         int isValidity = 0;
         if (weaponStack == null) {
@@ -337,6 +399,14 @@ public class AttackEventHandler {
         if (player.level().isClientSide()) return;
         if (!(event.getEntity() instanceof LivingEntity target)) return;
 
+        DamageSource source = event.getSource();
+        if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+            return;
+
         if (!(player.hasEffect(MobEffectRegistry.NOURISH))) return;
         statusEffect(DamageType.VIRAL, player, target, event.getNewDamage());
     }
@@ -350,18 +420,6 @@ public class AttackEventHandler {
         if (BladeStormTargets.get((ServerPlayer) player).isEmpty()) return;
         BladeStormTargets.execute((ServerPlayer) player);
     }
-
-//    @SubscribeEvent
-//    public static void onExplosionDamage(LivingDamageEvent.Post event) {
-//        DamageSource source = event.getSource();
-//        LivingEntity target = event.getEntity();
-//        if (target.level().isClientSide()) return;
-//        if (!source.is(DamageTypeTags.IS_EXPLOSION)) return;
-//        Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
-//
-//        PacketDistributor.sendToPlayersTrackingEntity(target,
-//                new DamageNumberPacket(pos, event.getNewDamage(), 0xDAA520, 0));
-//    }
 
     public static void forceEffect(LivingEntity target, MobEffectInstance instance) {
         target.activeEffects.put(instance.getEffect(), instance);

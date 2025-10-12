@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.api.util.DamageCompat;
 import yagen.waitmydawn.network.DamageNumberPacket;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 
@@ -54,14 +55,7 @@ public class SlashStatusEffect extends MobEffect {
             c.ticksLeft--;
 
             if (c.ticksLeft % 20 == 0) {
-                pLivingEntity.hurt(pLivingEntity.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE), c.damage);
-
-                if (c.sourceEntity instanceof Player) {
-                    Vec3 pos = pLivingEntity.position().add(0, pLivingEntity.getBbHeight() * 0.7, 0);
-                    PacketDistributor.sendToPlayersTrackingEntity(pLivingEntity,
-                            new DamageNumberPacket(pos, c.damage, 0x66FFFF, 0));
-                }
-
+                pLivingEntity.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,c.sourceEntity), c.damage);
                 pLivingEntity.invulnerableTime = 0;
             }
 

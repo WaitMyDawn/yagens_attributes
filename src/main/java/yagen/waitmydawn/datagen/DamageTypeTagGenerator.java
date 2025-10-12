@@ -31,11 +31,23 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     }
 
     public static final TagKey<DamageType> SLASH_STATUS_DAMAGE_TYPE = create("slash_status");
+    public static final TagKey<DamageType> TOXIN_STATUS_DAMAGE_TYPE = create("toxin_status");
+    public static final TagKey<DamageType> HEAT_STATUS_DAMAGE_TYPE = create("heat_status");
+    public static final TagKey<DamageType> ELECTRICITY_STATUS_DAMAGE_TYPE = create("electricity_status");
+    public static final TagKey<DamageType> GAS_STATUS_DAMAGE_TYPE = create("gas_status");
 
     @Override
     protected void addTags(@NotNull Provider pProvider) {
         tag(SLASH_STATUS_DAMAGE_TYPE)
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE);
+        tag(TOXIN_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE);
+        tag(HEAT_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE);
+        tag(ELECTRICITY_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE);
+        tag(GAS_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
 
         tag(DamageTypeTags.BYPASSES_ARMOR)
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE);
@@ -44,6 +56,27 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE);
 
         tag(DamageTypeTags.BYPASSES_ENCHANTMENTS)
+                .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE);
+
+        tag(DamageTypeTags.BYPASSES_RESISTANCE)
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE);
+
+        tag(DamageTypeTags.BYPASSES_INVULNERABILITY)
+                .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
+
+        tag(DamageTypeTags.BYPASSES_SHIELD)
+                .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE);
+
+        tag(DamageTypeTags.NO_IMPACT)
+                .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
     }
 }

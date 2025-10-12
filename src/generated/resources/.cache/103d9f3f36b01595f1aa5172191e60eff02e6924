@@ -1,2 +1,6 @@
-// 1.21.1	2025-08-15T19:35:01.3972746	Registries
+// 1.21.1	2025-10-12T13:18:24.7604095	Registries
+9774b099411b9b499fb80a8b101512a0195036c4 data/yagens_attributes/damage_type/electricity_status_damage_type.json
+7aae00e2a2d4dcebc22dc7746803a9eb613e6757 data/yagens_attributes/damage_type/gas_status_damage_type.json
+7b5341451aba3d4a155feec3137f4b35a09ec050 data/yagens_attributes/damage_type/heat_status_damage_type.json
 e0c20f0a6786c1e3ac411188288bc87c82066604 data/yagens_attributes/damage_type/slash_status_damage_type.json
+358f9a1be5e51a57d2bc0b4ae79461df687ddbb5 data/yagens_attributes/damage_type/toxin_status_damage_type.json

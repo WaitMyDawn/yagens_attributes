@@ -8,7 +8,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.api.util.DamageCompat;
 import yagen.waitmydawn.network.DamageNumberPacket;
+import yagen.waitmydawn.registries.DamageTypeRegistry;
 
 import java.util.*;
 
@@ -55,14 +57,7 @@ public class ToxinStatusEffect extends MobEffect {
             Toxin c = it.next();
             c.ticksLeft--;
             if (c.ticksLeft % 20 == 0) {
-                pLivingEntity.hurt(pLivingEntity.damageSources().generic(), getDamageAfterAbsorbPure(c.damage, (float) pLivingEntity.getArmorValue(), (float) pLivingEntity.getAttributeValue(Attributes.ARMOR_TOUGHNESS), c.sourceEntity));
-
-                if(c.sourceEntity instanceof Player){
-                    Vec3 pos = pLivingEntity.position().add(0, pLivingEntity.getBbHeight() * 0.7, 0);
-                    PacketDistributor.sendToPlayersTrackingEntity(pLivingEntity,
-                            new DamageNumberPacket(pos, c.damage, 0x7CFC00, 0));
-                }
-
+                pLivingEntity.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,c.sourceEntity), c.damage);
                 pLivingEntity.invulnerableTime = 0;
             }
 

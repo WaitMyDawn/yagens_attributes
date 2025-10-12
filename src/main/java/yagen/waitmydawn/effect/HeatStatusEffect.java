@@ -13,7 +13,9 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.util.DamageCompat;
 import yagen.waitmydawn.network.DamageNumberPacket;
+import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
 import java.util.*;
@@ -87,13 +89,7 @@ public class HeatStatusEffect extends MobEffect {
             Heat c = it.next();
             c.ticksLeft--;
             if (c.ticksLeft % 20 == 0) {
-                pLivingEntity.hurt(pLivingEntity.damageSources().lava(), c.damage);
-                if (c.sourceEntity instanceof Player) {
-                    Vec3 pos = pLivingEntity.position().add(0, pLivingEntity.getBbHeight() * 0.7, 0);
-                    PacketDistributor.sendToPlayersTrackingEntity(pLivingEntity,
-                            new DamageNumberPacket(pos, c.damage, 0xFF7518, 0));
-                }
-
+                pLivingEntity.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,c.sourceEntity), c.damage);
                 pLivingEntity.invulnerableTime = 0;
             }
 

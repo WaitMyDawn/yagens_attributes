@@ -118,6 +118,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> SLASH_UP_TOOL_MOD = registerMod(new SlashUpToolMod());
     public static final Supplier<AbstractMod> MULTISHOT_GALVANIZED_TOOL_MOD = registerMod(new MultishotGalvanizedToolMod());
     public static final Supplier<AbstractMod> HEALTH_HEAL_TOOL_MOD = registerMod(new HealthHealToolMod());
+    public static final Supplier<AbstractMod> STATUS_OVERLOAD_TOOL_MOD = registerMod(new StatusOverloadToolMod());
 
     /**
      * RIVEN

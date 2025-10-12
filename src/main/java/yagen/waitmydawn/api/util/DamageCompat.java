@@ -1,9 +1,14 @@
 package yagen.waitmydawn.api.util;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.api.attribute.YAttributes;
+import yagen.waitmydawn.registries.DamageTypeRegistry;
 
 public class DamageCompat {
     public static float getDamageAfterAbsorbPure(float damage, float armor, float toughness, LivingEntity sourceEntity) {
@@ -40,5 +45,15 @@ public class DamageCompat {
         double excessDamage = damage - startDamage;
         double progress = 1 - Math.exp(-excessDamage / scaleFactor);
         return startSize + (maxSize - startSize) * progress;
+    }
+
+    public static DamageSource getDamageSource(ResourceKey<DamageType> key, LivingEntity sourceEntity) {
+        return new DamageSource(
+                sourceEntity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
+                        .getHolderOrThrow(key),
+                sourceEntity,
+                sourceEntity,
+                sourceEntity.position()
+        );
     }
 }

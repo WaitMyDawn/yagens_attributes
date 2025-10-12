@@ -1,7 +1,10 @@
 package yagen.waitmydawn.api.util;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.fml.ModList;
@@ -153,6 +156,13 @@ public class ModCompat {
             }
         }
         return 0;
+    }
+
+    public static List<MobEffectInstance> getHarmfulEffects(LivingEntity entity) {
+        return entity.getActiveEffects()
+                .stream()
+                .filter(e -> e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)
+                .toList();
     }
 
     public static final Map<ModRarity, List<AbstractMod>> TRANSFORM_POOL_BY_RARITY = new EnumMap<>(ModRarity.class);
