@@ -2,6 +2,14 @@
 
 A Warframe like mod for Minecraft,which changes many aspects of vanilla.
 
+# Wiki
+For a more detailed introduction of this mod, you can go to my wiki in GitHub: 
+[Yagen's Attributes Wiki](https://github.com/WaitMyDawn/yagens_attributes/wiki)
+
+I‘m gradually improving this wiki.
+
+As follows is a brief introduction.
+
 ## New Damage System of Your Fight
 
 ### Damage Compose and Status

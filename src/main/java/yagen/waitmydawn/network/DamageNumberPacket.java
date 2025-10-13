@@ -1,7 +1,6 @@
 package yagen.waitmydawn.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -32,7 +31,7 @@ public record DamageNumberPacket(Vec3 pos, double amount, double dColor, double 
     public static void handle(DamageNumberPacket packet, IPayloadContext ctx) {
         ctx.enqueueWork(() ->
                 Minecraft.getInstance().particleEngine.createParticle(
-                        (SimpleParticleType) ParticleRegistry.DAMAGE_NUMBER.get(),
+                        ParticleRegistry.DAMAGE_NUMBER.get(),
                         packet.pos.x, packet.pos.y, packet.pos.z,
                         packet.amount, packet.dColor, packet.dLevel)
         );

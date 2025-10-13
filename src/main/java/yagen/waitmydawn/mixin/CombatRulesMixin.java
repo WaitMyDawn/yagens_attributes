@@ -17,10 +17,6 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 public class CombatRulesMixin {
     @Overwrite
     public static float getDamageAfterAbsorb(LivingEntity entity, float damage, DamageSource damageSource, float armor, float toughness) {
-//        if(damageSource.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE)) {
-//            System.out.println("damageSource is " + damageSource);
-//            return damage;
-//        }
 
         if (damageSource.getEntity() instanceof Player player) {
             armor = Math.max(0,armor * (1 -

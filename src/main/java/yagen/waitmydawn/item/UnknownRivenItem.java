@@ -106,7 +106,6 @@ public class UnknownRivenItem extends Item {
         return stack;
     }
 
-    // 先准备好组合系数表
     record Coeff(double pos, double neg) {
     }
 
@@ -133,7 +132,7 @@ public class UnknownRivenItem extends Item {
         return IntStream.range(0, lines.size())
                 .mapToObj(i -> {
                     RivenUniqueInfo old = lines.get(i);
-                    boolean isPos = i < posCnt; // 先正后负
+                    boolean isPos = i < posCnt;
                     double base = isPos ? posBase : negBase;
                     double newVal = old.baseValue() * base * (0.9f + rnd.nextFloat() * 0.2f) * disp;
                     return new RivenUniqueInfo(old.key(), old.weight(), newVal);
