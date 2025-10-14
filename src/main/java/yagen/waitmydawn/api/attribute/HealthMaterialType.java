@@ -5,5 +5,7 @@ public enum HealthMaterialType {
     BONE,
     METAL,
     ARTHROPOD,
-    GHOST
+    GHOST,
+    ELEMENT,
+    PLANT
 }

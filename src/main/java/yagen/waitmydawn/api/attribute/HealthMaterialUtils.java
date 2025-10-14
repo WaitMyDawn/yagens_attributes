@@ -13,6 +13,8 @@ public class HealthMaterialUtils {
     public static final TagKey<EntityType<?>> METAL_MATERIAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "metal_material"));
     public static final TagKey<EntityType<?>> ARTHROPOD_MATERIAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "arthropod_material"));
     public static final TagKey<EntityType<?>> GHOST_MATERIAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "ghost_material"));
+    public static final TagKey<EntityType<?>> ELEMENT_MATERIAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "element_material"));
+    public static final TagKey<EntityType<?>> PLANT_MATERIAL = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "plant_material"));
     public static HealthMaterialType getMaterialType(LivingEntity entity) {
         EntityType<?> type = entity.getType();
         if (type.is(HealthMaterialUtils.BONE_MATERIAL)) return HealthMaterialType.BONE;
@@ -20,6 +22,8 @@ public class HealthMaterialUtils {
         if (type.is(HealthMaterialUtils.METAL_MATERIAL)) return HealthMaterialType.METAL;
         if (type.is(HealthMaterialUtils.ARTHROPOD_MATERIAL)) return HealthMaterialType.ARTHROPOD;
         if (type.is(HealthMaterialUtils.GHOST_MATERIAL)) return HealthMaterialType.GHOST;
+        if (type.is(HealthMaterialUtils.ELEMENT_MATERIAL)) return HealthMaterialType.ELEMENT;
+        if (type.is(HealthMaterialUtils.PLANT_MATERIAL)) return HealthMaterialType.PLANT;
         // flesh default
         return HealthMaterialType.FLESH;
     }

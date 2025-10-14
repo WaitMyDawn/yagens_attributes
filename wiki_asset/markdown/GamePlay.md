@@ -29,6 +29,8 @@ The exp to upgrade your weapon will be increased due to the number of you modify
 * choose a Mod Slot
 * Click Polarity bottom
 
+
+
 # Upgrade Your Mod
 To upgrade your Mod, you need to spend Mod Essence in Mod Operation
 
