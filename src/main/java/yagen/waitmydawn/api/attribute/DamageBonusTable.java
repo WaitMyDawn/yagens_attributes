@@ -23,7 +23,7 @@ public class DamageBonusTable {
             HealthMaterialType.METAL, Map.of(
                     DamageType.ELECTRICITY, 1.2f,
                     DamageType.BLAST, 1.2f,
-                    DamageType.MAGNETIC, 1.5f,
+                    DamageType.MAGNETIC, 1.2f,
                     DamageType.CORROSIVE, 1.5f,
                     DamageType.TOXIN, 0.6f,
                     DamageType.GAS, 0.6f,
@@ -34,6 +34,13 @@ public class DamageBonusTable {
                     DamageType.VIRAL, 1.2f,
                     DamageType.SLASH,1.2f,
                     DamageType.PUNCTURE,0.8f
+            ),
+            HealthMaterialType.GHOST, Map.of(
+                    DamageType.SLASH,0.8f,
+                    DamageType.PUNCTURE,0.8f,
+                    DamageType.IMPACT,0.8f,
+                    DamageType.HEAT, 1.2f,
+                    DamageType.MAGNETIC,1.5f
             )
     );
 

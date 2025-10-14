@@ -2,6 +2,7 @@ package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
@@ -180,6 +181,11 @@ public class AttackEventHandler {
 
         // health material
         HealthMaterialType mat = HealthMaterialUtils.getMaterialType(target);
+//        if (attacker instanceof Player player) {
+//            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
+//            player.sendSystemMessage(Component.literal("Target " + id + " Health Material Type: " + mat.toString())
+//                    .withColor(player.getRandom().nextInt(0xFFFFFF + 1)));
+//        }
         float adjustedTotal = 0f;
 
         for (var entry : dmgMap.entrySet()) {

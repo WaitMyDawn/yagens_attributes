@@ -1,6 +1,27 @@
 {
   "replace": false,
   "values": [
-    "minecraft:iron_golem"
+    "minecraft:iron_golem",
+    "minecraft:copper_golem",
+    "cataclysm:the_watcher",
+    "cataclysm:ignited_berserker",
+    "cataclysm:netherite_ministrosity",
+    "cataclysm:ignited_revenant",
+    "cataclysm:the_prowler",
+    "cataclysm:ignis",
+    "cataclysm:netherite_monstrosity",
+    "cataclysm:the_harbinger",
+    "irons_spellbooks:ancient_knight",
+    "irons_spellbooks:summoned_sword",
+    "irons_spellbooks:summoned_claymore",
+    "irons_spellbooks:summoned_rapier",
+    "bosses_of_mass_destruction:nether_gauntlet",
+    "born_in_chaos_v1:fallen_chaos_knight",
+    "eternalstarlight:aethersent_golem",
+    "modulargolems:humanoid_golem",
+    "modulargolems:metal_golem",
+    "modulargolems:dog_golem",
+    "mowziesmobs:ferrousz_wroughtnaut",
+    "twilightforest:tower_golem"
   ]
 }

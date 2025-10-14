@@ -30,7 +30,7 @@ Every four `Kuva` can be used to cycle `Riven Mod`
 `Ancient City`, `aviary` of `dungeons_arise`
 
 ### Entities
-`Wither`
+`wither`
 
 ### Spawners
 `consumables` and `reward` of `ominous trial chamber`

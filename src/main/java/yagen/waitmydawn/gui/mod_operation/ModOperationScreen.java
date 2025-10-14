@@ -8,10 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
@@ -89,7 +86,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
                 Button.builder(CommonComponents.GUI_DONE, (p_169823_) -> this.onCycle()).bounds(0, 0, 14, 14).build()
         );
         modSlots = new ArrayList<>();
-        //YagensAttributes.logger.debug("ModOperationScreen: init");
         generateModSlots();
     }
 
@@ -159,12 +155,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     }
 
     private int getErrorCode() {
-//        if (menu.getItemSlot().getItem().getItem() instanceof ITEM ITEM && menu.getModSlot().getItem().getItem() instanceof MOD MOD) {
-//            var modContainer = IModContainer.get(menu.getModSlot().getItem());
-//            var modSlot = modContainer.getModAtIndex(0);
-//            if (ITEM.getRarity().compareRarity(modSlot.getMod().getRarity(modSlot.getLevel())) < 0)
-//                return 1;
-//        }
         return 0;
     }
 
@@ -180,9 +170,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             generateModSlots();
         }
         Vec2 center = new Vec2(MOD_BG_X + leftPos + MOD_BG_WIDTH / 2, MOD_BG_Y + topPos + MOD_BG_HEIGHT / 2);
-//        List<String> polarities = menu.getItemSlot().getItem().getOrDefault(
-//                ComponentRegistry.STRING_LIST_DATA,
-//                new ComponentRegistry.StringListData(new ArrayList<>())).strings();
         List<String> polarities = new ArrayList<>(ComponentRegistry.getPolarities(menu.getItemSlot().getItem()));
         if (modSlots.size() == 12) {
             center = new Vec2(MOD_BG_X - 9 + leftPos + MOD_BG_WIDTH / 2, MOD_BG_Y + topPos + MOD_BG_HEIGHT / 2);
@@ -267,9 +254,10 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     }
 
     private void renderItemInfo(GuiGraphics guiHelper, int mouseX, int mouseY) {
-//        var poseStack = guiHelper.pose();
-//        float scale = 0.8F;
-//        float reverse = 1.0F / scale;
+        var poseStack = guiHelper.pose();
+        float scale = 0.8F;
+        float reverse = 1.0F / scale;
+
         ComponentRegistry.UpgradeData data = ComponentRegistry.getUpgrade(menu.getItemSlot().getItem());
         Component itemInfo = Component.translatable(
                 "ui.yagens_attributes.item_level_polarity",
@@ -286,21 +274,22 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         ).withStyle(ChatFormatting.GRAY);
         Component itemMaxLevel = Component.translatable("ui.yagens_attributes.item_max_level")
                 .withStyle(ChatFormatting.GRAY);
+
         //int lineWidth = font.width(itemInfo);
-        int lineX = leftPos + 7;//+ (int) ((54 * reverse - font.width(itemInfo)) / 2); // left width
-        int lineY = topPos + 15; //+ (int) ((14 - font.lineHeight) * reverse / 2);
-        //poseStack.pushPose();
-        //poseStack.scale(scale, scale, scale);
+        int lineX = (int) ((leftPos + 7) / scale);
+        int lineY = (int) ((topPos + 15) / scale);
+        poseStack.pushPose();
+        poseStack.scale(scale, scale, scale);
         guiHelper.drawString(font, itemInfo, lineX, lineY, 0xFFFFFF, true);
-        lineY += font.lineHeight;
+        lineY += (int) (font.lineHeight * scale + 2);
         if (data.level() >= 30) {
             guiHelper.drawString(font, itemMaxLevel, lineX, lineY, 0xFFFFFF, true);
         } else {
             guiHelper.drawString(font, itemExpInfo1, lineX, lineY, 0xFFFFFF, true);
-            lineY += font.lineHeight;
+            lineY += (int) (font.lineHeight * scale + 2);
             guiHelper.drawString(font, itemExpInfo2, lineX, lineY, 0xFFFFFF, true);
         }
-        //poseStack.popPose();
+        poseStack.popPose();
     }
 
     private int getAllModCost() {
@@ -363,7 +352,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         ).withStyle(kuvaCount >= 4
                 ? ChatFormatting.GREEN : ChatFormatting.RED);
         int lineWidth = font.width(needHave);
-        int lineX = leftPos + 7 + (int) ((54 * reverse - lineWidth) / 2); // left width
+        int lineX = leftPos + 7 + (int) ((64 * reverse - lineWidth) / 2); // left width
         int lineY = topPos + OPERATION_BUTTON_Y + (int) ((14 - font.lineHeight) * reverse / 2);
         poseStack.pushPose();
         poseStack.scale(scale, scale, scale);
@@ -411,12 +400,15 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         guiHelper.blit(slot.modSlot.getMod().getModIconResource(), (int) pos.x + 1, (int) pos.y + 1, 0, 0, 16, 16, 16, 16);
     }
 
+    private final int LINES_PER_PAGE = 9;
+    private int currentPage = 0;
+    private List<FormattedCharSequence> lines = List.of();
+
     private void renderLorePage(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
-        int margin = 2;
-        var textColor = Style.EMPTY.withColor(0x322c2a);
-        var poseStack = guiHelper.pose();
+        var textColor = Style.EMPTY.withColor(0x000000);
+//        var poseStack = guiHelper.pose();
         //
         // Title
         //
@@ -425,7 +417,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
                 ? Component.translatable("ui.yagens_attributes.no_selection") : modSelectd
                 ? modSlots.get(selectedModIndex).modSlot.getMod().getDisplayName(Minecraft.getInstance().player)
                 : Component.translatable("ui.yagens_attributes.empty_slot");
-        //font.drawWordWrap(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), titleX, titleY, LORE_PAGE_WIDTH, 0xFFFFFF);
 
         var titleLines = font.split(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
         int titleY = topPos + 10;
@@ -435,16 +426,8 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
             guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false);
 
-            //show description if hovering
-//            if (modSelectd && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-//                guiHelper.renderTooltip(font, TooltipsUtils.createModDescriptionTooltip(modSlots.get(selectedModIndex).modSlot.getMod(), font), mouseX, mouseY);
-//            }
-
-            //increment y for next line
             titleY += font.lineHeight;
         }
-        var titleHeight = font.wordWrapHeight(title.withStyle(ChatFormatting.UNDERLINE).withStyle(textColor), LORE_PAGE_WIDTH);
-        int descLine = /*y + titleHeight + font.lineHeight*/titleY + 4;
 
         if (selectedModIndex < 0 || selectedModIndex >= modSlots.size() || !modSlots.get(selectedModIndex).hasMod()) {
             return;
@@ -452,10 +435,8 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
 
         var mod = modSlots.get(selectedModIndex).modSlot.getMod();
         var modLevel = modSlots.get(selectedModIndex).modSlot.getLevel();
-        float textScale = 1f;
-        float reverseScale = 1 / textScale;
+        int descLine = titleY + 2;
 
-        poseStack.scale(textScale, textScale, textScale);
         String modPolarity = mod.getModPolarity();
         double disposition = 0.01;
 
@@ -476,14 +457,14 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         //  Mod Info
         //
         drawTextWithShadow(font, guiHelper, uiModInfo1, x + (LORE_PAGE_WIDTH - font.width(uiModInfo1)) / 2, descLine, 0xFFFFFF, 1);
-        descLine += font.lineHeight * textScale;
+        descLine += font.lineHeight;
 
         drawTextWithShadow(font, guiHelper, uiModInfo2, x + (LORE_PAGE_WIDTH - font.width(uiModInfo2)) / 2, descLine, 0xFFFFFF, 1);
-        descLine += font.lineHeight * textScale;
+        descLine += font.lineHeight;
 
         if (disposition != 0.01) {
             drawTextWithShadow(font, guiHelper, uiModInfo3, x + (LORE_PAGE_WIDTH - font.width(uiModInfo3)) / 2, descLine, 0xFFFFFF, 1);
-            descLine += font.lineHeight * textScale;
+            descLine += font.lineHeight;
         }
 
         //
@@ -499,11 +480,37 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         } else {
             uniqueInfo = mod.getUniqueInfo(modLevel, null);
         }
-        for (MutableComponent component : uniqueInfo) {
-            descLine += drawText(font, guiHelper, component, x + margin, descLine, textColor.getColor().getValue(), 1);
+        FormattedText wholeText = uniqueInfo.stream()
+                .map(line -> Component.literal("• ").append(line))
+                .reduce(Component.empty(),
+                        (a, b) -> a.equals(Component.empty()) ? b : a.copy().append("\n").append(b));
+
+        lines = font.split(wholeText, LORE_PAGE_WIDTH - 4);
+
+        for (int i = currentPage * LINES_PER_PAGE; i < Math.min(lines.size(), (currentPage + 1) * LINES_PER_PAGE); i++) {
+            guiHelper.drawString(font, lines.get(i), x + 2, descLine, textColor.getColor().getValue(), false);
+            descLine += font.lineHeight;
         }
 
-        poseStack.scale(reverseScale, reverseScale, reverseScale);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        int areaX0 = leftPos + LORE_PAGE_X;
+        int areaY0 = topPos + 50;
+        int areaX1 = areaX0 + LORE_PAGE_WIDTH;
+        int areaY1 = areaY0 + LINES_PER_PAGE * font.lineHeight;
+        if (mouseX >= areaX0 && mouseX <= areaX1 &&
+                mouseY >= areaY0 && mouseY <= areaY1) {
+
+            int maxPage = Math.max(0, (lines.size() - 1) / LINES_PER_PAGE);
+            if (deltaY > 0)
+                currentPage = Math.max(0, currentPage - 1);
+            else if (deltaY < 0)
+                currentPage = Math.min(maxPage, currentPage + 1);
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     private void drawTextWithShadow(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {

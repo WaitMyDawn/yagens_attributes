@@ -2,23 +2,23 @@
 Mod Rarity will influence your chance to gain Mods from Mod pool and the cost of upgrading your Mod.
 
 ## Common
-This Mod Rarity has a base value of 1.
+This Mod Rarity has a base value of 0.
 Generally, there is a 50% chance to gain Common Mod from Mod pool. This chance will be changed depending on the specific circumstances.
 
 ## Uncommon
-This Mod Rarity has a base value of 2.
+This Mod Rarity has a base value of 1.
 Generally, there is a 40% chance to gain Uncommon Mod from Mod pool.
 
 ## Rare
-This Mod Rarity has a base value of 3.
+This Mod Rarity has a base value of 2.
 Generally, there is a 10% chance to gain Rare Mod from Mod pool.
 
 ## Legendary
-This Mod Rarity has a base value of 4.
+This Mod Rarity has a base value of 3.
 Legendary Mod can be gained only in some Loot Tables. Usually, there is about 0.1% chance to gain it.
 
 ## Riven
-This Mod Rarity has a base value of 5.
+This Mod Rarity has a base value of 4.
 Riven Mod is rarer, it can be found only in a few Loot Tables.
 
 ## Warframe

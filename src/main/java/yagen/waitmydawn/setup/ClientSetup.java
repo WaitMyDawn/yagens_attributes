@@ -60,11 +60,6 @@ public class ClientSetup {
         e.enqueueWork(ClientSetup::init);
     }
 
-//    @SubscribeEvent
-//    public static void rendererRegister(EntityRenderersEvent.RegisterRenderers event) {
-//        BlockEntityRenderers.register(BlockRegistry.MOD_OPERATION_TABLE_ENTITY.get(), ModOperationRenderer::new);
-//    }
-
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleRegistry.DAMAGE_NUMBER.get(), DamageNumberParticle.Provider::new);
