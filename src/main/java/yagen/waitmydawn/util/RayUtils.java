@@ -68,7 +68,6 @@ public final class RayUtils {
         return null;
     }
 
-
     @Nullable
     public static LivingEntity getTargetedLiving(Player player, double range) {
         EntityHitResult r = rayLivingEntity(player, range, false, false);

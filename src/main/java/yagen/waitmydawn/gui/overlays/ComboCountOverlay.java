@@ -20,12 +20,12 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
         if (Minecraft.getInstance().options.hideGui || player.isSpectator()) {
             return;
         }
+        if (!shouldShowComboCount(player))
+            return;
 
         var font = Minecraft.getInstance().font;
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
-        if (!shouldShowComboCount(player))
-            return;
         DataAttachmentRegistry.Combo combo = player.getData(DataAttachmentRegistry.COMBO.get());
         int comboLevel = combo.getComboLevel();
 

@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -26,6 +27,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.attribute.*;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
@@ -34,7 +36,10 @@ import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
+import yagen.waitmydawn.util.RayUtils;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -127,5 +132,29 @@ public class PlayerInteractionEvent {
             tag.remove("yagens_attributes_default_applied");
             result.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
         }
+    }
+
+    @SubscribeEvent
+    public static void useSpyglass(LivingEntityUseItemEvent.Tick event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!player.level().isClientSide) return;
+        if (event.getItem().getUseAnimation() != UseAnim.SPYGLASS) return;
+        if (event.getItem().getItem() != Items.SPYGLASS) return;
+
+        int duration = event.getDuration();
+
+        // duration: 0--1200
+        if (duration > 1190) return;
+
+        player.getPersistentData().putBoolean("is_scan", true);
+    }
+    @SubscribeEvent
+    public static void stopSpyglass(LivingEntityUseItemEvent.Stop event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!player.level().isClientSide) return;
+        if (event.getItem().getUseAnimation() != UseAnim.SPYGLASS) return;
+        if (event.getItem().getItem() != Items.SPYGLASS) return;
+
+        player.getPersistentData().putBoolean("is_scan", false);
     }
 }
