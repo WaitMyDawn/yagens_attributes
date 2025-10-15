@@ -15,12 +15,45 @@ your weapon in one of your hands can only gain half of exp you get, although the
 weapon in your offhand is already the Max Level! 
 This is as the same as Warframe.
 
+# Build Your Weapon
+To equip Mods in your weapon, you must have enough Capability.
+
+Every Mod has a basic Capability Cost, each level up will add a more cost.
+
+You are hard to equip all the eight Mods in your weapon even it is the Max Level (60 Capability).
+
+To reduce the cost of Capability, you can Polarity your weapon's Mod Slot.
+
+After you can equip enough Mods, you are supposed to make a unique build for your weapon.
+
+## Composite Elements
+You have noticed that there are four elements in Damage Types, each two of them can combine to a composite element.
+* Cold + Toxin = Viral
+* Cold + Electricity = Magnetic
+* Cold + Heat = Blast
+* Toxin + Electricity = Corrosive
+* Toxin + Heat = Gas
+* Electricity + Heat = Radiation
+
+### Weapons With Element
+Some weapons have their default element.
+
+In this case, the default element is stable 
+and generally does not combine with the elements added by Mods.
+
+According to this rule, you are capable of making more possibilities!
+
+
 # Polarity
 Without any polarities in your weapon, you are hard to equip 8 Mods!
 
 To make or change a polarity, you need to spend a Forma and your weapon must be the Max Level.
 
 The exp to upgrade your weapon will be increased due to the number of you modify polarity.
+
+## Function
+* When you Mod put in the Mod Slot with the same polarity, it just cost half of its original Capability Cost.
+* But if it is conflicting, it will cost an additional quarter.
 
 ## Method
 * Item in Slot 1
@@ -105,3 +138,10 @@ Let $Possibility(Common,Uncommon,Rare,Legendary)$ shows the possibility of Mod R
 * Click Transform bottom (in blue rectangle)
 
 <img src="https://raw.githubusercontent.com/WaitMyDawn/yagens_attributes/main/wiki_asset/gameplay/recycle_and_transform.png" alt="recycle and transform">
+
+# Spyglass
+To know Health Material Type of the entity, you can use Spyglass to get details.
+
+This also shows the bonus factors of Damage Types.
+
+<img src="https://raw.githubusercontent.com/WaitMyDawn/yagens_attributes/main/wiki_asset/gameplay/spyglass.png" alt="spyglass">
