@@ -7,5 +7,7 @@ public enum HealthMaterialType {
     ARTHROPOD,
     GHOST,
     ELEMENT,
-    PLANT
+    PLANT,
+    STONE,
+    NONE
 }

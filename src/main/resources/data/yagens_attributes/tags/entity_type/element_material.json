@@ -1,5 +1,18 @@
 {
   "replace": false,
   "values": [
+    { "id": "minecraft:blaze", "required": false },
+    { "id": "minecraft:breeze", "required": false },
+    { "id": "minecraft:creeper", "required": false },
+    { "id": "minecraft:enderman", "required": false },
+    { "id": "minecraft:magma_cube", "required": false },
+    { "id": "minecraft:slime", "required": false },
+    { "id": "yungscavebiomes:ice_cube", "required": false },
+    { "id": "twilightforest:ice_crystal", "required": false },
+    { "id": "twilightforest:maze_slime", "required": false },
+    { "id": "twilightforest:stable_ice_core", "required": false },
+    { "id": "twilightforest:unstable_ice_core", "required": false },
+    { "id": "born_in_chaos_v1:phantom_creeper", "required": false },
+    { "id": "eternalnether:warped_enderman", "required": false }
   ]
 }

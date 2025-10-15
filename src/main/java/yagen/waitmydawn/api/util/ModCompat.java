@@ -113,10 +113,9 @@ public class ModCompat {
             IModContainer container = IModContainer.create(maxSlots, false,
                     stack.getItem() instanceof ArmorItem);
             //if (level.isClientSide()) return stack;
-
             if (stack.get(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get()) == null) {
                 ItemAttributeModifiers defaultModifiers = stack.get(DataComponents.ATTRIBUTE_MODIFIERS);
-                if (defaultModifiers == null) {
+                if (defaultModifiers == ItemAttributeModifiers.EMPTY) {
                     defaultModifiers = stack.getItem().getDefaultAttributeModifiers(stack);// change 4
                 }
                 stack.set(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(defaultModifiers));

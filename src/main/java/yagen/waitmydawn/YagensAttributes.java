@@ -60,6 +60,7 @@ public class YagensAttributes {
         NeoForge.EVENT_BUS.register(BowShootEvent.class);
         NeoForge.EVENT_BUS.register(LivingEntityDeathEvent.class);
         NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
+//        NeoForge.EVENT_BUS.register(AutoEntityTypeClassifier.class);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID,YagensAttributes.MODID));

@@ -450,8 +450,9 @@ public class ModOperationMenu extends AbstractContainerMenu {
         // get default attributes
         ItemAttributeModifiers defaultModifiers = stack.getItem().getDefaultAttributeModifiers(stack);
 //        if (isWeapon) //fix bug of remove some added default attribute modifiers by other Modules
+//        System.out.println("DefaultItemAttributes 1 : " + defaultModifiers);
             defaultModifiers = stack.getOrDefault(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(defaultModifiers)).modifiers();
-        //System.out.println("DefaultItemAttributes: " + defaultModifiers);
+//        System.out.println("DefaultItemAttributes 2 : " + defaultModifiers);
 
         defaultModifiers.modifiers().forEach(e -> {
             if (e.attribute() != Attributes.ATTACK_DAMAGE)

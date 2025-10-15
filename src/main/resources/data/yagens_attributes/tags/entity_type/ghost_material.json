@@ -1,21 +1,22 @@
 {
   "replace": false,
   "values": [
-    "minecraft:allay",
-    "minecraft:happy_ghast",
-    "minecraft:vex",
-    "minecraft:ghast",
-    "minecraft:elder_guardian_ghost",
-    "born_in_chaos_v1:restless_spirit",
-    "born_in_chaos_v1:scarlet_persecutor",
-    "born_in_chaos_v1:shy_spirit",
-    "born_in_chaos_v1:spirit_of_chaos",
-    "iceandfire:ghost",
-    "mowziesmobs:lantern",
-    "twilightforest:ur_ghast",
-    "twilightforest:tower_ghast",
-    "twilightforest:mini_ghast",
-    "twilightforest:wraith"
-
+    { "id": "minecraft:allay", "required": false },
+    { "id": "minecraft:ghast", "required": false },
+    { "id": "minecraft:snow_golem", "required": false },
+    { "id": "minecraft:vex", "required": false },
+    { "id": "mowziesmobs:lantern", "required": false },
+    { "id": "iceandfire:ghost", "required": false },
+    { "id": "twilightforest:carminite_ghastguard", "required": false },
+    { "id": "twilightforest:carminite_ghastling", "required": false },
+    { "id": "twilightforest:death_tome", "required": false },
+    { "id": "twilightforest:ur_ghast", "required": false },
+    { "id": "twilightforest:wraith", "required": false },
+    { "id": "born_in_chaos_v1:restless_spirit", "required": false },
+    { "id": "born_in_chaos_v1:lifestealer", "required": false },
+    { "id": "born_in_chaos_v1:scarlet_persecutor", "required": false },
+    { "id": "irons_spellbooks:wisp", "required": false },
+    { "id": "irons_spellbooks:summoned_vex", "required": false },
+    { "id": "eternalnether:wex", "required": false }
   ]
 }

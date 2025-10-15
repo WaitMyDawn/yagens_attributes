@@ -41,7 +41,11 @@ import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.BladeStormTargets;
+import yagen.waitmydawn.util.LineFileUtil;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static yagen.waitmydawn.api.events.ModBonusEvent.updateCCModifier;
@@ -185,6 +189,16 @@ public class AttackEventHandler {
 //            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
 //            player.sendSystemMessage(Component.literal("Target " + id + " Health Material Type: " + mat.toString())
 //                    .withColor(player.getRandom().nextInt(0xFFFFFF + 1)));
+//            String filePath = "config/yagens_attributes/entity_type/" + mat.toString().toLowerCase() + "_material.json";
+//            Path file = Paths.get(filePath);
+//            String appendLine = "{ \"id\": \""+id.toString()+"\", \"required\": false },";
+//            if(mat.toString().toLowerCase().equals("none")){
+//                try {
+//                    LineFileUtil.appendLine(file, appendLine);
+//                } catch (IOException e) {
+//                    YagensAttributes.LOGGER.warn("Failed to write seen entity file", e);
+//                }
+//            }
 //        }
         float adjustedTotal = 0f;
 

@@ -58,6 +58,13 @@ public class DamageBonusTable {
                     DamageType.VIRAL, 1.2f,
                     DamageType.MAGNETIC,0.8f,
                     DamageType.RADIATION,0.8f
+            ),
+            HealthMaterialType.STONE, Map.of(
+                    DamageType.SLASH,0.8f,
+                    DamageType.PUNCTURE,1.2f,
+                    DamageType.HEAT, 0.9f,
+                    DamageType.VIRAL, 0.6f,
+                    DamageType.CORROSIVE,1.4f
             )
     );
 
