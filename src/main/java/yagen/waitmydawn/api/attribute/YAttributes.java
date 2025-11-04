@@ -97,9 +97,18 @@ public class YAttributes {
                     () -> new PercentageAttribute("attribute.yagens_attributes.armor_toughness_penetration_percent", 0.0D, 0.0D, 1.0D)
                             .setSyncable(true));
 
+    public static final DeferredHolder<Attribute, Attribute> ENTITY_LEVEL =
+            ATTRIBUTES.register("entity_level",
+                    () -> new RangedAttribute("attribute.yagens_attributes.entity_level", 1.0D, 1.0D, 9999.0D)
+                            .setSyncable(true));
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
-        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, attribute)));
+        e.getTypes().forEach(
+                entity ->
+                        ATTRIBUTES.getEntries().forEach(
+                                attribute -> e.add(entity, attribute)
+                        ));
     }
 
     public static void register(IEventBus eventBus) {

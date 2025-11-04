@@ -1,6 +1,7 @@
 package yagen.waitmydawn.registries;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.world.entity.Entity;
 import yagen.waitmydawn.YagensAttributes;
 
 import com.mojang.serialization.Codec;
@@ -100,5 +101,19 @@ public class DataAttachmentRegistry {
 
     public static int getComboLevel(int comboCount) {
         return Math.min(comboCount / ServerConfigs.COMBO_LEVEL_NEEDED_COUNT.get(), ServerConfigs.MAX_COMBO_LEVEL.get());
+    }
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>>
+            SHOULD_HEAL = ATTACHMENT_TYPES.register("should_heal",
+            () -> AttachmentType.builder(() -> true)
+                    .serialize(Codec.BOOL)
+//                    .copyOnDeath()
+                    .build());
+
+    public static boolean getShouldHeal(Entity entity) {
+        return entity.getData(SHOULD_HEAL.get());
+    }
+    public static void setShouldHeal(Entity entity, boolean value) {
+        entity.setData(SHOULD_HEAL.get(), value);
     }
 }

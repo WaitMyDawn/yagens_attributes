@@ -29,6 +29,7 @@ public class YagenAttributesModCreativeTab {
                 entries.accept(ItemRegistry.MOD_ESSENCE.get());
                 entries.accept(ItemRegistry.UNKNOWN_RIVEN.get());
                 entries.accept(ItemRegistry.KUVA.get());
+                entries.accept(ItemRegistry.SUMMON.get());
             }).build());
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> YAGENS_ATTRIBUTES_MODS_TAB = CREATIVE_MODE_TAB.register("yagens_attributes.mods", () -> CreativeModeTab.builder()

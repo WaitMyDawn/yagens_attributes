@@ -185,21 +185,7 @@ public class AttackEventHandler {
 
         // health material
         HealthMaterialType mat = HealthMaterialUtils.getMaterialType(target);
-//        if (attacker instanceof Player player) {
-//            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(target.getType());
-//            player.sendSystemMessage(Component.literal("Target " + id + " Health Material Type: " + mat.toString())
-//                    .withColor(player.getRandom().nextInt(0xFFFFFF + 1)));
-//            String filePath = "config/yagens_attributes/entity_type/" + mat.toString().toLowerCase() + "_material.json";
-//            Path file = Paths.get(filePath);
-//            String appendLine = "{ \"id\": \""+id.toString()+"\", \"required\": false },";
-//            if(mat.toString().toLowerCase().equals("none")){
-//                try {
-//                    LineFileUtil.appendLine(file, appendLine);
-//                } catch (IOException e) {
-//                    YagensAttributes.LOGGER.warn("Failed to write seen entity file", e);
-//                }
-//            }
-//        }
+
         float adjustedTotal = 0f;
 
         for (var entry : dmgMap.entrySet()) {

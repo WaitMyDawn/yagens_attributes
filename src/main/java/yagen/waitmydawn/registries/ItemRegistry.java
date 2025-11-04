@@ -73,10 +73,13 @@ public class ItemRegistry {
                 }
             });
     public static final DeferredHolder<Item, Item> ORDIS = ITEMS.register("ordis",
-            () -> new UnknownRivenItem(new Item.Properties()));
+            () -> new Item(new Item.Properties()));
 
     public static final DeferredHolder<Item, Item> BLADE = ITEMS.register("blade",
-            () -> new UnknownRivenItem(new Item.Properties()));
+            () -> new Item(new Item.Properties()));
+
+    public static final DeferredHolder<Item, Item> SUMMON = ITEMS.register("summon",
+            () -> new SummonItem(new Item.Properties()));
 
     public static ItemStack createForma(String slotName) {
         ItemStack stack = new ItemStack(ItemRegistry.FORMA.get());
