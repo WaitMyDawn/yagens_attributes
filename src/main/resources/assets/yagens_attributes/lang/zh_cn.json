@@ -14,6 +14,7 @@
   "attribute.yagens_attributes.armor_toughness_penetration": "韧性穿透",
   "attribute.yagens_attributes.armor_penetration_percent": "护甲穿透%%",
   "attribute.yagens_attributes.armor_toughness_penetration_percent": "韧性穿透%%",
+  "attribute.yagens_attributes.entity_level": "等级",
 
   "item.yagens_attributes.mod_essence": "Mod精华",
   "item.yagens_attributes.mod_essence.tooltip1": "可以用来升级Mod",

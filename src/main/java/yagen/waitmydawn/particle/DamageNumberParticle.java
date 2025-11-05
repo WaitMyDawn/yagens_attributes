@@ -17,6 +17,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.config.ClientConfigs;
 
 import static yagen.waitmydawn.api.util.DamageCompat.linearGrowth;
@@ -82,21 +83,21 @@ public class DamageNumberParticle extends Particle {
     }
 
     @Override
-    public void render(VertexConsumer vc, Camera cam, float pt) {
-        Vec3 cp = cam.getPosition();
-        float px = (float) (Mth.lerp(pt, xo, x) - cp.x());
-        float py = (float) (Mth.lerp(pt, yo, y) - cp.y());
-        float pz = (float) (Mth.lerp(pt, zo, z) - cp.z());
+    public void render(@NotNull VertexConsumer vc, Camera cam, float pt) {
+        Vec3 camPos = cam.getPosition();
+        float px = (float) (Mth.lerp(pt, xo, x) - camPos.x());
+        float py = (float) (Mth.lerp(pt, yo, y) - camPos.y());
+        float pz = (float) (Mth.lerp(pt, zo, z) - camPos.z());
 
-        PoseStack ps = new PoseStack();
-        ps.pushPose();
-        ps.translate(px, py, pz);
+        PoseStack pose = new PoseStack();
+        pose.pushPose();
+        pose.translate(px, py, pz);
 
         float distance = (float) cam.getPosition().distanceTo(new Vec3(x, y, z));
         float distanceScale = fontScale * Math.max(1f, distance / ClientConfigs.DAMAGE_NUMBER_ENLARGE.get());
 
-        ps.mulPose(cam.rotation());
-        ps.scale(distanceScale, -distanceScale, distanceScale);
+        pose.mulPose(cam.rotation());
+        pose.scale(distanceScale, -distanceScale, distanceScale);
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderSystem.disableDepthTest();
@@ -111,16 +112,16 @@ public class DamageNumberParticle extends Particle {
                         FastColor.ARGB32.red(color),
                         FastColor.ARGB32.green(color),
                         FastColor.ARGB32.blue(color)),
-                false, ps.last().pose(), buffer,
+                false, pose.last().pose(), buffer,
                 Font.DisplayMode.SEE_THROUGH, 0, light);
         buffer.endBatch();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
-        ps.popPose();
+        pose.popPose();
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
+    public @NotNull ParticleRenderType getRenderType() {
         return ParticleRenderType.CUSTOM;
     }
 
@@ -130,7 +131,7 @@ public class DamageNumberParticle extends Particle {
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType type, ClientLevel lvl,
+        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel lvl,
                                        double x, double y, double z,
                                        double xa, double ya, double za) {
             return new DamageNumberParticle(lvl, x, y, z, xa, ya, za);

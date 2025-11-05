@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Vector4f;
 import yagen.waitmydawn.entity.BladeEntity;
 
 @OnlyIn(Dist.CLIENT)

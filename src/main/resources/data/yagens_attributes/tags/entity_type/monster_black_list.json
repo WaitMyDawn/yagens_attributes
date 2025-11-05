@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    { "id": "minecraft:illusioner", "required": false },
+    { "id": "irons_spellbooks:debug_wizard", "required": false },
+    { "id": "cataclysm:ancient_ancient_remnant", "required": false },
+    { "id": "born_in_chaos_v1:lord_pumpkinhead", "required": false },
+    { "id": "born_in_chaos_v1:lord_pumpkinhead_withouta_horse", "required": false },
+    { "id": "born_in_chaos_v1:lord_the_headless", "required": false },
+    { "id": "born_in_chaos_v1:lord_pumpkinhead_head", "required": false }
+  ]
+}

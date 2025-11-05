@@ -8,8 +8,11 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.entity.SummonEntityBlackList;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
 public class MissionEvent {
     private static boolean executed = false;
     private static final List<EntityType<? extends Monster>> MONSTER_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> BOSS_TYPES = new ArrayList<>();
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
@@ -25,6 +29,8 @@ public class MissionEvent {
         executed = true;
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> type.getCategory() == MobCategory.MONSTER)
+                .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
+                .filter(type -> !type.is(SummonEntityBlackList.MONSTER_BLACK_LIST))
                 .forEach(type -> {
                     try {
                         MONSTER_TYPES.add((EntityType<? extends Monster>) type);
@@ -32,10 +38,24 @@ public class MissionEvent {
                         System.out.println("fail to transform to Monster: " + type);
                     }
                 });
-//        System.out.println("Monster pool created!");
-//        MONSTER_TYPES.forEach(type ->
-//                System.out.println("find Monster : " + type.toString())
-//        );
+        BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
+                        || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
+                ))
+                .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
+                .forEach(type -> {
+                    try {
+                        BOSS_TYPES.add((EntityType<? extends Monster>) type);
+                    } catch (ClassCastException e) {
+                        System.out.println("fail to transform to Monster (Boss): " + type);
+                    }
+                });
+        MONSTER_TYPES.forEach(type ->
+                System.out.println("find Monster : " + type.toString())
+        );
+        BOSS_TYPES.forEach(type ->
+                System.out.println("find Monster (Boss) : " + type.toString())
+        );
     }
 
     public static <T extends Mob> T summonEntity(EntityType<T> type,
@@ -54,5 +74,9 @@ public class MissionEvent {
             return EntityType.ZOMBIE;
         }
         return MONSTER_TYPES.get(random.nextInt(MONSTER_TYPES.size()));
+    }
+
+    public static EntityType<? extends Monster> randomBossType(RandomSource random) {
+        return BOSS_TYPES.get(random.nextInt(BOSS_TYPES.size()));
     }
 }
