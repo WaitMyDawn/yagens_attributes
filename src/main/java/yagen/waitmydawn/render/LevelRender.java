@@ -1,10 +1,5 @@
 package yagen.waitmydawn.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;

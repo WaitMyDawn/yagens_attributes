@@ -81,6 +81,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> SUMMON = ITEMS.register("summon",
             () -> new SummonItem(new Item.Properties()));
 
+    public static final DeferredHolder<Item, Item> MISSION_CREATOR = ITEMS.register("mission_creator",
+            () -> new MissionCreatorItem(new Item.Properties()));
+
     public static ItemStack createForma(String slotName) {
         ItemStack stack = new ItemStack(ItemRegistry.FORMA.get());
         stack.set(ComponentRegistry.FORMA_TYPE.get(), slotName);

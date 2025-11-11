@@ -1,14 +1,20 @@
 package yagen.waitmydawn.api.events;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityBlackList;
@@ -19,6 +25,14 @@ import java.util.List;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class MissionEvent {
+    @SubscribeEvent
+    public static void exterminateEvent(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Monster monster)) return;
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
+    }
+
+
     private static boolean executed = false;
     private static final List<EntityType<? extends Monster>> MONSTER_TYPES = new ArrayList<>();
     private static final List<EntityType<? extends Monster>> BOSS_TYPES = new ArrayList<>();
