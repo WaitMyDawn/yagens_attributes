@@ -7,6 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.gui.overlays.ComboCountOverlay;
+import yagen.waitmydawn.gui.overlays.MissionOverlay;
 import yagen.waitmydawn.gui.overlays.ScanInfoOverlay;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -15,5 +16,6 @@ public class OverlayRegistry {
     public static void onRegisterOverlays(RegisterGuiLayersEvent event){
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_count"), ComboCountOverlay.instance);
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "scan_info"), ScanInfoOverlay.instance);
+        event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mission"), MissionOverlay.instance);
     }
 }

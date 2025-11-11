@@ -4,7 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -16,10 +15,11 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
-import static yagen.waitmydawn.api.events.MissionEvent.randomMonsterType;
-import static yagen.waitmydawn.api.events.MissionEvent.summonEntity;
-import static yagen.waitmydawn.api.mission.MissionCreator.getRandMissionDistance;
-import static yagen.waitmydawn.api.mission.MissionCreator.getRandMissionPosition;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import static yagen.waitmydawn.api.mission.MissionHandler.*;
 
 public class MissionCreatorItem extends Item {
     public MissionCreatorItem(Properties properties) {
@@ -35,22 +35,26 @@ public class MissionCreatorItem extends Item {
             double missionRange = 10;
             int maxProgress = 5;
             ResourceLocation levelId = level.dimension().location();
-            ResourceLocation taskId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "exterminate_shared");
+            Set<UUID> players = nearbyPlayers(player, 3);
+
+            long uuidSum = players.stream()
+                    .map(uuid -> uuid.toString().substring(0, 8))
+                    .mapToLong(hex -> Long.parseLong(hex, 16))
+                    .sum();
+            long timestamp = System.currentTimeMillis() / 1000L;
+
+            ResourceLocation taskId = ResourceLocation.fromNamespaceAndPath(
+                    YagensAttributes.MODID, "exterminate_" + uuidSum + "_" + timestamp);
 
             MissionData data = MissionData.get(((ServerLevel) level).getServer());
-            data.createSharedTask(
+            if (data.createSharedTask(
+                    (ServerLevel) level,
                     levelId,
                     taskId,
                     MissionType.EXTERMINATE,
                     missionPosition,
-                    5,distance,missionRange);
-//            data.setMissionType(levelId, taskId, MissionType.EXTERMINATE);
-//            data.setMissionPosition(levelId, taskId, missionPosition);
-//            data.setMissionRange(levelId, taskId, missionRange);
-//            data.setMaxProgress(levelId, taskId, maxProgress);
-//            data.setProgress(levelId, taskId, 0);
-//            data.setCompleted(levelId, taskId, false);
-            player.sendSystemMessage(Component.literal("Mission Created!").withStyle(ChatFormatting.DARK_PURPLE));
+                    maxProgress, distance, missionRange, players))
+                player.sendSystemMessage(Component.literal("Mission Created!").withStyle(ChatFormatting.DARK_PURPLE));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);
