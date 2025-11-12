@@ -43,6 +43,7 @@ public class MissionData extends SavedData {
         sData.missionPosition = pos;
         sData.maxProgress = maxProgress;
         sData.progress = 0;
+        sData.summonCount = 0;
         sData.distance = distance;
         sData.missionRange = missionRange;
         sData.completed = false;
@@ -92,6 +93,13 @@ public class MissionData extends SavedData {
         setDirty();
     }
 
+    public void addSummonCount(ResourceLocation level, ResourceLocation task) {
+        SharedTaskData sData = getData(level, task);
+        if (sData == null || sData.completed) return;
+        sData.summonCount++;
+        setDirty();
+    }
+
     private boolean checkCompleted(SharedTaskData sData) {
         if (sData.progress >= sData.maxProgress) {
             sData.completed = true;
@@ -132,10 +140,22 @@ public class MissionData extends SavedData {
         return (int) sData.distance / AREA_SIZE + 1;
     }
 
+    public static int getExterminateAreaEntityCount(SharedTaskData sData, int areaCount) {
+        return (int) Math.ceil(sData.maxProgress * 1.2 / areaCount);
+    }
+
     public void setMaxProgress(ResourceLocation level, ResourceLocation task, int maxProgress) {
         SharedTaskData sData = getData(level, task);
         if (sData != null) {
             sData.maxProgress = maxProgress;
+            setDirty();
+        }
+    }
+
+    public void setSummonCount(ResourceLocation level, ResourceLocation task, int summonCount) {
+        SharedTaskData sData = getData(level, task);
+        if (sData != null) {
+            sData.summonCount = summonCount;
             setDirty();
         }
     }
@@ -195,6 +215,11 @@ public class MissionData extends SavedData {
     public int getMaxProgress(ResourceLocation level, ResourceLocation task) {
         SharedTaskData sData = getData(level, task);
         return sData == null ? 0 : sData.maxProgress;
+    }
+
+    public int getSummonCount(ResourceLocation level, ResourceLocation task) {
+        SharedTaskData sData = getData(level, task);
+        return sData == null ? 0 : sData.summonCount;
     }
 
     public double getDistance(ResourceLocation level, ResourceLocation task) {
@@ -280,6 +305,7 @@ public class MissionData extends SavedData {
                 taskTag.putString("missionType", sData.missionType.getValue());
                 taskTag.putInt("progress", sData.progress);
                 taskTag.putInt("maxProgress", sData.maxProgress);
+                taskTag.putInt("summonCount", sData.summonCount);
                 taskTag.putDouble("distance", sData.distance);
                 taskTag.putDouble("missionRange", sData.missionRange);
                 taskTag.putDouble("missionX", sData.missionPosition.x);
@@ -313,6 +339,7 @@ public class MissionData extends SavedData {
                 sData.missionType = MissionType.fromString(taskTag.getString("missionType"));
                 sData.progress = taskTag.getInt("progress");
                 sData.maxProgress = taskTag.getInt("maxProgress");
+                sData.summonCount = taskTag.getInt("summonCount");
                 sData.distance = taskTag.getDouble("distance");
                 sData.missionRange = taskTag.getDouble("missionRange");
                 sData.missionPosition = new Vec3(
@@ -354,6 +381,7 @@ public class MissionData extends SavedData {
         public MissionType missionType;
         public int progress;
         public int maxProgress;
+        public int summonCount;
         public double distance;
         public double missionRange;
         public Vec3 missionPosition;

@@ -2,12 +2,16 @@ package yagen.waitmydawn.api.mission;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,6 +30,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static yagen.waitmydawn.api.events.EntityLevelBonusEvent.modifierEntityLevel;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class MissionHandler {
@@ -91,8 +97,18 @@ public class MissionHandler {
     }
 
     public static <T extends Mob> T summonExterminateEntity(EntityType<T> type,
-                                                            ServerLevel level, Vec3 pos) {
+                                                            ServerLevel level, Vec3 pos,
+                                                            ResourceLocation taskId) {
         T mob = summonEntity(type, level, pos);
+        if (mob != null) {
+            mob.addEffect(new MobEffectInstance(
+                    MobEffects.GLOWING,
+                    2000000,
+                    0,
+                    false, false));
+            mob.getPersistentData().putString("TaskId", taskId.toString());
+            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE,5,"exterminate_base_level");
+        }
         return mob;
     }
 
