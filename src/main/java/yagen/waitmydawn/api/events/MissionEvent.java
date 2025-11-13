@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
@@ -36,7 +37,8 @@ public class MissionEvent {
     public static void exterminateEvent(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Mob mob)) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
-        if (player.level().isClientSide) return;
+        Level level =player.level();
+        if (level.isClientSide) return;
 
         MinecraftServer server = Objects.requireNonNull(player.getServer());
         MissionData data = MissionData.get(server);
@@ -49,7 +51,7 @@ public class MissionEvent {
 
 //        var nearestPlayer = MissionData.nearestPlayer(server, sData);
 
-        data.addProgress(player.level().dimension().location(), taskId);
+        data.addProgress((ServerLevel) level,level.dimension().location(), taskId);
     }
 
     @SubscribeEvent

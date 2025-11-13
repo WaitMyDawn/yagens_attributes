@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
@@ -27,8 +28,8 @@ public class MissionCreatorItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player,
-                                                  InteractionHand hand) {
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player,
+                                                           @NotNull InteractionHand hand) {
         if (!level.isClientSide) {
             double distance = getRandMissionDistance(level, player);
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);

@@ -1,22 +1,32 @@
 package yagen.waitmydawn.api.mission;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.registries.LootTableRegistry;
 import yagen.waitmydawn.YagensAttributes;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 public class MissionData extends SavedData {
     private static final String DATA_NAME = YagensAttributes.MODID + "_mission";
@@ -24,7 +34,7 @@ public class MissionData extends SavedData {
     private final Map<ResourceLocation, Map<ResourceLocation, SharedTaskData>> data =
             new ConcurrentHashMap<>();
 
-    public static final int AREA_SIZE = 32;
+    public static final int AREA_SIZE = 16;
 
     public boolean createSharedTask(ServerLevel level, ResourceLocation levelId, ResourceLocation task,
                                     MissionType type, Vec3 pos, int maxProgress, double distance, double missionRange,
@@ -55,6 +65,43 @@ public class MissionData extends SavedData {
         return true;
     }
 
+    public boolean createTreasure(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
+        SharedTaskData sData = getData(levelId, taskId);
+        if (sData == null) return false;
+        Vec3 missionPos = sData.missionPosition;
+        BlockPos surface = BlockPos.containing(missionPos);
+        ChunkPos chunkPos = new ChunkPos(surface);
+
+        level.getChunk(chunkPos.x, chunkPos.z);
+
+        int y = level.dimension() == Level.NETHER
+                ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, surface.getX(), surface.getZ())
+                : level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
+
+        BlockPos chestPos = new BlockPos(surface.getX(), y + 1, surface.getZ());
+
+        if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
+
+        level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
+
+        if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
+            ResourceKey<LootTable> key;
+            switch (sData.missionType) {
+                case EXTERMINATE -> key = LootTableRegistry.MISSION_EXTERMINATE_TREASURE_KEY;
+                case DEFENSE -> key = LootTableRegistry.MISSION_DEFENSE_TREASURE_KEY;
+                case SURVIVAL -> key = LootTableRegistry.MISSION_SURVIVAL_TREASURE_KEY;
+                case ASSASSINATION -> key = LootTableRegistry.MISSION_ASSASSINATION_TREASURE_KEY;
+                default -> key = LootTableRegistry.MISSION_EXTERMINATE_TREASURE_KEY;
+            }
+            long seed = level.getRandom().nextLong();
+            chest.setLootTable(key, seed);
+
+            chest.getPersistentData().putString("TaskId", taskId.toString());
+        }
+
+        return true;
+    }
+
     public boolean anyPlayerInActiveTask(ResourceLocation level, Collection<UUID> players) {
         Map<ResourceLocation, SharedTaskData> taskMap = data.get(level);
         if (taskMap == null) return false;
@@ -76,20 +123,20 @@ public class MissionData extends SavedData {
         }
     }
 
-    public void setProgress(ResourceLocation level, ResourceLocation task, int progress) {
-        SharedTaskData sData = getData(level, task);
+    public void setProgress(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, int progress) {
+        SharedTaskData sData = getData(levelId, taskId);
         if (sData != null) {
             sData.progress = progress;
-            checkCompleted(sData);
+            checkCompleted(level, levelId, taskId, sData);
             setDirty();
         }
     }
 
-    public void addProgress(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
+    public void addProgress(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
+        SharedTaskData sData = getData(levelId, taskId);
         if (sData == null || sData.completed) return;
         sData.progress++;
-        checkCompleted(sData);
+        checkCompleted(level, levelId, taskId, sData);
         setDirty();
     }
 
@@ -100,9 +147,10 @@ public class MissionData extends SavedData {
         setDirty();
     }
 
-    private boolean checkCompleted(SharedTaskData sData) {
+    private boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
         if (sData.progress >= sData.maxProgress) {
             sData.completed = true;
+            createTreasure(level, levelId, taskId);
             return true;
         }
         return false;
@@ -142,7 +190,7 @@ public class MissionData extends SavedData {
     }
 
     public static int getExterminateAreaEntityCount(SharedTaskData sData, int areaCount) {
-        return (int) Math.ceil(sData.maxProgress * 1.2 / areaCount);
+        return (int) Math.ceil(sData.maxProgress * 1.5 / areaCount);
     }
 
     public void setMaxProgress(ResourceLocation level, ResourceLocation task, int maxProgress) {

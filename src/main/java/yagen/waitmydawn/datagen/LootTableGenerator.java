@@ -1144,6 +1144,24 @@ public class LootTableGenerator {
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
                                                     .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100))))
             );
+
+            // yagens_attributes mission treasure
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/exterminate_treasure")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))))
+            );
         }
     }
 
@@ -1505,6 +1523,15 @@ public class LootTableGenerator {
                             },
                             "yagens_attributes:entities/bosses/darkdoppelganger_additional_dark_doppelganger_loot"
                     ));
+
+            // mission treasure
+//            this.add("append_to_exterminate_treasure",
+//                    new AppendLootModifier(
+//                            new LootItemCondition[]{
+//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("yagens_attributes:chests/mission/exterminate_treasure")).build()
+//                            },
+//                            "yagens_attributes:chests/mission/additional_exterminate_treasure"
+//                    ));
         }
 
     }
