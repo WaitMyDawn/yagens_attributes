@@ -8,6 +8,7 @@ import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.config.ClientConfigs;
 
@@ -48,9 +49,30 @@ public class MissionOverlay implements LayeredDraw.Layer {
                         taskData.maxProgress,
                         taskData.missionPosition.x, taskData.missionPosition.y, taskData.missionPosition.z));
         Component distance = Component.literal(
-                String.format("SummonCount = %d  Distance = %.0f", taskData.summonCount,distanceToMissionPosition(player,taskData)));
+                String.format("SummonCount = %d  Distance = %.0f", taskData.summonCount, distanceToMissionPosition(player, taskData)));
         guiHelper.drawString(font, text, barX, barY, color, true);
         barY += font.lineHeight;
         guiHelper.drawString(font, distance, barX, barY, color, true);
+        barY += font.lineHeight;
+        drawRing(guiHelper, barX, barY, (float) taskData.progress / taskData.maxProgress);
+    }
+
+    private static final ResourceLocation RING_BG = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring_background.png");
+    private static final ResourceLocation RING_FG = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring_foreground.png");
+
+    /**
+     * draw 32x ring at (centerX,centerY)
+     *
+     * @param percent 0.0 ~ 1.0
+     */
+    private static void drawRing(GuiGraphics gui, int X, int Y, float percent) {
+        int ringSize = 32;
+        int outerR = 16;
+        int innerR = 12;
+
+        gui.blit(RING_BG,
+                X, Y,
+                0, 0, ringSize, ringSize,
+                ringSize, ringSize);
     }
 }

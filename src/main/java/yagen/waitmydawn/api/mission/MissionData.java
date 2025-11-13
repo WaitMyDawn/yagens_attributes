@@ -71,19 +71,15 @@ public class MissionData extends SavedData {
         Vec3 missionPos = sData.missionPosition;
         BlockPos surface = BlockPos.containing(missionPos);
         ChunkPos chunkPos = new ChunkPos(surface);
-
         level.getChunk(chunkPos.x, chunkPos.z);
-
         int y = level.dimension() == Level.NETHER
-                ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, surface.getX(), surface.getZ())
+                ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, surface.getX(), surface.getZ())//nether problem
                 : level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
 
-        BlockPos chestPos = new BlockPos(surface.getX(), y + 1, surface.getZ());
-
+        BlockPos chestPos = new BlockPos(surface.getX(), y, surface.getZ());
         if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
 
         level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
-
         if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
             ResourceKey<LootTable> key;
             switch (sData.missionType) {
@@ -147,8 +143,8 @@ public class MissionData extends SavedData {
         setDirty();
     }
 
-    private boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
-        if (sData.progress >= sData.maxProgress) {
+    public boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
+        if (sData.progress >= sData.maxProgress|| sData.completed) {
             sData.completed = true;
             createTreasure(level, levelId, taskId);
             return true;
@@ -233,10 +229,11 @@ public class MissionData extends SavedData {
         }
     }
 
-    public void setCompleted(ResourceLocation level, ResourceLocation task, boolean completed) {
-        SharedTaskData sData = getData(level, task);
+    public void setCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, boolean completed) {
+        SharedTaskData sData = getData(levelId, taskId);
         if (sData != null) {
             sData.completed = completed;
+            checkCompleted(level, levelId, taskId, sData);
             setDirty();
         }
     }

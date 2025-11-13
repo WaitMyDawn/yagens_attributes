@@ -1523,15 +1523,6 @@ public class LootTableGenerator {
                             },
                             "yagens_attributes:entities/bosses/darkdoppelganger_additional_dark_doppelganger_loot"
                     ));
-
-            // mission treasure
-//            this.add("append_to_exterminate_treasure",
-//                    new AppendLootModifier(
-//                            new LootItemCondition[]{
-//                                    new LootTableIdCondition.Builder(ResourceLocation.parse("yagens_attributes:chests/mission/exterminate_treasure")).build()
-//                            },
-//                            "yagens_attributes:chests/mission/additional_exterminate_treasure"
-//                    ));
         }
 
     }

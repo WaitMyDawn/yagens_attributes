@@ -87,7 +87,7 @@ public class MissionEvent {
 //                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             Vec3 eye = player.getEyePosition();
             Vec3 look = player.getViewVector(1.0F);
-            double distance = Mth.nextDouble(player.getRandom(), 8, 32);
+            double distance = Mth.nextDouble(player.getRandom(), 6, 24);
             float angle = (player.getRandom().nextFloat() * 2 - 1) * 45 * Mth.DEG_TO_RAD;
 //            player.sendSystemMessage(Component.literal("get angle : " + angle + " distance: " + distance)
 //                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
