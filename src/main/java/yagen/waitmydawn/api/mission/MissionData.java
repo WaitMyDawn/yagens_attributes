@@ -115,7 +115,8 @@ public class MissionData extends SavedData {
 
     public static double distanceToMissionPosition(Player player, SharedTaskData sData) {
 //        return player.distanceToSqr(sData.missionPosition);
-        return Math.sqrt(player.distanceToSqr(sData.missionPosition));
+        return Math.sqrt(Math.pow(player.getX() - sData.missionPosition.x, 2)
+                + Math.pow(player.getZ() - sData.missionPosition.z, 2));
     }
 
     public static Map.Entry<ServerPlayer, Double> nearestPlayer(MinecraftServer server,
@@ -133,7 +134,7 @@ public class MissionData extends SavedData {
             }
         }
         return nearest == null ? null :
-                Map.entry(nearest, Math.sqrt(minDistance));
+                Map.entry(nearest, minDistance);
     }
 
     public static int getExterminateAreaCount(SharedTaskData sData) {

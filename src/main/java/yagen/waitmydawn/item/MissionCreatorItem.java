@@ -33,7 +33,7 @@ public class MissionCreatorItem extends Item {
             double distance = getRandMissionDistance(level, player);
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);
             double missionRange = 10;
-            int maxProgress = 5;
+            int maxProgress = 40;
             ResourceLocation levelId = level.dimension().location();
             Set<UUID> players = nearbyPlayers(player, 3);
 

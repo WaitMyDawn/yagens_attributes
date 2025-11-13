@@ -66,12 +66,12 @@ public class MissionHandler {
                         System.out.println("fail to transform to Monster (Boss): " + type);
                     }
                 });
-        MONSTER_TYPES.forEach(type ->
-                System.out.println("find Monster : " + type.toString())
-        );
-        BOSS_TYPES.forEach(type ->
-                System.out.println("find Monster (Boss) : " + type.toString())
-        );
+//        MONSTER_TYPES.forEach(type ->
+//                System.out.println("find Monster : " + type.toString())
+//        );
+//        BOSS_TYPES.forEach(type ->
+//                System.out.println("find Monster (Boss) : " + type.toString())
+//        );
     }
 
     public static EntityType<? extends Monster> randomMonsterType(RandomSource random) {
@@ -90,7 +90,7 @@ public class MissionHandler {
                                                  Vec3 pos) {
         T mob = type.create(level);
         if (mob == null) return null;
-        mob.moveTo(pos.x, pos.y + 2, pos.z, level.random.nextFloat() * 360F, 0);
+        mob.moveTo(pos.x, pos.y , pos.z, level.random.nextFloat() * 360F, 0);
 
         level.addFreshEntity(mob);
         return mob;
@@ -128,7 +128,8 @@ public class MissionHandler {
         int x = Mth.floor(center.x + dx);
         int z = Mth.floor(center.z + dz);
 
-        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
+        int y = (int) player.getY();
+//                level.getHeight(Heightmap.Types.WORLD_SURFACE, x, z);
         BlockPos pos = new BlockPos(x, y, z);
 
         if (!level.getWorldBorder().isWithinBounds(pos)) {

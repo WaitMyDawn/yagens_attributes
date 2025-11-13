@@ -13,6 +13,8 @@ import yagen.waitmydawn.config.ClientConfigs;
 
 import java.util.Objects;
 
+import static yagen.waitmydawn.api.mission.MissionData.distanceToMissionPosition;
+
 public class MissionOverlay implements LayeredDraw.Layer {
     public static final MissionOverlay instance = new MissionOverlay();
 
@@ -37,16 +39,18 @@ public class MissionOverlay implements LayeredDraw.Layer {
 
         int color = ChatFormatting.GOLD.getColor();
 
-        int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? screenWidth / 2 : ClientConfigs.MISSION_HUD_X.get();
-        int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 2 : ClientConfigs.MISSION_HUD_Y.get();
+        int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? screenWidth / 5 : ClientConfigs.MISSION_HUD_X.get();
+        int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 5 : ClientConfigs.MISSION_HUD_Y.get();
         Component text = Component.literal(
-                        String.format("[%s] %d / %d  Position：x = %.0f , y = %.0f , z = %.0f",
-                                taskData.missionType,
-                                taskData.progress,
-                                taskData.maxProgress,
-                                taskData.missionPosition.x, taskData.missionPosition.y, taskData.missionPosition.z))
-                .append(Component.literal(
-                        String.format("Distance = %.0f", Math.sqrt(player.distanceToSqr(taskData.missionPosition)))));
+                String.format("[%s] %d / %d  Position：x = %.0f , y = %.0f , z = %.0f",
+                        taskData.missionType,
+                        taskData.progress,
+                        taskData.maxProgress,
+                        taskData.missionPosition.x, taskData.missionPosition.y, taskData.missionPosition.z));
+        Component distance = Component.literal(
+                String.format("SummonCount = %d  Distance = %.0f", taskData.summonCount,distanceToMissionPosition(player,taskData)));
         guiHelper.drawString(font, text, barX, barY, color, true);
+        barY += font.lineHeight;
+        guiHelper.drawString(font, distance, barX, barY, color, true);
     }
 }

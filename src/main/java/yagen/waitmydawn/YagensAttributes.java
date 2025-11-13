@@ -18,6 +18,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.events.*;
+import yagen.waitmydawn.api.mission.MissionHandler;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
@@ -65,6 +66,8 @@ public class YagensAttributes {
         NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
         NeoForge.EVENT_BUS.register(EntityLevelBonusEvent.class);
         NeoForge.EVENT_BUS.register(LevelRender.class);
+        NeoForge.EVENT_BUS.register(MissionEvent.class);
+        NeoForge.EVENT_BUS.register(MissionHandler.class);
 //        NeoForge.EVENT_BUS.register(AutoEntityTypeClassifier.class);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
