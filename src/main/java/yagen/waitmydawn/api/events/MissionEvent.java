@@ -1,15 +1,12 @@
 package yagen.waitmydawn.api.events;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,15 +46,13 @@ public class MissionEvent {
         ResourceLocation taskId = active.getKey();
         if (!mob.getPersistentData().getString("TaskId").equals(taskId.toString())) return;
 
-//        var nearestPlayer = MissionData.nearestPlayer(server, sData);
-
         data.addProgress((ServerLevel) level,level.dimension().location(), taskId);
     }
 
     @SubscribeEvent
     public static void missionEntitySummonEvent(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if(player.tickCount % 20 != 0) return;
+        if(player.tickCount % 10 != 0) return;
         Level level = player.level();
         if (level.isClientSide) return;
 
@@ -65,32 +60,21 @@ public class MissionEvent {
         MissionData data = MissionData.get(server);
         var active = data.getPlayerActiveTask(player);
         if (active == null) return;
-//        player.sendSystemMessage(Component.literal("get Active Task").withStyle(ChatFormatting.AQUA));
         MissionData.SharedTaskData sData = active.getValue();
         ResourceLocation taskId = active.getKey();
 
         var nearestPlayerMap = MissionData.nearestPlayer(server, sData);
         Player nearestPlayer = nearestPlayerMap.getKey();
         if (!(nearestPlayer == player)) return;
-//        player.sendSystemMessage(Component.literal("get NearestPlayer : " + nearestPlayer.getName())
-//                .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
         double moveDistance = (int) Math.max(sData.distance - nearestPlayerMap.getValue(), 0);
-//        player.sendSystemMessage(Component.literal(
-//                        "get moveDistance: " + moveDistance + " = " + sData.distance + "- " + nearestPlayerMap.getValue())
-//                .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
         int areaCount = getExterminateAreaCount(sData);
         int areaEntityCount = getExterminateAreaEntityCount(sData, areaCount);
         int areaCur = (int) (moveDistance / AREA_SIZE) + 1;
         if (sData.summonCount < areaEntityCount * areaCur) {
-//            player.sendSystemMessage(Component.literal(
-//                            "Before--summonCount: " + sData.summonCount + "Product: " + areaEntityCount * areaCur + " areaEntityCount: " + areaEntityCount + " areaCur: " + areaCur)
-//                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             Vec3 eye = player.getEyePosition();
             Vec3 look = player.getViewVector(1.0F);
             double distance = Mth.nextDouble(player.getRandom(), 6, 24);
             float angle = (player.getRandom().nextFloat() * 2 - 1) * 45 * Mth.DEG_TO_RAD;
-//            player.sendSystemMessage(Component.literal("get angle : " + angle + " distance: " + distance)
-//                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             Vec3 offset = new Vec3(
                     look.x * Math.cos(angle) - look.z * Math.sin(angle),
                     0,
@@ -99,8 +83,6 @@ public class MissionEvent {
             Vec3 spawnPos = eye.add(offset);
             Vec3 onSurface = null;
             BlockPos surface = BlockPos.containing(spawnPos.x, 0, spawnPos.z);
-//            player.sendSystemMessage(Component.literal("get spawnPos: " + spawnPos + " surface: " + surface)
-//                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
             if (level.dimension() == Level.NETHER && y > 125) {//nether floor
                 int startY = Mth.floor(spawnPos.y);
@@ -120,12 +102,7 @@ public class MissionEvent {
             }
             if (y - spawnPos.y >= 12) return;// too high
             onSurface = Vec3.atCenterOf(new BlockPos(surface.getX(), y, surface.getZ()));
-//            player.sendSystemMessage(Component.literal("get onSurface: " + onSurface)
-//                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             if (!level.getWorldBorder().isWithinBounds(onSurface)) return;
-            //if (!level.noCollision(AABB.ofSize(onSurface, 0.8, 1.8, 0.8))) return;
-//            player.sendSystemMessage(Component.literal("after check!!! ")
-//                    .withColor(Mth.nextInt(player.getRandom(), 0, 0xFFFFFF)));
             ServerPlayer serverPlayer = (ServerPlayer) player;
             Mob mob = summonExterminateEntity(randomMonsterType(serverPlayer.getRandom()), serverPlayer.serverLevel(), onSurface, taskId);
             mob.setTarget(player);

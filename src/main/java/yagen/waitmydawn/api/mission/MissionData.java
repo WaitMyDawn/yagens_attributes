@@ -100,7 +100,7 @@ public class MissionData extends SavedData {
             ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
             if (player != null) {
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_treasure_created")
-                        .append(Component.literal(String.valueOf(chestPos)).withStyle(ChatFormatting.GOLD)));
+                        .append(Component.literal("["+ chestPos +"]").withStyle(ChatFormatting.GOLD)));
             }
         }
 

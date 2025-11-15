@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.config.ClientConfigs;
@@ -38,23 +37,49 @@ public class MissionOverlay implements LayeredDraw.Layer {
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
 
-        int color = ChatFormatting.GOLD.getColor();
+        int color = ChatFormatting.WHITE.getColor();
 
-        int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? screenWidth / 5 : ClientConfigs.MISSION_HUD_X.get();
+        int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? 0 : ClientConfigs.MISSION_HUD_X.get();
         int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 5 : ClientConfigs.MISSION_HUD_Y.get();
-        Component text = Component.literal(
-                String.format("[%s] %d / %d  Position：x = %.0f , y = %.0f , z = %.0f",
-                        taskData.missionType,
-                        taskData.progress,
-                        taskData.maxProgress,
+        Component type = Component.literal(
+                String.format("%s",
+                        taskData.missionType));
+        Component position = Component.literal(
+                String.format("[%.0f,%.0f,%.0f]",
                         taskData.missionPosition.x, taskData.missionPosition.y, taskData.missionPosition.z));
+        Component progressLeft = Component.literal(
+                String.format("%d", taskData.maxProgress - taskData.progress));
+        Component curMax = Component.literal(
+                String.format("Cur/Max : %d/%d", taskData.progress, taskData.maxProgress));
+        Component summonCount = Component.literal(
+                String.format("SummonCount = %d", taskData.summonCount));
         Component distance = Component.literal(
-                String.format("SummonCount = %d  Distance = %.0f", taskData.summonCount, distanceToMissionPosition(player, taskData)));
-        guiHelper.drawString(font, text, barX, barY, color, true);
+                String.format("Distance = %.0f", distanceToMissionPosition(player, taskData)));
+        int typeWidth = font.width(type);
+        int positionWidth = font.width(position);
+        int curMaxWidth = font.width(curMax);
+        int summonCountWidth = font.width(summonCount);
+        int distanceWidth = font.width(distance);
+        int maxWidth = Math.max(32, typeWidth);
+        if(maxWidth<positionWidth) maxWidth = positionWidth;
+        if (maxWidth < curMaxWidth) maxWidth = curMaxWidth;
+        if (maxWidth < summonCountWidth) maxWidth = summonCountWidth;
+        if (maxWidth < distanceWidth) maxWidth = distanceWidth;
+
+        guiHelper.drawString(font, type, barX + (maxWidth - typeWidth) / 2, barY, color, true);
         barY += font.lineHeight;
-        guiHelper.drawString(font, distance, barX, barY, color, true);
+        guiHelper.drawString(font, position, barX + (maxWidth - positionWidth) / 2, barY, color, true);
         barY += font.lineHeight;
-        drawRing(guiHelper, barX, barY, Math.min(36, taskData.progress * 36 / taskData.maxProgress));
+        drawRing(guiHelper, barX + (maxWidth - 32) / 2, barY, Math.min(36, taskData.progress * 36 / taskData.maxProgress));
+        barY = barY + (32 - font.lineHeight) / 2;
+        guiHelper.drawString(font, progressLeft, barX+ (maxWidth - 32) / 2 + (32 - font.width(progressLeft)) / 2, barY, color, true);
+        barY += font.lineHeight;
+        barY = barY + (32 - font.lineHeight) / 2;
+        guiHelper.drawString(font, curMax, barX + (maxWidth - curMaxWidth) / 2, barY, color, true);
+        barY += font.lineHeight;
+        guiHelper.drawString(font, distance, barX + (maxWidth - distanceWidth) / 2, barY, color, true);
+        barY += font.lineHeight;
+        guiHelper.drawString(font, summonCount, barX + (maxWidth - summonCountWidth) / 2, barY, color, true);
     }
 
     private static final ResourceLocation RING = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring.png");
