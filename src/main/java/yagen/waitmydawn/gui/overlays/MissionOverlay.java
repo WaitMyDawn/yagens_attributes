@@ -54,25 +54,34 @@ public class MissionOverlay implements LayeredDraw.Layer {
         barY += font.lineHeight;
         guiHelper.drawString(font, distance, barX, barY, color, true);
         barY += font.lineHeight;
-        drawRing(guiHelper, barX, barY, (float) taskData.progress / taskData.maxProgress);
+        drawRing(guiHelper, barX, barY, Math.min(36, taskData.progress * 36 / taskData.maxProgress));
     }
 
-    private static final ResourceLocation RING_BG = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring_background.png");
-    private static final ResourceLocation RING_FG = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring_foreground.png");
+    private static final ResourceLocation RING = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring.png");
 
     /**
      * draw 32x ring at (centerX,centerY)
      *
-     * @param percent 0.0 ~ 1.0
+     * @param part 0 ~ 36
      */
-    private static void drawRing(GuiGraphics gui, int X, int Y, float percent) {
-        int ringSize = 32;
-        int outerR = 16;
-        int innerR = 12;
+    private static void drawRing(GuiGraphics gui, int X, int Y, int part) {
+        int TEXTURE_WIDTH = 192;
+        int TEXTURE_HEIGHT = 224;
+        part--;
+        int partX;
+        int partY;
+        if (part == -1) {
+            partX = 0;
+            partY = 6;
+        } else {
+            partX = part % 6;
+            partY = part / 6;
+        }
 
-        gui.blit(RING_BG,
+        gui.blit(RING,
                 X, Y,
-                0, 0, ringSize, ringSize,
-                ringSize, ringSize);
+                partX * 32, partY * 32,
+                32, 32,
+                TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 }

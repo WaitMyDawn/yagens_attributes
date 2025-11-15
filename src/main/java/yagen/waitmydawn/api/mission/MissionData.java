@@ -1,5 +1,6 @@
 package yagen.waitmydawn.api.mission;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
@@ -93,6 +94,14 @@ public class MissionData extends SavedData {
             chest.setLootTable(key, seed);
 
             chest.getPersistentData().putString("TaskId", taskId.toString());
+        }
+
+        for (UUID uuid : sData.players) {
+            ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
+            if (player != null) {
+                player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_treasure_created")
+                        .append(Component.literal(String.valueOf(chestPos)).withStyle(ChatFormatting.GOLD)));
+            }
         }
 
         return true;
