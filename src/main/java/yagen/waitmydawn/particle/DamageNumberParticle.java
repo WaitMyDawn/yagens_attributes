@@ -94,7 +94,7 @@ public class DamageNumberParticle extends Particle {
         pose.translate(px, py, pz);
 
         float distance = (float) cam.getPosition().distanceTo(new Vec3(x, y, z));
-        float distanceScale = fontScale * Math.max(1f, distance / ClientConfigs.DAMAGE_NUMBER_ENLARGE.get());
+        float distanceScale = (float) (fontScale * Math.max(1f, distance / ClientConfigs.DAMAGE_NUMBER_ENLARGE.get()));
 
         pose.mulPose(cam.rotation());
         pose.scale(distanceScale, -distanceScale, distanceScale);

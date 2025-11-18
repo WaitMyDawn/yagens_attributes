@@ -97,7 +97,7 @@
   "warframe.yagens_attributes.pre_shoot_armor_mod.3": "When the Pain level is greater than 2 and Collaborative Proficiency is present, the critical chance will be increased by Pain level and Combo level.",
 
   "key.yagens_attributes.group_1": "Yagen's Attributes-General'",
-  "key.yagens_attributes.combo_count": "Open Combo Count Configuration",
+  "key.yagens_attributes.client_configs_screen": "Open Configuration",
   "key.yagens_attributes.ability_1": "Active Ability 1",
   "key.yagens_attributes.ability_2": "Active Ability 2",
   "rarity.yagens_attributes.common": "Common",
@@ -118,11 +118,19 @@
   "ui.yagens_attributes.conflict": "Conflict Mod: %s",
   "ui.yagens_attributes.conflict_riven": "The Riven has already been equipped. No new Rivens can be added.",
   "ui.yagens_attributes.combo_count": "%dx/%d",
+  "ui.yagens_attributes.open_info": "Open ",
   "ui.yagens_attributes.combo_position_title": "Configuration of Combo Count",
+  "ui.yagens_attributes.mission_position_title": "Configuration of Mission Progress",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
+  "ui.yagens_attributes.mission_position_explain.1": "Press Left Click to drag Mission Progress Area, ESC to save",
+  "ui.yagens_attributes.mission_create_failed": "Mission create failed!",
+  "ui.yagens_attributes.mission_treasure_created": "Mission treasure has been created: ",
 
   "overlay.yagens_attributes.not_valid_ability": "Overloaded with Abilities, unable to active",
   "overlay.yagens_attributes.ability_cooldown": "Ability %d %s Cooldown %d Seconds",
+  "overlay.yagens_attributes.ring_cur_max": "Cur/Max : %d/%d",
+  "overlay.yagens_attributes.ring_summon_count": "SummonCount = %d",
+  "overlay.yagens_attributes.ring_distance": "Distance = %.0f",
 
   "mod.yagens_attributes.none": "None",
   "mod.yagens_attributes.riven_tool_mod": "Riven",

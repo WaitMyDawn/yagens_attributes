@@ -15,7 +15,7 @@ public class MissionClearCommand {
                             MissionData data = MissionData.get(ctx.getSource().getServer());
                             data.clearAll();
                             ctx.getSource().sendSuccess(
-                                    () -> Component.literal("clear missions finished!"),
+                                    () -> Component.literal("Clear missions finished!"),
                                     true);
                             return 1;
                         })

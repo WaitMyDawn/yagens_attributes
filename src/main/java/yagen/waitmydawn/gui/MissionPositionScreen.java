@@ -3,11 +3,15 @@ package yagen.waitmydawn.gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
+import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.config.ClientConfigs;
 
-public class ComboPositionScreen extends Screen {
+public class MissionPositionScreen extends Screen {
 
+    private GuiGraphics gfx;
     private int dragStartX, dragStartY;
     private boolean dragging = false;
     private int tempX = -1;
@@ -15,27 +19,34 @@ public class ComboPositionScreen extends Screen {
 
     private final Screen parent;
 
-    public ComboPositionScreen(Screen parent) {
-        super(Component.translatable("ui.yagens_attributes.combo_position_title"));
+    public MissionPositionScreen(Screen parent) {
+        super(Component.translatable("ui.yagens_attributes.mission_position_title"));
         this.parent = parent;
     }
 
+    private static final ResourceLocation AREA = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/mission_info_area.png");
+
     @Override
-    public void render(GuiGraphics gfx, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphics gfx, int mouseX, int mouseY, float partialTick) {
         renderBackground(gfx, mouseX, mouseY, partialTick);
         super.render(gfx, mouseX, mouseY, partialTick);
-
+        this.gfx = gfx;
         int x, y;
         if (tempX == -1) {
-            x = ClientConfigs.COMBO_HUD_X.get() == -1 ? width / 2 + 70 : ClientConfigs.COMBO_HUD_X.get();
-            y = ClientConfigs.COMBO_HUD_Y.get() == -1 ? height - 40 : ClientConfigs.COMBO_HUD_Y.get();
+            x = ClientConfigs.MISSION_HUD_X.get() == -1 ? 0 : ClientConfigs.MISSION_HUD_X.get();
+            y = ClientConfigs.MISSION_HUD_Y.get() == -1 ? height / 4 : ClientConfigs.MISSION_HUD_Y.get();
         } else {
             x = tempX;
             y = tempY;
         }
-        gfx.drawString(font, "3x/32  120", x, y, 0xFFFFFF, true);
-        gfx.drawString(font, Component.translatable("ui.yagens_attributes.combo_position_explain.1"),
-                (width-font.width(Component.translatable("ui.yagens_attributes.combo_position_explain.1"))) / 2,
+
+        gfx.blit(AREA,
+                x, y,
+                0, 0,
+                96, 112,
+                96, 112);
+        gfx.drawString(font, Component.translatable("ui.yagens_attributes.mission_position_explain.1"),
+                (width - font.width(Component.translatable("ui.yagens_attributes.mission_position_explain.1"))) / 2,
                 20, 0xFFFF55, true);
     }
 
@@ -44,13 +55,13 @@ public class ComboPositionScreen extends Screen {
         if (btn == 0) {
             int x, y;
             if (tempX == -1) {
-                x = ClientConfigs.COMBO_HUD_X.get() == -1 ? width / 2 + 70 : ClientConfigs.COMBO_HUD_X.get();
-                y = ClientConfigs.COMBO_HUD_Y.get() == -1 ? height - 40 : ClientConfigs.COMBO_HUD_Y.get();
+                x = ClientConfigs.MISSION_HUD_X.get() == -1 ? 0 : ClientConfigs.MISSION_HUD_X.get();
+                y = ClientConfigs.MISSION_HUD_Y.get() == -1 ? height / 4 : ClientConfigs.MISSION_HUD_Y.get();
             } else {
                 x = tempX;
                 y = tempY;
             }
-            if (mx >= x && mx <= x + 100 && my >= y && my <= y + 10) {
+            if (mx >= x && mx <= x + 96 && my >= y && my <= y + 112) {
                 dragging = true;
                 dragStartX = (int) mx - x;
                 dragStartY = (int) my - y;
@@ -84,8 +95,8 @@ public class ComboPositionScreen extends Screen {
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            ClientConfigs.COMBO_HUD_X.set(tempX);
-            ClientConfigs.COMBO_HUD_Y.set(tempY);
+            ClientConfigs.MISSION_HUD_X.set(tempX);
+            ClientConfigs.MISSION_HUD_Y.set(tempY);
             ClientConfigs.SPEC.save();
             tempX = -1;
             tempY = -1;

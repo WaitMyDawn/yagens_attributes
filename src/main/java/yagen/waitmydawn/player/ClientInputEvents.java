@@ -1,16 +1,9 @@
 package yagen.waitmydawn.player;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
@@ -25,7 +18,7 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
-import yagen.waitmydawn.gui.ComboPositionScreen;
+import yagen.waitmydawn.gui.ClientConfigsScreen;
 import yagen.waitmydawn.network.AddBladeStormEffectPacket;
 import yagen.waitmydawn.network.AddNourishEffectPacket;
 import yagen.waitmydawn.network.ExecuteBladeStormPacket;
@@ -34,9 +27,7 @@ import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.RayUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientInputEvents {
@@ -51,7 +42,6 @@ public class ClientInputEvents {
             ABILITY_2_STATE
     };
 
-    private static int useKeyId = Integer.MIN_VALUE;
     public static boolean isUseKeyDown;
     public static boolean isShiftKeyDown;
 
@@ -71,7 +61,7 @@ public class ClientInputEvents {
         }
 
         if (COMBO_COUNT_STATE.wasPressed() && minecraft.screen == null) {
-            minecraft.setScreen(new ComboPositionScreen());
+            minecraft.setScreen(new ClientConfigsScreen());
         }
 
         boolean isAbility = false;

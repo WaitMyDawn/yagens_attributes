@@ -40,7 +40,7 @@ public class MissionOverlay implements LayeredDraw.Layer {
         int color = ChatFormatting.WHITE.getColor();
 
         int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? 0 : ClientConfigs.MISSION_HUD_X.get();
-        int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 5 : ClientConfigs.MISSION_HUD_Y.get();
+        int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 4 : ClientConfigs.MISSION_HUD_Y.get();
         Component type = Component.literal(
                 String.format("%s",
                         taskData.missionType));
@@ -49,12 +49,12 @@ public class MissionOverlay implements LayeredDraw.Layer {
                         taskData.missionPosition.x, taskData.missionPosition.y, taskData.missionPosition.z));
         Component progressLeft = Component.literal(
                 String.format("%d", taskData.maxProgress - taskData.progress));
-        Component curMax = Component.literal(
-                String.format("Cur/Max : %d/%d", taskData.progress, taskData.maxProgress));
-        Component summonCount = Component.literal(
-                String.format("SummonCount = %d", taskData.summonCount));
-        Component distance = Component.literal(
-                String.format("Distance = %.0f", distanceToMissionPosition(player, taskData)));
+        Component curMax = Component.translatable(
+                "overlay.yagens_attributes.ring_cur_max", taskData.progress, taskData.maxProgress);
+        Component summonCount = Component.translatable(
+                "overlay.yagens_attributes.ring_summon_count", taskData.summonCount);
+        Component distance = Component.translatable(
+                "overlay.yagens_attributes.ring_distance",  String.format("%.0f",distanceToMissionPosition(player, taskData)));
         int typeWidth = font.width(type);
         int positionWidth = font.width(position);
         int curMaxWidth = font.width(curMax);
