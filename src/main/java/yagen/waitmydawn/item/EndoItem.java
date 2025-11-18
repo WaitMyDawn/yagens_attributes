@@ -16,14 +16,13 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 import static yagen.waitmydawn.api.mission.MissionHandler.*;
 
-public class MissionCreatorItem extends Item {
-    public MissionCreatorItem(Properties properties) {
+public class EndoItem extends Item {
+    public EndoItem(Properties properties) {
         super(properties);
     }
 

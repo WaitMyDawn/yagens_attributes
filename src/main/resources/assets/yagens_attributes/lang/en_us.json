@@ -123,6 +123,7 @@
   "ui.yagens_attributes.mission_position_title": "Configuration of Mission Progress",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
   "ui.yagens_attributes.mission_position_explain.1": "Press Left Click to drag Mission Progress Area, ESC to save",
+  "ui.yagens_attributes.damage_number_enlarge": "Damage Number Enlarge",
   "ui.yagens_attributes.mission_create_failed": "Mission create failed!",
   "ui.yagens_attributes.mission_treasure_created": "Mission treasure has been created: ",
 

@@ -123,6 +123,7 @@
   "ui.yagens_attributes.mission_position_title": "任务进度配置界面",
   "ui.yagens_attributes.combo_position_explain.1": "按住左键拖拽，ESC自动保存",
   "ui.yagens_attributes.mission_position_explain.1": "按住左键拖拽，ESC自动保存",
+  "ui.yagens_attributes.damage_number_enlarge": "Damage Number Enlarge",
   "ui.yagens_attributes.mission_create_failed": "任务创建失败！",
   "ui.yagens_attributes.mission_treasure_created": "任务战利品已生成：",
 
