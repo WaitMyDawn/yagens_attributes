@@ -30,30 +30,28 @@ public class EndoItem extends Item {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player,
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
                                                            @NotNull InteractionHand hand) {
+        ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(player.getItemInHand(hand));
+        if (!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
+                || endoInfo == ComponentRegistry.EndoInfo.EMPTY) {
+            player.sendSystemMessage(Component.literal("It is not supported now!"));
+            return InteractionResultHolder.fail(player.getItemInHand(hand));
+        }
         if (!level.isClientSide) {
-            ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(player.getItemInHand(hand));
-            if (!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
-                    || endoInfo == ComponentRegistry.EndoInfo.EMPTY) {
-                return InteractionResultHolder.fail(player.getItemInHand(hand));
-            }
             double distance = getRandMissionDistance(level, player, endoInfo.level(), endoInfo.missionType());
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);
             double missionRange = 10;
             int maxProgress = getRandMaxProgress(level, player, endoInfo.level(), endoInfo.missionType());
             ResourceLocation levelId = level.dimension().location();
             Set<UUID> players = nearbyPlayers(player, 3);
-
             long uuidSum = players.stream()
-                    .map(uuid -> uuid.toString().substring(0, 8))
+                    .map(uuid -> uuid.toString().substring(0, 4))
                     .mapToLong(hex -> Long.parseLong(hex, 16))
                     .sum();
             long timestamp = System.currentTimeMillis() / 1000L;
-
             ResourceLocation taskId = ResourceLocation.fromNamespaceAndPath(
-                    YagensAttributes.MODID, endoInfo.missionType()+"_" + uuidSum + "_" + timestamp);
-
+                    YagensAttributes.MODID, endoInfo.missionType().toLowerCase() + "_" + uuidSum + "_" + timestamp);
             MissionData data = MissionData.get(((ServerLevel) level).getServer());
             if (data.createSharedTask(
                     (ServerLevel) level,
@@ -62,7 +60,7 @@ public class EndoItem extends Item {
                     MissionType.fromString(endoInfo.missionType()),
                     missionPosition,
                     maxProgress, distance, missionRange, players))
-                player.sendSystemMessage(Component.literal("Mission Created!").withStyle(ChatFormatting.DARK_PURPLE));
+                player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);
@@ -73,10 +71,12 @@ public class EndoItem extends Item {
                                 @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(stack);
         if (endoInfo != ComponentRegistry.EndoInfo.EMPTY) {
-            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip1", endoInfo.level() + 1)
+            tooltip.add(Component.translatable("item.yagens_attributes.endo.tooltip1", endoInfo.level() + 1)
                     .withStyle(ChatFormatting.AQUA));
-            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip2", endoInfo.missionType())
+            tooltip.add(Component.translatable("item.yagens_attributes.endo.tooltip2", endoInfo.missionType())
                     .withStyle(ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("item.yagens_attributes.endo.tooltip3", endoInfo.level() + 1)
+                    .withStyle(ChatFormatting.GOLD));
         }
     }
 }

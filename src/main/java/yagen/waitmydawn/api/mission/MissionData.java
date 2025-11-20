@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -27,6 +29,9 @@ import yagen.waitmydawn.YagensAttributes;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static yagen.waitmydawn.api.mission.MissionHandler.getCorrectTreasurePos;
 
 
 public class MissionData extends SavedData {
@@ -70,16 +75,13 @@ public class MissionData extends SavedData {
         SharedTaskData sData = getData(levelId, taskId);
         if (sData == null) return false;
         Vec3 missionPos = sData.missionPosition;
-        BlockPos surface = BlockPos.containing(missionPos);
-        ChunkPos chunkPos = new ChunkPos(surface);
+        BlockPos missionPosBlock = BlockPos.containing(missionPos);
+        ChunkPos chunkPos = new ChunkPos(missionPosBlock);
         level.getChunk(chunkPos.x, chunkPos.z);
-        int y = level.dimension() == Level.NETHER
-                ? level.getHeight(Heightmap.Types.MOTION_BLOCKING, surface.getX(), surface.getZ())//nether problem
-                : level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
 
-        BlockPos chestPos = new BlockPos(surface.getX(), y, surface.getZ());
+        BlockPos basicChestPos = new BlockPos(missionPosBlock);
+        BlockPos chestPos=getCorrectTreasurePos(level,basicChestPos);
         if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
-
         level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
         if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
             ResourceKey<LootTable> key;
@@ -100,7 +102,7 @@ public class MissionData extends SavedData {
             ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
             if (player != null) {
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_treasure_created")
-                        .append(Component.literal("["+ chestPos +"]").withStyle(ChatFormatting.GOLD)));
+                        .append(Component.literal("[" + chestPos + "]").withStyle(ChatFormatting.GOLD)));
             }
         }
 
@@ -153,18 +155,38 @@ public class MissionData extends SavedData {
     }
 
     public boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
-        if (sData.progress >= sData.maxProgress|| sData.completed) {
+        if (sData.progress >= sData.maxProgress || sData.completed) {
             sData.completed = true;
+            clearSummonedEntitiesByTaskId(level, taskId);
             createTreasure(level, levelId, taskId);
             return true;
         }
         return false;
     }
 
-//    public double distanceToMissionPosition(SharedTaskData sData) {
-//        Vec3 missionPos = sData.missionPosition;
-//
-//    }
+    public static int clearSummonedEntitiesByTaskId(ServerLevel level, ResourceLocation taskId) {
+        AtomicInteger clearCount = new AtomicInteger();
+        level.getAllEntities().forEach(entity -> {
+            if (!(entity instanceof Monster monster)) return;
+            if (monster.getPersistentData().getString("TaskId").equals(taskId.toString())) {
+                monster.discard();
+                clearCount.getAndIncrement();
+            }
+        });
+        return clearCount.get();
+    }
+
+    public static int clearSummonedEntities(ServerLevel level) {
+        AtomicInteger clearCount = new AtomicInteger();
+        level.getAllEntities().forEach(entity -> {
+            if (!(entity instanceof Mob monster)) return;
+            if (!monster.getPersistentData().getString("TaskId").equals("")) {
+                monster.discard();
+                clearCount.getAndIncrement();
+            }
+        });
+        return clearCount.get();
+    }
 
     public static double distanceToMissionPosition(Player player, SharedTaskData sData) {
 //        return player.distanceToSqr(sData.missionPosition);

@@ -3,7 +3,9 @@ package yagen.waitmydawn.api.mission;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,6 +17,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -31,6 +35,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static yagen.waitmydawn.api.events.EntityLevelBonusEvent.modifierEntityLevel;
+import static yagen.waitmydawn.api.mission.MissionData.distanceToMissionPosition;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class MissionHandler {
@@ -169,6 +174,109 @@ public class MissionHandler {
         }
 
         return Vec3.atCenterOf(pos);
+    }
+
+    public static BlockPos getBasicSpawnBlockPosByEye(Player player) {
+        Vec3 eye = player.getEyePosition();
+        Vec3 look = player.getViewVector(1.0F);
+        double distance = Mth.nextDouble(player.getRandom(), 6, 24);
+        float angle = (player.getRandom().nextFloat() * 2 - 1) * 45 * Mth.DEG_TO_RAD;
+        Vec3 offset = new Vec3(
+                look.x * Math.cos(angle) - look.z * Math.sin(angle),
+                0,
+                look.x * Math.sin(angle) + look.z * Math.cos(angle))
+                .normalize().scale(distance);
+        Vec3 basicSpawnPos = eye.add(offset);
+        return BlockPos.containing(basicSpawnPos.x, player.getY(), basicSpawnPos.z);
+    }
+
+    public static BlockPos getBasicSpawnBlockPosByArea(Vec3 missionPosition, double missionRange, Player player) {
+        double distance = Mth.nextDouble(player.getRandom(), missionRange / 2, missionRange);
+        float angle = player.getRandom().nextFloat() * Mth.DEG_TO_RAD;
+        Vec3 offset = new Vec3(
+                Math.cos(angle),
+                0,
+                Math.sin(angle))
+                .normalize().scale(distance);
+        return BlockPos.containing(missionPosition.add(offset));
+    }
+
+    public static Vec3 getCorrectSpawnPos(Level level, BlockPos basicSpawnBlock) {
+        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
+        Vec3 spawnPos;
+        if (level.dimension() == Level.NETHER && y > 125) {//nether floor
+            int startY = basicSpawnBlock.getY();
+            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+
+            for (int yi = startY; yi <= startY + 12; yi++) {
+                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                BlockState below = level.getBlockState(m.below());
+                BlockState here = level.getBlockState(m);
+
+                if (below.canOcclude() && here.isAir() && level.noCollision(
+                        AABB.ofSize(Vec3.atCenterOf(m).add(0, 0.5, 0), 0.8, 1.8, 0.8))) {
+                    spawnPos = Vec3.atCenterOf(m);
+                    return spawnPos;
+                }
+            }
+        }
+        if (y - basicSpawnBlock.getY() > 12) return null;// too high or air land blocked
+        spawnPos = Vec3.atCenterOf(new BlockPos(basicSpawnBlock.getX(), y, basicSpawnBlock.getZ()));
+        return spawnPos;
+    }
+    public static BlockPos getCorrectTreasurePos(Level level, BlockPos basicSpawnBlock) {
+        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
+        BlockPos spawnPos;
+        int startY = basicSpawnBlock.getY();
+        if (level.dimension() == Level.NETHER && y > 125) {//nether floor
+            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+
+            for (int yi = startY; yi <= 124; yi++) {
+                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                BlockState here = level.getBlockState(m);
+                if (here.isAir()) {
+                    spawnPos = m;
+                    return spawnPos;
+                }
+            }
+        }
+        spawnPos=basicSpawnBlock;
+        if(level.getBlockState(basicSpawnBlock).isAir()) return spawnPos;
+        else{
+            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+
+            for (int yi = startY; yi <= startY+64; yi++) {
+                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                BlockState here = level.getBlockState(m);
+                if (here.isAir()) {
+                    spawnPos = m;
+                    return spawnPos;
+                }
+            }
+            for (int yi = startY; yi >= startY-32; yi--) {
+                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                BlockState here = level.getBlockState(m);
+                if (here.isAir()) {
+                    spawnPos = m;
+                    return spawnPos;
+                }
+            }
+        }
+        return spawnPos;
+    }
+
+    public static boolean isAllInMissionPosition(MinecraftServer server, MissionData.SharedTaskData sData) {
+        double maxDistance = 0;
+        for (UUID uuid : sData.players) {
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+            if (player == null) continue;
+            double distance = distanceToMissionPosition(player, sData);
+            if (distance > maxDistance) {
+                if (distance > sData.missionRange) return false;
+                maxDistance = distance;
+            }
+        }
+        return true;
     }
 
     public static Set<UUID> nearbyPlayers(Player creator, double radius) {

@@ -23,6 +23,7 @@
   "item.yagens_attributes.forma.tooltip2": "右键以改变极性",
   "item.yagens_attributes.endo.tooltip1": "任务等级: %d",
   "item.yagens_attributes.endo.tooltip2": "任务类型: %s",
+  "item.yagens_attributes.endo.tooltip3": "右键以开启内源试炼",
   "item.yagens_attributes.unknown_riven": "未知裂罅",
   "item.yagens_attributes.unknown_riven.tooltip1": "右键以揭示裂罅",
   "item.yagens_attributes.kuva": "赤毒",
@@ -128,6 +129,7 @@
   "ui.yagens_attributes.damage_number_enlarge": "Damage Number Enlarge",
   "ui.yagens_attributes.mission_create_failed": "任务创建失败！",
   "ui.yagens_attributes.mission_treasure_created": "任务战利品已生成：",
+  "ui.yagens_attributes.mission_created": "任务已创建！",
 
   "overlay.yagens_attributes.not_valid_ability": "天赋超载，无法使用",
   "overlay.yagens_attributes.ability_cooldown": "天赋%d %s 冷却%d秒",
