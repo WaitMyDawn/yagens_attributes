@@ -9,13 +9,16 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
+import yagen.waitmydawn.registries.ComponentRegistry;
 
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,10 +33,15 @@ public class EndoItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player,
                                                            @NotNull InteractionHand hand) {
         if (!level.isClientSide) {
-            double distance = getRandMissionDistance(level, player);
+            ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(player.getItemInHand(hand));
+            if (!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
+                    || endoInfo == ComponentRegistry.EndoInfo.EMPTY) {
+                return InteractionResultHolder.fail(player.getItemInHand(hand));
+            }
+            double distance = getRandMissionDistance(level, player, endoInfo.level(), endoInfo.missionType());
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);
             double missionRange = 10;
-            int maxProgress = 40;
+            int maxProgress = getRandMaxProgress(level, player, endoInfo.level(), endoInfo.missionType());
             ResourceLocation levelId = level.dimension().location();
             Set<UUID> players = nearbyPlayers(player, 3);
 
@@ -44,19 +52,31 @@ public class EndoItem extends Item {
             long timestamp = System.currentTimeMillis() / 1000L;
 
             ResourceLocation taskId = ResourceLocation.fromNamespaceAndPath(
-                    YagensAttributes.MODID, "exterminate_" + uuidSum + "_" + timestamp);
+                    YagensAttributes.MODID, endoInfo.missionType()+"_" + uuidSum + "_" + timestamp);
 
             MissionData data = MissionData.get(((ServerLevel) level).getServer());
             if (data.createSharedTask(
                     (ServerLevel) level,
                     levelId,
                     taskId,
-                    MissionType.EXTERMINATE,
+                    MissionType.fromString(endoInfo.missionType()),
                     missionPosition,
                     maxProgress, distance, missionRange, players))
                 player.sendSystemMessage(Component.literal("Mission Created!").withStyle(ChatFormatting.DARK_PURPLE));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
+                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(stack);
+        if (endoInfo != ComponentRegistry.EndoInfo.EMPTY) {
+            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip1", endoInfo.level() + 1)
+                    .withStyle(ChatFormatting.AQUA));
+            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip2", endoInfo.missionType())
+                    .withStyle(ChatFormatting.AQUA));
+        }
     }
 }

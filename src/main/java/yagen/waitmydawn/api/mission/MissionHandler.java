@@ -15,7 +15,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -90,7 +89,7 @@ public class MissionHandler {
                                                  Vec3 pos) {
         T mob = type.create(level);
         if (mob == null) return null;
-        mob.moveTo(pos.x, pos.y , pos.z, level.random.nextFloat() * 360F, 0);
+        mob.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
 
         level.addFreshEntity(mob);
         return mob;
@@ -107,16 +106,41 @@ public class MissionHandler {
                     0,
                     false, false));
             mob.getPersistentData().putString("TaskId", taskId.toString());
-            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE,5,"exterminate_base_level");
+            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE, 5, "exterminate_base_level");
         }
         return mob;
     }
 
-    private static final int[] exterminateDistance = {400, 800, 1200};
+    private static final int[] normalDistance = {400, 800, 1200};
+    private static final int[] shortDistance = {100, 200, 400};
+    private static final int[] exterminateMaxProgress = {40, 80, 120};
+    private static final int[] waveMaxProgress = {5, 10, 20};
 
-    public static double getRandMissionDistance(Level level, Player player) {
-        // difficulty from player, as a test is 0->400
-        return (0.8 + player.getRandom().nextDouble() / 2.5) * exterminateDistance[0];
+    public static double getRandMissionDistance(Level level, Player player, int missionLevel, String missionType) {
+        int distance;
+        switch (missionType) {
+            case "Defense", "Survival" -> {
+                distance = shortDistance[missionLevel];
+            }
+            default -> {
+                distance = normalDistance[missionLevel];
+            }
+        }
+        return (0.8 + player.getRandom().nextDouble() / 2.5) * distance;
+    }
+
+    public static int getRandMaxProgress(Level level, Player player, int missionLevel, String missionType) {
+        int maxProgress;
+        switch (missionType) {
+            case "Defense", "Survival" -> {
+                maxProgress = waveMaxProgress[missionLevel];
+                return maxProgress;
+            }
+            default -> {
+                maxProgress = exterminateMaxProgress[missionLevel];
+            }
+        }
+        return (int) ((0.8 + player.getRandom().nextDouble() / 2.5) * maxProgress);
     }
 
     public static Vec3 getRandMissionPosition(Level level, Player player, double distance) {

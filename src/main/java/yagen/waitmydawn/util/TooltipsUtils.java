@@ -142,8 +142,4 @@ public class TooltipsUtils {
         event.getToolTip().add(line);
     }
 
-//    private static void obfuscateStat(MutableComponent component) {
-//        var style = Style.EMPTY.withObfuscated(true).withFont(RUNIC_FONT);
-//        component.setStyle(style);
-//    }
 }

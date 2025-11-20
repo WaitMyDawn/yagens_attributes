@@ -37,19 +37,7 @@ public class ItemRegistry {
                 }
             });
     public static final DeferredHolder<Item, Item> FORMA = ITEMS.register("forma",
-            () -> new FormaItem(new Item.Properties()) {
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
-                                            @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-                    String type = stack.getOrDefault(ComponentRegistry.FORMA_TYPE, "");
-                    if (!type.isEmpty()) {
-                        tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip1", type)
-                                .withStyle(ChatFormatting.GOLD));
-                        tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip2")
-                                .withStyle(ChatFormatting.GOLD));
-                    }
-                }
-            });
+            () -> new FormaItem(new Item.Properties()));
     public static final DeferredHolder<Item, Item> UNKNOWN_RIVEN = ITEMS.register("unknown_riven",
             () -> new UnknownRivenItem(new Item.Properties()){
                 @Override
@@ -87,6 +75,11 @@ public class ItemRegistry {
     public static ItemStack createForma(String slotName) {
         ItemStack stack = new ItemStack(ItemRegistry.FORMA.get());
         stack.set(ComponentRegistry.FORMA_TYPE.get(), slotName);
+        return stack;
+    }
+    public static ItemStack createEndo(int level, String missionType) {
+        ItemStack stack = new ItemStack(ItemRegistry.ENDO.get());
+        ComponentRegistry.setEndoInfo(stack, new ComponentRegistry.EndoInfo(level,missionType));
         return stack;
     }
 

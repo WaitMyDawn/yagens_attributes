@@ -21,6 +21,8 @@
   "item.yagens_attributes.forma": "Forma",
   "item.yagens_attributes.forma.tooltip1": "Apply to polarity: %s",
   "item.yagens_attributes.forma.tooltip2": "Right click to change polarity",
+  "item.yagens_attributes.endo.tooltip1": "Mission Level: %d",
+  "item.yagens_attributes.endo.tooltip2": "Mission Type: %s",
   "item.yagens_attributes.unknown_riven": "Unknown Riven",
   "item.yagens_attributes.unknown_riven.tooltip1": "Right click to reveal the Riven.",
   "item.yagens_attributes.kuva": "Kuva",

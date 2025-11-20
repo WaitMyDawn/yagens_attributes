@@ -22,6 +22,7 @@ import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import static yagen.waitmydawn.api.mission.MissionData.*;
 import static yagen.waitmydawn.api.mission.MissionHandler.randomMonsterType;
@@ -34,7 +35,7 @@ public class MissionEvent {
     public static void exterminateEvent(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Mob mob)) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
-        Level level =player.level();
+        Level level = player.level();
         if (level.isClientSide) return;
 
         MinecraftServer server = Objects.requireNonNull(player.getServer());
@@ -46,13 +47,13 @@ public class MissionEvent {
         ResourceLocation taskId = active.getKey();
         if (!mob.getPersistentData().getString("TaskId").equals(taskId.toString())) return;
 
-        data.addProgress((ServerLevel) level,level.dimension().location(), taskId);
+        data.addProgress((ServerLevel) level, level.dimension().location(), taskId);
     }
 
     @SubscribeEvent
-    public static void missionEntitySummonEvent(PlayerTickEvent.Post event) {
+    public static void exterminateEntitySummonEvent(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if(player.tickCount % 10 != 0) return;
+        if (player.tickCount % 10 != 0) return;
         Level level = player.level();
         if (level.isClientSide) return;
 
@@ -61,6 +62,7 @@ public class MissionEvent {
         var active = data.getPlayerActiveTask(player);
         if (active == null) return;
         MissionData.SharedTaskData sData = active.getValue();
+        if (sData.missionType != MissionType.EXTERMINATE) return;
         ResourceLocation taskId = active.getKey();
 
         var nearestPlayerMap = MissionData.nearestPlayer(server, sData);
@@ -70,7 +72,7 @@ public class MissionEvent {
         int areaCount = getExterminateAreaCount(sData);
         int areaEntityCount = getExterminateAreaEntityCount(sData, areaCount);
         int areaCur = (int) (moveDistance / AREA_SIZE) + 1;
-        if (sData.summonCount < areaEntityCount * areaCur) {
+        if (sData.summonCount < areaEntityCount * areaCur) {// summon according to current area
             Vec3 eye = player.getEyePosition();
             Vec3 look = player.getViewVector(1.0F);
             double distance = Mth.nextDouble(player.getRandom(), 6, 24);
@@ -83,24 +85,8 @@ public class MissionEvent {
             Vec3 spawnPos = eye.add(offset);
             Vec3 onSurface = null;
             BlockPos surface = BlockPos.containing(spawnPos.x, 0, spawnPos.z);
-            int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
-            if (level.dimension() == Level.NETHER && y > 125) {//nether floor
-                int startY = Mth.floor(spawnPos.y);
-                BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
-
-                for (int yi = startY; yi <= startY + 12; yi++) {
-                    m.set(surface.getX(), yi, surface.getZ());
-                    BlockState below = level.getBlockState(m.below());
-                    BlockState here = level.getBlockState(m);
-
-                    if (below.canOcclude() && here.isAir() && level.noCollision(AABB.ofSize(Vec3.atCenterOf(m), 0.8, 1.8, 0.8))) {
-                        onSurface = Vec3.atCenterOf(m.below()).add(0, 1, 0);
-                        break;
-                    }
-                }
-                if (onSurface == null) return;
-            }
-            if (y - spawnPos.y >= 12) return;// too high
+            int y = getCorrectY(level, spawnPos, surface);
+            if (y == -999) return;
             onSurface = Vec3.atCenterOf(new BlockPos(surface.getX(), y, surface.getZ()));
             if (!level.getWorldBorder().isWithinBounds(onSurface)) return;
             ServerPlayer serverPlayer = (ServerPlayer) player;
@@ -108,6 +94,48 @@ public class MissionEvent {
             mob.setTarget(player);
             data.addSummonCount(player.level().dimension().location(), taskId);
         }
+        if (isAllInMissionPosition(server, sData)
+                && sData.progress < sData.maxProgress
+                && sData.summonCount >= areaEntityCount * areaCur) {
+
+        }
+    }
+
+    private static int getCorrectY(Level level, Vec3 spawnPos, BlockPos surface) {
+        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, surface.getX(), surface.getZ());
+        Vec3 onSurface = null;
+        if (level.dimension() == Level.NETHER && y > 125) {//nether floor
+            int startY = Mth.floor(spawnPos.y);
+            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+
+            for (int yi = startY; yi <= startY + 12; yi++) {
+                m.set(surface.getX(), yi, surface.getZ());
+                BlockState below = level.getBlockState(m.below());
+                BlockState here = level.getBlockState(m);
+
+                if (below.canOcclude() && here.isAir() && level.noCollision(AABB.ofSize(Vec3.atCenterOf(m), 0.8, 1.8, 0.8))) {
+                    onSurface = Vec3.atCenterOf(m.below()).add(0, 1, 0);
+                    break;
+                }
+            }
+            if (onSurface == null) return -999;
+        }
+        if (y - spawnPos.y >= 12) return -999;// too high
+        return y;
+    }
+
+    public static boolean isAllInMissionPosition(MinecraftServer server, SharedTaskData sData) {
+        double maxDistance = 0;
+        for (UUID uuid : sData.players) {
+            ServerPlayer player = server.getPlayerList().getPlayer(uuid);
+            if (player == null) continue;
+            double distance = distanceToMissionPosition(player, sData);
+            if (distance > maxDistance) {
+                if (distance > sData.missionRange) return false;
+                maxDistance = distance;
+            }
+        }
+        return true;
     }
 
 

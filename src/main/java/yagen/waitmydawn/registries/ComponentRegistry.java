@@ -24,10 +24,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.capabilities.ModContainer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.UnaryOperator;
 
 public class ComponentRegistry {
@@ -159,6 +156,34 @@ public class ComponentRegistry {
         }
     }
 
+    public record EndoInfo(int level, String missionType) {
+        public static final Codec<EndoInfo> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Codec.INT.fieldOf("level").forGetter(EndoInfo::level),
+                Codec.STRING.fieldOf("missionType").forGetter(EndoInfo::missionType)
+        ).apply(i, EndoInfo::new));
+
+        public static final StreamCodec<ByteBuf, EndoInfo> STREAM_CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.INT, EndoInfo::level,
+                        ByteBufCodecs.STRING_UTF8, EndoInfo::missionType,
+                        EndoInfo::new
+                );
+
+        public static final EndoInfo EMPTY = new EndoInfo(0, "NonType");
+
+        public EndoInfo withLevel(int newLevel) {
+            return newLevel == level ? this : new EndoInfo(level, missionType);
+        }
+
+        public EndoInfo withMissionType(String newMissionType) {
+            return Objects.equals(newMissionType, missionType) ? this : new EndoInfo(level, missionType);
+        }
+
+        public EndoInfo addLevel() {
+            return new EndoInfo(level + 1, missionType);
+        }
+    }
+
     public record StringListData(List<String> strings) {
         public static final Codec<StringListData> CODEC = RecordCodecBuilder.create(
                 b -> b.group(
@@ -252,6 +277,12 @@ public class ComponentRegistry {
             .networkSynchronized(UpgradeData.STREAM_CODEC)
             .cacheEncoding()
     );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<EndoInfo>>
+            ENDO_INFO = register("endo_info", b -> b
+            .persistent(EndoInfo.CODEC)
+            .networkSynchronized(EndoInfo.STREAM_CODEC)
+            .cacheEncoding()
+    );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<StringListData>>
             STRING_LIST_DATA = register("string_list_data", b -> b
             .persistent(StringListData.CODEC)
@@ -290,19 +321,27 @@ public class ComponentRegistry {
             .cacheEncoding());
 
     public static List<String> getPolarities(ItemStack stack) {
-        return stack.getOrDefault(ComponentRegistry.STRING_LIST_DATA,
+        return stack.getOrDefault(STRING_LIST_DATA,
                 new StringListData(new ArrayList<>())).strings();
     }
 
     public static void setPolarities(ItemStack stack, List<String> list) {
-        stack.set(ComponentRegistry.STRING_LIST_DATA, new StringListData(list));
+        stack.set(STRING_LIST_DATA, new StringListData(list));
     }
 
     public static UpgradeData getUpgrade(ItemStack stack) {
-        return stack.getOrDefault(ComponentRegistry.UPGRADE_DATA, new UpgradeData(0, 0, 1));
+        return stack.getOrDefault(UPGRADE_DATA, new UpgradeData(0, 0, 1));
     }
 
     public static void setUpgrade(ItemStack stack, UpgradeData data) {
-        stack.set(ComponentRegistry.UPGRADE_DATA, data);
+        stack.set(UPGRADE_DATA, data);
+    }
+
+    public static EndoInfo getEndoInfo(ItemStack stack) {
+        return stack.getOrDefault(ENDO_INFO, EndoInfo.EMPTY);
+    }
+
+    public static void setEndoInfo(ItemStack stack, EndoInfo info) {
+        stack.set(ENDO_INFO, info);
     }
 }

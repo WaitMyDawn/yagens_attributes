@@ -12,6 +12,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import yagen.waitmydawn.config.ServerConfigs;
 
+import java.util.Objects;
+
 
 public class DataAttachmentRegistry {
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, YagensAttributes.MODID);
@@ -99,10 +101,6 @@ public class DataAttachmentRegistry {
                             .copyOnDeath()
                             .build());
 
-    public static int getComboLevel(int comboCount) {
-        return Math.min(comboCount / ServerConfigs.COMBO_LEVEL_NEEDED_COUNT.get(), ServerConfigs.MAX_COMBO_LEVEL.get());
-    }
-
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>>
             SHOULD_HEAL = ATTACHMENT_TYPES.register("should_heal",
             () -> AttachmentType.builder(() -> true)
@@ -113,6 +111,7 @@ public class DataAttachmentRegistry {
     public static boolean getShouldHeal(Entity entity) {
         return entity.getData(SHOULD_HEAL.get());
     }
+
     public static void setShouldHeal(Entity entity, boolean value) {
         entity.setData(SHOULD_HEAL.get(), value);
     }

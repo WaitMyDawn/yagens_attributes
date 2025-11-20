@@ -9,6 +9,7 @@ import yagen.waitmydawn.gui.mod_operation.ModOperationScreen;
 import yagen.waitmydawn.gui.mod_recycle.ModRecycleScreen;
 import yagen.waitmydawn.particle.DamageNumberParticle;
 import yagen.waitmydawn.registries.*;
+import yagen.waitmydawn.render.EndoModel;
 import yagen.waitmydawn.render.ModModel;
 import yagen.waitmydawn.render.ModOperationRenderer;
 import yagen.waitmydawn.util.IMinecraftInstanceHelper;
@@ -71,12 +72,16 @@ public class ClientSetup {
                 .stream()
                 .filter(m -> !(m instanceof NoneMod))
                 .forEach(mod -> event.register(ModelResourceLocation.standalone(ModModel.getModModelLocation(mod))));
+        for (int level : new int[]{0, 1, 2})
+            event.register(ModelResourceLocation.standalone(EndoModel.getModModelLocation(level)));
     }
 
     @SubscribeEvent
     public static void replaceItemModels(ModelEvent.ModifyBakingResult event) {
-        var key = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mod"), "inventory");
-        event.getModels().computeIfPresent(key, (k, oldModel) -> new ModModel(oldModel, event.getModelBakery()));
+        var keyMod = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mod"), "inventory");
+        var keyEndo = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "endo"), "inventory");
+        event.getModels().computeIfPresent(keyMod, (k, oldModel) -> new ModModel(oldModel, event.getModelBakery()));
+        event.getModels().computeIfPresent(keyEndo, (k, oldModel) -> new EndoModel(oldModel, event.getModelBakery()));
     }
 }
 

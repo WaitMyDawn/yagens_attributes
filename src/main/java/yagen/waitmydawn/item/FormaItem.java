@@ -1,13 +1,19 @@
 package yagen.waitmydawn.item;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.registries.ComponentRegistry;
+
+import java.util.List;
 
 public class FormaItem extends Item {
 
@@ -28,5 +34,17 @@ public class FormaItem extends Item {
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
+                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        String type = stack.getOrDefault(ComponentRegistry.FORMA_TYPE, "");
+        if (!type.isEmpty()) {
+            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip1", type)
+                    .withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.translatable("item.yagens_attributes.forma.tooltip2")
+                    .withStyle(ChatFormatting.GOLD));
+        }
     }
 }

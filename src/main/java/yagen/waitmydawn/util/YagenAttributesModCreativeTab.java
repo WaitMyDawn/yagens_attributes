@@ -13,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
+import yagen.waitmydawn.api.mission.MissionType;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.api.mods.*;
@@ -30,7 +31,6 @@ public class YagenAttributesModCreativeTab {
                 entries.accept(ItemRegistry.UNKNOWN_RIVEN.get());
                 entries.accept(ItemRegistry.KUVA.get());
 //                entries.accept(ItemRegistry.SUMMON.get());
-                entries.accept(ItemRegistry.ENDO.get());
             }).build());
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> YAGENS_ATTRIBUTES_MODS_TAB = CREATIVE_MODE_TAB.register("yagens_attributes.mods", () -> CreativeModeTab.builder()
@@ -70,6 +70,11 @@ public class YagenAttributesModCreativeTab {
         if (event.getTab() == YAGENS_ATTRIBUTES_ITEMS_TAB.get()) {
             for (FormaType formaType : FormaType.values()) {
                 event.accept(ItemRegistry.createForma(formaType.getValue()));
+            }
+            for (int level : new int[]{0, 1, 2}) {
+                for (MissionType missionType : MissionType.values()) {
+                    event.accept(ItemRegistry.createEndo(level, missionType.getValue()));
+                }
             }
         }
     }
