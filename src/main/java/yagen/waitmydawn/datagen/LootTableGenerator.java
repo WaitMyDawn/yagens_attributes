@@ -23,6 +23,7 @@ import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
 import net.neoforged.neoforge.common.loot.LootTableIdCondition;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
+import yagen.waitmydawn.api.mission.MissionType;
 import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.loot.*;
 import yagen.waitmydawn.registries.BlockRegistry;
@@ -612,6 +613,12 @@ public class LootTableGenerator {
                                             LootItem.lootTableItem(ItemRegistry.KUVA.get())
                                                     .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1))))
                                     .when(LootItemRandomChanceCondition.randomChance(0.5f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.ENDO.get())
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,1), MissionType.EXTERMINATE.getValue())))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.2f)))
             );
             consumer.accept(
                     ResourceKey.create(
@@ -623,6 +630,12 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(7, 18))))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.ENDO.get())
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1,2), MissionType.EXTERMINATE.getValue())))
                             )
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
@@ -1149,18 +1162,106 @@ public class LootTableGenerator {
             consumer.accept(
                     ResourceKey.create(
                             Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
-                                    "chests/mission/exterminate_treasure")),
+                                    "chests/mission/exterminate_treasure_0")),
                     LootTable.lootTable()
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
-                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(8, 32)))))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(Items.DIAMOND)
-                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))))
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 24))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+            );
+
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/exterminate_treasure_1")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(40, 64)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.NETHERITE_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 36)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/exterminate_treasure_2")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(40, 64)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.NETHERITE_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
+                                    )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 36)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
             );
         }
     }

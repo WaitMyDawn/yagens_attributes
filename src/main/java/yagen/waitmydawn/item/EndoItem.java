@@ -57,7 +57,7 @@ public class EndoItem extends Item {
                     (ServerLevel) level,
                     levelId,
                     taskId,
-                    MissionType.fromString(endoInfo.missionType()),
+                    MissionType.fromString(endoInfo.missionType()),endoInfo.level(),
                     missionPosition,
                     maxProgress, distance, missionRange, players))
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));

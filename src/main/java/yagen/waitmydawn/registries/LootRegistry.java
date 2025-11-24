@@ -32,6 +32,9 @@ public class LootRegistry {
     public static final Supplier<LootItemFunctionType<?>> SET_FORMA_FUNCTION =
             LOOT_FUNCTIONS.register("set_forma",
                     () -> new LootItemFunctionType<>(SetFormaFunction.CODEC));
+    public static final Supplier<LootItemFunctionType<?>> SET_ENDO_FUNCTION =
+            LOOT_FUNCTIONS.register("set_endo",
+                    () -> new LootItemFunctionType<>(SetEndoFunction.CODEC));
     public static final Supplier<LootItemFunctionType<?>> RARITY_MOD_FUNCTION =
             LOOT_FUNCTIONS.register("rarity_mod",
                     () -> new LootItemFunctionType<>(RarityModFunction.CODEC));

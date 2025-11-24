@@ -1,5 +1,7 @@
 package yagen.waitmydawn.api.mission;
 
+import java.util.Random;
+
 public enum MissionType {
     EXTERMINATE("Exterminate"),
     DEFENSE("Defense"),
@@ -21,5 +23,15 @@ public enum MissionType {
             if (t.getValue().equals(str)) return t;
         }
         throw new IllegalArgumentException("Unknown MissionType: " + str);
+    }
+
+    public static int getRandomLevel(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
+    public static String getRandomMissionType() {
+        Random random = new Random();
+        return values()[random.nextInt(values().length)].getValue();
     }
 }

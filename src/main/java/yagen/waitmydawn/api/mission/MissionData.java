@@ -43,7 +43,7 @@ public class MissionData extends SavedData {
     public static final int AREA_SIZE = 16;
 
     public boolean createSharedTask(ServerLevel level, ResourceLocation levelId, ResourceLocation task,
-                                    MissionType type, Vec3 pos, int maxProgress, double distance, double missionRange,
+                                    MissionType missionType,int missionLevel, Vec3 pos, int maxProgress, double distance, double missionRange,
                                     Set<UUID> players) {
         if (anyPlayerInActiveTask(levelId, players)) {
             for (UUID uuid : players) {
@@ -55,7 +55,8 @@ public class MissionData extends SavedData {
             return false;
         }
         SharedTaskData sData = new SharedTaskData();
-        sData.missionType = type;
+        sData.missionType = missionType;
+        sData.missionLevel = missionLevel;
         sData.missionPosition = pos;
         sData.maxProgress = maxProgress;
         sData.progress = 0;
@@ -84,14 +85,7 @@ public class MissionData extends SavedData {
         if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
         level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
         if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
-            ResourceKey<LootTable> key;
-            switch (sData.missionType) {
-                case EXTERMINATE -> key = LootTableRegistry.MISSION_EXTERMINATE_TREASURE_KEY;
-                case DEFENSE -> key = LootTableRegistry.MISSION_DEFENSE_TREASURE_KEY;
-                case SURVIVAL -> key = LootTableRegistry.MISSION_SURVIVAL_TREASURE_KEY;
-                case ASSASSINATION -> key = LootTableRegistry.MISSION_ASSASSINATION_TREASURE_KEY;
-                default -> key = LootTableRegistry.MISSION_EXTERMINATE_TREASURE_KEY;
-            }
+            ResourceKey<LootTable> key= LootTableRegistry.getMissionTreasureKey(sData.missionType,sData.missionLevel);
             long seed = level.getRandom().nextLong();
             chest.setLootTable(key, seed);
 
@@ -126,6 +120,14 @@ public class MissionData extends SavedData {
         SharedTaskData sData = getData(level, task);
         if (sData != null) {
             sData.missionType = missionType;
+            setDirty();
+        }
+    }
+
+    public void setMissionLevel(ResourceLocation level, ResourceLocation task, int missionLevel) {
+        SharedTaskData sData = getData(level, task);
+        if (sData != null) {
+            sData.missionLevel =missionLevel;
             setDirty();
         }
     }
@@ -284,6 +286,11 @@ public class MissionData extends SavedData {
         return sData.missionType;
     }
 
+    public int getMissionLevel(ResourceLocation level, ResourceLocation task) {
+        SharedTaskData sData = getData(level, task);
+        return sData.missionLevel;
+    }
+
     public int getProgress(ResourceLocation level, ResourceLocation task) {
         SharedTaskData sData = getData(level, task);
         return sData == null ? 0 : sData.progress;
@@ -380,6 +387,7 @@ public class MissionData extends SavedData {
             taskMap.forEach((task, sData) -> {
                 CompoundTag taskTag = new CompoundTag();
                 taskTag.putString("missionType", sData.missionType.getValue());
+                taskTag.putInt("missionLevel", sData.missionLevel);
                 taskTag.putInt("progress", sData.progress);
                 taskTag.putInt("maxProgress", sData.maxProgress);
                 taskTag.putInt("summonCount", sData.summonCount);
@@ -414,6 +422,7 @@ public class MissionData extends SavedData {
                 CompoundTag taskTag = levelTag.getCompound(taskKey);
                 SharedTaskData sData = new SharedTaskData();
                 sData.missionType = MissionType.fromString(taskTag.getString("missionType"));
+                sData.missionLevel = taskTag.getInt("missionLevel");
                 sData.progress = taskTag.getInt("progress");
                 sData.maxProgress = taskTag.getInt("maxProgress");
                 sData.summonCount = taskTag.getInt("summonCount");
@@ -456,6 +465,7 @@ public class MissionData extends SavedData {
 
     public static class SharedTaskData {
         public MissionType missionType;
+        public int missionLevel;
         public int progress;
         public int maxProgress;
         public int summonCount;

@@ -71,6 +71,29 @@
         }
       ],
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.2,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "yagens_attributes:set_endo",
+              "level": 1,
+              "missionType": "Exterminate"
+            }
+          ],
+          "name": "yagens_attributes:endo"
+        }
+      ],
+      "rolls": 1.0
     }
   ],
   "random_sequence": "yagens_attributes:spawners/ominous/trial_chamber/additional_tco_consumables_loot"

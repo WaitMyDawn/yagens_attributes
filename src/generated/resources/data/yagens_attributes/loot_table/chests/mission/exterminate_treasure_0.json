@@ -11,57 +11,13 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 18.0,
-                "min": 7.0
+                "max": 32.0,
+                "min": 8.0
               },
               "function": "minecraft:set_count"
             }
           ],
           "name": "yagens_attributes:mod_essence"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "function": "yagens_attributes:set_endo",
-              "level": 2,
-              "missionType": "Exterminate"
-            }
-          ],
-          "name": "yagens_attributes:endo"
-        }
-      ],
-      "rolls": 1.0
-    },
-    {
-      "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "chance": 0.4,
-          "condition": "minecraft:random_chance"
-        }
-      ],
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "functions": [
-            {
-              "add": false,
-              "count": {
-                "type": "minecraft:uniform",
-                "max": 2.0,
-                "min": 1.0
-              },
-              "function": "minecraft:set_count"
-            }
-          ],
-          "name": "yagens_attributes:mod_essence_block"
         }
       ],
       "rolls": 1.0
@@ -79,16 +35,28 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "yagens_attributes:randomize_mod"
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 14.0,
+                "min": 4.0
+              },
+              "function": "minecraft:set_count"
             }
           ],
-          "name": "yagens_attributes:mod"
+          "name": "minecraft:diamond"
         }
       ],
       "rolls": 1.0
     },
     {
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.8,
+          "condition": "minecraft:random_chance"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
@@ -97,17 +65,44 @@
               "add": false,
               "count": {
                 "type": "minecraft:uniform",
-                "max": 7.0,
-                "min": 3.0
+                "max": 24.0,
+                "min": 4.0
               },
               "function": "minecraft:set_count"
             }
           ],
-          "name": "yagens_attributes:kuva"
+          "name": "minecraft:gold_ingot"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "chance": 0.8,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 6.0,
+                "min": 2.0
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "minecraft:iron_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "yagens_attributes:chests/trial_chamber/additional_reward_ominous_loot"
+  "random_sequence": "yagens_attributes:chests/mission/exterminate_treasure_0"
 }
