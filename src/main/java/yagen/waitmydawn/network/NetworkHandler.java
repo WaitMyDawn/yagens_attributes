@@ -29,6 +29,12 @@ public class NetworkHandler {
                 DamageNumberPacket::handle
         );
 
+        registrar.playToClient(
+                SyncMissionDataPacket.TYPE,
+                SyncMissionDataPacket.STREAM_CODEC,
+                SyncMissionDataPacket::handle
+        );
+
         registrar.playToServer(
                 AddNourishEffectPacket.TYPE,
                 AddNourishEffectPacket.STREAM_CODEC,

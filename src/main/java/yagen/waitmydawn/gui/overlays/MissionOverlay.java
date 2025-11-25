@@ -20,20 +20,27 @@ public class MissionOverlay implements LayeredDraw.Layer {
 
     @Override
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
-        var player = Minecraft.getInstance().player;
+        Minecraft minecraft = Minecraft.getInstance();
+        var player = minecraft.player;
 
-        if (Minecraft.getInstance().options.hideGui || player.isSpectator()) {
+        if (minecraft.options.hideGui || player.isSpectator()) {
             return;
         }
-        var task = MissionData.get(Objects.requireNonNull(Minecraft.getInstance().getSingleplayerServer()))
-                .getPlayerActiveTask(player);
+        MissionData missionData;
+        if (minecraft.getSingleplayerServer() != null) {
+            missionData = MissionData.get(minecraft.getSingleplayerServer());
+        } else {
+            missionData = MissionData.get(null);
+        }
+
+        var task = missionData.getPlayerActiveTask(minecraft.player);
         if (task == null)
             return;
 
         MissionData.SharedTaskData taskData = task.getValue();
         ResourceLocation taskId = task.getKey();
 
-        var font = Minecraft.getInstance().font;
+        var font = minecraft.font;
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
 

@@ -22,9 +22,12 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.network.SyncMissionDataPacket;
 import yagen.waitmydawn.registries.LootTableRegistry;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.network.NetworkHandler;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -69,6 +72,7 @@ public class MissionData extends SavedData {
         data.computeIfAbsent(levelId, k -> new ConcurrentHashMap<>())
                 .put(task, sData);
         setDirty();
+        sendPacket(level,task,sData);
         return true;
     }
 
@@ -147,6 +151,30 @@ public class MissionData extends SavedData {
         sData.progress++;
         checkCompleted(level, levelId, taskId, sData);
         setDirty();
+        sendPacket(level,taskId,sData);
+    }
+
+    public static void sendPacket(ServerLevel level, ResourceLocation taskId, SharedTaskData sData) {
+        SyncMissionDataPacket pkt = createPacket(taskId,sData);
+        for (UUID id : sData.players) {
+            ServerPlayer sp = level.getServer().getPlayerList().getPlayer(id);
+            if (sp != null) PacketDistributor.sendToPlayer(sp,pkt);
+        }
+    }
+
+    public static SyncMissionDataPacket createPacket(ResourceLocation taskId,MissionData.SharedTaskData sData){
+        return new SyncMissionDataPacket(taskId,
+                sData.missionType.getValue(),
+                sData.missionLevel,
+                sData.progress,
+                sData.maxProgress,
+                sData.summonCount,
+                sData.distance,
+                sData.missionRange,
+                sData.missionPosition.x,
+                sData.missionPosition.y,
+                sData.missionPosition.z,
+                sData.completed);
     }
 
     public void addSummonCount(ResourceLocation level, ResourceLocation task) {
@@ -442,8 +470,10 @@ public class MissionData extends SavedData {
         return inst;
     }
 
-
-    public static MissionData get(MinecraftServer server) {
+    public static MissionData get(@Nullable MinecraftServer server) {
+        if (server == null) {
+            return ClientMissionDataProxy.INSTANCE;
+        }
         DimensionDataStorage storage = server.overworld().getDataStorage();
         return storage.computeIfAbsent(
                 new Factory<>(MissionData::new, MissionData::load),
