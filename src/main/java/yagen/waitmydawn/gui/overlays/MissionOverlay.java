@@ -38,10 +38,8 @@ public class MissionOverlay implements LayeredDraw.Layer {
             return;
 
         MissionData.SharedTaskData taskData = task.getValue();
-        ResourceLocation taskId = task.getKey();
 
         var font = minecraft.font;
-        var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
 
         int color = ChatFormatting.WHITE.getColor();
@@ -91,11 +89,6 @@ public class MissionOverlay implements LayeredDraw.Layer {
 
     private static final ResourceLocation RING = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring.png");
 
-    /**
-     * draw 32x ring at (centerX,centerY)
-     *
-     * @param part 0 ~ 36
-     */
     private static void drawRing(GuiGraphics gui, int X, int Y, int part) {
         int TEXTURE_WIDTH = 192;
         int TEXTURE_HEIGHT = 224;

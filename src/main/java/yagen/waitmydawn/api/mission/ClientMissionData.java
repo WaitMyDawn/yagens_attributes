@@ -17,21 +17,21 @@ public class ClientMissionData {
         snapshot = new MissionData.SharedTaskData();
         snapshot.missionType = MissionType.fromString(p.missionType());
         snapshot.missionLevel = p.missionLevel();
-        snapshot.progress   = p.progress();
-        snapshot.maxProgress= p.maxProgress();
-        snapshot.summonCount= p.summonCount();
-        snapshot.distance   = p.distance();
-        snapshot.missionRange=p.missionRange();
+        snapshot.progress = p.progress();
+        snapshot.maxProgress = p.maxProgress();
+        snapshot.summonCount = p.summonCount();
+        snapshot.distance = p.distance();
+        snapshot.missionRange = p.missionRange();
         snapshot.missionPosition = new Vec3(p.x(), p.y(), p.z());
-        snapshot.completed  = p.completed();
+        snapshot.completed = p.completed();
         snapshot.players.add(Minecraft.getInstance().player.getUUID());
         snapshotTaskId = p.taskId();
     }
 
     @Nullable
-    public static Map.Entry<ResourceLocation,MissionData.SharedTaskData>
+    public static Map.Entry<ResourceLocation, MissionData.SharedTaskData>
     getPlayerActiveTask(LocalPlayer player) {
-        if (snapshot == null) return null;
+        if (snapshot == null || snapshot.completed) return null;
         return Map.entry(snapshotTaskId, snapshot);
     }
 }

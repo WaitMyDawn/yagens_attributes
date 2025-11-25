@@ -46,7 +46,7 @@ public class MissionData extends SavedData {
     public static final int AREA_SIZE = 16;
 
     public boolean createSharedTask(ServerLevel level, ResourceLocation levelId, ResourceLocation task,
-                                    MissionType missionType,int missionLevel, Vec3 pos, int maxProgress, double distance, double missionRange,
+                                    MissionType missionType, int missionLevel, Vec3 pos, int maxProgress, double distance, double missionRange,
                                     Set<UUID> players) {
         if (anyPlayerInActiveTask(levelId, players)) {
             for (UUID uuid : players) {
@@ -72,7 +72,7 @@ public class MissionData extends SavedData {
         data.computeIfAbsent(levelId, k -> new ConcurrentHashMap<>())
                 .put(task, sData);
         setDirty();
-        sendPacket(level,task,sData);
+        sendPacket(level, task, sData);
         return true;
     }
 
@@ -85,11 +85,11 @@ public class MissionData extends SavedData {
         level.getChunk(chunkPos.x, chunkPos.z);
 
         BlockPos basicChestPos = new BlockPos(missionPosBlock);
-        BlockPos chestPos=getCorrectTreasurePos(level,basicChestPos);
+        BlockPos chestPos = getCorrectTreasurePos(level, basicChestPos);
         if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
         level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
         if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
-            ResourceKey<LootTable> key= LootTableRegistry.getMissionTreasureKey(sData.missionType,sData.missionLevel);
+            ResourceKey<LootTable> key = LootTableRegistry.getMissionTreasureKey(sData.missionType, sData.missionLevel);
             long seed = level.getRandom().nextLong();
             chest.setLootTable(key, seed);
 
@@ -131,7 +131,7 @@ public class MissionData extends SavedData {
     public void setMissionLevel(ResourceLocation level, ResourceLocation task, int missionLevel) {
         SharedTaskData sData = getData(level, task);
         if (sData != null) {
-            sData.missionLevel =missionLevel;
+            sData.missionLevel = missionLevel;
             setDirty();
         }
     }
@@ -151,18 +151,18 @@ public class MissionData extends SavedData {
         sData.progress++;
         checkCompleted(level, levelId, taskId, sData);
         setDirty();
-        sendPacket(level,taskId,sData);
+        sendPacket(level, taskId, sData);
     }
 
     public static void sendPacket(ServerLevel level, ResourceLocation taskId, SharedTaskData sData) {
-        SyncMissionDataPacket pkt = createPacket(taskId,sData);
+        SyncMissionDataPacket pkt = createPacket(taskId, sData);
         for (UUID id : sData.players) {
             ServerPlayer sp = level.getServer().getPlayerList().getPlayer(id);
-            if (sp != null) PacketDistributor.sendToPlayer(sp,pkt);
+            if (sp != null) PacketDistributor.sendToPlayer(sp, pkt);
         }
     }
 
-    public static SyncMissionDataPacket createPacket(ResourceLocation taskId,MissionData.SharedTaskData sData){
+    public static SyncMissionDataPacket createPacket(ResourceLocation taskId, MissionData.SharedTaskData sData) {
         return new SyncMissionDataPacket(taskId,
                 sData.missionType.getValue(),
                 sData.missionLevel,
@@ -177,11 +177,12 @@ public class MissionData extends SavedData {
                 sData.completed);
     }
 
-    public void addSummonCount(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
+    public void addSummonCount(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
+        SharedTaskData sData = getData(levelId, taskId);
         if (sData == null || sData.completed) return;
         sData.summonCount++;
         setDirty();
+        sendPacket(level, taskId, sData);
     }
 
     public boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
@@ -219,7 +220,6 @@ public class MissionData extends SavedData {
     }
 
     public static double distanceToMissionPosition(Player player, SharedTaskData sData) {
-//        return player.distanceToSqr(sData.missionPosition);
         return Math.sqrt(Math.pow(player.getX() - sData.missionPosition.x, 2)
                 + Math.pow(player.getZ() - sData.missionPosition.z, 2));
     }
@@ -296,6 +296,7 @@ public class MissionData extends SavedData {
             sData.completed = completed;
             checkCompleted(level, levelId, taskId, sData);
             setDirty();
+            sendPacket(level, taskId, sData);
         }
     }
 
@@ -480,9 +481,12 @@ public class MissionData extends SavedData {
                 DATA_NAME);
     }
 
-    public void clearAll() {
+    public void clearAll(ServerLevel level, ResourceLocation taskId) {
         data.clear();
         setDirty();
+        SharedTaskData sData = new SharedTaskData();
+        sData.completed=true;
+        sendPacket(level, taskId, sData);
     }
 
     public void clearUnfinishedOnly() {

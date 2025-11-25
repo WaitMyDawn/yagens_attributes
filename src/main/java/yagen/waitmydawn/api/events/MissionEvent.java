@@ -22,7 +22,6 @@ import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
 import java.util.Objects;
-import java.util.UUID;
 
 import static yagen.waitmydawn.api.mission.MissionData.*;
 import static yagen.waitmydawn.api.mission.MissionHandler.*;
@@ -84,10 +83,8 @@ public class MissionEvent {
         ServerPlayer serverPlayer = (ServerPlayer) player;
         Mob mob = summonExterminateEntity(randomMonsterType(serverPlayer.getRandom()), serverPlayer.serverLevel(), spawnPos, taskId);
         mob.setTarget(player);
-        data.addSummonCount(player.level().dimension().location(), taskId);
+        data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
-
-
 
 
 }
