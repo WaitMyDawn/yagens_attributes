@@ -20,7 +20,7 @@ public class MissionClearCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("MissionClear")
-                        .requires(src -> src.hasPermission(2))
+                        .requires(src -> src.hasPermission(4))
                         .executes(ctx -> {
                             MissionData data = MissionData.get(ctx.getSource().getServer());
                             ServerLevel level = ctx.getSource().getLevel();

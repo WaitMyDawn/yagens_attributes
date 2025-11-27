@@ -198,9 +198,9 @@ public class MissionData extends SavedData {
     public static int clearSummonedEntitiesByTaskId(ServerLevel level, ResourceLocation taskId) {
         AtomicInteger clearCount = new AtomicInteger();
         level.getAllEntities().forEach(entity -> {
-            if (!(entity instanceof Monster monster)) return;
-            if (monster.getPersistentData().getString("TaskId").equals(taskId.toString())) {
-                monster.discard();
+            if (!(entity instanceof Mob mob)) return;
+            if (mob.getPersistentData().getString("TaskId").equals(taskId.toString())) {
+                mob.discard();
                 clearCount.getAndIncrement();
             }
         });
@@ -210,9 +210,9 @@ public class MissionData extends SavedData {
     public static int clearSummonedEntities(ServerLevel level) {
         AtomicInteger clearCount = new AtomicInteger();
         level.getAllEntities().forEach(entity -> {
-            if (!(entity instanceof Mob monster)) return;
-            if (!monster.getPersistentData().getString("TaskId").equals("")) {
-                monster.discard();
+            if (!(entity instanceof Mob mob)) return;
+            if (!mob.getPersistentData().getString("TaskId").equals("")) {
+                mob.discard();
                 clearCount.getAndIncrement();
             }
         });
@@ -485,6 +485,8 @@ public class MissionData extends SavedData {
         data.clear();
         setDirty();
         SharedTaskData sData = new SharedTaskData();
+        sData.missionType=MissionType.EXTERMINATE;
+        sData.missionPosition=new Vec3(0,0,0);
         sData.completed=true;
         sendPacket(level, taskId, sData);
     }
