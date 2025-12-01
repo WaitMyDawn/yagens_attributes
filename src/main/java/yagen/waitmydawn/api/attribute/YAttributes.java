@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -102,12 +103,20 @@ public class YAttributes {
                     () -> new RangedAttribute("attribute.yagens_attributes.entity_level", 1.0D, 1.0D, 9999.0D)
                             .setSyncable(true));
 
+    public static final DeferredHolder<Attribute, Attribute> AIR_BRAKE =
+            ATTRIBUTES.register("air_brake",
+                    () -> new RangedAttribute("attribute.yagens_attributes.air_brake", 60.0D, 0.0D, 2048.0D)
+                            .setSyncable(true));
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(
                 entity ->
                         ATTRIBUTES.getEntries().forEach(
-                                attribute -> e.add(entity, attribute)
+                                attribute -> {
+                                    if (attribute == ENTITY_LEVEL && entity == EntityType.PLAYER) return;
+                                    e.add(entity, attribute);
+                                }
                         ));
     }
 

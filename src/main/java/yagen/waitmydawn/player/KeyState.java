@@ -27,6 +27,10 @@ public class KeyState {
         return isHeld;
     }
 
+    public int heldTicks() {
+        return heldTicks;
+    }
+
     public void update() {
         if (key.isDown()) {
             heldTicks++;

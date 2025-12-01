@@ -1,5 +1,6 @@
 package yagen.waitmydawn.api.events;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +19,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -148,6 +150,7 @@ public class PlayerInteractionEvent {
 
         player.getPersistentData().putBoolean("is_scan", true);
     }
+
     @SubscribeEvent
     public static void stopSpyglass(LivingEntityUseItemEvent.Stop event) {
         if (!(event.getEntity() instanceof Player player)) return;
@@ -156,5 +159,39 @@ public class PlayerInteractionEvent {
         if (event.getItem().getItem() != Items.SPYGLASS) return;
 
         player.getPersistentData().putBoolean("is_scan", false);
+    }
+
+    @SubscribeEvent
+    public static void airBrake(PlayerTickEvent.Pre event) {
+        Player player = event.getEntity();
+        AttributeInstance airBrake = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.AIR_BRAKE.get()));
+        AttributeInstance jump = player.getAttribute(Attributes.JUMP_STRENGTH);
+        if (airBrake == null || jump == null) return;
+
+        boolean isAirBrake = player.getPersistentData().getBoolean("AirBrake");
+        boolean isBulletJump = player.getPersistentData().getBoolean("BulletJump");
+        int brakeTime = player.getPersistentData().getInt("AirBrakeTime");
+
+        if (isBulletJump) {
+            Vec3 vec3 = player.getLookAngle().normalize().add(0, 1, 0).scale(jump.getValue() / jump.getBaseValue() * 2);
+            player.sendSystemMessage(Component.literal("scale " + jump.getValue() / jump.getBaseValue()));
+            player.setDeltaMovement(player.getDeltaMovement().add(vec3));
+            player.getPersistentData().putBoolean("BulletJump", false);
+        }
+
+        if (isAirBrake && brakeTime <= (int) airBrake.getValue()) {
+            Vec3 vel = player.getDeltaMovement();
+            if (vel.y > 0)
+                player.setDeltaMovement(vel.x, vel.y + 0.02, vel.z);
+            else
+                player.setDeltaMovement(vel.x, vel.y * 0.25, vel.z);
+            vel = player.getDeltaMovement();
+//            player.sendSystemMessage(Component.literal(
+//                    String.format("Movement x=%.4f, y=%.4f, z=%.4f", vel.x, vel.y, vel.z)
+//            ).withColor(player.getRandom().nextInt(0xFFFFFF)));
+            player.getPersistentData().putInt("AirBrakeTime", brakeTime + 1);
+        } else if (!isAirBrake) {
+            player.getPersistentData().putInt("AirBrakeTime", 0);
+        }
     }
 }

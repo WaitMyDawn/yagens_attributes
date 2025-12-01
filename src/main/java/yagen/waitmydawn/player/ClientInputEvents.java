@@ -1,5 +1,6 @@
 package yagen.waitmydawn.player;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -19,10 +20,7 @@ import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.gui.ClientConfigsScreen;
-import yagen.waitmydawn.network.AddBladeStormEffectPacket;
-import yagen.waitmydawn.network.AddNourishEffectPacket;
-import yagen.waitmydawn.network.ExecuteBladeStormPacket;
-import yagen.waitmydawn.network.SendBladeStormTargetPacket;
+import yagen.waitmydawn.network.*;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.RayUtils;
 
@@ -33,7 +31,8 @@ import java.util.List;
 public class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
 
-    private static final KeyState COMBO_COUNT_STATE = register(KeyMappings.COMBO_COUNT_KEYMAP);
+    private static final KeyState CONFIG_SCREEN_STATE = register(KeyMappings.CONFIG_SCREEN);
+    private static final KeyState AIR_BRAKE_STATE = register(KeyMappings.AIR_BRAKE);
     private static final KeyState ABILITY_1_STATE = register(KeyMappings.ABILITY_1_KEYMAP);
     private static final KeyState ABILITY_2_STATE = register(KeyMappings.ABILITY_2_KEYMAP);
 
@@ -50,6 +49,12 @@ public class ClientInputEvents {
         handleInputEvent(event.getKey(), event.getAction());
     }
 
+    @SubscribeEvent
+    public static void onMouseInput(InputEvent.MouseButton.Post event) {
+        handleInputEvent(event.getButton(), event.getAction());
+    }
+
+
     private static void handleInputEvent(int button, int action) {
         var minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
@@ -60,8 +65,28 @@ public class ClientInputEvents {
             isShiftKeyDown = action >= InputConstants.PRESS;
         }
 
-        if (COMBO_COUNT_STATE.wasPressed() && minecraft.screen == null) {
+        if (CONFIG_SCREEN_STATE.wasPressed() && minecraft.screen == null) {
             minecraft.setScreen(new ClientConfigsScreen());
+        }
+
+        if (!player.isSpectator()) {
+            if (!player.onGround() && AIR_BRAKE_STATE.wasPressed()) {
+                PacketDistributor.sendToServer(new AirBrakePacket(player.getUUID(), true));
+                player.getPersistentData().putBoolean("AirBrake", true);
+            }
+            if (!player.onGround() && AIR_BRAKE_STATE.isHeld()) {
+                PacketDistributor.sendToServer(new AirBrakePacket(player.getUUID(), true));
+                player.getPersistentData().putBoolean("AirBrake", true);
+            }
+            if (AIR_BRAKE_STATE.wasReleased()) {
+                PacketDistributor.sendToServer(new AirBrakePacket(player.getUUID(), false));
+                player.getPersistentData().putBoolean("AirBrake", false);
+            }
+        }
+
+        if (!player.isSpectator() && player.onGround() && isShiftKeyDown && minecraft.options.keyJump.isDown()) {
+            PacketDistributor.sendToServer(new BulletJumpPacket(player.getUUID(), true));
+            player.getPersistentData().putBoolean("BulletJump", true);
         }
 
         boolean isAbility = false;

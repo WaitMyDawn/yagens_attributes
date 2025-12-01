@@ -13,9 +13,13 @@ import yagen.waitmydawn.YagensAttributes;
 public class KeyMappings {
     public static final String KEY_BIND_GENERAL_CATEGORY = "key.yagens_attributes.group_1";
 
-    public static final KeyMapping COMBO_COUNT_KEYMAP =
+    public static final KeyMapping CONFIG_SCREEN =
             new KeyMapping(getResourceName("client_configs_screen"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_G, KEY_BIND_GENERAL_CATEGORY);
+
+    public static final KeyMapping AIR_BRAKE =
+            new KeyMapping(getResourceName("air_brake"),
+                    KeyConflictContext.IN_GAME, InputConstants.Type.MOUSE, InputConstants.MOUSE_BUTTON_RIGHT, KEY_BIND_GENERAL_CATEGORY);
 
     public static final KeyMapping ABILITY_1_KEYMAP =
             new KeyMapping(getResourceName("ability_1"),
@@ -31,7 +35,8 @@ public class KeyMappings {
 
     @SubscribeEvent
     public static void onRegisterKeybinds(RegisterKeyMappingsEvent event) {
-        event.register(COMBO_COUNT_KEYMAP);
+        event.register(CONFIG_SCREEN);
+        event.register(AIR_BRAKE);
         event.register(ABILITY_1_KEYMAP);
         event.register(ABILITY_2_KEYMAP);
     }

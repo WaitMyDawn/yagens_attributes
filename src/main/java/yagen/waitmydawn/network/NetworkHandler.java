@@ -36,6 +36,18 @@ public class NetworkHandler {
         );
 
         registrar.playToServer(
+                AirBrakePacket.TYPE,
+                AirBrakePacket.STREAM_CODEC,
+                AirBrakePacket::handle
+        );
+
+        registrar.playToServer(
+                BulletJumpPacket.TYPE,
+                BulletJumpPacket.STREAM_CODEC,
+                BulletJumpPacket::handle
+        );
+
+        registrar.playToServer(
                 AddNourishEffectPacket.TYPE,
                 AddNourishEffectPacket.STREAM_CODEC,
                 AddNourishEffectPacket::handle

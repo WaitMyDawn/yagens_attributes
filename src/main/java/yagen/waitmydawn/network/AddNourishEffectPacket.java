@@ -26,7 +26,6 @@ public record AddNourishEffectPacket(int ticks) implements CustomPacketPayload {
             ServerPlayer player = (ServerPlayer)ctx.player();
             if (player != null) {
                 player.addEffect(new MobEffectInstance(MobEffectRegistry.NOURISH, pkt.ticks, 0));
-//                setNourishTime(player,600);
                 player.getPersistentData().putInt("YANourishLeft", pkt.ticks);
             }
         });
