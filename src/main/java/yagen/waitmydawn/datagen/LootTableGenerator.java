@@ -1167,6 +1167,11 @@ public class LootTableGenerator {
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(1, 0, 0, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(8, 32)))))
                             .withPool(LootPool.lootPool()
@@ -1194,6 +1199,11 @@ public class LootTableGenerator {
                             Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
                                     "chests/mission/exterminate_treasure_1")),
                     LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 1, 0, 0, 0, 50))))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
@@ -1231,6 +1241,11 @@ public class LootTableGenerator {
                             Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
                                     "chests/mission/exterminate_treasure_2")),
                     LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 0, 1, 0, 0, 50))))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(

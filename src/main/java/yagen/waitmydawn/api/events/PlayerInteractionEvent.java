@@ -1,18 +1,13 @@
 package yagen.waitmydawn.api.events;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -27,21 +22,12 @@ import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
-import yagen.waitmydawn.api.mods.IModContainer;
-import yagen.waitmydawn.api.mods.ModSlot;
-import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-import yagen.waitmydawn.network.SyncPreShootCountPacket;
-import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
-import yagen.waitmydawn.util.RayUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -173,8 +159,10 @@ public class PlayerInteractionEvent {
         int brakeTime = player.getPersistentData().getInt("AirBrakeTime");
 
         if (isBulletJump) {
-            Vec3 vec3 = player.getLookAngle().normalize().add(0, 1, 0).scale(jump.getValue() / jump.getBaseValue() * 2);
-            player.sendSystemMessage(Component.literal("scale " + jump.getValue() / jump.getBaseValue()));
+            Vec3 vec3 = player.getLookAngle().normalize().scale(jump.getValue() / jump.getBaseValue() * 1.25);
+            player.moveTo(player.getX(), player.getY() + 0.5, player.getZ());
+            if (player.getRandom().nextInt(1) == 0)
+                player.getFoodData().addExhaustion(2.0f);
             player.setDeltaMovement(player.getDeltaMovement().add(vec3));
             player.getPersistentData().putBoolean("BulletJump", false);
         }
@@ -185,10 +173,6 @@ public class PlayerInteractionEvent {
                 player.setDeltaMovement(vel.x, vel.y + 0.02, vel.z);
             else
                 player.setDeltaMovement(vel.x, vel.y * 0.25, vel.z);
-            vel = player.getDeltaMovement();
-//            player.sendSystemMessage(Component.literal(
-//                    String.format("Movement x=%.4f, y=%.4f, z=%.4f", vel.x, vel.y, vel.z)
-//            ).withColor(player.getRandom().nextInt(0xFFFFFF)));
             player.getPersistentData().putInt("AirBrakeTime", brakeTime + 1);
         } else if (!isAirBrake) {
             player.getPersistentData().putInt("AirBrakeTime", 0);

@@ -38,5 +38,4 @@ public class DimensionRegistry {
                 new DimensionType.MonsterSettings(
                         true, false, ConstantInt.of(7), 15)));
     }
-
 }

@@ -15,6 +15,7 @@
   "attribute.yagens_attributes.armor_penetration_percent": "Armor Penetration%%",
   "attribute.yagens_attributes.armor_toughness_penetration_percent": "Armor Toughness Penetration%%",
   "attribute.yagens_attributes.entity_level": "Level",
+  "attribute.yagens_attributes.air_brake": "Air Brake Ability",
 
   "item.yagens_attributes.mod_essence": "Mod Essence",
   "item.yagens_attributes.mod_essence.tooltip1": "It can be used to upgrade Mod",

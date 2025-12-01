@@ -105,7 +105,6 @@ public class DataAttachmentRegistry {
             SHOULD_HEAL = ATTACHMENT_TYPES.register("should_heal",
             () -> AttachmentType.builder(() -> true)
                     .serialize(Codec.BOOL)
-//                    .copyOnDeath()
                     .build());
 
     public static boolean getShouldHeal(Entity entity) {

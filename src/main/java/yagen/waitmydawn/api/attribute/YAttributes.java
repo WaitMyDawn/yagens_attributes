@@ -105,7 +105,7 @@ public class YAttributes {
 
     public static final DeferredHolder<Attribute, Attribute> AIR_BRAKE =
             ATTRIBUTES.register("air_brake",
-                    () -> new RangedAttribute("attribute.yagens_attributes.air_brake", 60.0D, 0.0D, 2048.0D)
+                    () -> new RangedAttribute("attribute.yagens_attributes.air_brake", 40.0D, 0.0D, 2048.0D)
                             .setSyncable(true));
 
     @SubscribeEvent

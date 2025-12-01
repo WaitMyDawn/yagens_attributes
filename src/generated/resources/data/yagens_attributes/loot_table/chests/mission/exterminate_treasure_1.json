@@ -8,6 +8,24 @@
           "type": "minecraft:item",
           "functions": [
             {
+              "common_weight": 0,
+              "function": "yagens_attributes:randomize_mod",
+              "rare_weight": 0,
+              "uncommon_weight": 1
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
               "add": false,
               "count": {
                 "type": "minecraft:uniform",

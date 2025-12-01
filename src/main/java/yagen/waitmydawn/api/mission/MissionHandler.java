@@ -102,7 +102,7 @@ public class MissionHandler {
 
     public static <T extends Mob> T summonExterminateEntity(EntityType<T> type,
                                                             ServerLevel level, Vec3 pos,
-                                                            ResourceLocation taskId) {
+                                                            ResourceLocation taskId, int missionLevel) {
         T mob = summonEntity(type, level, pos);
         if (mob != null) {
             mob.addEffect(new MobEffectInstance(
@@ -111,7 +111,7 @@ public class MissionHandler {
                     0,
                     false, false));
             mob.getPersistentData().putString("TaskId", taskId.toString());
-            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE, 5, "exterminate_base_level");
+            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE, summonEntityLevelBonus[missionLevel], "exterminate_base_level");
         }
         return mob;
     }
@@ -120,6 +120,7 @@ public class MissionHandler {
     private static final int[] shortDistance = {100, 200, 400};
     private static final int[] exterminateMaxProgress = {40, 80, 120};
     private static final int[] waveMaxProgress = {5, 10, 20};
+    private static final int[] summonEntityLevelBonus = {5, 20, 40};
 
     public static double getRandMissionDistance(Level level, Player player, int missionLevel, String missionType) {
         int distance;
@@ -224,6 +225,7 @@ public class MissionHandler {
         spawnPos = Vec3.atCenterOf(new BlockPos(basicSpawnBlock.getX(), y, basicSpawnBlock.getZ()));
         return spawnPos;
     }
+
     public static BlockPos getCorrectTreasurePos(Level level, BlockPos basicSpawnBlock) {
         int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
         BlockPos spawnPos;
@@ -231,32 +233,28 @@ public class MissionHandler {
         if (level.dimension() == Level.NETHER && y > 125) {//nether floor
             BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
 
-            for (int yi = startY; yi <= 124; yi++) {
+            for (int yi = startY / 2; yi <= 124; yi++) {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState here = level.getBlockState(m);
-                if (here.isAir()) {
+                BlockState below = level.getBlockState(m.below());
+                if (below.canOcclude() && here.isAir()) {
                     spawnPos = m;
                     return spawnPos;
                 }
             }
         }
-        spawnPos=basicSpawnBlock;
-        if(level.getBlockState(basicSpawnBlock).isAir()) return spawnPos;
-        else{
+        spawnPos = new BlockPos(basicSpawnBlock.getX(), y, basicSpawnBlock.getZ());
+        if (level.getBlockState(spawnPos.below()).canOcclude()
+                && level.getBlockState(spawnPos).isAir())
+            return spawnPos;
+        else {
             BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
 
-            for (int yi = startY; yi <= startY+64; yi++) {
+            for (int yi = y; yi >= -32; yi--) {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState here = level.getBlockState(m);
-                if (here.isAir()) {
-                    spawnPos = m;
-                    return spawnPos;
-                }
-            }
-            for (int yi = startY; yi >= startY-32; yi--) {
-                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
-                BlockState here = level.getBlockState(m);
-                if (here.isAir()) {
+                BlockState below = level.getBlockState(m.below());
+                if (below.canOcclude() && here.isAir()) {
                     spawnPos = m;
                     return spawnPos;
                 }

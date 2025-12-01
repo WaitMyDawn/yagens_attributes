@@ -55,6 +55,7 @@ public class EntityLevelBonusEvent {
                 ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, path),
                 value,
                 operation));
+        DataAttachmentRegistry.setShouldHeal(entity, true);
         levelBonusAttributes(entity);
     }
 

@@ -81,7 +81,11 @@ public class MissionEvent {
         }
         if (spawnPos == null || !level.getWorldBorder().isWithinBounds(spawnPos)) return;
         ServerPlayer serverPlayer = (ServerPlayer) player;
-        Mob mob = summonExterminateEntity(randomMonsterType(serverPlayer.getRandom()), serverPlayer.serverLevel(), spawnPos, taskId);
+        Mob mob = summonExterminateEntity(
+                randomMonsterType(serverPlayer.getRandom()),
+                serverPlayer.serverLevel(),
+                spawnPos,
+                taskId, sData.missionLevel);
         mob.setTarget(player);
         data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
