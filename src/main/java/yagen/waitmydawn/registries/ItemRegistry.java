@@ -72,6 +72,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> ENDO = ITEMS.register("endo",
             () -> new EndoItem(new Item.Properties()));
 
+    public static final DeferredHolder<Item, Item> TELEPORT = ITEMS.register("teleport",
+            () -> new TeleportItem(new Item.Properties()));
+
     public static ItemStack createForma(String slotName) {
         ItemStack stack = new ItemStack(ItemRegistry.FORMA.get());
         stack.set(ComponentRegistry.FORMA_TYPE.get(), slotName);

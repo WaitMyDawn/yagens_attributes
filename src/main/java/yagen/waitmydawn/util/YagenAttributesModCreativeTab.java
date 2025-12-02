@@ -28,8 +28,10 @@ public class YagenAttributesModCreativeTab {
             .icon(() -> new ItemStack(ItemRegistry.MOD_ESSENCE.get()))
             .displayItems((enabledFeatures, entries) -> {
                 entries.accept(ItemRegistry.MOD_ESSENCE.get());
+                entries.accept(ItemRegistry.ORDIS.get());
                 entries.accept(ItemRegistry.UNKNOWN_RIVEN.get());
                 entries.accept(ItemRegistry.KUVA.get());
+                entries.accept(ItemRegistry.TELEPORT.get());
 //                entries.accept(ItemRegistry.SUMMON.get());
             }).build());
 

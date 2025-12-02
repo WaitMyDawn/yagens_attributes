@@ -42,9 +42,9 @@ public class EndoItem extends Item {
             double distance = getRandMissionDistance(level, player, endoInfo.level(), endoInfo.missionType());
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);
             double missionRange = 10;
-            int maxProgress = getRandMaxProgress(level, player, endoInfo.level(), endoInfo.missionType());
             ResourceLocation levelId = level.dimension().location();
             Set<UUID> players = nearbyPlayers(player, 3);
+            int maxProgress = getRandMaxProgress(level, player, endoInfo.level(), endoInfo.missionType(), players.size());
             long uuidSum = players.stream()
                     .map(uuid -> uuid.toString().substring(0, 4))
                     .mapToLong(hex -> Long.parseLong(hex, 16))
@@ -57,7 +57,7 @@ public class EndoItem extends Item {
                     (ServerLevel) level,
                     levelId,
                     taskId,
-                    MissionType.fromString(endoInfo.missionType()),endoInfo.level(),
+                    MissionType.fromString(endoInfo.missionType()), endoInfo.level(),
                     missionPosition,
                     maxProgress, distance, missionRange, players))
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));

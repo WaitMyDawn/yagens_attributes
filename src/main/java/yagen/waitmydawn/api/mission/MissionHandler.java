@@ -135,7 +135,7 @@ public class MissionHandler {
         return (0.8 + player.getRandom().nextDouble() / 2.5) * distance;
     }
 
-    public static int getRandMaxProgress(Level level, Player player, int missionLevel, String missionType) {
+    public static int getRandMaxProgress(Level level, Player player, int missionLevel, String missionType, int playerCount) {
         int maxProgress;
         switch (missionType) {
             case "Defense", "Survival" -> {
@@ -146,7 +146,7 @@ public class MissionHandler {
                 maxProgress = exterminateMaxProgress[missionLevel];
             }
         }
-        return (int) ((0.8 + player.getRandom().nextDouble() / 2.5) * maxProgress);
+        return (int) ((0.8 + player.getRandom().nextDouble() / 2.5) * Math.pow(1.2, playerCount - 1) * maxProgress);
     }
 
     public static Vec3 getRandMissionPosition(Level level, Player player, double distance) {
