@@ -58,17 +58,17 @@ public class YagensAttributes {
         ParticleRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
 
-        NeoForge.EVENT_BUS.register(AttackEventHandler.class);
-        NeoForge.EVENT_BUS.register(TooltipsUtils.class);
-        NeoForge.EVENT_BUS.register(XpChangeEvent.class);
-        NeoForge.EVENT_BUS.register(BowShootEvent.class);
-        NeoForge.EVENT_BUS.register(LivingEntityDeathEvent.class);
-        NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
-        NeoForge.EVENT_BUS.register(EntityLevelBonusEvent.class);
-        NeoForge.EVENT_BUS.register(LevelRender.class);
-        NeoForge.EVENT_BUS.register(MissionEvent.class);
-        NeoForge.EVENT_BUS.register(MissionHandler.class);
-//        NeoForge.EVENT_BUS.register(AutoEntityTypeClassifier.class);
+//        NeoForge.EVENT_BUS.register(AttackEventHandler.class);
+//        NeoForge.EVENT_BUS.register(TooltipsUtils.class);
+//        NeoForge.EVENT_BUS.register(XpChangeEvent.class);
+//        NeoForge.EVENT_BUS.register(BowShootEvent.class);
+//        NeoForge.EVENT_BUS.register(LivingEntityDeathEvent.class);
+//        NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
+//        NeoForge.EVENT_BUS.register(EntityLevelBonusEvent.class);
+//        NeoForge.EVENT_BUS.register(LevelRender.class);
+//        NeoForge.EVENT_BUS.register(MissionEvent.class);
+//        NeoForge.EVENT_BUS.register(MissionHandler.class);
+//        NeoForge.EVENT_BUS.register(MirrorEvent.class);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID,YagensAttributes.MODID));

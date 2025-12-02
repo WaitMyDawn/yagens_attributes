@@ -26,7 +26,7 @@ public class TeleportItem extends Item {
                             ? DimensionRegistry.MIRROR_LEVEL
                             : Level.OVERWORLD
             );
-            player.sendSystemMessage(Component.literal("Teleporting to [" + destination + "]"));
+            player.sendSystemMessage(Component.literal("Teleporting to [" + destination.dimension().location().getPath() + "]"));
             if (destination != null) {
                 serverPlayer.teleportTo(
                         destination,
