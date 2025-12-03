@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
@@ -69,7 +70,8 @@ public class MirrorEvent {
         if (event.getLevel() instanceof ServerLevel level) {
             if (level.dimension() == DimensionRegistry.MIRROR_LEVEL) {
                 if (event.getEntity() instanceof Player)
-                    event.setCanceled(true);
+                    if (event.getPlacedBlock().getCollisionShape(level, event.getPos()) != Shapes.block())
+                        event.setCanceled(true);
             }
         }
     }

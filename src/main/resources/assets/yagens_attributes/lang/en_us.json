@@ -33,6 +33,7 @@
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "Endo",
   "item.yagens_attributes.teleport": "Mirror of Warp",
+  "item.yagens_attributes.teleport.tooltip1": "Perhaps it didn't take you away.",
 
   "block.yagens_attributes.mod_essence_block": "Mod Essence Block",
   "block.yagens_attributes.mod_operation_table": "Mod Operation Table",

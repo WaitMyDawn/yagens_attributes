@@ -1,5 +1,6 @@
 package yagen.waitmydawn.item;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -8,9 +9,12 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.registries.DimensionRegistry;
+
+import java.util.List;
 
 public class TeleportItem extends Item {
     public TeleportItem(Properties properties) {
@@ -43,10 +47,15 @@ public class TeleportItem extends Item {
                 level.isClientSide);
     }
 
-//    @Override
-//    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
-//                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-//            tooltip.add(Component.translatable("item.yagens_attributes.endo.tooltip1")
-//                    .withStyle(ChatFormatting.AQUA));
-//    }
+    @Override
+    public @NotNull Component getName(@NotNull ItemStack stack) {
+        return Component.translatable(this.getDescriptionId(stack)).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD);
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
+                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+            tooltip.add(Component.translatable("item.yagens_attributes.teleport.tooltip1")
+                    .withColor(0xEA2BB8).withStyle(ChatFormatting.STRIKETHROUGH));
+    }
 }

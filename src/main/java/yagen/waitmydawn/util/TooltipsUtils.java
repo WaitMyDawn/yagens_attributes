@@ -144,5 +144,4 @@ public class TooltipsUtils {
                 .withStyle(Style.EMPTY.withColor(0x8A2BE2));
         event.getToolTip().add(line);
     }
-
 }

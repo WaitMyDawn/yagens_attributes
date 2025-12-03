@@ -33,6 +33,7 @@
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "内源核心",
   "item.yagens_attributes.teleport": "折跃之镜",
+  "item.yagens_attributes.teleport.tooltip1": "也许它并没有带你离开",
 
   "block.yagens_attributes.mod_essence_block": "Mod精华块",
   "block.yagens_attributes.mod_operation_table": "Mod操作台",

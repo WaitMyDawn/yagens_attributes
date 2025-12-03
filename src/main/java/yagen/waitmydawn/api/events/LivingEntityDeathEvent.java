@@ -1,7 +1,6 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -13,8 +12,11 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
@@ -32,6 +34,8 @@ import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class LivingEntityDeathEvent {
+    private static final Logger log = LoggerFactory.getLogger(LivingEntityDeathEvent.class);
+
     @SubscribeEvent
     public static void onPlayerDeathWithTotem(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
@@ -101,7 +105,21 @@ public class LivingEntityDeathEvent {
                             pos.x, pos.y, pos.z,
                             result)
             );
+            level.addFreshEntity(new ItemEntity(level, pos.x, pos.y, pos.z, new ItemStack(ItemRegistry.TELEPORT.get())));
         }
+    }
+
+    @SubscribeEvent
+    public static void TeleportItemDrop(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity.level().isClientSide) return;
+        if(entity.getRandom().nextDouble()<0.5) return;
+        if(!entity.getType().is(Tags.EntityTypes.BOSSES)) return;
+
+        ServerLevel level = (ServerLevel) entity.level();
+        Vec3 pos = entity.position();
+        ItemStack itemStack = new ItemStack(ItemRegistry.TELEPORT.get());
+        level.addFreshEntity(new ItemEntity(level, pos.x, pos.y, pos.z, itemStack));
     }
 
     @SubscribeEvent
