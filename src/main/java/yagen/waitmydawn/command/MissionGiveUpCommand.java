@@ -25,7 +25,7 @@ public class MissionGiveUpCommand {
                             ResourceLocation taskId = active.getKey();
                             data.setFailed(level,level.dimension().location(),taskId);
                             ctx.getSource().sendSuccess(
-                                    () -> Component.literal("Mission ["+taskId+"] completed!"),
+                                    () -> Component.literal("Mission ["+taskId+"] failed!"),
                                     true);
                             return 1;
                         })

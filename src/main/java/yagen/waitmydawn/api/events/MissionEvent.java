@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -22,6 +23,7 @@ import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
 import java.util.Objects;
+import java.util.Random;
 
 import static yagen.waitmydawn.api.mission.MissionData.*;
 import static yagen.waitmydawn.api.mission.MissionHandler.*;
@@ -81,8 +83,10 @@ public class MissionEvent {
         }
         if (spawnPos == null || !level.getWorldBorder().isWithinBounds(spawnPos)) return;
         ServerPlayer serverPlayer = (ServerPlayer) player;
+
         Mob mob = summonExterminateEntity(
-                randomMonsterType(serverPlayer.getRandom()),
+                randomMonsterByMaxHealthLevel(serverPlayer.getRandom(),
+                        getExterminateSummonLevel(serverPlayer.getRandom(),sData.missionLevel)),
                 serverPlayer.serverLevel(),
                 spawnPos,
                 taskId, sData.missionLevel);
@@ -90,5 +94,27 @@ public class MissionEvent {
         data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
 
+    public static int getExterminateSummonLevel(RandomSource random,int missionLevel) {
+        double randomNum = random.nextDouble();
+        if (missionLevel == 0) {
+            if (randomNum > 0.6 && randomNum < 0.9) {
+                return 1;
+            } else if (randomNum >= 0.9)
+                return 2;
+        }
+        if(missionLevel==1){
+            if (randomNum > 0.6 && randomNum < 0.9) {
+                return 2;
+            } else if (randomNum >= 0.9)
+                return 3;
+        }
+        if(missionLevel==2){
+            if (randomNum > 0.6 && randomNum < 0.9) {
+                return 3;
+            } else if (randomNum >= 0.9)
+                return 4;
+        }
+        return missionLevel;
+    }
 
 }

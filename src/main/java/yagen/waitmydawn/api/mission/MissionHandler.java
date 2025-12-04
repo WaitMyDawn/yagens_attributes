@@ -13,6 +13,7 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,11 +27,9 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityBlackList;
+import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static yagen.waitmydawn.api.events.EntityLevelBonusEvent.modifierEntityLevel;
@@ -55,39 +54,46 @@ public class MissionHandler {
                 .filter(type -> type.getCategory() == MobCategory.MONSTER)
                 .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
                 .filter(type -> !type.is(SummonEntityBlackList.MONSTER_BLACK_LIST))
-                .filter(type -> {
-                    Entity entity = type.create(ServerLifecycleHooks.getCurrentServer().overworld());
+                .forEach(type -> {
+                    EntityType<? extends Monster> type1 = (EntityType<? extends Monster>) type;
+                    try {
+                        MONSTER_TYPES.add(type1);
+                    } catch (ClassCastException e) {
+                        System.out.println("fail to transform to Monster: " + type);
+                    }
 
+                    Entity entity = type.create(ServerLifecycleHooks.getCurrentServer().overworld());
                     if (entity instanceof LivingEntity living) {
                         double maxHealth = living.getMaxHealth();
-                        if (maxHealth <= 20) {
-                            System.out.println(type.getDescriptionId() + "  max=" + maxHealth);
-                            return true;
+                        if (maxHealth < 20)
+                            MONSTER_UNDER_20_TYPES.add(type1);
+                        else if (maxHealth > 20 && maxHealth < 30)
+                            MONSTER_20_30_TYPES.add(type1);
+                        else if (maxHealth > 30 && maxHealth < 60)
+                            MONSTER_30_60_TYPES.add(type1);
+                        else if (maxHealth > 60 && maxHealth < 200)
+                            MONSTER_60_200_TYPES.add(type1);
+                        else if (maxHealth > 200)
+                            MONSTER_OVER_200_TYPES.add(type1);
+                        else if (maxHealth == 20) {
+                            MONSTER_UNDER_20_TYPES.add(type1);
+                            MONSTER_20_30_TYPES.add(type1);
+                        } else if (maxHealth == 30) {
+                            MONSTER_20_30_TYPES.add(type1);
+                            MONSTER_30_60_TYPES.add(type1);
+                        } else if (maxHealth == 60) {
+                            MONSTER_30_60_TYPES.add(type1);
+                            MONSTER_60_200_TYPES.add(type1);
+                        } else if (maxHealth == 200) {
+                            MONSTER_60_200_TYPES.add(type1);
+                            MONSTER_OVER_200_TYPES.add(type1);
                         }
-                    }
-                    return false;
-                })
-                .forEach(type -> {
-                    try {
-                        MONSTER_UNDER_20_TYPES.add((EntityType<? extends Monster>) type);
-                    } catch (ClassCastException e) {
-                        System.out.println("fail to transform to Monster: " + type);
-                    }
-                });
-        BuiltInRegistries.ENTITY_TYPE.stream()
-                .filter(type -> type.getCategory() == MobCategory.MONSTER)
-                .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
-                .filter(type -> !type.is(SummonEntityBlackList.MONSTER_BLACK_LIST))
-                .forEach(type -> {
-                    try {
-                        MONSTER_TYPES.add((EntityType<? extends Monster>) type);
-                    } catch (ClassCastException e) {
-                        System.out.println("fail to transform to Monster: " + type);
                     }
                 });
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
                         || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
+                        || type==DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
                 ))
                 .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
                 .forEach(type -> {
@@ -112,6 +118,61 @@ public class MissionHandler {
         return MONSTER_TYPES.get(random.nextInt(MONSTER_TYPES.size()));
     }
 
+    public static EntityType<? extends Monster> randomMonsterByMaxHealthLevel(RandomSource random,int level) {
+        switch (level) {
+            case 1 -> {
+                return randomMonster20To30Type(random);
+            }
+            case 2 -> {
+                return randomMonster30To60Type(random);
+            }
+            case 3 -> {
+                return randomMonster60To200Type(random);
+            }
+            case 4 -> {
+                return randomMonsterOver200Type(random);
+            }
+            default -> {
+                return randomMonsterUnder20Type(random);
+            }
+        }
+    }
+
+    public static EntityType<? extends Monster> randomMonsterUnder20Type(RandomSource random) {
+        if (MONSTER_UNDER_20_TYPES.isEmpty()) {
+            return EntityType.ZOMBIE;
+        }
+        return MONSTER_UNDER_20_TYPES.get(random.nextInt(MONSTER_UNDER_20_TYPES.size()));
+    }
+
+    public static EntityType<? extends Monster> randomMonster20To30Type(RandomSource random) {
+        if (MONSTER_20_30_TYPES.isEmpty()) {
+            return EntityType.VINDICATOR;
+        }
+        return MONSTER_20_30_TYPES.get(random.nextInt(MONSTER_20_30_TYPES.size()));
+    }
+
+    public static EntityType<? extends Monster> randomMonster30To60Type(RandomSource random) {
+        if (MONSTER_30_60_TYPES.isEmpty()) {
+            return EntityType.PIGLIN_BRUTE;
+        }
+        return MONSTER_30_60_TYPES.get(random.nextInt(MONSTER_30_60_TYPES.size()));
+    }
+
+    public static EntityType<? extends Monster> randomMonster60To200Type(RandomSource random) {
+        if (MONSTER_60_200_TYPES.isEmpty()) {
+            return EntityType.ELDER_GUARDIAN;
+        }
+        return MONSTER_60_200_TYPES.get(random.nextInt(MONSTER_60_200_TYPES.size()));
+    }
+
+    public static EntityType<? extends Monster> randomMonsterOver200Type(RandomSource random) {
+        if (MONSTER_OVER_200_TYPES.isEmpty()) {
+            return EntityType.WARDEN;
+        }
+        return MONSTER_OVER_200_TYPES.get(random.nextInt(MONSTER_OVER_200_TYPES.size()));
+    }
+
     public static EntityType<? extends Monster> randomBossType(RandomSource random) {
         return BOSS_TYPES.get(random.nextInt(BOSS_TYPES.size()));
     }
@@ -122,8 +183,13 @@ public class MissionHandler {
         T mob = type.create(level);
         if (mob == null) return null;
         mob.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
-
         level.addFreshEntity(mob);
+
+        if(mob instanceof Warden warden) {
+            Player nearest = warden.level().getNearestPlayer(warden, 32.0D);
+            warden.increaseAngerAt(nearest, 80, true);
+        }
+
         return mob;
     }
 

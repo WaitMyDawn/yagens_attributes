@@ -63,7 +63,8 @@ public class EndoItem extends Item {
                     missionPosition,
                     maxProgress, distance, missionRange, players))
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));
-            player.getItemInHand(hand).shrink(1);
+            if (!player.isCreative())
+                player.getItemInHand(hand).shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);

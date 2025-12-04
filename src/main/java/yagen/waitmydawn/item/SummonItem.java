@@ -38,7 +38,6 @@ public class SummonItem extends Item {
             summonEntity(randomMonsterType(serverPlayer.getRandom()),
                     serverPlayer.serverLevel(),
                     finalPos
-//                    serverPlayer.position().add(serverPlayer.getLookAngle())
             );
             player.sendSystemMessage(Component.literal("Entity Summoned!"));
         }
