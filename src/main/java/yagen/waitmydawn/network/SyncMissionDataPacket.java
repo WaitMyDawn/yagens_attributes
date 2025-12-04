@@ -16,10 +16,11 @@ public record SyncMissionDataPacket(
         int progress,
         int maxProgress,
         int summonCount,
+        int deathCount,
         double distance,
         double missionRange,
         double x, double y, double z,
-        boolean completed
+        int completed
 ) implements CustomPacketPayload {
 
     public static final Type<SyncMissionDataPacket> TYPE =
@@ -34,12 +35,13 @@ public record SyncMissionDataPacket(
                         buf.writeInt(pkt.progress);
                         buf.writeInt(pkt.maxProgress);
                         buf.writeInt(pkt.summonCount);
+                        buf.writeInt(pkt.deathCount);
                         buf.writeDouble(pkt.distance);
                         buf.writeDouble(pkt.missionRange);
                         buf.writeDouble(pkt.x);
                         buf.writeDouble(pkt.y);
                         buf.writeDouble(pkt.z);
-                        buf.writeBoolean(pkt.completed);
+                        buf.writeInt(pkt.completed);
                     },
                     buf -> new SyncMissionDataPacket(
                             buf.readResourceLocation(),
@@ -48,12 +50,13 @@ public record SyncMissionDataPacket(
                             buf.readInt(),
                             buf.readInt(),
                             buf.readInt(),
+                            buf.readInt(),
                             buf.readDouble(),
                             buf.readDouble(),
                             buf.readDouble(),
                             buf.readDouble(),
                             buf.readDouble(),
-                            buf.readBoolean()
+                            buf.readInt()
                     )
             );
 

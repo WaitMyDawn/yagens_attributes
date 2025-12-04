@@ -35,7 +35,9 @@ public class EndoItem extends Item {
         ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(player.getItemInHand(hand));
         if (!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
                 || endoInfo == ComponentRegistry.EndoInfo.EMPTY) {
-            player.sendSystemMessage(Component.literal("It is not supported now!"));
+            if (level.isClientSide)
+                player.sendSystemMessage(Component.literal("It is not supported now!"));
+
             return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
         if (!level.isClientSide) {
@@ -61,6 +63,7 @@ public class EndoItem extends Item {
                     missionPosition,
                     maxProgress, distance, missionRange, players))
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));
+            player.getItemInHand(hand).shrink(1);
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);

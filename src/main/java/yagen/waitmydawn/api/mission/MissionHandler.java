@@ -10,9 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +23,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityBlackList;
 
@@ -41,12 +40,40 @@ import static yagen.waitmydawn.api.mission.MissionData.distanceToMissionPosition
 public class MissionHandler {
     private static boolean executed = false;
     private static final List<EntityType<? extends Monster>> MONSTER_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> MONSTER_UNDER_20_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> MONSTER_20_30_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> MONSTER_30_60_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> MONSTER_60_200_TYPES = new ArrayList<>();
+    private static final List<EntityType<? extends Monster>> MONSTER_OVER_200_TYPES = new ArrayList<>();
     private static final List<EntityType<? extends Monster>> BOSS_TYPES = new ArrayList<>();
 
     @SubscribeEvent
     public static void onServerStarted(ServerStartedEvent event) {
         if (executed) return;
         executed = true;
+        BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(type -> type.getCategory() == MobCategory.MONSTER)
+                .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
+                .filter(type -> !type.is(SummonEntityBlackList.MONSTER_BLACK_LIST))
+                .filter(type -> {
+                    Entity entity = type.create(ServerLifecycleHooks.getCurrentServer().overworld());
+
+                    if (entity instanceof LivingEntity living) {
+                        double maxHealth = living.getMaxHealth();
+                        if (maxHealth <= 20) {
+                            System.out.println(type.getDescriptionId() + "  max=" + maxHealth);
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .forEach(type -> {
+                    try {
+                        MONSTER_UNDER_20_TYPES.add((EntityType<? extends Monster>) type);
+                    } catch (ClassCastException e) {
+                        System.out.println("fail to transform to Monster: " + type);
+                    }
+                });
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> type.getCategory() == MobCategory.MONSTER)
                 .filter(type -> !type.is(Tags.EntityTypes.BOSSES))

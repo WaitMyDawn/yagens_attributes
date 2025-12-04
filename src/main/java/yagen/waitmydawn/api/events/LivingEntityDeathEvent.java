@@ -1,5 +1,7 @@
 package yagen.waitmydawn.api.events;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -8,6 +10,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -18,6 +21,8 @@ import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.mission.MissionData;
+import yagen.waitmydawn.api.mission.MissionType;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
@@ -28,6 +33,7 @@ import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
 import java.util.List;
+import java.util.Objects;
 
 import static yagen.waitmydawn.api.util.ModCompat.ModLevelInItemStack;
 import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
@@ -55,11 +61,27 @@ public class LivingEntityDeathEvent {
     }
 
     @SubscribeEvent
+    public static void onPlayerDeathWithMission(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+//        if (player.level().isClientSide) return;
+        Level level = player.level();
+        if (level.isClientSide) return;
+
+        MinecraftServer server = Objects.requireNonNull(player.getServer());
+        MissionData data = MissionData.get(server);
+        var active = data.getPlayerActiveTask(player);
+        if (active == null) return;
+        ResourceLocation taskId = active.getKey();
+
+        data.addDeathCount((ServerLevel) level, level.dimension().location(), taskId);
+    }
+
+    @SubscribeEvent
     public static void BountyHunter(LivingExperienceDropEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide) return;
         if (!(event.getAttackingPlayer() instanceof Player player)) return;
-        if (entity instanceof Player || !(entity instanceof Mob)) return;
+        if (!(entity instanceof Mob)) return;
         int modLevel = 0;
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         if (!IModContainer.isModContainer(chest)) return;
@@ -74,18 +96,11 @@ public class LivingEntityDeathEvent {
         if (originalExp <= 0) return;
         event.setDroppedExperience(0);
         int total = (int) (originalExp * (1 + 0.4f * modLevel));
-//        while (total > 0) {
-//            if (total > 100)
-//                player.giveExperiencePoints(100);
-//            else
-//                player.giveExperiencePoints(total);
-//            total -= 100;
-//        }
         player.giveExperiencePoints(total);
     }
 
     /**
-     * append for the Mobs who prevent vanilla way of dropping Loots in `LivingDropsEvent`
+     * append for the Mobs who prevents vanilla way of dropping Loots in `LivingDropsEvent`
      */
     @SubscribeEvent
     public static void DarkDoppelgangerEntityDrop(LivingDeathEvent event) {

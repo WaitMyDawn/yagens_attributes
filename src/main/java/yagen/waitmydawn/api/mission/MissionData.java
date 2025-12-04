@@ -66,7 +66,7 @@ public class MissionData extends SavedData {
         sData.summonCount = 0;
         sData.distance = distance;
         sData.missionRange = missionRange;
-        sData.completed = false;
+        sData.completed = 0;
         sData.players.addAll(players);
 
         data.computeIfAbsent(levelId, k -> new ConcurrentHashMap<>())
@@ -112,7 +112,7 @@ public class MissionData extends SavedData {
         if (taskMap == null) return false;
 
         for (SharedTaskData sData : taskMap.values()) {
-            if (sData.completed) continue;
+            if (sData.completed > 0) continue;
             for (UUID uuid : players) {
                 if (sData.players.contains(uuid)) return true;
             }
@@ -120,34 +120,9 @@ public class MissionData extends SavedData {
         return false;
     }
 
-    public void setMissionType(ResourceLocation level, ResourceLocation task, MissionType missionType) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.missionType = missionType;
-            setDirty();
-        }
-    }
-
-    public void setMissionLevel(ResourceLocation level, ResourceLocation task, int missionLevel) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.missionLevel = missionLevel;
-            setDirty();
-        }
-    }
-
-    public void setProgress(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, int progress) {
-        SharedTaskData sData = getData(levelId, taskId);
-        if (sData != null) {
-            sData.progress = progress;
-            checkCompleted(level, levelId, taskId, sData);
-            setDirty();
-        }
-    }
-
     public void addProgress(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
         SharedTaskData sData = getData(levelId, taskId);
-        if (sData == null || sData.completed) return;
+        if (sData == null || sData.completed > 0) return;
         sData.progress++;
         checkCompleted(level, levelId, taskId, sData);
         setDirty();
@@ -169,6 +144,7 @@ public class MissionData extends SavedData {
                 sData.progress,
                 sData.maxProgress,
                 sData.summonCount,
+                sData.deathCount,
                 sData.distance,
                 sData.missionRange,
                 sData.missionPosition.x,
@@ -179,20 +155,34 @@ public class MissionData extends SavedData {
 
     public void addSummonCount(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
         SharedTaskData sData = getData(levelId, taskId);
-        if (sData == null || sData.completed) return;
+        if (sData == null || sData.completed > 0) return;
         sData.summonCount++;
         setDirty();
         sendPacket(level, taskId, sData);
     }
 
-    public boolean checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
-        if (sData.progress >= sData.maxProgress || sData.completed) {
-            sData.completed = true;
+    public void addDeathCount(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
+        SharedTaskData sData = getData(levelId, taskId);
+        if (sData == null || sData.completed > 0) return;
+        sData.deathCount++;
+        checkCompleted(level, levelId, taskId, sData);
+        setDirty();
+        sendPacket(level, taskId, sData);
+    }
+
+    public int checkCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, SharedTaskData sData) {
+        if (sData.progress >= sData.maxProgress || sData.completed == 1) {
+            sData.completed = 1;
             clearSummonedEntitiesByTaskId(level, taskId);
             createTreasure(level, levelId, taskId);
-            return true;
+            return 1;
         }
-        return false;
+        else if (sData.deathCount>=4||sData.completed==2){
+            sData.completed = 2;
+            clearSummonedEntitiesByTaskId(level, taskId);
+            return 2;
+        }
+        return 0;
     }
 
     public static int clearSummonedEntitiesByTaskId(ServerLevel level, ResourceLocation taskId) {
@@ -250,104 +240,29 @@ public class MissionData extends SavedData {
         return (int) Math.ceil(sData.maxProgress * 1.5 / areaCount);
     }
 
-    public void setMaxProgress(ResourceLocation level, ResourceLocation task, int maxProgress) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.maxProgress = maxProgress;
-            setDirty();
-        }
-    }
-
-    public void setSummonCount(ResourceLocation level, ResourceLocation task, int summonCount) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.summonCount = summonCount;
-            setDirty();
-        }
-    }
-
-    public void setDistance(ResourceLocation level, ResourceLocation task, double distance) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.distance = distance;
-            setDirty();
-        }
-    }
-
-    public void setMissionRange(ResourceLocation level, ResourceLocation task, double missionRange) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.missionRange = missionRange;
-            setDirty();
-        }
-    }
-
-    public void setMissionPosition(ResourceLocation level, ResourceLocation task, Vec3 missionPosition) {
-        SharedTaskData sData = getData(level, task);
-        if (sData != null) {
-            sData.missionPosition = missionPosition;
-            setDirty();
-        }
-    }
-
-    public void setCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, boolean completed) {
+    public void setCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
         SharedTaskData sData = getData(levelId, taskId);
         if (sData != null) {
-            sData.completed = completed;
+            sData.completed = 1;
             checkCompleted(level, levelId, taskId, sData);
             setDirty();
             sendPacket(level, taskId, sData);
         }
     }
 
-    public boolean isCompleted(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData != null && sData.completed;
+    public void setFailed(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
+        SharedTaskData sData = getData(levelId, taskId);
+        if (sData != null) {
+            sData.completed = 2;
+            checkCompleted(level, levelId, taskId, sData);
+            setDirty();
+            sendPacket(level, taskId, sData);
+        }
     }
 
     public boolean isPlayerInTask(ResourceLocation level, ResourceLocation task, Player player) {
         SharedTaskData sData = getData(level, task);
         return sData != null && sData.players.contains(player.getUUID());
-    }
-
-    public MissionType getMissionType(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData.missionType;
-    }
-
-    public int getMissionLevel(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData.missionLevel;
-    }
-
-    public int getProgress(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData == null ? 0 : sData.progress;
-    }
-
-    public int getMaxProgress(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData == null ? 0 : sData.maxProgress;
-    }
-
-    public int getSummonCount(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData == null ? 0 : sData.summonCount;
-    }
-
-    public double getDistance(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData == null ? 0 : sData.distance;
-    }
-
-    public double getMissionRange(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData == null ? 0 : sData.missionRange;
-    }
-
-    public Vec3 getMissionPosition(ResourceLocation level, ResourceLocation task) {
-        SharedTaskData sData = getData(level, task);
-        return sData.missionPosition;
     }
 
 //    public Set<UUID> getPlayersInTask(ResourceLocation level, ResourceLocation task) {
@@ -370,7 +285,7 @@ public class MissionData extends SavedData {
 
         for (Map.Entry<ResourceLocation, SharedTaskData> e : taskMap.entrySet()) {
             SharedTaskData sData = e.getValue();
-            if (!sData.completed && sData.players.contains(player.getUUID())) {
+            if (sData.completed == 0 && sData.players.contains(player.getUUID())) {
                 return e.getKey();
             }
         }
@@ -386,7 +301,7 @@ public class MissionData extends SavedData {
 
         for (Map.Entry<ResourceLocation, SharedTaskData> e : taskMap.entrySet()) {
             SharedTaskData sData = e.getValue();
-            if (!sData.completed && sData.players.contains(player.getUUID())) {
+            if (sData.completed == 0 && sData.players.contains(player.getUUID())) {
                 return e;
             }
         }
@@ -401,7 +316,7 @@ public class MissionData extends SavedData {
 
         for (Map.Entry<ResourceLocation, SharedTaskData> e : taskMap.entrySet()) {
             SharedTaskData sData = e.getValue();
-            if (!sData.completed && sData.players.contains(player.getUUID())) {
+            if (sData.completed == 0 && sData.players.contains(player.getUUID())) {
                 return true;
             }
         }
@@ -420,12 +335,13 @@ public class MissionData extends SavedData {
                 taskTag.putInt("progress", sData.progress);
                 taskTag.putInt("maxProgress", sData.maxProgress);
                 taskTag.putInt("summonCount", sData.summonCount);
+                taskTag.putInt("deathCount", sData.deathCount);
                 taskTag.putDouble("distance", sData.distance);
                 taskTag.putDouble("missionRange", sData.missionRange);
                 taskTag.putDouble("missionX", sData.missionPosition.x);
                 taskTag.putDouble("missionY", sData.missionPosition.y);
                 taskTag.putDouble("missionZ", sData.missionPosition.z);
-                taskTag.putBoolean("completed", sData.completed);
+                taskTag.putInt("completed", sData.completed);
                 ListTag playerList = new ListTag();
                 sData.players.forEach(id -> playerList.add(NbtUtils.createUUID(id)));
                 taskTag.put("players", playerList);
@@ -455,13 +371,14 @@ public class MissionData extends SavedData {
                 sData.progress = taskTag.getInt("progress");
                 sData.maxProgress = taskTag.getInt("maxProgress");
                 sData.summonCount = taskTag.getInt("summonCount");
+                sData.deathCount = taskTag.getInt("deathCount");
                 sData.distance = taskTag.getDouble("distance");
                 sData.missionRange = taskTag.getDouble("missionRange");
                 sData.missionPosition = new Vec3(
                         taskTag.getDouble("missionX"),
                         taskTag.getDouble("missionY"),
                         taskTag.getDouble("missionZ"));
-                sData.completed = taskTag.getBoolean("completed");
+                sData.completed = taskTag.getInt("completed");
                 ListTag playerList = taskTag.getList("players", Tag.TAG_INT_ARRAY);
                 playerList.forEach(tag -> sData.players.add(NbtUtils.loadUUID(tag)));
                 inst.data.computeIfAbsent(level, k -> new ConcurrentHashMap<>())
@@ -485,15 +402,15 @@ public class MissionData extends SavedData {
         data.clear();
         setDirty();
         SharedTaskData sData = new SharedTaskData();
-        sData.missionType=MissionType.EXTERMINATE;
-        sData.missionPosition=new Vec3(0,0,0);
-        sData.completed=true;
+        sData.missionType = MissionType.EXTERMINATE;
+        sData.missionPosition = new Vec3(0, 0, 0);
+        sData.completed = 1;
         sendPacket(level, taskId, sData);
     }
 
-    public void clearUnfinishedOnly() {
+    public void clearTaskByStatusId(int statusId) {// 0 = ing; 1 = completed; 2 = failed
         data.values().forEach(taskMap ->
-                taskMap.entrySet().removeIf(e -> !e.getValue().completed)
+                taskMap.entrySet().removeIf(e -> e.getValue().completed == statusId)
         );
         data.entrySet().removeIf(e -> e.getValue().isEmpty());
         setDirty();
@@ -505,10 +422,11 @@ public class MissionData extends SavedData {
         public int progress;
         public int maxProgress;
         public int summonCount;
+        public int deathCount;
         public double distance;
         public double missionRange;
         public Vec3 missionPosition;
-        public boolean completed;
+        public int completed;
         public Set<UUID> players = new HashSet<>();
     }
 }

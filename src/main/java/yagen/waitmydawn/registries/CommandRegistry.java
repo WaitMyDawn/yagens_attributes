@@ -5,6 +5,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import yagen.waitmydawn.command.MissionClearCommand;
 import yagen.waitmydawn.command.MissionCompleteCommand;
+import yagen.waitmydawn.command.MissionGiveUpCommand;
 
 @EventBusSubscriber()
 public class CommandRegistry {
@@ -15,5 +16,6 @@ public class CommandRegistry {
 
         MissionClearCommand.register(commandDispatcher);
         MissionCompleteCommand.register(commandDispatcher);
+        MissionGiveUpCommand.register(commandDispatcher);
     }
 }

@@ -20,6 +20,7 @@ public class ClientMissionData {
         snapshot.progress = p.progress();
         snapshot.maxProgress = p.maxProgress();
         snapshot.summonCount = p.summonCount();
+        snapshot.deathCount = p.deathCount();
         snapshot.distance = p.distance();
         snapshot.missionRange = p.missionRange();
         snapshot.missionPosition = new Vec3(p.x(), p.y(), p.z());
@@ -31,7 +32,7 @@ public class ClientMissionData {
     @Nullable
     public static Map.Entry<ResourceLocation, MissionData.SharedTaskData>
     getPlayerActiveTask(LocalPlayer player) {
-        if (snapshot == null || snapshot.completed) return null;
+        if (snapshot == null || snapshot.completed > 0) return null;
         return Map.entry(snapshotTaskId, snapshot);
     }
 }
