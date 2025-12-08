@@ -63,7 +63,6 @@ public class LivingEntityDeathEvent {
     @SubscribeEvent
     public static void onPlayerDeathWithMission(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
-//        if (player.level().isClientSide) return;
         Level level = player.level();
         if (level.isClientSide) return;
 

@@ -1278,6 +1278,141 @@ public class LootTableGenerator {
                                             LootItem.lootTableItem(Items.IRON_BLOCK)
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
             );
+
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/assassination_treasure_0")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(1, 0, 0, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 50, 30, 20, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(8, 32)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 24))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+            );
+
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/assassination_treasure_1")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 1, 0, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 0, 0, 1, 20, 70))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(40, 64)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.NETHERITE_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 3))))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 36)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+            );
+            consumer.accept(
+                    ResourceKey.create(
+                            Registries.LOOT_TABLE, ResourceLocation.fromNamespaceAndPath("yagens_attributes",
+                                    "chests/mission/assassination_treasure_2")),
+                    LootTable.lootTable()
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RandomizeModFunction.builder(0, 0, 1, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.UNKNOWN_RIVEN.get())
+                                                    .apply(SetItemCountFunction.setCount(ConstantValue.exactly(1)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(40, 64)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.NETHERITE_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
+                            )
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.DIAMOND)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 14)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.GOLD_INGOT)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 36)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(Items.IRON_BLOCK)
+                                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+            );
         }
     }
 

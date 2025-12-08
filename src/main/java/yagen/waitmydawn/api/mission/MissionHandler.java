@@ -42,6 +42,7 @@ import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static yagen.waitmydawn.api.events.AttackEventHandler.forceEffect;
 import static yagen.waitmydawn.api.events.EntityLevelBonusEvent.modifierEntityLevel;
 import static yagen.waitmydawn.api.mission.MissionData.distanceToMissionPosition;
 
@@ -208,7 +209,7 @@ public class MissionHandler {
                                                             ResourceLocation taskId, int missionLevel) {
         T mob = summonEntity(type, level, pos);
         if (mob != null) {
-            mob.addEffect(new MobEffectInstance(
+            forceEffect(mob, new MobEffectInstance(
                     MobEffects.GLOWING,
                     2000000,
                     0,
@@ -219,17 +220,37 @@ public class MissionHandler {
         return mob;
     }
 
+    public static <T extends Mob> T summonAssassinationEntity(EntityType<T> type,
+                                                              ServerLevel level, Vec3 pos,
+                                                              ResourceLocation taskId, int missionLevel) {
+        T mob = summonEntity(type, level, pos);
+        if (mob != null) {
+            forceEffect(mob, new MobEffectInstance(
+                    MobEffects.GLOWING,
+                    2000000,
+                    0,
+                    false, false));
+            mob.getPersistentData().putString("TaskId", taskId.toString());
+            modifierEntityLevel(mob, AttributeModifier.Operation.ADD_VALUE, summonBossLevelBonus[missionLevel], "assassination_base_level");
+        }
+        return mob;
+    }
+
     private static final int[] normalDistance = {400, 800, 1200};
     private static final int[] shortDistance = {100, 200, 400};
     private static final int[] exterminateMaxProgress = {40, 80, 120};
     private static final int[] waveMaxProgress = {5, 10, 20};
     private static final int[] summonEntityLevelBonus = {5, 20, 40};
+    private static final int[] summonBossLevelBonus = {50, 100, 200};
 
     public static double getRandMissionDistance(Level level, Player player, int missionLevel, String missionType) {
         int distance;
         switch (missionType) {
             case "Defense", "Survival" -> {
                 distance = shortDistance[missionLevel];
+            }
+            case "Assassination" -> {
+                distance = 200;
             }
             default -> {
                 distance = normalDistance[missionLevel];
@@ -244,6 +265,9 @@ public class MissionHandler {
             case "Defense", "Survival" -> {
                 maxProgress = waveMaxProgress[missionLevel];
                 return maxProgress;
+            }
+            case "Assassination" -> {
+                return 1;
             }
             default -> {
                 maxProgress = exterminateMaxProgress[missionLevel];
@@ -393,7 +417,7 @@ public class MissionHandler {
         MapItemSavedData mapData = MapItemSavedData.createFresh(
                 missionPosition.x(),
                 missionPosition.z(),
-                (byte) 1,
+                (byte) 4,
                 true,
                 true,
                 serverLevel.dimension()

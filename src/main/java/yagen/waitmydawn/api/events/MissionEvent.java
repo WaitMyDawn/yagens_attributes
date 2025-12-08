@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
@@ -32,12 +33,12 @@ import static yagen.waitmydawn.api.mission.MissionHandler.*;
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class MissionEvent {
     @SubscribeEvent
-    public static void exterminateEvent(LivingDeathEvent event) {
+    public static void killMissionSummonEvent(LivingDeathEvent event) {
         if (!(event.getEntity() instanceof Mob mob)) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
-        Level level = player.level();
-        if (level.isClientSide) return;
+        if (player.level().isClientSide) return;
 
+        ServerLevel level = (ServerLevel) player.level();
         MinecraftServer server = Objects.requireNonNull(player.getServer());
         MissionData data = MissionData.get(server);
         var active = data.getPlayerActiveTask(player);
@@ -47,7 +48,26 @@ public class MissionEvent {
         ResourceLocation taskId = active.getKey();
         if (!mob.getPersistentData().getString("TaskId").equals(taskId.toString())) return;
 
-        data.addProgress((ServerLevel) level, level.dimension().location(), taskId);
+        data.addProgress(level, level.dimension().location(), taskId);
+    }
+
+    @SubscribeEvent
+    public static void MissionSummonDeathEvent(LivingDeathEvent event) {
+        if (!(event.getEntity() instanceof Mob mob)) return;
+
+        if (mob.level().isClientSide) return;
+        String taskIdString = mob.getPersistentData().getString("TaskId");
+        if(taskIdString.equals("")) return;
+        ServerLevel level = (ServerLevel) mob.level();
+        MinecraftServer server = Objects.requireNonNull(mob.getServer());
+        MissionData data = MissionData.get(server);
+        ResourceLocation taskId = ResourceLocation.parse(taskIdString);
+        System.out.println("taskId: " + taskId);
+        MissionData.SharedTaskData sData = data.getSharedTaskById(level.dimension().location(), taskId);
+        if (sData.missionType != MissionType.ASSASSINATION) return;
+        if (!mob.getPersistentData().getString("TaskId").equals(taskId.toString())) return;
+
+        data.addProgress(level, level.dimension().location(), taskId);
     }
 
     @SubscribeEvent
@@ -86,7 +106,7 @@ public class MissionEvent {
 
         Mob mob = summonExterminateEntity(
                 randomMonsterByMaxHealthLevel(serverPlayer.getRandom(),
-                        getExterminateSummonLevel(serverPlayer.getRandom(),sData.missionLevel)),
+                        getExterminateSummonLevel(serverPlayer.getRandom(), sData.missionLevel)),
                 serverPlayer.serverLevel(),
                 spawnPos,
                 taskId, sData.missionLevel);
@@ -94,7 +114,40 @@ public class MissionEvent {
         data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
 
-    public static int getExterminateSummonLevel(RandomSource random,int missionLevel) {
+    @SubscribeEvent
+    public static void assassinationEntitySummonEvent(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.tickCount % 10 != 0) return;
+        Level level = player.level();
+        if (level.isClientSide) return;
+
+        MinecraftServer server = Objects.requireNonNull(player.getServer());
+        MissionData data = MissionData.get(server);
+        var active = data.getPlayerActiveTask(player);
+        if (active == null) return;
+        MissionData.SharedTaskData sData = active.getValue();
+        if (sData.missionType != MissionType.ASSASSINATION) return;
+        if (sData.summonCount >= sData.maxProgress) return;
+        if (getDistanceByXY(player.position(), sData.missionPosition) > sData.missionRange) return;
+
+        ResourceLocation taskId = active.getKey();
+        ServerPlayer serverPlayer = (ServerPlayer) player;
+        BlockPos basicSpawnBlock = getBasicSpawnBlockPosByArea(sData.missionPosition, sData.missionRange, player);
+        Vec3 spawnPos = getCorrectSpawnPos(level, basicSpawnBlock);
+        Mob mob = summonAssassinationEntity(
+                randomBossType(serverPlayer.getRandom()),
+                serverPlayer.serverLevel(),
+                spawnPos,
+                taskId, sData.missionLevel);
+        mob.setTarget(player);
+        data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
+    }
+
+    public static double getDistanceByXY(Vec3 pos1, Vec3 pos2) {
+        return Math.sqrt((pos1.x - pos2.x) * (pos1.x - pos2.x) + (pos1.z - pos2.z) * (pos1.z - pos2.z));
+    }
+
+    public static int getExterminateSummonLevel(RandomSource random, int missionLevel) {
         double randomNum = random.nextDouble();
         if (missionLevel == 0) {
             if (randomNum > 0.6 && randomNum < 0.9) {
@@ -102,13 +155,13 @@ public class MissionEvent {
             } else if (randomNum >= 0.9)
                 return 2;
         }
-        if(missionLevel==1){
+        if (missionLevel == 1) {
             if (randomNum > 0.6 && randomNum < 0.9) {
                 return 2;
             } else if (randomNum >= 0.9)
                 return 3;
         }
-        if(missionLevel==2){
+        if (missionLevel == 2) {
             if (randomNum > 0.6 && randomNum < 0.9) {
                 return 3;
             } else if (randomNum >= 0.9)

@@ -33,7 +33,8 @@ public class EndoItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player,
                                                            @NotNull InteractionHand hand) {
         ComponentRegistry.EndoInfo endoInfo = ComponentRegistry.getEndoInfo(player.getItemInHand(hand));
-        if (!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
+        if ((!endoInfo.missionType().equals(MissionType.EXTERMINATE.getValue())
+        && !endoInfo.missionType().equals(MissionType.ASSASSINATION.getValue()))
                 || endoInfo == ComponentRegistry.EndoInfo.EMPTY) {
             if (level.isClientSide)
                 player.sendSystemMessage(Component.literal("It is not supported now!"));

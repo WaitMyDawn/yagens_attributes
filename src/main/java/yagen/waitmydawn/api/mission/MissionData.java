@@ -89,7 +89,9 @@ public class MissionData extends SavedData {
         if (!level.getWorldBorder().isWithinBounds(chestPos)) return false;
         level.setBlock(chestPos, Blocks.CHEST.defaultBlockState(), 3);
         if (level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest) {
-            ResourceKey<LootTable> key = LootTableRegistry.getMissionTreasureKey(sData.missionType, sData.missionLevel);
+            ResourceKey<LootTable> key = LootTableRegistry.getMissionTreasureKey(
+                    sData.missionType
+                    , sData.missionLevel);
             long seed = level.getRandom().nextLong();
             chest.setLootTable(key, seed);
 
@@ -239,6 +241,15 @@ public class MissionData extends SavedData {
         return (int) Math.ceil(sData.maxProgress * 1.5 / areaCount);
     }
 
+    public void setMissionPosition(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId, Vec3 missionPosition) {
+        SharedTaskData sData = getData(levelId, taskId);
+        if (sData != null) {
+            sData.missionPosition = missionPosition;
+            setDirty();
+            sendPacket(level, taskId, sData);
+        }
+    }
+
     public void setCompleted(ServerLevel level, ResourceLocation levelId, ResourceLocation taskId) {
         SharedTaskData sData = getData(levelId, taskId);
         if (sData != null) {
@@ -273,6 +284,10 @@ public class MissionData extends SavedData {
 
     private SharedTaskData getData(ResourceLocation level, ResourceLocation task) {
         return data.getOrDefault(level, Map.of()).get(task);
+    }
+
+    public SharedTaskData getSharedTaskById(ResourceLocation levelId, ResourceLocation taskId) {
+        return getData(levelId, taskId);
     }
 
     @Nullable
@@ -412,7 +427,7 @@ public class MissionData extends SavedData {
         data.clear();
         setDirty();
         SharedTaskData sData = new SharedTaskData();
-        sData.players=allPlayers;
+        sData.players = allPlayers;
         sData.missionType = MissionType.EXTERMINATE;
         sData.missionPosition = new Vec3(0, 0, 0);
         sData.completed = 1;
