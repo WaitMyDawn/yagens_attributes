@@ -26,6 +26,23 @@
           "type": "minecraft:item",
           "functions": [
             {
+              "function": "yagens_attributes:set_endo",
+              "level": 2,
+              "missionType": "Assassination"
+            }
+          ],
+          "name": "yagens_attributes:endo"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
               "add": false,
               "count": {
                 "type": "minecraft:uniform",

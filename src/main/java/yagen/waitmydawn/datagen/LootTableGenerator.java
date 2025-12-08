@@ -1172,6 +1172,12 @@ public class LootTableGenerator {
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
+                                            LootItem.lootTableItem(ItemRegistry.ENDO.get())
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,1), MissionType.ASSASSINATION.getValue())))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD_ESSENCE.get())
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(8, 32)))))
                             .withPool(LootPool.lootPool()
@@ -1204,6 +1210,12 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
                                                     .apply(RandomizeModFunction.builder(0, 1, 0, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.ENDO.get())
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,2), MissionType.ASSASSINATION.getValue())))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.9f)))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
@@ -1246,6 +1258,11 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
                                                     .apply(RandomizeModFunction.builder(0, 0, 1, 0, 0, 50))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.ENDO.get())
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1,2), MissionType.ASSASSINATION.getValue()))))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(

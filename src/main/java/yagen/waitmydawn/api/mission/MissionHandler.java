@@ -104,7 +104,7 @@ public class MissionHandler {
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
                         || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
-                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
+//                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
                 ))
                 .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
                 .forEach(type -> {
