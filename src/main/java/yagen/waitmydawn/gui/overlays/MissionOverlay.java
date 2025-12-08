@@ -46,6 +46,10 @@ public class MissionOverlay implements LayeredDraw.Layer {
 
         int barX = ClientConfigs.MISSION_HUD_X.get() == -1 ? 0 : ClientConfigs.MISSION_HUD_X.get();
         int barY = ClientConfigs.MISSION_HUD_Y.get() == -1 ? screenHeight / 4 : ClientConfigs.MISSION_HUD_Y.get();
+
+        boolean showMissionPosition = ClientConfigs.SHOW_MISSION_POSITION.get();
+        boolean showMissionSummon = ClientConfigs.SHOW_MISSION_SUMMON.get();
+
         Component type = Component.literal(
                 String.format("%s",
                         taskData.missionType));
@@ -59,32 +63,38 @@ public class MissionOverlay implements LayeredDraw.Layer {
         Component summonCount = Component.translatable(
                 "overlay.yagens_attributes.ring_summon_count", taskData.summonCount);
         Component distance = Component.translatable(
-                "overlay.yagens_attributes.ring_distance",  String.format("%.0f",distanceToMissionPosition(player, taskData)));
+                "overlay.yagens_attributes.ring_distance", String.format("%.0f", distanceToMissionPosition(player, taskData)));
         int typeWidth = font.width(type);
         int positionWidth = font.width(position);
         int curMaxWidth = font.width(curMax);
         int summonCountWidth = font.width(summonCount);
         int distanceWidth = font.width(distance);
         int maxWidth = Math.max(32, typeWidth);
-        if(maxWidth<positionWidth) maxWidth = positionWidth;
+        if (showMissionPosition)
+            if (maxWidth < positionWidth) maxWidth = positionWidth;
         if (maxWidth < curMaxWidth) maxWidth = curMaxWidth;
-        if (maxWidth < summonCountWidth) maxWidth = summonCountWidth;
+        if (showMissionSummon)
+            if (maxWidth < summonCountWidth) maxWidth = summonCountWidth;
         if (maxWidth < distanceWidth) maxWidth = distanceWidth;
 
         guiHelper.drawString(font, type, barX + (maxWidth - typeWidth) / 2, barY, color, true);
-        barY += font.lineHeight;
-        guiHelper.drawString(font, position, barX + (maxWidth - positionWidth) / 2, barY, color, true);
+        if (showMissionPosition) {
+            barY += font.lineHeight;
+            guiHelper.drawString(font, position, barX + (maxWidth - positionWidth) / 2, barY, color, true);
+        }
         barY += font.lineHeight;
         drawRing(guiHelper, barX + (maxWidth - 32) / 2, barY, Math.min(36, taskData.progress * 36 / taskData.maxProgress));
         barY = barY + (32 - font.lineHeight) / 2;
-        guiHelper.drawString(font, progressLeft, barX+ (maxWidth - 32) / 2 + (32 - font.width(progressLeft)) / 2, barY, color, true);
+        guiHelper.drawString(font, progressLeft, barX + (maxWidth - 32) / 2 + (32 - font.width(progressLeft)) / 2, barY, color, true);
         barY += font.lineHeight;
         barY = barY + (32 - font.lineHeight) / 2;
         guiHelper.drawString(font, curMax, barX + (maxWidth - curMaxWidth) / 2, barY, color, true);
         barY += font.lineHeight;
         guiHelper.drawString(font, distance, barX + (maxWidth - distanceWidth) / 2, barY, color, true);
-        barY += font.lineHeight;
-        guiHelper.drawString(font, summonCount, barX + (maxWidth - summonCountWidth) / 2, barY, color, true);
+        if (showMissionSummon) {
+            barY += font.lineHeight;
+            guiHelper.drawString(font, summonCount, barX + (maxWidth - summonCountWidth) / 2, barY, color, true);
+        }
     }
 
     private static final ResourceLocation RING = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/overlays/ring.png");

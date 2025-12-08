@@ -24,14 +24,11 @@ public class MissionClearCommand {
                         .executes(ctx -> {
                             MissionData data = MissionData.get(ctx.getSource().getServer());
                             ServerLevel level = ctx.getSource().getLevel();
-                            Player player = ctx.getSource().getPlayerOrException();
-                            var active = data.getPlayerActiveTask(player);
-                            if (level.isClientSide||active == null) return 0;
-                            ResourceLocation taskId = active.getKey();
-                            data.clearAll(level,taskId);
-                            int clearCount= clearSummonedEntities(Objects.requireNonNull(ctx.getSource().getLevel()));
+                            if (level.isClientSide) return 0;
+                            data.clearAll(level);
+                            int clearCount = clearSummonedEntities(Objects.requireNonNull(ctx.getSource().getLevel()));
                             ctx.getSource().sendSuccess(
-                                    () -> Component.literal("Clear missions finished! Discard "+clearCount+" entities"),
+                                    () -> Component.literal("Clear missions finished! Discard " + clearCount + " entities"),
                                     true);
                             return 1;
                         })

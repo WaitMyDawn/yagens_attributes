@@ -176,8 +176,7 @@ public class MissionData extends SavedData {
             clearSummonedEntitiesByTaskId(level, taskId);
             createTreasure(level, levelId, taskId);
             return 1;
-        }
-        else if (sData.deathCount>=4||sData.completed==2){
+        } else if (sData.deathCount >= 4 || sData.completed == 2) {
             sData.completed = 2;
             clearSummonedEntitiesByTaskId(level, taskId);
             return 2;
@@ -398,10 +397,22 @@ public class MissionData extends SavedData {
                 DATA_NAME);
     }
 
-    public void clearAll(ServerLevel level, ResourceLocation taskId) {
+    public void clearAll(ServerLevel level) {
+        ResourceLocation taskId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mission_clear");
+        Map<ResourceLocation, SharedTaskData> taskMap = data.get(level.dimension().location());
+        if (taskMap == null) return;
+        Set<UUID> allPlayers = new HashSet<>();
+        for (Map.Entry<ResourceLocation, SharedTaskData> e : taskMap.entrySet()) {
+            SharedTaskData tempData = e.getValue();
+            for (UUID id : tempData.players)
+                if (id != null)
+                    allPlayers.add(id);
+
+        }
         data.clear();
         setDirty();
         SharedTaskData sData = new SharedTaskData();
+        sData.players=allPlayers;
         sData.missionType = MissionType.EXTERMINATE;
         sData.missionPosition = new Vec3(0, 0, 0);
         sData.completed = 1;

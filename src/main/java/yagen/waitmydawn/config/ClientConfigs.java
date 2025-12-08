@@ -11,6 +11,9 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> MISSION_HUD_X;
     public static final ModConfigSpec.ConfigValue<Integer> MISSION_HUD_Y;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_MISSION_POSITION;
+    public static final ModConfigSpec.ConfigValue<Boolean> SHOW_MISSION_SUMMON;
+
     public static final ModConfigSpec.ConfigValue<Double> DAMAGE_NUMBER_ENLARGE;
 
     static {
@@ -28,6 +31,10 @@ public class ClientConfigs {
         MISSION_HUD_X = BUILDER.define("X", -1);
         BUILDER.comment("Y position of the mission counter (-1 = screenHeight / 4)");
         MISSION_HUD_Y = BUILDER.define("Y", -1);
+        BUILDER.comment("If show Mission Position in MissionOverlay (default = false)");
+        SHOW_MISSION_POSITION = BUILDER.define("Show_Mission_Position", false);
+        BUILDER.comment("If show Summon Count in MissionOverlay (default = true)");
+        SHOW_MISSION_SUMMON = BUILDER.define("Show_Summon_Count", true);
         BUILDER.pop();
 
         BUILDER.push("Particle");

@@ -1,7 +1,10 @@
 package yagen.waitmydawn.api.mission;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -15,9 +18,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapId;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,6 +34,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraft.world.item.MapItem;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityBlackList;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
@@ -93,7 +103,7 @@ public class MissionHandler {
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
                         || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
-                        || type==DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
+                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
                 ))
                 .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
                 .forEach(type -> {
@@ -118,7 +128,7 @@ public class MissionHandler {
         return MONSTER_TYPES.get(random.nextInt(MONSTER_TYPES.size()));
     }
 
-    public static EntityType<? extends Monster> randomMonsterByMaxHealthLevel(RandomSource random,int level) {
+    public static EntityType<? extends Monster> randomMonsterByMaxHealthLevel(RandomSource random, int level) {
         switch (level) {
             case 1 -> {
                 return randomMonster20To30Type(random);
@@ -185,7 +195,7 @@ public class MissionHandler {
         mob.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
         level.addFreshEntity(mob);
 
-        if(mob instanceof Warden warden) {
+        if (mob instanceof Warden warden) {
             Player nearest = warden.level().getNearestPlayer(warden, 32.0D);
             warden.increaseAngerAt(nearest, 80, true);
         }
@@ -377,5 +387,33 @@ public class MissionHandler {
                 .stream()
                 .map(Player::getUUID)
                 .collect(Collectors.toSet());
+    }
+
+    public static void sendMissionMap(ServerLevel serverLevel, Set<UUID> players, Vec3 missionPosition, ResourceLocation taskId) {
+        MapItemSavedData mapData = MapItemSavedData.createFresh(
+                missionPosition.x(),
+                missionPosition.z(),
+                (byte) 1,
+                true,
+                true,
+                serverLevel.dimension()
+        );
+
+        int mapId = serverLevel.getFreeMapId().id();
+//        serverLevel.getDataStorage().set(new MapId(mapId).key(), mapData);
+        serverLevel.setMapData(new MapId(mapId), mapData);
+
+        ItemStack mapStack = new ItemStack(Items.FILLED_MAP);
+        MapItemSavedData.addTargetDecoration(mapStack, BlockPos.containing(missionPosition), "+", MapDecorationTypes.TARGET_X);
+        mapStack.set(DataComponents.MAP_ID, new MapId(mapId));
+        mapStack.set(DataComponents.CUSTOM_NAME,
+                Component.translatable("ui.yagens_attributes.mission_map_name").withStyle(ChatFormatting.GOLD));
+
+        players.forEach(uuid -> {
+            ServerPlayer p = serverLevel.getServer().getPlayerList().getPlayer(uuid);
+            if (p == null) return;
+            if (!p.getInventory().add(mapStack.copy()))
+                p.drop(mapStack.copy(), false);
+        });
     }
 }

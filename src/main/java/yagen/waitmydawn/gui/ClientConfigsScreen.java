@@ -14,6 +14,8 @@ public class ClientConfigsScreen extends Screen {
     }
 
     private EditBox damageNumberInput;
+    private EditBox missionPositionChange;
+    private EditBox missionSummonChange;
 
     @Override
     protected void init() {
@@ -31,12 +33,11 @@ public class ClientConfigsScreen extends Screen {
                 })
                 .bounds((this.width - 200) / 2, 90, 200, 20)
                 .build());
-        Button damageNumberEnlarge = Button.builder(Component.translatable(
+        this.addRenderableWidget(Button.builder(Component.translatable(
                         "ui.yagens_attributes.damage_number_enlarge"), b -> {
                 })
                 .bounds((this.width - 200) / 2, 120, 160, 20)
-                .build();
-        this.addRenderableWidget(damageNumberEnlarge);
+                .build());
         damageNumberInput = new EditBox(
                 this.font,
                 this.width / 2 + 70, 120,
@@ -45,14 +46,46 @@ public class ClientConfigsScreen extends Screen {
         damageNumberInput.setValue(String.valueOf(ClientConfigs.DAMAGE_NUMBER_ENLARGE.get()));
         damageNumberInput.setFilter(s -> s.matches("\\d*\\.?\\d*"));
         this.addRenderableWidget(damageNumberInput);
+
+        this.addRenderableWidget(Button.builder(Component.translatable(
+                        "ui.yagens_attributes.show_mission_position"), b -> {
+                    missionPositionChange.setValue(String.valueOf((!ClientConfigs.SHOW_MISSION_POSITION.get())));
+                })
+                .bounds((this.width - 200) / 2, 150, 160, 20)
+                .build());
+        missionPositionChange = new EditBox(
+                this.font,
+                this.width / 2 + 70, 150,
+                30, 20,
+                Component.translatable("ui.yagens_attributes.show_mission_position"));
+        missionPositionChange.setValue(String.valueOf(ClientConfigs.SHOW_MISSION_POSITION.get()));
+        this.addRenderableWidget(missionPositionChange);
+
+        this.addRenderableWidget(Button.builder(Component.translatable(
+                        "ui.yagens_attributes.show_mission_summon"), b -> {
+                    missionSummonChange.setValue(String.valueOf((!ClientConfigs.SHOW_MISSION_SUMMON.get())));
+                })
+                .bounds((this.width - 200) / 2, 180, 160, 20)
+                .build());
+        missionSummonChange = new EditBox(
+                this.font,
+                this.width / 2 + 70, 180,
+                30, 20,
+                Component.translatable("ui.yagens_attributes.show_mission_summon"));
+        missionSummonChange.setValue(String.valueOf(ClientConfigs.SHOW_MISSION_SUMMON.get()));
+        this.addRenderableWidget(missionSummonChange);
     }
 
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            double val = Float.parseFloat(damageNumberInput.getValue());
-            if (val <= 0) val = ClientConfigs.DAMAGE_NUMBER_ENLARGE.getDefault();
-            ClientConfigs.DAMAGE_NUMBER_ENLARGE.set(val);
+            double damageNumberValue = Float.parseFloat(damageNumberInput.getValue());
+            boolean showMissionPosition = Boolean.parseBoolean(missionPositionChange.getValue());
+            boolean showMissionSummon= Boolean.parseBoolean(missionSummonChange.getValue());
+            if (damageNumberValue <= 0) damageNumberValue = ClientConfigs.DAMAGE_NUMBER_ENLARGE.getDefault();
+            ClientConfigs.DAMAGE_NUMBER_ENLARGE.set(damageNumberValue);
+            ClientConfigs.SHOW_MISSION_POSITION.set(showMissionPosition);
+            ClientConfigs.SHOW_MISSION_SUMMON.set(showMissionSummon);
             ClientConfigs.SPEC.save();
             onClose();
             return true;
