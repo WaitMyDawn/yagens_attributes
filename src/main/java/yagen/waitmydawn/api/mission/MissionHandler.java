@@ -26,7 +26,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapId;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,7 +33,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import net.minecraft.world.item.MapItem;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityBlackList;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
@@ -104,7 +102,7 @@ public class MissionHandler {
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
                         || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
-//                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
+                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
                 ))
                 .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
                 .forEach(type -> {
@@ -114,9 +112,9 @@ public class MissionHandler {
                         System.out.println("fail to transform to Monster (Boss): " + type);
                     }
                 });
-//        MONSTER_TYPES.forEach(type ->
-//                System.out.println("find Monster : " + type.toString())
-//        );
+        MONSTER_TYPES.forEach(type ->
+                System.out.println("find Monster : " + type.toString())
+        );
 //        BOSS_TYPES.forEach(type ->
 //                System.out.println("find Monster (Boss) : " + type.toString())
 //        );

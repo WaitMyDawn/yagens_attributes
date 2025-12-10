@@ -1,14 +1,11 @@
 package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -20,7 +17,6 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -32,7 +28,6 @@ import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
-import yagen.waitmydawn.datagen.DamageTypeTagGenerator;
 import yagen.waitmydawn.entity.others.ModularGolemsEntity;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.DamageNumberPacket;
@@ -41,11 +36,7 @@ import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.BladeStormTargets;
-import yagen.waitmydawn.util.LineFileUtil;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static yagen.waitmydawn.api.events.ModBonusEvent.updateCCModifier;

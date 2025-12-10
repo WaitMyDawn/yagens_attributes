@@ -4,10 +4,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import net.neoforged.neoforge.common.util.TriState;
 import yagen.waitmydawn.YagensAttributes;
@@ -18,7 +20,7 @@ public class LevelRender {
     @SubscribeEvent
     public static void levelRender(RenderNameTagEvent event) {
         if (!(event.getEntity() instanceof LivingEntity livingEntity)
-                || !(event.getEntity() instanceof Monster))
+                || !(event.getEntity() instanceof Enemy))
             return;
         AttributeInstance entityLevel = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.ENTITY_LEVEL.get()));
         if (entityLevel == null) return;
@@ -27,4 +29,9 @@ public class LevelRender {
         event.setContent(text);
         event.setCanRender(TriState.TRUE);
     }
+
+//    @SubscribeEvent
+//    public static void levelRender(RenderLivingEvent.Post<?, ?> event) {
+//
+//    }
 }

@@ -23,7 +23,7 @@ public class EntityLevelBonusEvent {
     public static void entityJoinBonusEvent(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
-        if (!(livingEntity instanceof Monster)) return;
+        if (!(livingEntity instanceof Enemy)) return;
         setBaseLevel(livingEntity);
         levelBonusAttributes(livingEntity);
     }
@@ -65,11 +65,7 @@ public class EntityLevelBonusEvent {
         AttributeInstance entityArmor = entity.getAttribute(Attributes.ARMOR);
         AttributeInstance entityArmorToughness = entity.getAttribute(Attributes.ARMOR_TOUGHNESS);
         AttributeInstance entityAttackDamage = entity.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (entityLevel == null
-                || entityMaxHealth == null
-                || entityArmor == null
-                || entityArmorToughness == null
-                || entityAttackDamage == null)
+        if (entityLevel == null)
             return;
         double level = entityLevel.getValue();
         if (level == 1) return;
@@ -92,27 +88,34 @@ public class EntityLevelBonusEvent {
             attackDamageFactor = -8.6 * Math.exp(-level / 1500) + 10;
         }
 
-        entityMaxHealth.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_max_health"));
-        entityArmor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_add"));
-        entityArmor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_multiply"));
-        entityAttackDamage.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_attack_damage"));
+        if (entityMaxHealth != null) {
+            entityMaxHealth.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_max_health"));
+            entityMaxHealth.addPermanentModifier(new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_max_health"),
+                    healthFactor - 1,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
 
-        entityMaxHealth.addPermanentModifier(new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_max_health"),
-                healthFactor - 1,
-                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-        entityArmor.addPermanentModifier(new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_add"),
-                armorAdd,
-                AttributeModifier.Operation.ADD_VALUE));
-        entityArmor.addPermanentModifier(new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_multiply"),
-                armorFactor - 1,
-                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
-        entityAttackDamage.addPermanentModifier(new AttributeModifier(
-                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_attack_damage"),
-                attackDamageFactor - 1,
-                AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        if(entityArmor != null) {
+            entityArmor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_add"));
+            entityArmor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_multiply"));
+            entityArmor.addPermanentModifier(new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_add"),
+                    armorAdd,
+                    AttributeModifier.Operation.ADD_VALUE));
+            entityArmor.addPermanentModifier(new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_armor_multiply"),
+                    armorFactor - 1,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+
+        if(entityAttackDamage != null) {
+            entityAttackDamage.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_attack_damage"));
+            entityAttackDamage.addPermanentModifier(new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "level_bonus_attack_damage"),
+                    attackDamageFactor - 1,
+                    AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
 
         if (DataAttachmentRegistry.getShouldHeal(entity)) {
             entity.setHealth(entity.getMaxHealth());

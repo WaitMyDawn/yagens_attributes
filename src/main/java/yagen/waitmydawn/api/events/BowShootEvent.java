@@ -106,15 +106,15 @@ public class BowShootEvent {
 
         if (level.isClientSide) return;
 
-        if (!(bow.getItem() instanceof BowItem)) return;
+        boolean isCrossbow = bow.getItem() instanceof CrossbowItem;
+        if (!(bow.getItem() instanceof BowItem) && !isCrossbow) return;
 
         float multishot = (float) player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.MULTISHOT.get())).getValue();
         if (multishot == 1f) return;
         float precision = (float) player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.SHOOT_SPREAD.get())).getValue(); // 10f
         float power = BowItem.getPowerForTime(event.getCharge());
-
+        if (isCrossbow) power = 1.0F;
         if (power < 0.1F) return;
-
         ItemStack itemstack = player.getProjectile(bow);
 
         boolean isCreative = player.isCreative();
@@ -167,7 +167,7 @@ public class BowShootEvent {
         fracFix.put(player, fix);
     }
 
-    //    can be used to decline the time to draw bow
+    //    can be used to decline the time to draw a bow
     @SubscribeEvent
     public static void PreShootBonus(LivingEntityUseItemEvent.Start event) {
         if (!(event.getEntity() instanceof Player player)) return;
