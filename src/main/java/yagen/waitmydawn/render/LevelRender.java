@@ -1,37 +1,102 @@
 package yagen.waitmydawn.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.RenderNameTagEvent;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.TriState;
+import org.joml.Matrix4f;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
+import yagen.waitmydawn.config.ClientConfigs;
+
+import static net.minecraft.client.model.TridentModel.TEXTURE;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class LevelRender {
     @SubscribeEvent
-    public static void levelRender(RenderNameTagEvent event) {
-        if (!(event.getEntity() instanceof LivingEntity livingEntity)
-                || !(event.getEntity() instanceof Enemy))
-            return;
+    public static void levelRender(RenderLivingEvent.Post<?, ?> event) {
+        if (!ClientConfigs.LV_CONTENT.get()) return;
+        LivingEntity livingEntity = event.getEntity();
+        if (!(livingEntity instanceof Enemy)) return;
+
         AttributeInstance entityLevel = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.ENTITY_LEVEL.get()));
         if (entityLevel == null) return;
+
         int level = (int) entityLevel.getValue();
         Component text = Component.literal("Lv. " + level);
-        event.setContent(text);
-        event.setCanRender(TriState.TRUE);
-    }
 
-//    @SubscribeEvent
-//    public static void levelRender(RenderLivingEvent.Post<?, ?> event) {
-//
-//    }
+        Minecraft instance = Minecraft.getInstance();
+        if (instance.getCameraEntity() == null) return;
+
+        AABB boundingBox = livingEntity.getBoundingBox();
+        double height = boundingBox.getYsize();
+
+        PoseStack pose = event.getPoseStack();
+        MultiBufferSource.BufferSource buffers =
+                instance.renderBuffers().bufferSource();
+        Vec3 camera = instance.gameRenderer.getMainCamera().getPosition();
+        double dx = livingEntity.getX() - camera.x;
+        double dz = livingEntity.getZ() - camera.z;
+
+        pose.pushPose();
+        pose.translate(0, height * 1.2F, 0);
+
+        float yRot = (float) Mth.atan2(dx, dz) * Mth.RAD_TO_DEG;
+        pose.mulPose(Axis.YP.rotationDegrees(yRot));
+        pose.mulPose(Axis.XP.rotationDegrees(instance.gameRenderer.getMainCamera().getXRot()));
+        pose.mulPose(Axis.ZP.rotationDegrees(180F));
+        float scale = 0.025F;
+
+        if (ClientConfigs.LV_CONTENT_ENLARGE.get()) {
+            float enlarge = (float) (height * boundingBox.getXsize() * boundingBox.getZsize() / 0.648);
+            if (enlarge > 1)
+                scale = (float) Math.min(0.125, (scale * (1 + (enlarge - 1) * 0.005)));
+        }
+
+        pose.scale(scale, scale, scale);
+
+        Font font = instance.font;
+        int color = 0xFFFFFF;
+        Font.DisplayMode mode = Font.DisplayMode.NORMAL;
+        if (livingEntity.getType().is(Tags.EntityTypes.BOSSES)) {
+            color = ClientConfigs.LV_BOSS_COLOR.get();
+            if (ClientConfigs.BOSS_LV_SEE_THROUGH.get()) mode = Font.DisplayMode.SEE_THROUGH;
+        }
+
+        font.drawInBatch(text,
+                -font.width(text) / 2f,
+                0,
+                color,
+                false,
+                pose.last().pose(),
+                event.getMultiBufferSource(),
+                mode,
+                0,
+                event.getPackedLight());
+
+        pose.popPose();
+        buffers.endBatch();
+    }
 }
