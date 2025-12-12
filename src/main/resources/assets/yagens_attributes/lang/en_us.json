@@ -83,6 +83,7 @@
   "effect.yagens_attributes.radiation_status": "Radiation",
   "effect.yagens_attributes.blast_status": "Blast",
   "effect.yagens_attributes.multishot_galvanized": "Galvanized Multiply Shot",
+  "effect.yagens_attributes.scope_galvanized": "Galvanized Scope",
   "effect.yagens_attributes.nourish": "Nourish",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "Each arrow deals x0.4 damage.",
@@ -192,6 +193,7 @@
 
   "mod.yagens_attributes.slash_up_tool_mod": "Edge Disc",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "Galvanized Multiply Shot",
+  "mod.yagens_attributes.scope_galvanized": "Galvanized Scope",
   "mod.yagens_attributes.health_heal_tool_mod": "Status Heal",
   "mod.yagens_attributes.status_overload_tool_mod": "Condition Overload",
 
@@ -200,7 +202,9 @@
   "mod.yagens_attributes.blade_storm_armor_mod": "Blade Storm",
   "mod.yagens_attributes.pre_shoot_armor_mod": "Preparatory Shooting",
 
-  "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "+ %d%% Multi Shot for 20 seconds after killing, up to 5 stacks",
+  "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "+ %d%% Critical Chance for 12 seconds after a headshot",
+  "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "+ 30%% Multi Shot for 20 seconds after killing, up to 5 stacks",
+  "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "+ 40%% Critical Chance for 12 seconds after headshot killing, up to 5 stacks",
 
   "tooltip.yagens_attributes.item_upgrade_info": "Level: %d Exp: %d%%",
   "tooltip.yagens_attributes.item_upgrade_info_max_level": "Level: %d",

@@ -39,8 +39,7 @@ import yagen.waitmydawn.util.BladeStormTargets;
 
 import java.util.*;
 
-import static yagen.waitmydawn.api.events.ModBonusEvent.updateCCModifier;
-import static yagen.waitmydawn.api.events.ModBonusEvent.updateSCModifier;
+import static yagen.waitmydawn.api.events.ModBonusEvent.*;
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
 import static yagen.waitmydawn.effect.HeatStatusEffect.addHeat;
@@ -189,8 +188,10 @@ public class AttackEventHandler {
             updateCCModifier(attacker, 0);
             updateSCModifier(attacker, 0);
         }
+        else if (isMelee) updateScopeModifier(attacker,true);
 
         double cc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
+        updateScopeModifier(attacker,false);
         double cd = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_DAMAGE.get())).getValue();
         double sc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get())).getValue();
         double lifeSteal = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.LIFE_STEAL.get())).getValue();

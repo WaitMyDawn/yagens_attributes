@@ -38,6 +38,8 @@ public class MobEffectRegistry {
             "magnetic_status", () -> new MagneticStatusEffect(MobEffectCategory.HARMFUL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> BLAST_STATUS = MOB_EFFECT_DEFERRED_REGISTER.register(
             "blast_status", () -> new BlastStatusEffect(MobEffectCategory.HARMFUL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> SCOPE = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "scope", () -> new ScopeEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 
     public static final DeferredHolder<MobEffect, MobEffect> NOURISH = MOB_EFFECT_DEFERRED_REGISTER.register(
             "nourish", () -> new NourishEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
@@ -46,6 +48,8 @@ public class MobEffectRegistry {
 
     public static final DeferredHolder<MobEffect, MobEffect> MULTISHOT_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
             "multishot_galvanized", () -> new MultishotGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> SCOPE_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "scope_galvanized", () -> new ScopeGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 
     public static void register(IEventBus eventBus) {
         MOB_EFFECT_DEFERRED_REGISTER.register(eventBus);

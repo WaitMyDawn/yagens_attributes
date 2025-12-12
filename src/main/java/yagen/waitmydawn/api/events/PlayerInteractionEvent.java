@@ -161,7 +161,7 @@ public class PlayerInteractionEvent {
         if (isBulletJump) {
             Vec3 vec3 = player.getLookAngle().normalize().scale(jump.getValue() / jump.getBaseValue() * 1.25);
             player.moveTo(player.getX(), player.getY() + 0.5, player.getZ());
-            if (player.getRandom().nextInt(1) == 0)
+            if (!player.isCreative() && player.getRandom().nextInt(1) == 0)
                 player.getFoodData().addExhaustion(2.0f);
             player.setDeltaMovement(player.getDeltaMovement().add(vec3));
             player.getPersistentData().putBoolean("BulletJump", false);

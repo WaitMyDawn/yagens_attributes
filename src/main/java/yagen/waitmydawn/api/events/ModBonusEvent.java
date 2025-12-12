@@ -6,17 +6,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -30,20 +33,49 @@ import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
+import static yagen.waitmydawn.api.events.BowShootEvent.isHeadShot;
+
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class ModBonusEvent {
     @SubscribeEvent
     public static void killBonusEvent(LivingDeathEvent event) {
-        LivingEntity victim = event.getEntity();
+        LivingEntity livingEntity = event.getEntity();
         DamageSource source = event.getSource();
 
         if (!(source.getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide) return;
         ItemStack itemStack = player.getMainHandItem();
         if (!IModContainer.isModContainer(itemStack)) return;
         var container = IModContainer.get(itemStack);
         for (ModSlot slot : container.getActiveMods()) {
             if (slot.getMod().getModName().equals("multishot_galvanized_tool_mod"))
                 MultishotGalvanizedToolModBonus(player);
+            else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod"))
+                if (source.getDirectEntity() instanceof Arrow arrow)
+                    if (isHeadShot(livingEntity, arrow, player))
+                        ScopeGalvanizedToolModBonus(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void damageBonusEvent(LivingDamageEvent.Post event) {
+        LivingEntity livingEntity = event.getEntity();
+        if (!(event.getSource().getDirectEntity() instanceof Arrow arrow)) return;
+        if (arrow.level().isClientSide) return;
+        if (!(arrow.getOwner() instanceof Player player)) return;
+
+        if (isHeadShot(livingEntity, arrow, player)) {
+            ItemStack itemStack = player.getMainHandItem();
+            if (!IModContainer.isModContainer(itemStack)) return;
+            var container = IModContainer.get(itemStack);
+            for (ModSlot slot : container.getActiveMods()) {
+                if (slot.getMod().getModName().equals("scope_tool_mod")) {
+                    ScopeToolModBonus(player, slot.getLevel(), 2);
+                    return;
+                } else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod")) {
+                    ScopeToolModBonus(player, slot.getLevel(), 1);
+                }
+            }
         }
     }
 
@@ -150,9 +182,9 @@ public class ModBonusEvent {
         }
     }
 
-    public static void updateCCModifier(LivingEntity player, double bonus) {
+    public static void updateCCModifier(LivingEntity livingEntity, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_cc_modifier");
-        AttributeInstance criticalChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
+        AttributeInstance criticalChance = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
         if (criticalChance == null) return;
 
         AttributeModifier mod = new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -167,9 +199,9 @@ public class ModBonusEvent {
         }
     }
 
-    public static void updateSCModifier(LivingEntity player, double bonus) {
+    public static void updateSCModifier(LivingEntity livingEntity, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_sc_modifier");
-        AttributeInstance statusChance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get()));
+        AttributeInstance statusChance = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get()));
         if (statusChance == null) return;
 
         AttributeModifier mod = new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -182,6 +214,28 @@ public class ModBonusEvent {
         } else {
             statusChance.addPermanentModifier(mod);
         }
+    }
+
+    public static void updateScopeModifier(LivingEntity livingEntity, boolean mode) {
+        int scopeLevel = -1;
+        int scopeGalLevel = -1;
+        if (livingEntity.hasEffect(MobEffectRegistry.SCOPE))
+            scopeLevel = livingEntity.getEffect(MobEffectRegistry.SCOPE).getAmplifier();
+        if (livingEntity.hasEffect(MobEffectRegistry.SCOPE_GALVANIZED))
+            scopeGalLevel = livingEntity.getEffect(MobEffectRegistry.SCOPE_GALVANIZED).getAmplifier();
+        if (scopeLevel == -1 && scopeGalLevel == -1) return;
+
+        ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "scope_modifier");
+        AttributeInstance criticalChance = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
+        if (criticalChance == null) return;
+
+        AttributeModifier mod = new AttributeModifier(
+                MODIFIER_ID,
+                -(scopeLevel + 1) * 0.135 - (scopeGalLevel + 1) * 0.4,
+                AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+
+        if (mode) criticalChance.addPermanentModifier(mod);
+        else criticalChance.removeModifier(mod);
     }
 
     public static void MultishotGalvanizedToolModBonus(Player player) {
@@ -205,6 +259,41 @@ public class ModBonusEvent {
                     true
             ));
         }
-        player.getPersistentData().putInt("YAGalvanizedLeft", 400);
+        player.getPersistentData().putInt("gal_multishot_left", 400);
+    }
+
+    public static void ScopeGalvanizedToolModBonus(Player player) {
+        if (player.hasEffect(MobEffectRegistry.SCOPE_GALVANIZED)) {
+            int amplifier = player.getEffect(MobEffectRegistry.SCOPE_GALVANIZED).getAmplifier();
+            player.addEffect(new MobEffectInstance(
+                    MobEffectRegistry.SCOPE_GALVANIZED,
+                    240,
+                    Math.min(amplifier + 1, 4),
+                    false,
+                    true,
+                    true
+            ));
+        } else {
+            player.addEffect(new MobEffectInstance(
+                    MobEffectRegistry.SCOPE_GALVANIZED,
+                    240,
+                    0,
+                    false,
+                    true,
+                    true
+            ));
+        }
+        player.getPersistentData().putInt("gal_scope_left", 240);
+    }
+
+    public static void ScopeToolModBonus(Player player, int modLevel, int factor) {
+        player.addEffect(new MobEffectInstance(
+                MobEffectRegistry.SCOPE,
+                240,
+                modLevel * factor - 1,
+                false,
+                true,
+                true
+        ));
     }
 }

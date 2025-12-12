@@ -31,7 +31,8 @@ public class HomologyModGroup {
     private static List<Set<String>> buildDefault() {
         return List.of(
                 Set.of("puncture", "slash", "impact"),
-                Set.of("multishot")
+                Set.of("multishot"),
+                Set.of("scope")
         );
     }
 

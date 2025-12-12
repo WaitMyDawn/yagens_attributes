@@ -83,6 +83,7 @@
   "effect.yagens_attributes.radiation_status": "辐射",
   "effect.yagens_attributes.blast_status": "爆炸",
   "effect.yagens_attributes.multishot_galvanized": "镀层 多重射击",
+  "effect.yagens_attributes.scope_galvanized": "镀层 氩晶瞄具",
   "effect.yagens_attributes.nourish": "消化滋养",
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
@@ -192,6 +193,7 @@
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",
+  "mod.yagens_attributes.scope_galvanized": "镀层 氩晶瞄具",
   "mod.yagens_attributes.health_heal_tool_mod": "异况疗愈",
   "mod.yagens_attributes.status_overload_tool_mod": "异况超量",
 
@@ -200,7 +202,9 @@
   "mod.yagens_attributes.blade_storm_armor_mod": "剑刃风暴",
   "mod.yagens_attributes.pre_shoot_armor_mod": "预备射击",
 
+  "damagebonus.yagens_attributes.scope_tool_mod.1": "爆头后+%d%%暴击几率，持续12秒",
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "击杀后+30%%多重射击，持续20秒，最高5层",
+  "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "爆头击杀后+40%%暴击几率，持续12秒，最高5层",
 
   "tooltip.yagens_attributes.item_upgrade_info": "等级: %d 经验: %d%%",
   "tooltip.yagens_attributes.item_upgrade_info_max_level": "等级: %d",

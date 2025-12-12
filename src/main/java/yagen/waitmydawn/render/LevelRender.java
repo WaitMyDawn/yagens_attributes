@@ -1,37 +1,26 @@
 package yagen.waitmydawn.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
-import net.neoforged.neoforge.client.event.RenderNameTagEvent;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.util.TriState;
-import org.joml.Matrix4f;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.config.ClientConfigs;
-
-import static net.minecraft.client.model.TridentModel.TEXTURE;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class LevelRender {
@@ -70,9 +59,9 @@ public class LevelRender {
         float scale = 0.025F;
 
         if (ClientConfigs.LV_CONTENT_ENLARGE.get()) {
-            float enlarge = (float) (height * boundingBox.getXsize() * boundingBox.getZsize() / 0.648);
+            float enlarge = (float) Math.pow(height * boundingBox.getXsize() * boundingBox.getZsize() / 0.7,1.0/3.0);
             if (enlarge > 1)
-                scale = (float) Math.min(0.125, (scale * (1 + (enlarge - 1) * 0.005)));
+                scale = (float) Math.min(0.125, (scale * (1 + (enlarge - 1) * 0.5)));
         }
 
         pose.scale(scale, scale, scale);

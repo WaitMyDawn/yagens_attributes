@@ -108,7 +108,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> SCATTERSHOT_TOOL_MOD = registerMod(new ScattershotToolMod());
     public static final Supplier<AbstractMod> COMBO_DURATION_TOOL_MOD = registerMod(new ComboDurationToolMod());
     public static final Supplier<AbstractMod> FIRERATE_TOOL_MOD = registerMod(new FirerateToolMod());
-    public static final Supplier<AbstractMod> JUMP_STRENGTH_TOOL_MOD = registerMod(new JumpStrengthArmorMod());
+    public static final Supplier<AbstractMod> SCOPE_TOOL_MOD = registerMod(new ScopeToolMod());
+    public static final Supplier<AbstractMod> JUMP_STRENGTH_ARMOR_MOD = registerMod(new JumpStrengthArmorMod());
     public static final Supplier<AbstractMod> XP_ARMOR_MOD = registerMod(new XpArmorMod());
     public static final Supplier<AbstractMod> HEALTH_TRANS_ARMOR_MOD = registerMod(new HealthTransArmorMod());
 
@@ -117,6 +118,7 @@ public class ModRegistry {
      */
     public static final Supplier<AbstractMod> SLASH_UP_TOOL_MOD = registerMod(new SlashUpToolMod());
     public static final Supplier<AbstractMod> MULTISHOT_GALVANIZED_TOOL_MOD = registerMod(new MultishotGalvanizedToolMod());
+    public static final Supplier<AbstractMod> SCOPE_GALVANIZED_TOOL_MOD = registerMod(new ScopeGalvanizedToolMod());
     public static final Supplier<AbstractMod> HEALTH_HEAL_TOOL_MOD = registerMod(new HealthHealToolMod());
     public static final Supplier<AbstractMod> STATUS_OVERLOAD_TOOL_MOD = registerMod(new StatusOverloadToolMod());
 

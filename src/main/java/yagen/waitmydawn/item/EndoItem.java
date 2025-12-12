@@ -44,7 +44,7 @@ public class EndoItem extends Item {
         if (!level.isClientSide) {
             double distance = getRandMissionDistance(level, player, endoInfo.level(), endoInfo.missionType());
             Vec3 missionPosition = getRandMissionPosition(level, player, distance);
-            double missionRange = 10;
+            double missionRange = 16;
             ResourceLocation levelId = level.dimension().location();
             Set<UUID> players = nearbyPlayers(player, 3);
             int maxProgress = getRandMaxProgress(level, player, endoInfo.level(), endoInfo.missionType(), players.size());
