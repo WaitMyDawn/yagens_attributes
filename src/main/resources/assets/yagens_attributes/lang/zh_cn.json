@@ -188,12 +188,13 @@
   "mod.yagens_attributes.electricity_status_tool_mod": "蓄电笼",
   "mod.yagens_attributes.scattershot_tool_mod": "霰弹射击",
   "mod.yagens_attributes.firerate_tool_mod": "火翎羽",
+  "mod.yagens_attributes.scope_tool_mod": "氩晶瞄具",
   "mod.yagens_attributes.xp_armor_mod": "赏金猎人",
   "mod.yagens_attributes.health_trans_armor_mod": "荆棘之环",
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",
-  "mod.yagens_attributes.scope_galvanized": "镀层 氩晶瞄具",
+  "mod.yagens_attributes.scope_galvanized_tool_mod": "镀层 氩晶瞄具",
   "mod.yagens_attributes.health_heal_tool_mod": "异况疗愈",
   "mod.yagens_attributes.status_overload_tool_mod": "异况超量",
 

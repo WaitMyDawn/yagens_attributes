@@ -25,7 +25,6 @@ public class ScopeEffect extends MobEffect {
 
     @Override
     public void onEffectAdded(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
-        pLivingEntity.removeEffect(MobEffectRegistry.SCOPE_GALVANIZED);
         super.onEffectAdded(pLivingEntity, pAmplifier);
     }
 

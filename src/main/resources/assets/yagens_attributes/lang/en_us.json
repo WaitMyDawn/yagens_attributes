@@ -188,12 +188,13 @@
   "mod.yagens_attributes.electricity_status_tool_mod": "Cage of Electricity",
   "mod.yagens_attributes.scattershot_tool_mod": "Scattered Shot",
   "mod.yagens_attributes.firerate_tool_mod": "Flame Feather",
+  "mod.yagens_attributes.scope_tool_mod": "Scope",
   "mod.yagens_attributes.xp_armor_mod": "Bounty Hunter",
   "mod.yagens_attributes.health_trans_armor_mod": "Thorn Aura",
 
   "mod.yagens_attributes.slash_up_tool_mod": "Edge Disc",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "Galvanized Multiply Shot",
-  "mod.yagens_attributes.scope_galvanized": "Galvanized Scope",
+  "mod.yagens_attributes.scope_galvanized_tool_mod": "Galvanized Scope",
   "mod.yagens_attributes.health_heal_tool_mod": "Status Heal",
   "mod.yagens_attributes.status_overload_tool_mod": "Condition Overload",
 
@@ -202,7 +203,7 @@
   "mod.yagens_attributes.blade_storm_armor_mod": "Blade Storm",
   "mod.yagens_attributes.pre_shoot_armor_mod": "Preparatory Shooting",
 
-  "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "+ %d%% Critical Chance for 12 seconds after a headshot",
+  "damagebonus.yagens_attributes.scope_tool_mod.1": "+ %d%% Critical Chance for 12 seconds after a headshot",
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "+ 30%% Multi Shot for 20 seconds after killing, up to 5 stacks",
   "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "+ 40%% Critical Chance for 12 seconds after headshot killing, up to 5 stacks",
 

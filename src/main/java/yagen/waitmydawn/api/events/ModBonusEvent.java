@@ -71,6 +71,7 @@ public class ModBonusEvent {
             for (ModSlot slot : container.getActiveMods()) {
                 if (slot.getMod().getModName().equals("scope_tool_mod")) {
                     ScopeToolModBonus(player, slot.getLevel(), 2);
+                    player.removeEffect(MobEffectRegistry.SCOPE_GALVANIZED);
                     return;
                 } else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod")) {
                     ScopeToolModBonus(player, slot.getLevel(), 1);
