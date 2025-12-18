@@ -88,9 +88,9 @@
 
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
   "functions.yagens_attributes.xp_armor_mod.1": "击杀生物后掉落额外%d%%的经验",
-  "functions.yagens_attributes.xp_armor_mod.2": "击杀生物后的经验直接到你身上",
+  "functions.yagens_attributes.xp_armor_mod.2": "击杀生物后的经验直接给予击杀者",
   "functions.yagens_attributes.health_heal_tool_mod.1": "每次触发异况恢复%d生命值",
-  "functions.yagens_attributes.health_trans_tool_mod.1": "击杀生物后受到%d点伤害，周围的玩家恢复%d点生命值",
+  "functions.yagens_attributes.health_trans_armor_mod.1": "击杀生物后受到%d点伤害，周围的玩家恢复%d点生命值",
   "functions.yagens_attributes.pilot_armor_mod.1": "在空中时，即将到来的伤害减少%d%%",
   "functions.yagens_attributes.status_overload_tool_mod.1": "目标身上每种异况增加%d%%近战伤害",
   "warframe.yagens_attributes.active": "按下%s或%s激活该天赋",
@@ -181,7 +181,7 @@
   "mod.yagens_attributes.jump_strength_armor_mod": "弹簧鞋",
 
   "mod.yagens_attributes.multishot_tool_mod": "多重射击",
-  "mod.yagens_attributes.critical_rare_tool_mod": "会心一击",
+  "mod.yagens_attributes.critical_rare_tool_mod": "无名手套",
   "mod.yagens_attributes.heat_status_tool_mod": "穿云烈焰",
   "mod.yagens_attributes.cold_status_tool_mod": "凛冬护符",
   "mod.yagens_attributes.toxin_status_tool_mod": "破碎毒偶",
@@ -215,7 +215,7 @@
   "tooltip.yagens_attributes.capacity_cost": "消耗容量%d",
   "tooltip.yagens_attributes.rarity": "%s",
   "tooltip.yagens_attributes.polarity": "%s",
-  "tooltip.yagens_attributes.disposition": "裂罅倾向度: %.2f",
+  "tooltip.yagens_attributes.disposition": "裂罅倾向性: %.2f",
 
   "tooltip.yagens_attributes.slash_addfirst": "+%.1f切割伤害",
   "tooltip.yagens_attributes.slash_addlast": "+%.1f切割伤害",

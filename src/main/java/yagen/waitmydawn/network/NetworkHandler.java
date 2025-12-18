@@ -30,6 +30,12 @@ public class NetworkHandler {
         );
 
         registrar.playToClient(
+                ElectricityPacket.TYPE,
+                ElectricityPacket.STREAM_CODEC,
+                ElectricityPacket::handle
+        );
+
+        registrar.playToClient(
                 SyncMissionDataPacket.TYPE,
                 SyncMissionDataPacket.STREAM_CODEC,
                 SyncMissionDataPacket::handle

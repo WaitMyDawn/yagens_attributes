@@ -1,5 +1,6 @@
 package yagen.waitmydawn.effect;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.util.DamageCompat;
 import yagen.waitmydawn.network.DamageNumberPacket;
+import yagen.waitmydawn.network.ElectricityPacket;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 
 import java.util.*;
@@ -32,7 +34,7 @@ public class ElectricityStatusEffect extends MobEffect {
             this.sourceEntity = sourceEntity;
         }
     }
-    
+
     private static final Map<LivingEntity, List<Electricity>> ELECTRICITY_MAP = new WeakHashMap<>();
 
     public static void addElectricity(LivingEntity entity, float damage, int ticksLeft, LivingEntity sourceEntity) {
@@ -56,14 +58,22 @@ public class ElectricityStatusEffect extends MobEffect {
         while (it.hasNext()) {
             Electricity c = it.next();
             c.ticksLeft--;
-            
+
             if (c.ticksLeft % 20 == 0) {
                 List<LivingEntity> nearby = pLivingEntity.level()
                         .getEntitiesOfClass(LivingEntity.class,
                                 pLivingEntity.getBoundingBox().inflate(3.0));
                 for (LivingEntity target : nearby) {
-                    if(target instanceof Player) continue;
-                    target.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,c.sourceEntity), c.damage);
+                    if (target instanceof Player) continue;
+                    PacketDistributor.sendToPlayersTrackingEntity(target,
+                            new ElectricityPacket(
+                                    pLivingEntity.position().add(0,
+                                            Mth.nextDouble(pLivingEntity.getRandom(), pLivingEntity.getEyeHeight() / 3,
+                                                    pLivingEntity.getEyeHeight()), 0),
+                                    target.position().add(0,
+                                            Mth.nextDouble(target.getRandom(), target.getEyeHeight() / 3,
+                                                    target.getEyeHeight()), 0)));
+                    target.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE, c.sourceEntity), c.damage);
                     target.invulnerableTime = 0;
                 }
             }

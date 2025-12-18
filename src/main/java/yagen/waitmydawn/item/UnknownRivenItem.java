@@ -53,12 +53,10 @@ public class UnknownRivenItem extends Item {
                 }
             }
             ItemStack modStack = createRandomModItem(bonus, penalty, 1, "random", null);
-//            System.out.println("Create riven mod 1 ");
             player.getItemInHand(hand).shrink(1);
             if (!player.addItem(modStack)) {
                 player.drop(modStack, false);
             }
-//            System.out.println("Create riven mod 2");
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);
@@ -88,7 +86,7 @@ public class UnknownRivenItem extends Item {
         ItemStack stack = new ItemStack(ItemRegistry.MOD.get());
 
         IModContainerMutable mutable = new ModContainer(1, false, true).mutableCopy();
-        mutable.addMod(new RivenMod(), level);           // 放进去
+        mutable.addMod(new RivenMod(), level);
         IModContainer container = mutable.toImmutable();
         stack.set(ComponentRegistry.MOD_CONTAINER.get(), container);
 

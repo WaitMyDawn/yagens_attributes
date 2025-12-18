@@ -90,7 +90,7 @@
   "functions.yagens_attributes.xp_armor_mod.1": "Gain %d%% extra Exp after killing Mobs.",
   "functions.yagens_attributes.xp_armor_mod.2": "Exp gained from killing Mobs goes directly to you.",
   "functions.yagens_attributes.health_heal_tool_mod.1": "Each Status heals %d Health.",
-  "functions.yagens_attributes.health_trans_tool_mod.1": "Take %d Damage after killing Mobs, players around you heal %d Health.",
+  "functions.yagens_attributes.health_trans_armor_mod.1": "Take %d Damage after killing Mobs, players around you heal %d Health.",
   "functions.yagens_attributes.pilot_armor_mod.1": "When in the air, the incoming Damage will be reduced by %d%%",
   "functions.yagens_attributes.status_overload_tool_mod.1": "Each Status on the target increases your Melee Damage by %d%%.",
   "warframe.yagens_attributes.active": "Press %s or %s to active Ability",

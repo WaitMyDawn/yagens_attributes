@@ -16,7 +16,7 @@ public class HealthTransArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
-                Component.translatable("functions.yagens_attributes.health_trans_tool_mod.1", modLevel, 2 * modLevel)
+                Component.translatable("functions.yagens_attributes.health_trans_armor_mod.1", modLevel, 2 * modLevel)
         );
     }
 

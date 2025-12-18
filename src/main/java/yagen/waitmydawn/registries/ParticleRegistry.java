@@ -20,4 +20,7 @@ public class ParticleRegistry {
     public static final Supplier<SimpleParticleType> DAMAGE_NUMBER =
             PARTICLE_TYPES.register("damage_number", () -> new SimpleParticleType(false));
 
+    public static final Supplier<SimpleParticleType> ELECTRICITY =
+            PARTICLE_TYPES.register("electricity", () -> new SimpleParticleType(false));
+
 }
