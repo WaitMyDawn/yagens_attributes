@@ -21,6 +21,17 @@ public class ClientConfigs {
 
     public static final ModConfigSpec.ConfigValue<Double> DAMAGE_NUMBER_ENLARGE;
 
+    /**
+     * Damage Type Particle
+     */
+    public static final ModConfigSpec.ConfigValue<Boolean> ELECTRICITY_VALID;
+    public static final ModConfigSpec.ConfigValue<Double> BRANCH_CHANCE;
+    public static final ModConfigSpec.ConfigValue<Double> JITTER_STRENGTH;
+    public static final ModConfigSpec.ConfigValue<Integer> MAX_GENERATIONS;
+    public static final ModConfigSpec.ConfigValue<Integer> BRANCH_GENERATION_LIMIT;
+    public static final ModConfigSpec.ConfigValue<Integer> REFRESH_RATE;
+    public static final ModConfigSpec.ConfigValue<Integer> LIFE_TIME;
+
     static {
         BUILDER.push("ComboHUD");
         BUILDER.comment("You can change this by an operation screen in game");
@@ -43,6 +54,8 @@ public class ClientConfigs {
         BUILDER.pop();
 
         BUILDER.push("Particle");
+
+        BUILDER.push("Damage_Number");
         BUILDER.comment("""
                 Damage_Number_Enlarge decides amplification factor of Damage Number Particle.
                 The distance between the player and the target divided by this value equals the Damage Number Particle enlargement rate.
@@ -57,6 +70,26 @@ public class ClientConfigs {
         BUILDER.comment("The color of Level Content for Boss (default = 0xFFAA00, Integer)");
         LV_BOSS_COLOR = BUILDER.define("Lv_Boss_Color", 0xFFAA00);
         BUILDER.pop();
+
+        BUILDER.push("Electricity_Particle");
+        BUILDER.comment("Whether to summon Electricity Particle (default = true)");
+        ELECTRICITY_VALID = BUILDER.define("Electricity_Valid", true);
+        BUILDER.comment("(default = 1, Integer, tick)");
+        REFRESH_RATE= BUILDER.define("Refresh_Rate", 1);
+        BUILDER.comment("(default = 10, Integer, tick)");
+        LIFE_TIME= BUILDER.define("Life_Time", 10);
+        BUILDER.comment("(default = 5, Integer)");
+        MAX_GENERATIONS= BUILDER.define("Max_Generations", 5);
+        BUILDER.comment("(default = 3, Integer)");
+        BRANCH_GENERATION_LIMIT= BUILDER.define("Branch_Generation_Limit", 3);
+        BUILDER.comment("(default = 1.2, Double)");
+        JITTER_STRENGTH = BUILDER.define("Jitter_Strength", 1.2);
+        BUILDER.comment("(default = 0.3, Double)");
+        BRANCH_CHANCE = BUILDER.define("Branch_Chance", 0.3);
+        BUILDER.pop();
+
+        BUILDER.pop();
+
 
         SPEC = BUILDER.build();
     }

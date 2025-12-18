@@ -9,11 +9,20 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.config.ClientConfigs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ElectricityParticle extends TextureSheetParticle {
+    private final int MAX_GENERATIONS = ClientConfigs.MAX_GENERATIONS.get();
+    private final int BRANCH_GENERATION_LIMIT = ClientConfigs.BRANCH_GENERATION_LIMIT.get();
+    private final int REFRESH_RATE = ClientConfigs.REFRESH_RATE.get();
+    private final double JITTER_STRENGTH = ClientConfigs.JITTER_STRENGTH.get();
+    private final float BRANCH_CHANCE = (float) ClientConfigs.BRANCH_CHANCE.get().doubleValue();
+    private final int LIFE_TIME = ClientConfigs.LIFE_TIME.get();
+    private final boolean IS_VALID = ClientConfigs.ELECTRICITY_VALID.get();
+
     private final Vec3 target;
     private final List<Segment> segments = new ArrayList<>();
     private final SpriteSet sprites;
@@ -26,46 +35,50 @@ public class ElectricityParticle extends TextureSheetParticle {
         this.startY = y;
         this.startZ = z;
         this.target = new Vec3(ex, ey, ez);
-        this.lifetime = 10;
+        this.lifetime = LIFE_TIME;
         this.quadSize = 0.1f; // width
         this.sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
         this.hasPhysics = false;
 
         // init
-        generateLightning();
+        if(IS_VALID) generateLightning();
     }
 
     @Override
     public void tick() {
         super.tick();
-        // regenerate by tick
-        generateLightning();
+        // regenerate by tick(s)
+        if (!IS_VALID) return;
+        if (this.age % REFRESH_RATE == 0) {
+            generateLightning();
+        }
 
         // gradually transparent by time
-        this.alpha = 1.0f - (float)age / lifetime;
+        this.alpha = 1.0f - (float) age / lifetime;
     }
 
     private void generateLightning() {
         segments.clear();
         Vec3 start = new Vec3(startX, startY, startZ);
-        // main branch
-        generateBolt(start, target, 1.2, 0);
+        generateBolt(start, target, JITTER_STRENGTH, 0);
     }
 
     /**
      * generateBolt
-     * @param p1 start
-     * @param p2 end
+     *
+     * @param p1           start
+     * @param p2           end
      * @param displacement current offset intensity
-     * @param generation control
+     * @param generation   control
      */
     private void generateBolt(Vec3 p1, Vec3 p2, double displacement, int generation) {
-        if (displacement < 0.05 || generation > 5) {
+        if (displacement < 0.05 || generation >= MAX_GENERATIONS) {
             segments.add(new Segment(p1, p2, 1.0f / (generation + 1)));
             return;
         }
 
+        // random offset
         Vec3 mid = p1.add(p2).scale(0.5);
         Vec3 dir = p2.subtract(p1).normalize();
         Vec3 randomVec = new Vec3(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5);
@@ -81,10 +94,10 @@ public class ElectricityParticle extends TextureSheetParticle {
         generateBolt(mid, p2, displacement * 0.5, generation);
 
         // random branch
-        if (generation < 3 && random.nextFloat() < 0.3f) {
+        if (generation < BRANCH_GENERATION_LIMIT && random.nextFloat() < BRANCH_CHANCE) {
             Vec3 branchDir = mid.subtract(p1).normalize();
             // far from main branch
-            Vec3 branchOffset = new Vec3(random.nextDouble()-0.5, random.nextDouble()-0.5, random.nextDouble()-0.5).normalize();
+            Vec3 branchOffset = new Vec3(random.nextDouble() - 0.5, random.nextDouble() - 0.5, random.nextDouble() - 0.5).normalize();
             branchDir = branchDir.add(branchOffset.scale(0.8)).normalize();
 
             double length = p1.distanceTo(p2) * 0.6;
@@ -142,22 +155,22 @@ public class ElectricityParticle extends TextureSheetParticle {
         Vec3 overlapVec = dir.scale(overlapAmount);
 
         // extend for overlap
-        float sx = x1 - (float)overlapVec.x;
-        float sy = y1 - (float)overlapVec.y;
-        float sz = z1 - (float)overlapVec.z;
+        float sx = x1 - (float) overlapVec.x;
+        float sy = y1 - (float) overlapVec.y;
+        float sz = z1 - (float) overlapVec.z;
 
-        float ex = x2 + (float)overlapVec.x;
-        float ey = y2 + (float)overlapVec.y;
-        float ez = z2 + (float)overlapVec.z;
+        float ex = x2 + (float) overlapVec.x;
+        float ey = y2 + (float) overlapVec.y;
+        float ez = z2 + (float) overlapVec.z;
 
         // P1: Start - Side
-        addVertex(buf, sx - (float)side.x, sy - (float)side.y, sz - (float)side.z, u1, v1, r, g, b, a, light);
+        addVertex(buf, sx - (float) side.x, sy - (float) side.y, sz - (float) side.z, u1, v1, r, g, b, a, light);
         // P2: Start + Side
-        addVertex(buf, sx + (float)side.x, sy + (float)side.y, sz + (float)side.z, u1, v0, r, g, b, a, light);
+        addVertex(buf, sx + (float) side.x, sy + (float) side.y, sz + (float) side.z, u1, v0, r, g, b, a, light);
         // P3: End + Side
-        addVertex(buf, ex + (float)side.x, ey + (float)side.y, ez + (float)side.z, u0, v0, r, g, b, a, light);
+        addVertex(buf, ex + (float) side.x, ey + (float) side.y, ez + (float) side.z, u0, v0, r, g, b, a, light);
         // P4: End - Side
-        addVertex(buf, ex - (float)side.x, ey - (float)side.y, ez - (float)side.z, u0, v1, r, g, b, a, light);
+        addVertex(buf, ex - (float) side.x, ey - (float) side.y, ez - (float) side.z, u0, v1, r, g, b, a, light);
     }
 
     private void addVertex(VertexConsumer buf, float x, float y, float z,
@@ -189,7 +202,11 @@ public class ElectricityParticle extends TextureSheetParticle {
     @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
-        public Provider(SpriteSet spriteSet) { this.sprites = spriteSet; }
+
+        public Provider(SpriteSet spriteSet) {
+            this.sprites = spriteSet;
+        }
+
         @Override
         public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel lvl,
                                        double x, double y, double z,
