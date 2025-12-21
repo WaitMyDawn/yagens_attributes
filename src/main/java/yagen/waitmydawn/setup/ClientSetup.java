@@ -7,8 +7,7 @@ import yagen.waitmydawn.api.mods.NoneMod;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.gui.mod_operation.ModOperationScreen;
 import yagen.waitmydawn.gui.mod_recycle.ModRecycleScreen;
-import yagen.waitmydawn.particle.DamageNumberParticle;
-import yagen.waitmydawn.particle.ElectricityParticle;
+import yagen.waitmydawn.particle.*;
 import yagen.waitmydawn.registries.*;
 import yagen.waitmydawn.render.EndoModel;
 import yagen.waitmydawn.render.ModModel;
@@ -66,6 +65,11 @@ public class ClientSetup {
     public static void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(ParticleRegistry.DAMAGE_NUMBER.get(), DamageNumberParticle.Provider::new);
         event.registerSpriteSet(ParticleRegistry.ELECTRICITY.get(), ElectricityParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.HEAT.get(), HeatParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.BLAST.get(), BlastParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.COLD.get(), ColdParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.TOXIN.get(), ToxinParticle.Provider::new);
+        event.registerSpriteSet(ParticleRegistry.GAS.get(), GasParticle.Provider::new);
     }
 
     @SubscribeEvent

@@ -22,5 +22,14 @@ public class ParticleRegistry {
 
     public static final Supplier<SimpleParticleType> ELECTRICITY =
             PARTICLE_TYPES.register("electricity", () -> new SimpleParticleType(false));
-
+    public static final Supplier<SimpleParticleType> HEAT =
+            PARTICLE_TYPES.register("heat", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> BLAST =
+            PARTICLE_TYPES.register("blast", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> COLD =
+            PARTICLE_TYPES.register("cold", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> TOXIN =
+            PARTICLE_TYPES.register("toxin", () -> new SimpleParticleType(false));
+    public static final Supplier<SimpleParticleType> GAS =
+            PARTICLE_TYPES.register("gas", () -> new SimpleParticleType(false));
 }

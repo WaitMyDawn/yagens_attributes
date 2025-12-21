@@ -25,12 +25,33 @@ public class ClientConfigs {
      * Damage Type Particle
      */
     public static final ModConfigSpec.ConfigValue<Boolean> ELECTRICITY_VALID;
-    public static final ModConfigSpec.ConfigValue<Double> BRANCH_CHANCE;
-    public static final ModConfigSpec.ConfigValue<Double> JITTER_STRENGTH;
-    public static final ModConfigSpec.ConfigValue<Integer> MAX_GENERATIONS;
-    public static final ModConfigSpec.ConfigValue<Integer> BRANCH_GENERATION_LIMIT;
-    public static final ModConfigSpec.ConfigValue<Integer> REFRESH_RATE;
-    public static final ModConfigSpec.ConfigValue<Integer> LIFE_TIME;
+    public static final ModConfigSpec.ConfigValue<Double> ELECTRICITY_BRANCH_CHANCE;
+    public static final ModConfigSpec.ConfigValue<Double> ELECTRICITY_JITTER_STRENGTH;
+    public static final ModConfigSpec.ConfigValue<Double> ELECTRICITY_SIZE;
+    public static final ModConfigSpec.ConfigValue<Integer> ELECTRICITY_MAX_GENERATIONS;
+    public static final ModConfigSpec.ConfigValue<Integer> ELECTRICITY_BRANCH_GENERATION_LIMIT;
+    public static final ModConfigSpec.ConfigValue<Integer> ELECTRICITY_REFRESH_RATE;
+    public static final ModConfigSpec.ConfigValue<Integer> ELECTRICITY_LIFE_TIME;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> HEAT_VALID;
+    public static final ModConfigSpec.ConfigValue<Integer> HEAT_LIFE_TIME;
+    public static final ModConfigSpec.ConfigValue<Double> HEAT_SIZE;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> BLAST_VALID;
+    public static final ModConfigSpec.ConfigValue<Integer> BLAST_EACH_LEVEL;
+    public static final ModConfigSpec.ConfigValue<Integer> BLAST_MAX_COUNT;
+    public static final ModConfigSpec.ConfigValue<Double> BLAST_EACH_DISTANCE;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> COLD_VALID;
+    public static final ModConfigSpec.ConfigValue<Double> COLD_SUMMON_CHANCE;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> TOXIN_VALID;
+    public static final ModConfigSpec.ConfigValue<Integer> TOXIN_LIFE_TIME;
+    public static final ModConfigSpec.ConfigValue<Double> TOXIN_SIZE;
+
+    public static final ModConfigSpec.ConfigValue<Boolean> GAS_VALID;
+    public static final ModConfigSpec.ConfigValue<Integer> GAS_LIFE_TIME;
+    public static final ModConfigSpec.ConfigValue<Double> GAS_MAX_SIZE;
 
     static {
         BUILDER.push("ComboHUD");
@@ -75,17 +96,64 @@ public class ClientConfigs {
         BUILDER.comment("Whether to summon Electricity Particle (default = true)");
         ELECTRICITY_VALID = BUILDER.define("Electricity_Valid", true);
         BUILDER.comment("(default = 1, Integer, tick)");
-        REFRESH_RATE= BUILDER.define("Refresh_Rate", 1);
+        ELECTRICITY_REFRESH_RATE = BUILDER.define("Refresh_Rate", 1);
         BUILDER.comment("(default = 10, Integer, tick)");
-        LIFE_TIME= BUILDER.define("Life_Time", 10);
+        ELECTRICITY_LIFE_TIME = BUILDER.define("Life_Time", 10);
         BUILDER.comment("(default = 5, Integer)");
-        MAX_GENERATIONS= BUILDER.define("Max_Generations", 5);
+        ELECTRICITY_MAX_GENERATIONS = BUILDER.define("Max_Generations", 5);
         BUILDER.comment("(default = 3, Integer)");
-        BRANCH_GENERATION_LIMIT= BUILDER.define("Branch_Generation_Limit", 3);
+        ELECTRICITY_BRANCH_GENERATION_LIMIT = BUILDER.define("Branch_Generation_Limit", 3);
+        BUILDER.comment("(default = 0.1, Double)");
+        ELECTRICITY_SIZE = BUILDER.define("Electricity_Size", 0.1);
         BUILDER.comment("(default = 1.2, Double)");
-        JITTER_STRENGTH = BUILDER.define("Jitter_Strength", 1.2);
+        ELECTRICITY_JITTER_STRENGTH = BUILDER.define("Jitter_Strength", 1.2);
         BUILDER.comment("(default = 0.3, Double)");
-        BRANCH_CHANCE = BUILDER.define("Branch_Chance", 0.3);
+        ELECTRICITY_BRANCH_CHANCE = BUILDER.define("Branch_Chance", 0.3);
+        BUILDER.pop();
+
+        BUILDER.push("Heat_Particle");
+        BUILDER.comment("Whether to summon Heat Particle (default = true)");
+        HEAT_VALID = BUILDER.define("Heat_Valid", true);
+        BUILDER.comment("(default = 0.25, Double)");
+        HEAT_SIZE = BUILDER.define("Heat_Size", 0.25);
+        BUILDER.comment("(default = 10, Integer, tick)");
+        HEAT_LIFE_TIME = BUILDER.define("Life_Time", 50);
+        BUILDER.pop();
+
+        BUILDER.push("Blast_Particle");
+        BUILDER.comment("Whether to summon Blast Particle (default = true)");
+        BLAST_VALID = BUILDER.define("Blast_Valid", true);
+        BUILDER.comment("The added distance of each level (default = 0.25, Double)");
+        BLAST_EACH_DISTANCE = BUILDER.define("Blast_Each_Distance", 0.25);
+        BUILDER.comment("The count of Blast for each level (default = 1, Integer)");
+        BLAST_EACH_LEVEL = BUILDER.define("Blast_Each_Level", 1);
+        BUILDER.comment("The max number of Blast (default = 8, Integer)");
+        BLAST_MAX_COUNT = BUILDER.define("Blast_Max_Count", 8);
+        BUILDER.pop();
+
+        BUILDER.push("Cold_Particle");
+        BUILDER.comment("Whether to summon Cold Particle (default = true)");
+        COLD_VALID = BUILDER.define("Cold_Valid", true);
+        BUILDER.comment("Summon chance of Cold Particle for each tick (default = 0.5, Double)");
+        COLD_SUMMON_CHANCE = BUILDER.define("Summon_Chance", 0.5);
+        BUILDER.pop();
+
+        BUILDER.push("Toxin_Particle");
+        BUILDER.comment("Whether to summon Toxin Particle (default = true)");
+        TOXIN_VALID = BUILDER.define("Toxin_Valid", true);
+        BUILDER.comment("(default = 0.15, Double)");
+        TOXIN_SIZE = BUILDER.define("Toxin_Size", 0.15);
+        BUILDER.comment("(default = 10, Integer, tick)");
+        TOXIN_LIFE_TIME = BUILDER.define("Toxin_Time", 50);
+        BUILDER.pop();
+
+        BUILDER.push("Gas_Particle");
+        BUILDER.comment("Whether to summon Gas Particle (default = true)");
+        GAS_VALID = BUILDER.define("Gas_Valid", true);
+        BUILDER.comment("(default = 0.25, Double)");
+        GAS_MAX_SIZE = BUILDER.define("Gas_Max_Size", 0.25);
+        BUILDER.comment("(default = 10, Integer, tick)");
+        GAS_LIFE_TIME = BUILDER.define("Gas_Time", 50);
         BUILDER.pop();
 
         BUILDER.pop();

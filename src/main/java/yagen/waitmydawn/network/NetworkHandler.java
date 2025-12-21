@@ -36,6 +36,36 @@ public class NetworkHandler {
         );
 
         registrar.playToClient(
+                HeatPacket.TYPE,
+                HeatPacket.STREAM_CODEC,
+                HeatPacket::handle
+        );
+
+        registrar.playToClient(
+                BlastPacket.TYPE,
+                BlastPacket.STREAM_CODEC,
+                BlastPacket::handle
+        );
+
+        registrar.playToClient(
+                ColdPacket.TYPE,
+                ColdPacket.STREAM_CODEC,
+                ColdPacket::handle
+        );
+
+        registrar.playToClient(
+                ToxinPacket.TYPE,
+                ToxinPacket.STREAM_CODEC,
+                ToxinPacket::handle
+        );
+
+        registrar.playToClient(
+                GasPacket.TYPE,
+                GasPacket.STREAM_CODEC,
+                GasPacket::handle
+        );
+
+        registrar.playToClient(
                 SyncMissionDataPacket.TYPE,
                 SyncMissionDataPacket.STREAM_CODEC,
                 SyncMissionDataPacket::handle

@@ -3,8 +3,10 @@ package yagen.waitmydawn.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.util.DamageCompat;
+import yagen.waitmydawn.network.GasPacket;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 
 import java.util.*;
@@ -52,6 +54,10 @@ public class GasStatusEffect extends MobEffect {
             if (c.ticksLeft % 20 == 0) {
                 pLivingEntity.hurt(DamageCompat.getDamageSource(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE,c.sourceEntity), c.damage);
                 pLivingEntity.invulnerableTime = 0;
+                PacketDistributor.sendToPlayersTrackingEntity(pLivingEntity,
+                        new GasPacket(pLivingEntity.position(),
+                                pLivingEntity.getBbWidth() / 2,
+                                pLivingEntity.getBbHeight() * 0.7));
             }
 
             if (c.ticksLeft <= 0) {

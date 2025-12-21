@@ -40,6 +40,7 @@ import yagen.waitmydawn.util.BladeStormTargets;
 import java.util.*;
 
 import static yagen.waitmydawn.api.events.ModBonusEvent.*;
+import static yagen.waitmydawn.effect.BlastStatusEffect.addBlast;
 import static yagen.waitmydawn.effect.ElectricityStatusEffect.addElectricity;
 import static yagen.waitmydawn.effect.GasStatusEffect.addGas;
 import static yagen.waitmydawn.effect.HeatStatusEffect.addHeat;
@@ -130,7 +131,8 @@ public class AttackEventHandler {
                 source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
-                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE)||
+                source.is(DamageTypeTags.IS_EXPLOSION))
             return;
 
         boolean isOthers = true;
@@ -280,10 +282,10 @@ public class AttackEventHandler {
 
 
         int color = 0xFFFFFF;
-        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
-            criticalLevel = 0;
-            color = 0xDAA520;
-        }
+//        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
+//            criticalLevel = 0;
+//            color = 0xDAA520;
+//        }
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
         PacketDistributor.sendToPlayersTrackingEntity(target,
                 new DamageNumberPacket(pos, adjustedTotal, color, criticalLevel));
@@ -304,6 +306,8 @@ public class AttackEventHandler {
             color = 0xA020F0;
         else if (source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
             color = 0x006400;
+        else if (source.is(DamageTypeTags.IS_EXPLOSION))
+            color = 0xDAA520;
         if (color == 0xFFFFFF) return;
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
         boolean isOthers = true;
@@ -639,6 +643,7 @@ public class AttackEventHandler {
                         true));
             }
             case BLAST -> {
+                addBlast(target,attacker);
                 forceEffect(target, new MobEffectInstance(
                         MobEffectRegistry.BLAST_STATUS,
                         1,

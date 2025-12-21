@@ -15,12 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ElectricityParticle extends TextureSheetParticle {
-    private final int MAX_GENERATIONS = ClientConfigs.MAX_GENERATIONS.get();
-    private final int BRANCH_GENERATION_LIMIT = ClientConfigs.BRANCH_GENERATION_LIMIT.get();
-    private final int REFRESH_RATE = ClientConfigs.REFRESH_RATE.get();
-    private final double JITTER_STRENGTH = ClientConfigs.JITTER_STRENGTH.get();
-    private final float BRANCH_CHANCE = (float) ClientConfigs.BRANCH_CHANCE.get().doubleValue();
-    private final int LIFE_TIME = ClientConfigs.LIFE_TIME.get();
+    private final int MAX_GENERATIONS = ClientConfigs.ELECTRICITY_MAX_GENERATIONS.get();
+    private final int BRANCH_GENERATION_LIMIT = ClientConfigs.ELECTRICITY_BRANCH_GENERATION_LIMIT.get();
+    private final int REFRESH_RATE = ClientConfigs.ELECTRICITY_REFRESH_RATE.get();
+    private final double JITTER_STRENGTH = ClientConfigs.ELECTRICITY_JITTER_STRENGTH.get();
+    private final float BRANCH_CHANCE = (float) ClientConfigs.ELECTRICITY_BRANCH_CHANCE.get().doubleValue();
+    private final float SIZE = (float) ClientConfigs.ELECTRICITY_SIZE.get().doubleValue();
+    private final int LIFE_TIME = ClientConfigs.ELECTRICITY_LIFE_TIME.get();
     private final boolean IS_VALID = ClientConfigs.ELECTRICITY_VALID.get();
 
     private final Vec3 target;
@@ -36,7 +37,7 @@ public class ElectricityParticle extends TextureSheetParticle {
         this.startZ = z;
         this.target = new Vec3(ex, ey, ez);
         this.lifetime = LIFE_TIME;
-        this.quadSize = 0.1f; // width
+        this.quadSize = SIZE; // width
         this.sprites = spriteSet;
         this.setSpriteFromAge(spriteSet);
         this.hasPhysics = false;
@@ -49,7 +50,10 @@ public class ElectricityParticle extends TextureSheetParticle {
     public void tick() {
         super.tick();
         // regenerate by tick(s)
-        if (!IS_VALID) return;
+        if (!IS_VALID) {
+            this.remove();
+            return;
+        }
         if (this.age % REFRESH_RATE == 0) {
             generateLightning();
         }
