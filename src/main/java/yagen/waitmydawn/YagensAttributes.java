@@ -26,9 +26,6 @@ import yagen.waitmydawn.item.mod.SelfModItems;
 import yagen.waitmydawn.mixin.RangedAttributeAccessor;
 import yagen.waitmydawn.network.NetworkHandler;
 import yagen.waitmydawn.registries.*;
-import yagen.waitmydawn.render.LevelRender;
-import yagen.waitmydawn.setup.ClientSetup;
-import yagen.waitmydawn.util.TooltipsUtils;
 import yagen.waitmydawn.util.YagenAttributesModCreativeTab;
 
 import java.util.Map;
@@ -41,7 +38,6 @@ public class YagensAttributes {
     public YagensAttributes(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(YagensAttributes::commonSetup);
         modEventBus.addListener(ModRegistry::registerRegistry);
-        modEventBus.addListener(ClientSetup::clientSetup);
         modEventBus.addListener(NetworkHandler::onRegister);
 
         YagenAttributesModCreativeTab.register(modEventBus);
@@ -57,18 +53,6 @@ public class YagensAttributes {
         DataAttachmentRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
-
-//        NeoForge.EVENT_BUS.register(AttackEventHandler.class);
-//        NeoForge.EVENT_BUS.register(TooltipsUtils.class);
-//        NeoForge.EVENT_BUS.register(XpChangeEvent.class);
-//        NeoForge.EVENT_BUS.register(BowShootEvent.class);
-//        NeoForge.EVENT_BUS.register(LivingEntityDeathEvent.class);
-//        NeoForge.EVENT_BUS.register(PlayerInteractionEvent.class);
-//        NeoForge.EVENT_BUS.register(EntityLevelBonusEvent.class);
-//        NeoForge.EVENT_BUS.register(LevelRender.class);
-//        NeoForge.EVENT_BUS.register(MissionEvent.class);
-//        NeoForge.EVENT_BUS.register(MissionHandler.class);
-//        NeoForge.EVENT_BUS.register(MirrorEvent.class);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID,YagensAttributes.MODID));

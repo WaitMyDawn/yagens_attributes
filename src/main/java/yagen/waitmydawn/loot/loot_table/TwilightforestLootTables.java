@@ -26,7 +26,7 @@ public class TwilightforestLootTables {
     public static final String NAMESPACE = YagensAttributes.MODID;
 
     public static void registerAllTwilightforest(GlobalLootModifierProvider provider) {
-        final String SUPPORTED_MOD = SupportedMod.TWILIGHTFOREST.getValue();
+        final String SUPPORTED_MOD = SupportedMod.TWILIGHT_FOREST.getValue();
 
         for (String path : CHESTS_LOOT_TABLES) {
             String appendId = "append_to_" + path.replace('/', '_');

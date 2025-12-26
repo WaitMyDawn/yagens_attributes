@@ -1,170 +1,41 @@
 package yagen.waitmydawn.api.mods;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.fml.ModList;
-import yagen.waitmydawn.item.weapon.*;
-import yagen.waitmydawn.util.SupportedMod;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RivenModPool {
     private RivenModPool() {
     }
 
-    public static record RivenEntry(Item item, double disposition) {
+    public static Map<Item, Float> DISPOSITION_MAP = new HashMap<>();
+
+    private static final List<Item> ITEM_LIST = new ArrayList<>();
+
+    public static void clear() {
+        DISPOSITION_MAP.clear();
     }
 
-    private static final ImmutableList<RivenEntry> buildEntries() {
-        ImmutableList.Builder<RivenEntry> builder = ImmutableList.builder();
-
-        builder.add(new RivenEntry(Items.DIAMOND_SWORD, 1.35f));
-        builder.add(new RivenEntry(Items.DIAMOND_AXE, 1.35f));
-        builder.add(new RivenEntry(Items.NETHERITE_SWORD, 1.3f));
-        builder.add(new RivenEntry(Items.NETHERITE_AXE, 1.3f));
-        builder.add(new RivenEntry(Items.BOW, 1.0f));
-        builder.add(new RivenEntry(Items.TRIDENT, 1.2f));
-        builder.add(new RivenEntry(Items.CROSSBOW, 0.95f));
-
-        if (ModList.get().isLoaded(SupportedMod.IRONSSPELLBOOKS.getValue())) {
-            builder.add(new RivenEntry(IronsSpellbooksItem.KEEPER_FLAMBERGE.get(), 0.9f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.MAGEHUNTER.get(), 1.0f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.SPELLBREAKER.get(), 0.9f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.LEGIONNAIRE_FLAMBERGE.get(), 0.85f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.AMETHYST_RAPIER.get(), 0.8f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.AUTOLOADER_CROSSBOW.get(), 0.85f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.DECREPIT_SCYTHE.get(), 0.85f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.HELLRAZOR.get(), 0.75f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.ICE_GREATSWORD.get(), 0.75f));
-            builder.add(new RivenEntry(IronsSpellbooksItem.TWILIGHT_GALE.get(), 0.8f));
+    public static void register(Item item, float disposition) {
+        if (item == null || item == Items.AIR || disposition == 0) return;
+        if (!DISPOSITION_MAP.containsKey(item)) {
+            ITEM_LIST.add(item);
         }
 
-        if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {
-            builder.add(new RivenEntry(LEndersCataclysmItem.THE_INCINERATOR.get(), 0.65f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.ASTRAPE.get(), 0.7f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.THE_ANNIHILATOR.get(), 0.95f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.SOUL_RENDER.get(), 0.7f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.WRATH_OF_THE_DESERT.get(), 1.0f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.GAUNTLET_OF_MAELSTROM.get(), 0.85f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.GAUNTLET_OF_BULWARK.get(), 0.85f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.GAUNTLET_OF_GUARD.get(), 0.85f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.CERAUNUS.get(), 1.0f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.ANCIENT_SPEAR.get(), 0.8f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.TIDAL_CLAWS.get(), 0.75f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get(), 1.2f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get(), 1.25f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.LASER_GATLING.get(), 0.9f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.MEAT_SHREDDER.get(), 0.7f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.THE_IMMOLATOR.get(), 0.8f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.CURSED_BOW.get(), 1.0f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.INFERNAL_FORGE.get(), 0.95f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.VOID_FORGE.get(), 0.9f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.ATHAME.get(), 1.55f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.CORAL_BARDICHE.get(), 1.2f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.CORAL_SPEAR.get(), 1.2f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.BLACK_STEEL_SWORD.get(), 1.35f));
-            builder.add(new RivenEntry(LEndersCataclysmItem.BLACK_STEEL_AXE.get(), 1.35f));
-        }
-
-        if (ModList.get().isLoaded(SupportedMod.IAF.getValue())) {
-            builder.add(new RivenEntry(IceAndFireCEItem.SILVER_SWORD.get(), 1.35f));
-            builder.add(new RivenEntry(IceAndFireCEItem.SILVER_AXE.get(), 1.35f));
-            builder.add(new RivenEntry(IceAndFireCEItem.COPPER_SWORD.get(), 1.4f));
-            builder.add(new RivenEntry(IceAndFireCEItem.COPPER_AXE.get(), 1.4f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD.get(), 1.25f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_AXE.get(), 1.25f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_BOW.get(), 0.95f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_FIRE_SWORD.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_FIRE_AXE.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_ICE_SWORD.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_ICE_AXE.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_SWORD.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONSTEEL_LIGHTNING_AXE.get(), 0.55f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DREAD_SWORD.get(), 1.35f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DREAD_KNIGHT_SWORD.get(), 0.75f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_FIRE.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_ICE.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DRAGONBONE_SWORD_LIGHTNING.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.HIPPOGRYPH_SWORD.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_YELLOW.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_WHITE.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.DEATHWORM_GAUNTLET_RED.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.COCKATRICE_SCEPTER.get(), 0.95f));
-            builder.add(new RivenEntry(IceAndFireCEItem.STYMPHALIAN_DAGGER.get(), 1.0f));
-            builder.add(new RivenEntry(IceAndFireCEItem.AMPHITHERE_MACUAHUITL.get(), 0.9f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TIDE_TRIDENT.get(), 0.75f));
-            builder.add(new RivenEntry(IceAndFireCEItem.GHOST_SWORD.get(), 0.75f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_AXE.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FROST.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_COLUMN_FOREST.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_HAMMER.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK.get(), 1.2f));
-            builder.add(new RivenEntry(IceAndFireCEItem.TROLL_WEAPON_TRUNK_FROST.get(), 1.2f));
-        }
-
-        if (ModList.get().isLoaded(SupportedMod.TWILIGHTFOREST.getValue())) {
-            builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_SWORD.get(), 1.35f));
-            builder.add(new RivenEntry(TwilightForestItem.IRONWOOD_AXE.get(), 1.35f));
-            builder.add(new RivenEntry(TwilightForestItem.FIERY_SWORD.get(), 1.1f));
-            builder.add(new RivenEntry(TwilightForestItem.STEELEAF_SWORD.get(), 1.3f));
-            builder.add(new RivenEntry(TwilightForestItem.STEELEAF_AXE.get(), 1.3f));
-            builder.add(new RivenEntry(TwilightForestItem.GOLDEN_MINOTAUR_AXE.get(), 1.05f));
-            builder.add(new RivenEntry(TwilightForestItem.DIAMOND_MINOTAUR_AXE.get(), 0.95f));
-            builder.add(new RivenEntry(TwilightForestItem.KNIGHTMETAL_SWORD.get(), 1.0f));
-            builder.add(new RivenEntry(TwilightForestItem.KNIGHTMETAL_AXE.get(), 1.0f));
-            builder.add(new RivenEntry(TwilightForestItem.ICE_SWORD.get(), 1.1f));
-            builder.add(new RivenEntry(TwilightForestItem.GLASS_SWORD.get(), 0.5f));
-            builder.add(new RivenEntry(TwilightForestItem.GIANT_SWORD.get(), 0.75f));
-            builder.add(new RivenEntry(TwilightForestItem.TRIPLE_BOW.get(), 0.7f));
-            builder.add(new RivenEntry(TwilightForestItem.SEEKER_BOW.get(), 0.9f));
-            builder.add(new RivenEntry(TwilightForestItem.ICE_BOW.get(), 0.8f));
-            builder.add(new RivenEntry(TwilightForestItem.ENDER_BOW.get(), 0.8f));
-        }
-
-        if (ModList.get().isLoaded(SupportedMod.L2ARCHERY.getValue())) {
-            builder.add(new RivenEntry(L2ArcheryItem.STARTER_BOW.get(), 0.99f));
-            builder.add(new RivenEntry(L2ArcheryItem.IRON_BOW.get(), 0.95f));
-            builder.add(new RivenEntry(L2ArcheryItem.MAGNIFY_BOW.get(), 0.9f));
-            builder.add(new RivenEntry(L2ArcheryItem.GLOW_AIM_BOW.get(), 0.8f));
-            builder.add(new RivenEntry(L2ArcheryItem.ENDER_AIM_BOW.get(), 0.8f));
-            builder.add(new RivenEntry(L2ArcheryItem.MAGNIFY_BOW.get(), 0.8f));
-            builder.add(new RivenEntry(L2ArcheryItem.EAGLE_BOW.get(), 0.8f));
-            builder.add(new RivenEntry(L2ArcheryItem.EXPLOSION_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.FLAME_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.FROZE_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.BLACKSTONE_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.STORM_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.TURTLE_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.EARTH_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.WIND_BOW.get(), 0.75f));
-            builder.add(new RivenEntry(L2ArcheryItem.WINTER_BOW.get(), 0.7f));
-            builder.add(new RivenEntry(L2ArcheryItem.GAIA_BOW.get(), 0.7f));
-            builder.add(new RivenEntry(L2ArcheryItem.VOID_BOW.get(), 0.7f));
-            builder.add(new RivenEntry(L2ArcheryItem.SUN_BOW.get(), 0.7f));
-        }
-
-        return builder.build();
+        DISPOSITION_MAP.put(item, disposition);
     }
 
-    public static final ImmutableList<RivenEntry> ENTRIES = buildEntries();
-
-    public static double getDisposition(Item item) {
-        return ENTRIES.stream()
-                .filter(e -> e.item() == item)
-                .map(RivenEntry::disposition)
-                .findFirst()
-                .orElse(0.01);
+    public static float getDisposition(Item item) {
+        return DISPOSITION_MAP.getOrDefault(item, 0.5f);
     }
 
     public static Item randomWeapon(RandomSource random) {
-        Item item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
-        while (item == Items.AIR) item = ENTRIES.get(random.nextInt(ENTRIES.size())).item();
-        return item;
+        if (ITEM_LIST.isEmpty()) return Items.AIR;
+        return ITEM_LIST.get(random.nextInt(ITEM_LIST.size()));
     }
-
-    public static RivenEntry randomRivenEntry(RandomSource random) {
-        return ENTRIES.get(random.nextInt(ENTRIES.size()));
-    }
-
 }

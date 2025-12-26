@@ -112,9 +112,9 @@ public class MissionHandler {
                         System.out.println("fail to transform to Monster (Boss): " + type);
                     }
                 });
-        MONSTER_TYPES.forEach(type ->
-                System.out.println("find Monster : " + type.toString())
-        );
+//        MONSTER_TYPES.forEach(type ->
+//                System.out.println("find Monster : " + type.toString())
+//        );
 //        BOSS_TYPES.forEach(type ->
 //                System.out.println("find Monster (Boss) : " + type.toString())
 //        );

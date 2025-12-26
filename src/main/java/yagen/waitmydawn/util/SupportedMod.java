@@ -1,9 +1,9 @@
 package yagen.waitmydawn.util;
 
 public enum SupportedMod {
-    IRONSSPELLBOOKS("irons_spellbooks"),
+    IRONS_SPELLBOOKS("irons_spellbooks"),
     CATACLYSM("cataclysm"),
-    TWILIGHTFOREST("twilightforest"),
+    TWILIGHT_FOREST("twilightforest"),
     IAF("iceandfire"),
     L2ARCHERY("l2archery"),
     DUNGEONS_ARISE("dungeons_arise"),

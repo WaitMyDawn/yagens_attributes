@@ -100,31 +100,6 @@ public class LEndersCataclysmItem {
                     ResourceLocation.fromNamespaceAndPath("cataclysm", "cursed_bow")
             );
 
-    public static final Supplier<Item> AZURE_SEA_SHIELD =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "azure_sea_shield")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_TARGE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_targe")
-            );
-
-    public static final Supplier<Item> INFERNAL_FORGE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "infernal_forge")
-            );
-
-    public static final Supplier<Item> VOID_FORGE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "void_forge")
-            );
-
-    public static final Supplier<Item> ATHAME =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "athame")
-            );
-
     public static final Supplier<Item> CORAL_BARDICHE =
             () -> BuiltInRegistries.ITEM.get(
                     ResourceLocation.fromNamespaceAndPath("cataclysm", "coral_bardiche")
@@ -133,30 +108,5 @@ public class LEndersCataclysmItem {
     public static final Supplier<Item> CORAL_SPEAR =
             () -> BuiltInRegistries.ITEM.get(
                     ResourceLocation.fromNamespaceAndPath("cataclysm", "coral_spear")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_SWORD =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_sword")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_PICKAXE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_pickaxe")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_AXE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_axe")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_SHOVEL =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_shovel")
-            );
-
-    public static final Supplier<Item> BLACK_STEEL_HOE =
-            () -> BuiltInRegistries.ITEM.get(
-                    ResourceLocation.fromNamespaceAndPath("cataclysm", "black_steel_hoe")
             );
 }
