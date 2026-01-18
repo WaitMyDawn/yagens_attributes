@@ -295,6 +295,15 @@ public class ComponentRegistry {
             .networkSynchronized(ByteBufCodecs.STRING_UTF8)
             .cacheEncoding()
     );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Attribute>>
+            GRACE_ABILITY = register("grace_ability", b -> b
+            .persistent(BuiltInRegistries.ATTRIBUTE.byNameCodec())
+            .networkSynchronized(StreamCodec.of(
+                    (buf, attribute) -> buf.writeVarInt(BuiltInRegistries.ATTRIBUTE.getId(attribute)),
+                    buf -> Objects.requireNonNull(BuiltInRegistries.ATTRIBUTE.byId(buf.readVarInt()))
+            ))
+            .cacheEncoding()
+    );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Item>>
             RIVEN_TYPE = register("riven_type", b -> b
             .persistent(BuiltInRegistries.ITEM.byNameCodec())

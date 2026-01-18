@@ -1,6 +1,9 @@
 package yagen.waitmydawn.util;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -20,6 +23,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
@@ -47,7 +51,7 @@ public class TooltipsUtils {
             var uniqueInfo = mod.getUniqueInfo(modLevel, player);
             if (uniqueInfo.isEmpty()) {
                 uniqueInfo = RivenMod.getRivenUniqueInfo(stack, modLevel);
-                modPolarity = stack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(),"Riven");
+                modPolarity = stack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
             }
             var title = Component.translatable("tooltip.yagens_attributes.level", levelText)
                     .append(" ")
@@ -144,5 +148,24 @@ public class TooltipsUtils {
                         rivenType.getDescription())
                 .withStyle(Style.EMPTY.withColor(0x8A2BE2));
         event.getToolTip().add(line);
+    }
+
+    @SubscribeEvent
+    public static void updateGraceAbilityTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (!stack.is(ItemRegistry.MOD)) return;
+        if (!IModContainer.get(stack).getModAtIndex(0).getMod().getModName().equals("grace_armor_mod")) return;
+        Attribute attribute = GraceArmorMod.getGraceAbility(stack);
+        if (attribute == Attributes.MOVEMENT_SPEED.value()) return;
+
+        MutableComponent line = Component.literal(" ").append(Component.translatable("functions.yagens_attributes.grace_armor_mod.2",
+                        Component.translatable(attribute.getDescriptionId())))
+                .withStyle(INFO_STYLE);
+        List<Component> tooltip = event.getToolTip();
+        for (int i = 0; i < tooltip.size(); i++)
+            if (tooltip.get(i).getString().trim().isEmpty()) {
+                tooltip.add(i, line);
+                return;
+            }
     }
 }

@@ -89,6 +89,8 @@
   "functions.yagens_attributes.scattershot_tool_mod.1": "Each arrow deals x0.4 damage.",
   "functions.yagens_attributes.xp_armor_mod.1": "Gain %d%% extra Exp after killing Mobs.",
   "functions.yagens_attributes.xp_armor_mod.2": "Exp gained from killing Mobs goes directly to you.",
+  "functions.yagens_attributes.grace_armor_mod.1": "Limit the movement speed to %.2f.",
+  "functions.yagens_attributes.grace_armor_mod.2": "Convert the overflow speed to %s.",
   "functions.yagens_attributes.health_heal_tool_mod.1": "Each Status heals %d Health.",
   "functions.yagens_attributes.health_trans_armor_mod.1": "Take %d Damage after killing Mobs, players around you heal %d Health.",
   "functions.yagens_attributes.pilot_armor_mod.1": "When in the air, the incoming Damage will be reduced by %d%%",
@@ -190,6 +192,7 @@
   "mod.yagens_attributes.firerate_tool_mod": "Flame Feather",
   "mod.yagens_attributes.scope_tool_mod": "Scope",
   "mod.yagens_attributes.xp_armor_mod": "Bounty Hunter",
+  "mod.yagens_attributes.grace_armor_mod": "Gracefully Serpentine",
   "mod.yagens_attributes.health_trans_armor_mod": "Thorn Aura",
 
   "mod.yagens_attributes.slash_up_tool_mod": "Edge Disc",

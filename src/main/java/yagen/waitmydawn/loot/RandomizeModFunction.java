@@ -14,6 +14,7 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.registries.LootRegistry;
 
 import java.util.List;
@@ -72,10 +73,13 @@ public class RandomizeModFunction extends LootItemConditionalFunction {
         int fix = 0;
         if (levelPercentInf == levelPercentSup) fix = 1;
         int modLevel = Math.max(1, (int) Math.round(mod.getMaxLevel() * (levelPercentInf + rand.nextInt(levelPercentSup - levelPercentInf + fix)) / 100.0));
-
         if (modLevel > mod.getMaxLevel()) modLevel = mod.getMaxLevel();
-
         IModContainer.createModContainer(mod, modLevel, stack);
+
+        if (mod.getModName().equals("grace_armor_mod")) {
+            GraceArmorMod.setRandomGraceAbility(stack);
+        }
+
         return stack;
     }
 

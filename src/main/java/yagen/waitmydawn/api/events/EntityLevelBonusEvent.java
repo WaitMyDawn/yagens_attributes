@@ -14,6 +14,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
@@ -22,6 +23,7 @@ public class EntityLevelBonusEvent {
     @SubscribeEvent
     public static void entityJoinBonusEvent(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide) return;
+        if(!ServerConfigs.IF_LEVEL_BONUS.get()) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
         if (!(livingEntity instanceof Enemy)) return;
         setBaseLevel(livingEntity);

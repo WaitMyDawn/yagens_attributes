@@ -30,6 +30,7 @@ import yagen.waitmydawn.api.events.OperationModEvent;
 import yagen.waitmydawn.api.mods.*;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.item.Mod;
+import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.registries.MenuRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.registries.BlockRegistry;
@@ -100,8 +101,6 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
             @Override
             public void set(ItemStack stack) {
-                // create mod container if it is not
-                //super.set(ModCompat.ensureModContainer(stack, 4, level));
                 super.set(ModCompat.ensureModContainer(stack, 8));
             }
 
@@ -131,8 +130,11 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 ItemStack itemStack = itemSlot.getItem();
 
                 var mutable = IModContainer.get(itemStack).mutableCopy();
-                if (mutable.getModAtIndex(selectedModIndex).getMod().getUniqueInfo(1, null).isEmpty()) {
+                AbstractMod mod = mutable.getModAtIndex(selectedModIndex).getMod();
+                if (mod.getUniqueInfo(1, null).isEmpty()) {
                     clearRivenRawInfo(itemStack);
+                } else if (mod.getModName().equals("grace_armor_mod")) {
+                    clearGraceAbility(itemStack);
                 }
                 mutable.removeModAtIndex(selectedModIndex);
                 IModContainer.set(itemStack, mutable.toImmutable());
@@ -168,14 +170,14 @@ public class ModOperationMenu extends AbstractContainerMenu {
     }
 
     public void doOperation(int selectedIndex) {
-        ItemStack weaponStack = getItemSlot().getItem();
+        ItemStack itemStack = getItemSlot().getItem();
         ItemStack modStack = getModSlot().getItem();
 
-        if (!IModContainer.isModContainer(weaponStack) || !(modStack.getItem() instanceof Mod)) {
+        if (!IModContainer.isModContainer(itemStack) || !(modStack.getItem() instanceof Mod)) {
             return;
         }
 
-        var weaponContainer = IModContainer.get(weaponStack);
+        var weaponContainer = IModContainer.get(itemStack);
         var modContainer = IModContainer.get(modStack);
         var modData = modContainer.getModAtIndex(0);
         AbstractMod mod = modData.getMod();
@@ -183,22 +185,23 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
         // only RivenMod by empty getUniqueInfo
         if (mod.getUniqueInfo(level, player).isEmpty()) {
-            Item item = getModSlot().getItem().get(ComponentRegistry.RIVEN_TYPE.get());
-//            System.out.println("2 Riven Type: " + getModSlot().getItem().getItem() + " Item: " + item);
-            if (item != null && item != getItemSlot().getItem().getItem()) {
-//                System.out.println("3 Riven Type: " + getModSlot().getItem().getItem() + " Item: " + item);
+            Item item = modStack.get(ComponentRegistry.RIVEN_TYPE.get());
+            if (item != null && item != itemStack.getItem()) {
                 return;
             }
-            if (hasRivenModData(weaponStack)) {
+            if (hasRivenModData(itemStack)) {
                 player.sendSystemMessage(Component.translatable(
                         "ui.yagens_attributes.conflict_riven"));
                 return;
             }
-            copyRivenRawInfo(modStack, weaponStack);
-        }// check homology mod
+            copyRivenRawInfo(modStack, itemStack);
+        } else if (mod.getModName().equals("grace_armor_mod")) {
+            copyGraceAbility(modStack, itemStack);
+        }
+        // check homology mod
         else {
             String groupName = mod.getModName().split("_")[0];
-            for (ModSlot slot : weaponContainer.getActiveMods()){
+            for (ModSlot slot : weaponContainer.getActiveMods()) {
                 String groupNameCheck = slot.getMod().getModName().split("_")[0];
                 if (HomologyModGroup.instance().sameGroup(groupName, groupNameCheck)) {
                     player.sendSystemMessage(Component.translatable(
@@ -207,41 +210,13 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 }
             }
         }
-//        else {
-//            Pattern p = Pattern.compile(
-//                    "'[^']*\\.([^.]+)_([^']+)'.*args=\\[([0-9.]+)]");
-//            List<MutableComponent> uniqueInfo = mod.getUniqueInfo(level, player);
-//            for (var comp : uniqueInfo) {
-//                String key = String.valueOf(comp);
-//                // like translation{key='killbonus.yagens_attributes.multishot_galvanized_tool_mod.1', args=[50]}
-//                System.out.println("Test Homo: UniqueInfo: " + key);
-//                Matcher m = p.matcher(key);
-//                if (!m.find()) continue;
-//                if (m.group(0).contains("bonus")) continue;
-//                String attributeInfo = m.group(1);
-//                for (ModSlot slot : weaponContainer.getActiveMods()) {
-//                    List<MutableComponent> uniqueInfoCheck = slot.getMod().getUniqueInfo(level, player);
-//                    for (var compCheck : uniqueInfoCheck) {
-//                        Matcher mCheck = p.matcher(String.valueOf(compCheck));
-//                        if (!mCheck.find()) continue;
-//                        String attributeInfoCheck = mCheck.group(1);
-//                        if (HomologyModGroup.instance().sameGroup(attributeInfo, attributeInfoCheck)) {
-//                            player.sendSystemMessage(Component.translatable(
-//                                    "ui.yagens_attributes.conflict", Component.translatable("mod.yagens_attributes." + slot.getMod().getModName())));
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-
 
         var mutable = weaponContainer.mutableCopy();
         if (mutable.addModAtIndex(mod, level, selectedIndex)) {
             getModSlot().remove(1);
-            IModContainer.set(weaponStack, mutable.toImmutable());
+            IModContainer.set(itemStack, mutable.toImmutable());
         }
-        rebuildItemByMod(weaponStack);
+        rebuildItemByMod(itemStack);
     }
 
     private void rebuildItemByMod(ItemStack stack) {
@@ -376,7 +351,6 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 float addition = additionMap.getOrDefault(type, 0F);
                 float multiply = multiplyMap.getOrDefault(type, 1F);
 
-                //System.out.println("TestBuild: build Damage args: baseTotalDamage " + baseTotalDamage + " addLast " + addLast + " addition " + addition + " multiply " + multiply);
                 float finalDmg = (dmg + addFirst + baseTotalDamage * addition) * multiply + addLast;
                 if (finalDmg <= 0f && orderDamageType.contains(type)) orderDamageType.remove(type);
                 result.put(type, Math.max(0F, finalDmg));
@@ -451,11 +425,13 @@ public class ModOperationMenu extends AbstractContainerMenu {
         ItemAttributeModifiers defaultModifiers = stack.getItem().getDefaultAttributeModifiers(stack);
 //        if (isWeapon) //fix bug of remove some added default attribute modifiers by other Modules
 //        System.out.println("DefaultItemAttributes 1 : " + defaultModifiers);
-            defaultModifiers = stack.getOrDefault(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(defaultModifiers)).modifiers();
+        defaultModifiers = stack.getOrDefault(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(defaultModifiers)).modifiers();
 //        System.out.println("DefaultItemAttributes 2 : " + defaultModifiers);
 
         defaultModifiers.modifiers().forEach(e -> {
-            if (e.attribute() != Attributes.ATTACK_DAMAGE)
+            if (e.attribute() != Attributes.ATTACK_DAMAGE // support add base damage to weapon by json
+                    || e.modifier().is(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID,
+                    "default_generic.attack_damage")))
                 builder.add(e.attribute(), e.modifier(), e.slot());
         });
 
@@ -492,8 +468,6 @@ public class ModOperationMenu extends AbstractContainerMenu {
         }
 
         stack.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
-//        System.out.println("Final AttributeModifiers: " +
-//                stack.get(DataComponents.ATTRIBUTE_MODIFIERS));
     }
 
     private static final Map<DamageType, Set<DamageType>> COMPOSITES = Map.of(
@@ -697,6 +671,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
                     if (modData.getMod().getUniqueInfo(modData.getLevel(), player).isEmpty()) {
                         copyRivenRawInfo(itemStack, resultStack);
+                    } else if (modData.getMod().getModName().equals("grace_armor_mod")) {
+                        copyGraceAbility(itemStack, resultStack);
                     }
                 }
             }
@@ -722,6 +698,16 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
     public Slot getResultSlot() {
         return resultSlot;
+    }
+
+    private static void copyGraceAbility(ItemStack from, ItemStack to) {
+        Attribute attribute = GraceArmorMod.getGraceAbility(from);
+        if (attribute != Attributes.MOVEMENT_SPEED.value())
+            GraceArmorMod.setGraceAbility(attribute, to);
+    }
+
+    private static void clearGraceAbility(ItemStack itemStack) {
+        itemStack.remove(ComponentRegistry.GRACE_ABILITY.get());
     }
 
     private static void copyRivenRawInfo(ItemStack from, ItemStack to) {

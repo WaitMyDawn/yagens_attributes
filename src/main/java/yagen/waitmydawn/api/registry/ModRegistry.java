@@ -111,6 +111,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> SCOPE_TOOL_MOD = registerMod(new ScopeToolMod());
     public static final Supplier<AbstractMod> JUMP_STRENGTH_ARMOR_MOD = registerMod(new JumpStrengthArmorMod());
     public static final Supplier<AbstractMod> XP_ARMOR_MOD = registerMod(new XpArmorMod());
+    public static final Supplier<AbstractMod> GRACE_ARMOR_MOD = registerMod(new GraceArmorMod());
     public static final Supplier<AbstractMod> HEALTH_TRANS_ARMOR_MOD = registerMod(new HealthTransArmorMod());
 
     /**

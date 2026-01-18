@@ -6,12 +6,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
@@ -28,6 +29,7 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -51,7 +53,7 @@ public class ModBonusEvent {
             if (slot.getMod().getModName().equals("multishot_galvanized_tool_mod"))
                 MultishotGalvanizedToolModBonus(player);
             else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod"))
-                if (source.getDirectEntity() instanceof Arrow arrow)
+                if (source.getDirectEntity() instanceof AbstractArrow arrow)
                     if (isHeadShot(livingEntity, arrow, player))
                         ScopeGalvanizedToolModBonus(player);
         }
@@ -60,7 +62,7 @@ public class ModBonusEvent {
     @SubscribeEvent
     public static void damageBonusEvent(LivingDamageEvent.Post event) {
         LivingEntity livingEntity = event.getEntity();
-        if (!(event.getSource().getDirectEntity() instanceof Arrow arrow)) return;
+        if (!(event.getSource().getDirectEntity() instanceof AbstractArrow arrow)) return;
         if (arrow.level().isClientSide) return;
         if (!(arrow.getOwner() instanceof Player player)) return;
 
@@ -183,21 +185,74 @@ public class ModBonusEvent {
         }
     }
 
+    @SubscribeEvent
+    public static void graceBonusEvent(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide) return;
+        if (player.tickCount % 4 != 0) return;
+
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_bonus");
+        ResourceLocation MODIFIER_ID_SPEED = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_overflow");
+        AttributeInstance attributeInstanceSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if(attributeInstanceSpeed == null) return;
+        if(chest==ItemStack.EMPTY) {
+            removeGraceBonus(player, MODIFIER_ID);
+            if (attributeInstanceSpeed.getModifier(MODIFIER_ID_SPEED) != null)
+                attributeInstanceSpeed.removeModifier(MODIFIER_ID_SPEED);
+            return;
+        }
+        Attribute attribute = GraceArmorMod.getGraceAbility(chest);
+        AttributeInstance attributeInstance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute));
+        if (attributeInstance == null) return;
+        if (attributeInstance == Attributes.MOVEMENT_SPEED) {
+            removeGraceBonus(player,MODIFIER_ID);
+            return;
+        } else if (attributeInstance.getModifier(MODIFIER_ID) != null)
+            attributeInstance.removeModifier(MODIFIER_ID);
+        if (attributeInstanceSpeed.getModifier(MODIFIER_ID_SPEED) != null)
+            attributeInstanceSpeed.removeModifier(MODIFIER_ID_SPEED);
+
+        if (!IModContainer.isModContainer(chest)) return;
+        for (ModSlot slot : IModContainer.get(chest).getActiveMods()) {
+            if (slot.getMod().getModName().equals("grace_armor_mod")) {
+                if (attribute == Attributes.MOVEMENT_SPEED.value()) return;
+
+                double limit = 0.1 + 0.05 * slot.getLevel();
+                double overflow = player.getSpeed() - limit;
+                if (overflow <= 0) return;
+                double bonus = GraceArmorMod.getBonus(attribute, overflow);
+
+                attributeInstanceSpeed.addPermanentModifier(
+                        new AttributeModifier(MODIFIER_ID_SPEED, limit / player.getSpeed() - 1, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+                if (bonus != 0)
+                    attributeInstance.addPermanentModifier(
+                            new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_VALUE));
+
+                return;
+            }
+        }
+    }
+
+    private static void removeGraceBonus(Player player,ResourceLocation MODIFIER_ID) {
+        GraceArmorMod.ATTRIBUTE_SET.forEach((attr, value) -> {
+            AttributeInstance instance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attr));
+            if (instance != null)
+                if (instance.getModifier(MODIFIER_ID) != null)
+                    instance.removeModifier(MODIFIER_ID);
+        });
+    }
+
     public static void updateCCModifier(LivingEntity livingEntity, double bonus) {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "combo_bonus_cc_modifier");
         AttributeInstance criticalChance = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get()));
         if (criticalChance == null) return;
 
-        AttributeModifier mod = new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-
-        if (bonus == 0) {
-            criticalChance.removeModifier(mod);
-        } else if (criticalChance.getModifier(MODIFIER_ID) != null) {
-            criticalChance.removeModifier(mod);
-            criticalChance.addPermanentModifier(mod);
-        } else {
-            criticalChance.addPermanentModifier(mod);
-        }
+        if (criticalChance.getModifier(MODIFIER_ID) != null)
+            criticalChance.removeModifier(MODIFIER_ID);
+        if (bonus != 0)
+            criticalChance.addPermanentModifier(
+                    new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
     }
 
     public static void updateSCModifier(LivingEntity livingEntity, double bonus) {
@@ -205,16 +260,11 @@ public class ModBonusEvent {
         AttributeInstance statusChance = livingEntity.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get()));
         if (statusChance == null) return;
 
-        AttributeModifier mod = new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-
-        if (bonus == 0) {
-            statusChance.removeModifier(mod);
-        } else if (statusChance.getModifier(MODIFIER_ID) != null) {
-            statusChance.removeModifier(mod);
-            statusChance.addPermanentModifier(mod);
-        } else {
-            statusChance.addPermanentModifier(mod);
-        }
+        if (statusChance.getModifier(MODIFIER_ID) != null)
+            statusChance.removeModifier(MODIFIER_ID);
+        if (bonus != 0)
+            statusChance.addPermanentModifier(
+                    new AttributeModifier(MODIFIER_ID, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
     }
 
     public static void updateScopeModifier(LivingEntity livingEntity, boolean mode) {

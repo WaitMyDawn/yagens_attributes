@@ -86,7 +86,7 @@
           "functions": [
             {
               "function": "yagens_attributes:set_endo",
-              "level": 0,
+              "level": 1,
               "missionType": "Exterminate"
             }
           ],

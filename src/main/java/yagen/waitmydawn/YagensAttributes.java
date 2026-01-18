@@ -3,7 +3,9 @@ package yagen.waitmydawn;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
@@ -20,15 +22,19 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.events.*;
 import yagen.waitmydawn.api.mission.MissionHandler;
 import yagen.waitmydawn.api.registry.ModRegistry;
+import yagen.waitmydawn.compat.ISSAttributeSet;
 import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.mod.SelfModItems;
 import yagen.waitmydawn.mixin.RangedAttributeAccessor;
 import yagen.waitmydawn.network.NetworkHandler;
 import yagen.waitmydawn.registries.*;
+import yagen.waitmydawn.util.SupportedMod;
 import yagen.waitmydawn.util.YagenAttributesModCreativeTab;
 
 import java.util.Map;
+
+import static yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod.ATTRIBUTE_SET;
 
 @Mod(YagensAttributes.MODID)
 public class YagensAttributes {
@@ -54,8 +60,8 @@ public class YagensAttributes {
         ParticleRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
 
-        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID,YagensAttributes.MODID));
-        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID,YagensAttributes.MODID));
+        modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID, YagensAttributes.MODID));
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID, YagensAttributes.MODID));
 
     }
 
@@ -68,12 +74,17 @@ public class YagensAttributes {
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.attack_damage"), 2_147_483_647D,
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.attack_knockback"), 1_024D
             );
-            for (Attribute attribute : BuiltInRegistries.ATTRIBUTE){
+            for (Attribute attribute : BuiltInRegistries.ATTRIBUTE) {
                 ResourceLocation id = BuiltInRegistries.ATTRIBUTE.getKey(attribute);
                 if (id != null && map.containsKey(id) && attribute instanceof RangedAttributeAccessor accessor) {
                     accessor.setMinValue(0);
                     accessor.setMaxValue(map.get(id));
                 }
+            }
+            ATTRIBUTE_SET.put(Attributes.ARMOR.value(), 6.0);
+            ATTRIBUTE_SET.put(Attributes.ARMOR_TOUGHNESS.value(), 2.0);
+            if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue())) {
+                ISSAttributeSet.addAttributeSet();
             }
         });
     }

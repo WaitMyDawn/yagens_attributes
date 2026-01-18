@@ -235,7 +235,7 @@ public class BowShootEvent {
         PacketDistributor.sendToPlayer((ServerPlayer) player, new SyncComboPacket(updated));
     }
 
-    public static boolean isHeadShot(LivingEntity livingEntity, Arrow arrow, Player player) {
+    public static boolean isHeadShot(LivingEntity livingEntity, AbstractArrow arrow, Player player) {
         AABB boundingBox = livingEntity.getBoundingBox();
         double eyeHeight = livingEntity.getEyeHeight();
         double volume = boundingBox.getXsize() * boundingBox.getYsize() * boundingBox.getZsize();

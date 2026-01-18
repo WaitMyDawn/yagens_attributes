@@ -8,6 +8,7 @@ public class ServerConfigs {
 
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_OFFHAND;
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_COMBO;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_LEVEL_BONUS;
     public static final ModConfigSpec.ConfigValue<Integer> SPLASH_POTION_COOLDOWN;
     public static final ModConfigSpec.ConfigValue<Integer> MAX_COMBO_LEVEL;
     public static final ModConfigSpec.ConfigValue<Integer> COMBO_LEVEL_NEEDED_COUNT;
@@ -33,6 +34,11 @@ public class ServerConfigs {
         BUILDER.comment("The number of combo required for each level.");
         BUILDER.comment("Combo Level Needed Count (default = 10, Integer)");
         COMBO_LEVEL_NEEDED_COUNT = BUILDER.define("Combo_Level_Needed_Count", 10);
+        BUILDER.pop();
+
+        BUILDER.push("Entity_Level");
+        BUILDER.comment("Whether to active Level bonus for entities (default = true)");
+        IF_LEVEL_BONUS = BUILDER.define("If_Level_Bonus", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

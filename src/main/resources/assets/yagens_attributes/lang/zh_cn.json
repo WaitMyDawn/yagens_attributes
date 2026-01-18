@@ -89,6 +89,8 @@
   "functions.yagens_attributes.scattershot_tool_mod.1": "每支箭伤害x0.4",
   "functions.yagens_attributes.xp_armor_mod.1": "击杀生物后掉落额外%d%%的经验",
   "functions.yagens_attributes.xp_armor_mod.2": "击杀生物后的经验直接给予击杀者",
+  "functions.yagens_attributes.grace_armor_mod.1": "限制移动速度为%.2f",
+  "functions.yagens_attributes.grace_armor_mod.2": "溢出速度转换为%s",
   "functions.yagens_attributes.health_heal_tool_mod.1": "每次触发异况恢复%d生命值",
   "functions.yagens_attributes.health_trans_armor_mod.1": "击杀生物后受到%d点伤害，周围的玩家恢复%d点生命值",
   "functions.yagens_attributes.pilot_armor_mod.1": "在空中时，即将到来的伤害减少%d%%",
@@ -190,6 +192,7 @@
   "mod.yagens_attributes.firerate_tool_mod": "火翎羽",
   "mod.yagens_attributes.scope_tool_mod": "氩晶瞄具",
   "mod.yagens_attributes.xp_armor_mod": "赏金猎人",
+  "mod.yagens_attributes.grace_armor_mod": "优雅蛇行",
   "mod.yagens_attributes.health_trans_armor_mod": "荆棘之环",
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
