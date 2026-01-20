@@ -1,6 +1,12 @@
 package yagen.waitmydawn.item;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import yagen.waitmydawn.api.item.IMod;
+import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModData;
@@ -22,8 +28,20 @@ public class Mod extends Item implements IMod {
         super(new Item.Properties().rarity(Rarity.UNCOMMON));
     }
 
-    private @NotNull ModData getModSlotFromStack(ItemStack itemStack) {
+    public static @NotNull ModData getModSlotFromStack(ItemStack itemStack) {
         return IModContainer.getOrCreate(itemStack).getModAtIndex(0);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(player.getItemInHand(usedHand));
+        if(usedHand != InteractionHand.MAIN_HAND) return result;
+        ItemStack stack = player.getItemInHand(usedHand);
+        AbstractMod mod = getModSlotFromStack(stack).getMod();
+        if (mod != null)
+            result = mod.onRightClick(level, player, usedHand, stack);
+
+        return result;
     }
 
     @Override

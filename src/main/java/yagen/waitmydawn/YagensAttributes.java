@@ -17,15 +17,11 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import yagen.waitmydawn.api.attribute.YAttributes;
-import yagen.waitmydawn.api.events.*;
-import yagen.waitmydawn.api.mission.MissionHandler;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.compat.ISSAttributeSet;
 import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
-import yagen.waitmydawn.item.mod.SelfModItems;
 import yagen.waitmydawn.mixin.RangedAttributeAccessor;
 import yagen.waitmydawn.network.NetworkHandler;
 import yagen.waitmydawn.registries.*;
@@ -45,9 +41,9 @@ public class YagensAttributes {
         modEventBus.addListener(YagensAttributes::commonSetup);
         modEventBus.addListener(ModRegistry::registerRegistry);
         modEventBus.addListener(NetworkHandler::onRegister);
+        modEventBus.addListener(CapabilitiesRegistry::registerCapabilities);
 
         YagenAttributesModCreativeTab.register(modEventBus);
-        SelfModItems.register(modEventBus);
         MenuRegistry.register(modEventBus);
         ModRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);

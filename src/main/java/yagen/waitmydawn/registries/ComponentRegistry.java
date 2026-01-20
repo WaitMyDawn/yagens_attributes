@@ -241,7 +241,40 @@ public class ComponentRegistry {
                 );
     }
 
-    //public static final DeferredHolder<DataComponentType<?>, DataComponentType<UpgradeData>> UPGRADE_DATA = register("upgrade_data", (builder) -> builder.persistent(UpgradeData.CODEC).networkSynchronized(UpgradeData.STREAM_CODEC).cacheEncoding());
+    public record ReservoirsAttributes(
+            double duration,
+            double strength,
+            double range
+    ) {
+        public static final Codec<ReservoirsAttributes> CODEC = RecordCodecBuilder.create(
+                b -> b.group(
+                        Codec.DOUBLE.fieldOf("duration").forGetter(ReservoirsAttributes::duration),
+                        Codec.DOUBLE.fieldOf("strength").forGetter(ReservoirsAttributes::strength),
+                        Codec.DOUBLE.fieldOf("range").forGetter(ReservoirsAttributes::range)
+                ).apply(b, ReservoirsAttributes::new)
+        );
+
+        public static final StreamCodec<ByteBuf, ReservoirsAttributes> STREAM_CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.DOUBLE, ReservoirsAttributes::duration,
+                        ByteBufCodecs.DOUBLE, ReservoirsAttributes::strength,
+                        ByteBufCodecs.DOUBLE, ReservoirsAttributes::range,
+                        ReservoirsAttributes::new
+                );
+
+        public ReservoirsAttributes withRandomDuration(Random random) {
+            return new ReservoirsAttributes(random.nextDouble() * 5.0, strength, range);
+        }
+
+        public ReservoirsAttributes withRandomStrength(Random random) {
+            return new ReservoirsAttributes(duration, random.nextDouble() * 5.0, range);
+        }
+
+        public ReservoirsAttributes withRandomRange(Random random) {
+            return new ReservoirsAttributes(duration, strength, random.nextDouble() * 5.0);
+        }
+    }
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<IModContainer>>
             MOD_CONTAINER = register("mod_container", (builder) -> builder
             .persistent(ModContainer.CODEC)
@@ -253,12 +286,6 @@ public class ComponentRegistry {
             .networkSynchronized(DamageProfile.STREAM_CODEC)
             .cacheEncoding()
     );
-    //    public static final DeferredHolder<DataComponentType<?>, DataComponentType<DefaultAttributeProfile>>
-//            DEFAULT_ATTRIBUTES_PROFILE = register("default_attributes_profile", b -> b
-//            .persistent(DefaultAttributeProfile.CODEC)
-//            .networkSynchronized(DefaultAttributeProfile.STREAM_CODEC)
-//            .cacheEncoding()
-//    );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<AttributeProfile>>
             ATTRIBUTES_PROFILE = register("attributes_profile", b -> b
             .persistent(AttributeProfile.CODEC)
@@ -275,6 +302,12 @@ public class ComponentRegistry {
             UPGRADE_DATA = register("upgrade_data", b -> b
             .persistent(UpgradeData.CODEC)
             .networkSynchronized(UpgradeData.STREAM_CODEC)
+            .cacheEncoding()
+    );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ReservoirsAttributes>>
+            RESERVOIRS_ATTRIBUTES = register("reservoirs_attributes", b -> b
+            .persistent(ReservoirsAttributes.CODEC)
+            .networkSynchronized(ReservoirsAttributes.STREAM_CODEC)
             .cacheEncoding()
     );
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<EndoInfo>>
@@ -312,11 +345,6 @@ public class ComponentRegistry {
                     buf -> BuiltInRegistries.ITEM.byId(buf.readVarInt())
             ))
             .cacheEncoding());
-    //    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UniqueInfoList>>
-//            UNIQUE_INFO_LIST = register("unique_info_list", b -> b
-//            .persistent(UniqueInfoList.CODEC)
-//            .networkSynchronized(UniqueInfoList.STREAM_CODEC)
-//            .cacheEncoding());
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>>
             RIVEN_POLARITY_TYPE = register("riven_polarity_type", b -> b
             .persistent(Codec.STRING)
@@ -353,4 +381,6 @@ public class ComponentRegistry {
     public static void setEndoInfo(ItemStack stack, EndoInfo info) {
         stack.set(ENDO_INFO, info);
     }
+
+
 }

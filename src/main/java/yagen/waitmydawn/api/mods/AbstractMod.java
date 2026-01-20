@@ -4,8 +4,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
@@ -69,7 +74,7 @@ public abstract class AbstractMod {
 
     public abstract ResourceLocation getModResource();
 
-    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity caster) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of();
     }
 
@@ -89,6 +94,12 @@ public abstract class AbstractMod {
 
         return false;
     }
+
+    public InteractionResultHolder<ItemStack> onRightClick(Level level, Player player, InteractionHand hand, ItemStack stack) {
+        return InteractionResultHolder.pass(stack);
+    }
+
+    public boolean isReservoir() { return false;}
 
     @Override
     public int hashCode() {

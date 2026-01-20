@@ -20,12 +20,13 @@ public class CriticalHitToolMod extends AbstractMod {
         );
     }
 
-    //public static final TestGeneralMod INSTANCE = new TestGeneralMod();
-
     public CriticalHitToolMod() {
         super(5, "Cth", ModRarity.UNCOMMON);
         this.baseCapacityCost = 4;
     }
+
+    @Override
+    public boolean isReservoir() { return true; }
 
     @Override
     public ResourceLocation getModResource() {

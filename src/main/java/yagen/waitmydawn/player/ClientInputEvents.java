@@ -136,6 +136,33 @@ public class ClientInputEvents {
                         break;
                     }
                 }
+            } else if (abilityStates[abilityStateIndex].wasReleased() // for abilities more than one type
+                    && abilityCooldown[abilityStateIndex] <= 0
+                    && isAbility) {
+                switch (ability[abilityStateIndex]) {
+                    case "reservoirs_armor_mod": {
+                        if (abilityStates[abilityStateIndex].heldTicks() < 8) {
+                            PacketDistributor.sendToServer(
+                                    new CreateReservoirPacket(
+                                            player.getPersistentData().getInt("reservoir_type"),
+                                            BASIC_RESERVOIRS_DURATION,
+                                            BASIC_RESERVOIRS_RANGE));
+                            abilityCooldown[abilityStateIndex] = RESERVOIRS_COOLDOWN;
+                        }
+                        break;
+                    }
+                }
+            } else if (abilityStates[abilityStateIndex].isHeld()) {// change ability type
+                if (abilityStates[abilityStateIndex].heldTicks() == 8) {
+                    switch (ability[abilityStateIndex]) {
+                        case "reservoirs_armor_mod": {
+                            int oldType = player.getPersistentData().getInt("reservoir_type");
+                            if (oldType >= 2) player.getPersistentData().putInt("reservoir_type", 0);
+                            else player.getPersistentData().putInt("reservoir_type", oldType + 1);
+                            break;
+                        }
+                    }
+                }
             } else if (abilityStates[abilityStateIndex].wasPressed()
                     && abilityCooldown[abilityStateIndex] > 0) {
                 if (isBladeStormEffect) {// execute in advance
@@ -164,16 +191,22 @@ public class ClientInputEvents {
 
     public static final List<String> ABILITIES = List.of(
             "nourish_armor_mod",
-            "blade_storm_armor_mod"
+            "blade_storm_armor_mod",
+            "reservoirs_armor_mod",
+            "pre_shoot_armor_mod"
     );
 
     private static int[] abilityCooldown = {0, 0};
 
     private static final int BASIC_NOURISH_DURATION = 600;
     private static final int BASIC_BLADE_STORM_DURATION = 60;
+    private static final int BASIC_RESERVOIRS_DURATION = 600;
+
+    private static final float BASIC_RESERVOIRS_RANGE = 4.0f;
 
     private static final int NOURISH_COOLDOWN = 900;
     private static final int BLADE_STORM_COOLDOWN = 1200;
+    private static final int RESERVOIRS_COOLDOWN = 10;
 
     private static void update() {
         for (KeyState k : KEY_STATES) {
@@ -206,25 +239,6 @@ public class ClientInputEvents {
         PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
         event.setCanceled(true);
     }
-
-//    @SubscribeEvent
-//    public static void getBladeStormTargets(ClientTickEvent.Post event) {
-//
-//        Minecraft instance = Minecraft.getInstance();
-//        Player player = instance.player;
-//        if (player == null || instance.screen != null) return;
-//        if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
-//
-//        if (instance.options.keyUse.isDown()) {
-//            LivingEntity target = RayUtils.getTargetedLiving(player, MAX_BLADE_STORM_RANGE);
-//
-//            if (target == null || target == player) return;
-//
-//            if (player.distanceTo(target) > MAX_BLADE_STORM_RANGE) return;
-//
-//            PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
-//        }
-//    }
 
     private static KeyState register(KeyMapping key) {
         var k = new KeyState(key);

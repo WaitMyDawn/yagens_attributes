@@ -37,22 +37,6 @@ public class ModContainer implements IModContainer {
     boolean mustEquip = true;
     boolean improved = false;
 
-//    public ModContainer(
-//            int maxMods,
-//            boolean modWheel,
-//            boolean mustEquip,
-//            boolean improved,
-//            ModSlot[] slots,
-//            ComponentRegistry.DefaultAttributeProfile defaultAttrProfile) {
-//        this.maxMods = maxMods;
-//        this.slots = slots;
-//        this.modWheel = modWheel;
-//        this.mustEquip = mustEquip;
-//        this.improved = improved;
-//        this.activeSlots = Arrays.stream(slots).filter(Objects::nonNull).toList().size();
-//        this.defaultAttributeProfile = defaultAttrProfile;
-//    }
-
     @Override
     public boolean equals(Object obj) {
         return obj == this || (obj instanceof ModContainer o &&
@@ -102,30 +86,14 @@ public class ModContainer implements IModContainer {
         this.attributeProfile = profile;
     }
 
-//    public ComponentRegistry.DefaultAttributeProfile defaultAttributeProfile =
-//            new ComponentRegistry.DefaultAttributeProfile(Map.of());
-//
-//    @Override
-//    public ComponentRegistry.DefaultAttributeProfile getDefaultAttributeProfile() {
-//        return defaultAttributeProfile;
-//    }
-//
-//    @Override
-//    public void setDefaultAttributeProfile(ComponentRegistry.DefaultAttributeProfile profile) {
-//        this.defaultAttributeProfile = profile;
-//    }
-
-    //Codec<List<ModData>> MOD_LIST_CODEC = Codec.list(ModData.CODEC);
     public static final Codec<ModSlot> MOD_SLOT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             ResourceLocation.CODEC.fieldOf(MOD_ID).forGetter(data -> data.getMod().getModResource()),
             Codec.INT.fieldOf(SLOT_INDEX).forGetter(ModSlot::index),
             Codec.INT.fieldOf(MOD_LEVEL).forGetter(ModSlot::getLevel)
-            //Codec.BOOL.optionalFieldOf(MOD_LOCKED, false).forGetter(ModSlot::isLocked)
     ).apply(builder, (id, index, lvl) -> ModSlot.of(new ModData(id, lvl), index)));
 
     public static final Codec<IModContainer> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.INT.fieldOf(MAX_SLOTS).forGetter(IModContainer::getMaxModCount),
-            //Codec.BOOL.fieldOf(MOD_WHEEL).forGetter(IModContainer::isModWheel), // change 3
             Codec.BOOL.fieldOf(MUST_EQUIP).forGetter(IModContainer::mustEquip),
             Codec.BOOL.optionalFieldOf(IMPROVED, false).forGetter(IModContainer::isImproved),
             Codec.list(MOD_SLOT_CODEC).fieldOf(MOD_DATA).forGetter(IModContainer::getActiveMods),
@@ -137,17 +105,12 @@ public class ModContainer implements IModContainer {
                     .optionalFieldOf("attributes_profile",
                             new ComponentRegistry.AttributeProfile(Map.of()))
                     .forGetter(IModContainer::getAttributeProfile)
-//            ComponentRegistry.DefaultAttributeProfile.CODEC
-//                    .optionalFieldOf("default_attributes_profile",
-//                            new ComponentRegistry.DefaultAttributeProfile(Map.of()))
-//                    .forGetter(IModContainer::getDefaultAttributeProfile)
     ).apply(builder, (count, equip, improved, mods, damageProfile, attributeProfile) -> {
         var container = new ModContainer(count, equip, improved);
         mods.forEach(slot -> container.slots[slot.index()] = slot);
         container.activeSlots = mods.size();
         container.setDamageProfile(damageProfile);
         container.setAttributeProfile(attributeProfile);
-//        container.setDefaultAttributeProfile(defaultAttributeProfile);
         return container;
     }));
 
@@ -179,11 +142,6 @@ public class ModContainer implements IModContainer {
             buf.writeInt(list.size());
             list.forEach(mod -> AttributeModifier.STREAM_CODEC.encode(buf, mod));
         });
-
-//        var defAttr = container.getDefaultAttributeProfile();
-//        System.out.println("encode getDefaultAttributeProfile .map(): " + defAttr.map());
-//        System.out.println("encode getDefaultAttributeProfile : " + defAttr);
-//        ComponentRegistry.DefaultAttributeProfile.STREAM_CODEC.encode(buf, defAttr);
     }, (buf) -> {
         var count = buf.readInt();
         var wheel = buf.readBoolean();
@@ -217,13 +175,7 @@ public class ModContainer implements IModContainer {
             }
             if (attr != null) attrMap.put(attr, list);
         }
-        //container.attributeProfile = new ComponentRegistry.AttributeProfile(attrMap);
         container.setAttributeProfile(new ComponentRegistry.AttributeProfile(attrMap));
-
-//        ComponentRegistry.DefaultAttributeProfile defAttr = ComponentRegistry.DefaultAttributeProfile.STREAM_CODEC.decode(buf);
-//        container.setDefaultAttributeProfile(defAttr);
-//        System.out.println("Read default attributes .map(): " + defAttr.map());
-//        System.out.println("Read default attributes: " + defAttr);
         return container;
     });
 
@@ -330,12 +282,6 @@ public class ModContainer implements IModContainer {
     }
 
     public class Mutable extends ModContainer implements IModContainerMutable {
-//        private ModSlot[] slots;
-//        private int maxMods = 0;
-//        private int activeSlots = 0;
-//        private boolean modWheel = false;
-//        private boolean mustEquip = true;
-//        private boolean improved = false;
 
         public Mutable(ModContainer modContainer) {
             this.maxMods = modContainer.maxMods;

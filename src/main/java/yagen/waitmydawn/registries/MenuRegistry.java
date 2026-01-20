@@ -10,6 +10,7 @@ import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
 import net.neoforged.neoforge.network.IContainerFactory;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import yagen.waitmydawn.gui.mod_recycle.ModRecycleMenu;
+import yagen.waitmydawn.gui.reservoirs.ReservoirsMenu;
 
 import java.util.function.Supplier;
 
@@ -27,5 +28,6 @@ public class MenuRegistry {
 
     public static final Supplier<MenuType<ModOperationMenu>> MOD_OPERATION_MENU = registerMenuType(ModOperationMenu::new, "mod_operation_menu");
     public static final Supplier<MenuType<ModRecycleMenu>> MOD_RECYCLE_MENU = registerMenuType(ModRecycleMenu::new, "mod_recycle_menu");
+    public static final Supplier<MenuType<ReservoirsMenu>> RESERVOIRS_MENU = registerMenuType(ReservoirsMenu::new, "reservoirs_menu");
 
 }

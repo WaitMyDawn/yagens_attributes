@@ -26,6 +26,9 @@ public class MultishotToolMod extends AbstractMod {
     }
 
     @Override
+    public boolean isReservoir() { return true; }
+
+    @Override
     public ResourceLocation getModResource() {
         return modId;
     }

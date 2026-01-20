@@ -1,7 +1,12 @@
 package yagen.waitmydawn.registries;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import yagen.waitmydawn.YagensAttributes;
 
 import com.mojang.serialization.Codec;
@@ -12,7 +17,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import yagen.waitmydawn.config.ServerConfigs;
 
-import java.util.Objects;
+import java.util.*;
 
 
 public class DataAttachmentRegistry {
@@ -99,6 +104,49 @@ public class DataAttachmentRegistry {
                     () -> AttachmentType.builder(() -> PreShoot.EMPTY)
                             .serialize(PreShoot.CODEC)
                             .copyOnDeath()
+                            .build());
+
+    public record ReservoirBuffs(Map<Holder<MobEffect>, List<ModifierData>> buffMap) {
+
+        public record ModifierData(Holder<Attribute> attribute, ResourceLocation id) {
+            public static final Codec<ModifierData> CODEC = RecordCodecBuilder.create(
+                    instance -> instance.group(
+                    BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute")
+                            .forGetter(ModifierData::attribute),
+                    ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierData::id)
+            ).apply(instance, ModifierData::new));
+        }
+
+        public static final ReservoirBuffs EMPTY = new ReservoirBuffs(Map.of());
+
+        public static final Codec<ReservoirBuffs> CODEC = Codec.unboundedMap(
+                BuiltInRegistries.MOB_EFFECT.holderByNameCodec(),
+                ModifierData.CODEC.listOf()
+        ).xmap(ReservoirBuffs::new, ReservoirBuffs::buffMap);
+
+        public ReservoirBuffs add(Holder<MobEffect> effect, Holder<Attribute> attr, ResourceLocation id) {
+            Map<Holder<MobEffect>, List<ModifierData>> newMap = new HashMap<>(this.buffMap);
+            newMap.computeIfAbsent(effect, k -> new ArrayList<>()).add(new ModifierData(attr, id));
+            return new ReservoirBuffs(newMap);
+        }
+
+        public List<ModifierData> getModifiers(Holder<MobEffect> effect) {
+            return this.buffMap.getOrDefault(effect, List.of());
+        }
+
+        public ReservoirBuffs remove(Holder<MobEffect> effect) {
+            if (!this.buffMap.containsKey(effect)) return this;
+
+            Map<Holder<MobEffect>, List<ModifierData>> newMap = new HashMap<>(this.buffMap);
+            newMap.remove(effect);
+            return new ReservoirBuffs(newMap);
+        }
+    }
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ReservoirBuffs>> RESERVOIR_BUFFS =
+            ATTACHMENT_TYPES.register("reservoir_buffs",
+                    () -> AttachmentType.builder(() -> ReservoirBuffs.EMPTY)
+                            .serialize(ReservoirBuffs.CODEC)
                             .build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>>

@@ -62,6 +62,12 @@ public class ItemRegistry {
             });
     public static final DeferredHolder<Item, Item> ORDIS = ITEMS.register("ordis",
             () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> PUMILUM = ITEMS.register("pumilum",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> GRANDIFLORUM = ITEMS.register("grandiflorum",
+            () -> new Item(new Item.Properties()));
+    public static final DeferredHolder<Item, Item> HYDRANGEA = ITEMS.register("hydrangea",
+            () -> new Item(new Item.Properties()));
 
     public static final DeferredHolder<Item, Item> BLADE = ITEMS.register("blade",
             () -> new Item(new Item.Properties()));

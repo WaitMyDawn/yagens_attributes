@@ -106,5 +106,11 @@ public class NetworkHandler {
                 ExecuteBladeStormPacket.STREAM_CODEC,
                 ExecuteBladeStormPacket::handle
         );
+
+        registrar.playToServer(
+                CreateReservoirPacket.TYPE,
+                CreateReservoirPacket.STREAM_CODEC,
+                CreateReservoirPacket::handle
+        );
     }
 }

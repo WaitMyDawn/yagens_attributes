@@ -2,6 +2,7 @@ package yagen.waitmydawn.gui.mod_operation;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -18,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.neoforge.common.NeoForge;
 import net.minecraft.world.level.Level;
@@ -135,6 +137,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
                     clearRivenRawInfo(itemStack);
                 } else if (mod.getModName().equals("grace_armor_mod")) {
                     clearGraceAbility(itemStack);
+                }else if (mod.getModName().equals("reservoirs_armor_mod")) {
+                    clearReservoirsData(itemStack);
                 }
                 mutable.removeModAtIndex(selectedModIndex);
                 IModContainer.set(itemStack, mutable.toImmutable());
@@ -197,6 +201,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
             copyRivenRawInfo(modStack, itemStack);
         } else if (mod.getModName().equals("grace_armor_mod")) {
             copyGraceAbility(modStack, itemStack);
+        } else if (mod.getModName().equals("reservoirs_armor_mod")) {
+            copyReservoirsData(modStack, itemStack);
         }
         // check homology mod
         else {
@@ -265,7 +271,6 @@ public class ModOperationMenu extends AbstractContainerMenu {
             }
             for (var comp : uniqueInfo) {
                 String key = String.valueOf(comp);  // like translation{key='tooltip.yagens_attributes.slash_addition', args=[50]}
-                System.out.println("TestBuild: UniqueInfo: " + key);
                 Matcher m = p.matcher(key);
                 if (!m.find()) continue;
                 // folk by tooltip(s)
@@ -307,7 +312,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                             val = val / 100 - 1;
                         }
                     }
-                    ;
+
                     if (op == null) continue;
 
                     map.computeIfAbsent(attribute, k -> new ArrayList<>())
@@ -673,6 +678,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
                         copyRivenRawInfo(itemStack, resultStack);
                     } else if (modData.getMod().getModName().equals("grace_armor_mod")) {
                         copyGraceAbility(itemStack, resultStack);
+                    }else if (modData.getMod().getModName().equals("reservoirs_armor_mod")) {
+                        retrieveReservoirsData(itemStack, resultStack);
                     }
                 }
             }
@@ -698,6 +705,53 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
     public Slot getResultSlot() {
         return resultSlot;
+    }
+
+    public static final String NBT_KEY_ON_CHEST = "ReservoirInventory";
+    private static final String NBT_KEY_ON_MOD = "Inventory";
+
+    public static void copyReservoirsData(ItemStack modStack, ItemStack chest) {
+        CustomData modData = modStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag modTag = modData.copyTag();
+
+        if (modTag.contains(NBT_KEY_ON_MOD)) {
+            CompoundTag inventoryTag = modTag.getCompound(NBT_KEY_ON_MOD);
+
+            CustomData.update(DataComponents.CUSTOM_DATA, chest, currentTag -> {
+                currentTag.put(NBT_KEY_ON_CHEST, inventoryTag);
+            });
+        } else {
+            CustomData.update(DataComponents.CUSTOM_DATA, chest, currentTag -> {
+                currentTag.remove(NBT_KEY_ON_CHEST);
+            });
+        }
+    }
+
+    public static void retrieveReservoirsData(ItemStack chest, ItemStack modStack) {
+        CustomData chestData = chest.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag chestTag = chestData.copyTag();
+
+        if (chestTag.contains(NBT_KEY_ON_CHEST)) {
+            CompoundTag inventoryTag = chestTag.getCompound(NBT_KEY_ON_CHEST);
+
+            CustomData.update(DataComponents.CUSTOM_DATA, modStack, currentTag -> {
+                currentTag.put(NBT_KEY_ON_MOD, inventoryTag);
+            });
+
+//            CustomData.update(DataComponents.CUSTOM_DATA, chest, currentTag -> {
+//                currentTag.remove(NBT_KEY_ON_CHEST);
+//            });
+        }
+    }
+
+    public static void clearReservoirsData(ItemStack chest) {
+        CustomData chestData = chest.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+        CompoundTag chestTag = chestData.copyTag();
+        if (chestTag.contains(NBT_KEY_ON_CHEST)) {
+            CustomData.update(DataComponents.CUSTOM_DATA, chest, currentTag -> {
+                currentTag.remove(NBT_KEY_ON_CHEST);
+            });
+        }
     }
 
     private static void copyGraceAbility(ItemStack from, ItemStack to) {

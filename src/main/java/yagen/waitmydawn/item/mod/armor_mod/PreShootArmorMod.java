@@ -19,7 +19,7 @@ public class PreShootArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
-                Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
+                Component.translatable("warframe.yagens_attributes.passive"),
                 Component.translatable("warframe.yagens_attributes.pre_shoot_armor_mod.1"),
                 Component.translatable("warframe.yagens_attributes.pre_shoot_armor_mod.2"),
                 Component.translatable("warframe.yagens_attributes.pre_shoot_armor_mod.3")

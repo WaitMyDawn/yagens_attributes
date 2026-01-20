@@ -27,6 +27,9 @@ public class JumpStrengthArmorMod extends AbstractMod {
     }
 
     @Override
+    public boolean isReservoir() { return true; }
+
+    @Override
     public ResourceLocation getModResource() {
         return modId;
     }

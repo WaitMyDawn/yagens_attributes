@@ -20,12 +20,14 @@ public class CriticalRareToolMod extends AbstractMod {
         );
     }
 
-    //public static final TestGeneralMod INSTANCE = new TestGeneralMod();
-
     public CriticalRareToolMod() {
         super(5, "Cth", ModRarity.RARE);
         this.baseCapacityCost = 4;
     }
+
+
+    @Override
+    public boolean isReservoir() { return true; }
 
     @Override
     public ResourceLocation getModResource() {

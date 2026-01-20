@@ -7,14 +7,12 @@ import yagen.waitmydawn.api.mods.NoneMod;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.gui.mod_operation.ModOperationScreen;
 import yagen.waitmydawn.gui.mod_recycle.ModRecycleScreen;
+import yagen.waitmydawn.gui.reservoirs.ReservoirsScreen;
 import yagen.waitmydawn.particle.*;
 import yagen.waitmydawn.registries.*;
-import yagen.waitmydawn.render.EndoModel;
-import yagen.waitmydawn.render.ModModel;
-import yagen.waitmydawn.render.ModOperationRenderer;
+import yagen.waitmydawn.render.*;
 import yagen.waitmydawn.util.IMinecraftInstanceHelper;
 import yagen.waitmydawn.util.MinecraftInstanceHelper;
-import yagen.waitmydawn.render.BladeEntityRenderer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -42,6 +40,7 @@ public class ClientSetup {
     public static void registerMenuScreen(RegisterMenuScreensEvent event) {
         event.register(MenuRegistry.MOD_OPERATION_MENU.get(), ModOperationScreen::new);
         event.register(MenuRegistry.MOD_RECYCLE_MENU.get(), ModRecycleScreen::new);
+        event.register(MenuRegistry.RESERVOIRS_MENU.get(), ReservoirsScreen::new);
     }
 
     @SubscribeEvent
@@ -57,6 +56,7 @@ public class ClientSetup {
                 }
             };
             EntityRenderers.register(EntityRegistry.BLADE.get(), BladeEntityRenderer::new);
+            EntityRenderers.register(EntityRegistry.RESERVOIR.get(), ReservoirRenderer::new);
         });
         e.enqueueWork(ClientSetup::init);
     }

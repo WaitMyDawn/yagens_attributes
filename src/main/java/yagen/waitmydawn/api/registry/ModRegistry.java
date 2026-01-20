@@ -21,9 +21,7 @@ public class ModRegistry {
     public static final ResourceKey<Registry<AbstractMod>> MOD_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mods"));
     private static final DeferredRegister<AbstractMod> MODS = DeferredRegister.create(MOD_REGISTRY_KEY, YagensAttributes.MODID);
 
-    //public static final Supplier<IForgeRegistry<AbstractMod>> REGISTRY = MODS.makeRegistry(() -> new RegistryBuilder<AbstractMod>().disableSaving().disableOverrides());
     public static final Registry<AbstractMod> REGISTRY = new RegistryBuilder<>(MOD_REGISTRY_KEY).create();
-    //    private static final Map<ItemType, List<AbstractMod>> SCHOOLS_TO_MODS = new HashMap<>();
 
     private static final NoneMod noneMod = new NoneMod();
 
@@ -135,4 +133,5 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> COLLABORATIVE_PROFICIENCY_ARMOR_MOD = registerMod(new CollaborativeProficiencyArmorMod());
     public static final Supplier<AbstractMod> BLADE_STORM_ARMOR_MOD = registerMod(new BladeStormArmorMod());
     public static final Supplier<AbstractMod> PRE_SHOOT_TOOL_MOD = registerMod(new PreShootArmorMod());
+    public static final Supplier<AbstractMod> RESERVOIRS_TOOL_MOD = registerMod(new ReservoirsArmorMod());
 }

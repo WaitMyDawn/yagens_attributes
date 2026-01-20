@@ -45,6 +45,12 @@ public class MobEffectRegistry {
             "nourish", () -> new NourishEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> BLADE_STORM = MOB_EFFECT_DEFERRED_REGISTER.register(
             "blade_storm", () -> new NourishEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> PUMILUM = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "pumilum", () -> new PumilumEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> GRANDIFLORUM = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "grandiflorum", () -> new GrandiflorumEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> HYDRANGEA = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "hydrangea", () -> new HydrangeaEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 
     public static final DeferredHolder<MobEffect, MobEffect> MULTISHOT_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
             "multishot_galvanized", () -> new MultishotGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));

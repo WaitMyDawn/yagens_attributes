@@ -1,9 +1,12 @@
 package yagen.waitmydawn.api.events;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -13,7 +16,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -22,6 +24,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
@@ -34,6 +37,8 @@ import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
+
+import java.util.List;
 
 import static yagen.waitmydawn.api.events.BowShootEvent.isHeadShot;
 
@@ -232,6 +237,32 @@ public class ModBonusEvent {
                 return;
             }
         }
+    }
+
+    private static void cleanUpReservoirBuffs(LivingEntity entity, Holder<MobEffect> targetEffect) {
+        if (entity.level().isClientSide || !(entity instanceof Player player)) return;
+
+        DataAttachmentRegistry.ReservoirBuffs data = player.getData(DataAttachmentRegistry.RESERVOIR_BUFFS);
+        List<DataAttachmentRegistry.ReservoirBuffs.ModifierData> modifiersToRemove = data.getModifiers(targetEffect);
+        if (!modifiersToRemove.isEmpty()) {
+            for (DataAttachmentRegistry.ReservoirBuffs.ModifierData modData : modifiersToRemove) {
+                AttributeInstance attr = player.getAttribute(modData.attribute());
+                if (attr != null) {
+                    attr.removeModifier(modData.id());
+                }
+            }
+            player.setData(DataAttachmentRegistry.RESERVOIR_BUFFS, data.remove(targetEffect));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEffectExpire(MobEffectEvent.Expired event) {
+        cleanUpReservoirBuffs(event.getEntity(), event.getEffectInstance().getEffect());
+    }
+
+    @SubscribeEvent
+    public static void onEffectRemove(MobEffectEvent.Remove event) {
+        cleanUpReservoirBuffs(event.getEntity(), event.getEffectInstance().getEffect());
     }
 
     private static void removeGraceBonus(Player player,ResourceLocation MODIFIER_ID) {
