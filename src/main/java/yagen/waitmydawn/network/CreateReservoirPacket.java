@@ -18,14 +18,16 @@ import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModData;
 import yagen.waitmydawn.capabilities.ReservoirsInventoryHandler;
 import yagen.waitmydawn.entity.ReservoirEntity;
+import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.EntityRegistry;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public record CreateReservoirPacket(int index, int ticks, float range) implements CustomPacketPayload {
-
+public record CreateReservoirPacket(int index) implements CustomPacketPayload {
+    private static final int DURATION = 600;
+    private static final float RANGE = 4.0f;
     public static final Type<CreateReservoirPacket> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "create_reservoir"));
 
@@ -33,10 +35,8 @@ public record CreateReservoirPacket(int index, int ticks, float range) implement
             StreamCodec.of(
                     (buf, pkt) -> {
                         buf.writeVarInt(pkt.index);
-                        buf.writeVarInt(pkt.ticks);
-                        buf.writeFloat(pkt.range);
                     },
-                    buf -> new CreateReservoirPacket(buf.readVarInt(), buf.readVarInt(), buf.readFloat())
+                    buf -> new CreateReservoirPacket(buf.readVarInt())
             );
 
     public static void handle(CreateReservoirPacket pkt, IPayloadContext ctx) {
@@ -44,17 +44,29 @@ public record CreateReservoirPacket(int index, int ticks, float range) implement
             ServerPlayer player = (ServerPlayer) ctx.player();
             Level level = player.level();
             ReservoirEntity reservoir = new ReservoirEntity(EntityRegistry.RESERVOIR.get(), level);
-            ItemStack itemStack = ReservoirsInventoryHandler.getReservoirAtIndex(player.getItemBySlot(EquipmentSlot.CHEST), pkt.index, player);
-
+            ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+            ItemStack itemStack = ReservoirsInventoryHandler.getReservoirAtIndex(chest, pkt.index, player);
             if (itemStack.isEmpty() || !IModContainer.isModContainer(itemStack)) return;
+            boolean isReservoirsAttributes = false;
+            ComponentRegistry.ReservoirsAttributes reservoirsAttributes = chest.get(
+                    ComponentRegistry.RESERVOIRS_ATTRIBUTES.get()
+            );
+            if (reservoirsAttributes != null) isReservoirsAttributes = true;
+            double valueFactor = 1.0;
+            double durationFactor = 1.0;
+            double rangeFactor = 1.0;
             if (IModContainer.isModContainer(itemStack)) {
                 String typeId;
                 if (pkt.index == 0) {
                     typeId = "grandiflorum";
+                    if (isReservoirsAttributes)
+                        durationFactor = durationFactor + 0.06 * reservoirsAttributes.duration();
                 } else if (pkt.index == 1) {
                     typeId = "pumilum";
+                    if (isReservoirsAttributes) valueFactor = valueFactor + 0.06 * reservoirsAttributes.strength();
                 } else {
                     typeId = "hydrangea";
+                    if (isReservoirsAttributes) rangeFactor = rangeFactor + 0.20 * reservoirsAttributes.range();
                 }
                 Pattern p = Pattern.compile(
                         "'[^']*\\.([^.]+)_([^']+)'.*args=\\[([0-9.]+)]");
@@ -102,7 +114,7 @@ public record CreateReservoirPacket(int index, int ticks, float range) implement
                             }
                         }
                         if (op == null) continue;
-
+                        val = (float) (val * valueFactor);
                         ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(
                                 YagensAttributes.MODID,
                                 typeId + "_" + m.group(1)
@@ -114,9 +126,9 @@ public record CreateReservoirPacket(int index, int ticks, float range) implement
             }
             reservoir.setPos(player.getX(), player.getY() + 0.25, player.getZ());
             reservoir.setReservoirType(pkt.index);
-            reservoir.setRange(pkt.range);
-            reservoir.setLifespan(pkt.ticks);
-            reservoir.setDuration(pkt.ticks);
+            reservoir.setRange((float) (RANGE * rangeFactor));
+            reservoir.setLifespan((int) (DURATION * durationFactor));
+            reservoir.setDuration((int) (DURATION * durationFactor));
 
             level.addFreshEntity(reservoir);
         });

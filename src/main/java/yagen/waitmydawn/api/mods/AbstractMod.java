@@ -101,6 +101,10 @@ public abstract class AbstractMod {
 
     public boolean isReservoir() { return false;}
 
+    public boolean isActive() { return false;}
+
+    public double energyCost() { return 0; }
+
     @Override
     public int hashCode() {
         return this.getModResource().hashCode();

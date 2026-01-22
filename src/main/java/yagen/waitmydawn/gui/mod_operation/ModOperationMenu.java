@@ -139,6 +139,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                     clearGraceAbility(itemStack);
                 }else if (mod.getModName().equals("reservoirs_armor_mod")) {
                     clearReservoirsData(itemStack);
+                    clearReservoirsAttributes(itemStack);
                 }
                 mutable.removeModAtIndex(selectedModIndex);
                 IModContainer.set(itemStack, mutable.toImmutable());
@@ -203,6 +204,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
             copyGraceAbility(modStack, itemStack);
         } else if (mod.getModName().equals("reservoirs_armor_mod")) {
             copyReservoirsData(modStack, itemStack);
+            copyReservoirsAttributes(modStack, itemStack);
         }
         // check homology mod
         else {
@@ -680,6 +682,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                         copyGraceAbility(itemStack, resultStack);
                     }else if (modData.getMod().getModName().equals("reservoirs_armor_mod")) {
                         retrieveReservoirsData(itemStack, resultStack);
+                        copyReservoirsAttributes(itemStack, resultStack);
                     }
                 }
             }
@@ -760,8 +763,21 @@ public class ModOperationMenu extends AbstractContainerMenu {
             GraceArmorMod.setGraceAbility(attribute, to);
     }
 
+
     private static void clearGraceAbility(ItemStack itemStack) {
         itemStack.remove(ComponentRegistry.GRACE_ABILITY.get());
+    }
+
+    private static void copyReservoirsAttributes(ItemStack from, ItemStack to) {
+        ComponentRegistry.ReservoirsAttributes reservoirsAttributes = from.get(
+                ComponentRegistry.RESERVOIRS_ATTRIBUTES.get()
+        );
+        if (reservoirsAttributes != null)
+            to.set(ComponentRegistry.RESERVOIRS_ATTRIBUTES.get(), reservoirsAttributes);
+    }
+
+    private static void clearReservoirsAttributes(ItemStack itemStack) {
+        itemStack.remove(ComponentRegistry.RESERVOIRS_ATTRIBUTES.get());
     }
 
     private static void copyRivenRawInfo(ItemStack from, ItemStack to) {

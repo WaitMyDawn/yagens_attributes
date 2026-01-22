@@ -32,6 +32,14 @@ public class BladeStormArmorMod extends AbstractMod {
     }
 
     @Override
+    public boolean isActive() { return true;}
+
+    @Override
+    public double energyCost() {
+        return 100.0;
+    }
+
+    @Override
     public ResourceLocation getModResource() {
         return modId;
     }

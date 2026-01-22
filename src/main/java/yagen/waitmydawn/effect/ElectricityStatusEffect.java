@@ -4,19 +4,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.util.DamageCompat;
-import yagen.waitmydawn.network.DamageNumberPacket;
 import yagen.waitmydawn.network.ElectricityPacket;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 
 import java.util.*;
-
-import static yagen.waitmydawn.api.util.DamageCompat.getDamageAfterAbsorbPure;
 
 public class ElectricityStatusEffect extends MobEffect {
     public ElectricityStatusEffect(MobEffectCategory mobEffectCategory, int color) {

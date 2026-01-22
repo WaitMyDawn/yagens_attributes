@@ -29,6 +29,14 @@ public class KeyMappings {
             new KeyMapping(getResourceName("ability_2"),
                     KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.KEY_N, KEY_BIND_GENERAL_CATEGORY);
 
+    public static final KeyMapping ABILITY_3_KEYMAP =
+            new KeyMapping(getResourceName("ability_3"),
+                    KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BIND_GENERAL_CATEGORY);
+
+    public static final KeyMapping ABILITY_4_KEYMAP =
+            new KeyMapping(getResourceName("ability_4"),
+                    KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, InputConstants.UNKNOWN.getValue(), KEY_BIND_GENERAL_CATEGORY);
+
     private static String getResourceName(String name) {
         return String.format("key.yagens_attributes.%s", name);
     }
@@ -39,6 +47,8 @@ public class KeyMappings {
         event.register(AIR_BRAKE);
         event.register(ABILITY_1_KEYMAP);
         event.register(ABILITY_2_KEYMAP);
+        event.register(ABILITY_3_KEYMAP);
+        event.register(ABILITY_4_KEYMAP);
     }
 
 }

@@ -1,7 +1,6 @@
 package yagen.waitmydawn.item;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -35,7 +34,7 @@ public class Mod extends Item implements IMod {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         InteractionResultHolder<ItemStack> result = InteractionResultHolder.pass(player.getItemInHand(usedHand));
-        if(usedHand != InteractionHand.MAIN_HAND) return result;
+        if (usedHand != InteractionHand.MAIN_HAND) return result;
         ItemStack stack = player.getItemInHand(usedHand);
         AbstractMod mod = getModSlotFromStack(stack).getMod();
         if (mod != null)

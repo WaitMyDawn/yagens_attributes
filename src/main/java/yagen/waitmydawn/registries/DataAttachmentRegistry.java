@@ -111,10 +111,10 @@ public class DataAttachmentRegistry {
         public record ModifierData(Holder<Attribute> attribute, ResourceLocation id) {
             public static final Codec<ModifierData> CODEC = RecordCodecBuilder.create(
                     instance -> instance.group(
-                    BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute")
-                            .forGetter(ModifierData::attribute),
-                    ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierData::id)
-            ).apply(instance, ModifierData::new));
+                            BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute")
+                                    .forGetter(ModifierData::attribute),
+                            ResourceLocation.CODEC.fieldOf("id").forGetter(ModifierData::id)
+                    ).apply(instance, ModifierData::new));
         }
 
         public static final ReservoirBuffs EMPTY = new ReservoirBuffs(Map.of());
@@ -126,7 +126,9 @@ public class DataAttachmentRegistry {
 
         public ReservoirBuffs add(Holder<MobEffect> effect, Holder<Attribute> attr, ResourceLocation id) {
             Map<Holder<MobEffect>, List<ModifierData>> newMap = new HashMap<>(this.buffMap);
-            newMap.computeIfAbsent(effect, k -> new ArrayList<>()).add(new ModifierData(attr, id));
+            List<ModifierData> newList = new ArrayList<>(newMap.getOrDefault(effect, List.of()));
+            newList.add(new ModifierData(attr, id));
+            newMap.put(effect, newList);
             return new ReservoirBuffs(newMap);
         }
 
@@ -161,5 +163,24 @@ public class DataAttachmentRegistry {
 
     public static void setShouldHeal(Entity entity, boolean value) {
         entity.setData(SHOULD_HEAL.get(), value);
+    }
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>>
+            ENERGY = ATTACHMENT_TYPES.register("energy",
+            () -> AttachmentType.builder(() -> 25.0)
+                    .serialize(Codec.DOUBLE)
+//                    .copyOnDeath()
+                    .build());
+
+    public static double getEnergy(Entity entity) {
+        return entity.getData(ENERGY.get());
+    }
+
+    public static void setEnergy(Entity entity, double value) {
+        entity.setData(ENERGY.get(), value);
+    }
+
+    public static void reduceEnergy(Entity entity, double value) {
+        entity.setData(ENERGY.get(), Math.max(getEnergy(entity) + value, 0.0));
     }
 }

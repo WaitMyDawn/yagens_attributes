@@ -108,6 +108,16 @@ public class YAttributes {
                     () -> new RangedAttribute("attribute.yagens_attributes.air_brake", 40.0D, 0.0D, 2048.0D)
                             .setSyncable(true));
 
+    public static final DeferredHolder<Attribute, Attribute> MAX_ENERGY =
+            ATTRIBUTES.register("max_energy",
+                    () -> new RangedAttribute("attribute.yagens_attributes.max_energy", 100.0D, 0.0D, 10240.0D)
+                            .setSyncable(true));
+
+    public static final DeferredHolder<Attribute, Attribute> ENERGY_REGEN =
+            ATTRIBUTES.register("energy_regen",
+                    () -> new RangedAttribute("attribute.yagens_attributes.energy_regen", 1.0D, 0.0D, 1024.0D)
+                            .setSyncable(true));
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(

@@ -31,7 +31,6 @@ public class ModOperationTableEntity extends BlockEntity {
 
     public ModOperationTableEntity(BlockPos pos, BlockState state) {
         super(BlockRegistry.MOD_OPERATION_TABLE_ENTITY.get(), pos, state);
-        System.out.println("BlockEntity created at " + pos);
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, ModOperationTableEntity entity) {

@@ -70,6 +70,10 @@ public class ReservoirsMenu extends AbstractContainerMenu {
         this.addSlot(slot);
     }
 
+    public ItemStack getItemStack() {
+        return this.slots.get(lockedSlotIndex+30).getItem();
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemStack = ItemStack.EMPTY;

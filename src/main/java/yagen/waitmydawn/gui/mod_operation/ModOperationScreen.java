@@ -630,8 +630,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             var modContainer = IModContainer.get(menu.getModSlot().getItem());
             var modSlot = modContainer.getModAtIndex(0);
 
-//            AbstractMod modSlotMod = modSlot.getMod();
-//            System.out.println("TestOperation: modName " + modSlotMod.getModName());
             boolean isHomo = modSlot.getMod().getModName().contains("general_mod");
             switch (ModCompat.validLocation(menu.getItemSlot().getItem().getItem())) {
                 case 1 -> {

@@ -5,18 +5,14 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.api.attribute.DamageBonusTable;
 import yagen.waitmydawn.api.attribute.DamageType;
 import yagen.waitmydawn.api.attribute.HealthMaterialType;
 import yagen.waitmydawn.api.attribute.HealthMaterialUtils;
-import yagen.waitmydawn.config.ClientConfigs;
-import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.util.RayUtils;
 
-import java.util.Formattable;
 import java.util.HashMap;
 import java.util.Map;
 

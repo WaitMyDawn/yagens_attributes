@@ -10,6 +10,10 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> COMBO_HUD_Y;
     public static final ModConfigSpec.ConfigValue<Integer> MISSION_HUD_X;
     public static final ModConfigSpec.ConfigValue<Integer> MISSION_HUD_Y;
+    public static final ModConfigSpec.ConfigValue<Integer> ENERGY_BAR_X;
+    public static final ModConfigSpec.ConfigValue<Integer> ENERGY_BAR_Y;
+    public static final ModConfigSpec.ConfigValue<Integer> RESERVOIRS_X;
+    public static final ModConfigSpec.ConfigValue<Integer> RESERVOIRS_Y;
 
     public static final ModConfigSpec.ConfigValue<Boolean> SHOW_MISSION_POSITION;
     public static final ModConfigSpec.ConfigValue<Boolean> SHOW_MISSION_SUMMON;
@@ -72,6 +76,22 @@ public class ClientConfigs {
         SHOW_MISSION_POSITION = BUILDER.define("Show_Mission_Position", false);
         BUILDER.comment("Whether to show Summon Count in MissionOverlay (default = true)");
         SHOW_MISSION_SUMMON = BUILDER.define("Show_Summon_Count", true);
+        BUILDER.pop();
+
+        BUILDER.push("EnergyBarHUD");
+        BUILDER.comment("You can change this by an operation screen in game");
+        BUILDER.comment("X position of energy bar (-1 = default)");
+        ENERGY_BAR_X = BUILDER.define("X", -1);
+        BUILDER.comment("Y position of energy bar (-1 = default)");
+        ENERGY_BAR_Y = BUILDER.define("Y", -1);
+        BUILDER.pop();
+
+        BUILDER.push("ReservoirsHUD");
+        BUILDER.comment("You can change this by an operation screen in game");
+        BUILDER.comment("X position of energy bar (-1 = default)");
+        RESERVOIRS_X = BUILDER.define("X", -1);
+        BUILDER.comment("Y position of energy bar (-1 = default)");
+        RESERVOIRS_Y = BUILDER.define("Y", -1);
         BUILDER.pop();
 
         BUILDER.push("Particle");

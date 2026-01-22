@@ -16,9 +16,37 @@ public class ClientConfigsScreen extends Screen {
     private EditBox damageNumberInput;
     private EditBox missionPositionChange;
     private EditBox missionSummonChange;
+    private int currentPage = 0;
+    private final int TOTAL_PAGES = 2;
 
     @Override
     protected void init() {
+        if (this.currentPage == 0) {
+            initPage0();
+        } else if (this.currentPage == 1) {
+            initPage1();
+        }
+        initNavigationButtons();
+    }
+
+    private void initPage1(){
+        this.addRenderableWidget(Button.builder(Component.translatable("ui.yagens_attributes.open_info")
+                        .append(Component.translatable("ui.yagens_attributes.reservoirs_position_title")), b -> {
+                    assert this.minecraft != null;
+                    this.minecraft.setScreen(new ReservoirsPositionScreen(this));
+                })
+                .bounds((this.width - 200) / 2, 30, 200, 20)
+                .build());
+    }
+
+    private void initPage0() {
+        this.addRenderableWidget(Button.builder(Component.translatable("ui.yagens_attributes.open_info")
+                        .append(Component.translatable("ui.yagens_attributes.energy_bar_position_title")), b -> {
+                    assert this.minecraft != null;
+                    this.minecraft.setScreen(new EnergyBarPositionScreen(this));
+                })
+                .bounds((this.width - 200) / 2, 30, 200, 20)
+                .build());
         this.addRenderableWidget(Button.builder(Component.translatable("ui.yagens_attributes.open_info")
                         .append(Component.translatable("ui.yagens_attributes.combo_position_title")), b -> {
                     assert this.minecraft != null;
@@ -76,12 +104,40 @@ public class ClientConfigsScreen extends Screen {
         this.addRenderableWidget(missionSummonChange);
     }
 
+    private void initNavigationButtons() {
+        int buttonWidth = 80;
+        int buttonHeight = 20;
+        int bottomY = this.height - 30;
+
+        Button prevBtn = Button.builder(Component.literal("<<"), b -> {
+                    this.currentPage--;
+                    this.rebuildWidgets();
+                })
+                .bounds(this.width / 2 - 100, bottomY, buttonWidth, buttonHeight)
+                .build();
+        prevBtn.active = currentPage > 0;
+        this.addRenderableWidget(prevBtn);
+
+        this.addRenderableWidget(Button.builder(Component.literal((currentPage + 1) + " / " + TOTAL_PAGES), b -> {})
+                .bounds(this.width / 2 - 10, bottomY, 20, buttonHeight)
+                .build()).active = false;
+
+        Button nextBtn = Button.builder(Component.literal(">>"), b -> {
+                    this.currentPage++;
+                    this.rebuildWidgets();
+                })
+                .bounds(this.width / 2 + 20, bottomY, buttonWidth, buttonHeight)
+                .build();
+        nextBtn.active = currentPage < TOTAL_PAGES - 1;
+        this.addRenderableWidget(nextBtn);
+    }
+
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
             double damageNumberValue = Float.parseFloat(damageNumberInput.getValue());
             boolean showMissionPosition = Boolean.parseBoolean(missionPositionChange.getValue());
-            boolean showMissionSummon= Boolean.parseBoolean(missionSummonChange.getValue());
+            boolean showMissionSummon = Boolean.parseBoolean(missionSummonChange.getValue());
             if (damageNumberValue <= 0) damageNumberValue = ClientConfigs.DAMAGE_NUMBER_ENLARGE.getDefault();
             ClientConfigs.DAMAGE_NUMBER_ENLARGE.set(damageNumberValue);
             ClientConfigs.SHOW_MISSION_POSITION.set(showMissionPosition);

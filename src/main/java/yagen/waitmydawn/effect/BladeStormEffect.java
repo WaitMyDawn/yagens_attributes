@@ -8,10 +8,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
-import yagen.waitmydawn.api.attribute.YAttributes;
-
-import java.util.Map;
-import java.util.WeakHashMap;
 
 public class BladeStormEffect extends MobEffect {
     public BladeStormEffect(MobEffectCategory mobEffectCategory, int color) {

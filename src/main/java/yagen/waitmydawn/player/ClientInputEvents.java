@@ -1,6 +1,5 @@
 package yagen.waitmydawn.player;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,11 +20,11 @@ import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.gui.ClientConfigsScreen;
 import yagen.waitmydawn.network.*;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 import yagen.waitmydawn.util.RayUtils;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientInputEvents {
@@ -35,10 +34,14 @@ public class ClientInputEvents {
     private static final KeyState AIR_BRAKE_STATE = register(KeyMappings.AIR_BRAKE);
     private static final KeyState ABILITY_1_STATE = register(KeyMappings.ABILITY_1_KEYMAP);
     private static final KeyState ABILITY_2_STATE = register(KeyMappings.ABILITY_2_KEYMAP);
+    private static final KeyState ABILITY_3_STATE = register(KeyMappings.ABILITY_3_KEYMAP);
+    private static final KeyState ABILITY_4_STATE = register(KeyMappings.ABILITY_4_KEYMAP);
 
     private static final KeyState[] abilityStates = {
             ABILITY_1_STATE,
-            ABILITY_2_STATE
+            ABILITY_2_STATE,
+            ABILITY_3_STATE,
+            ABILITY_4_STATE
     };
 
     public static boolean isUseKeyDown;
@@ -90,7 +93,8 @@ public class ClientInputEvents {
         }
 
         boolean isAbility = false;
-        String[] ability = new String[2];
+        String[] ability = new String[4];
+        double[] abilityCost = new double[4];
         int abilityIndex = 0;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -100,18 +104,17 @@ public class ClientInputEvents {
                 if (abilityIndex >= ability.length) {
                     break;
                 }
-
-                String newAbility = whichAbility(slot.getMod().getModName());
-                if (newAbility != null) {
-                    ability[abilityIndex] = newAbility;
-                    abilityIndex++;
-                    isAbility = true;
+                if (slot.getMod().isActive()) {
+                        ability[abilityIndex] = slot.getMod().getModName();
+                        abilityCost[abilityIndex] = slot.getMod().energyCost();
+                        abilityIndex++;
+                        isAbility = true;
                 }
             }
         }
 
         abilityIndex = Math.min(ability.length, abilityIndex);
-
+        double energy = DataAttachmentRegistry.getEnergy(player);
         for (int abilityStateIndex = 0;
              abilityStateIndex < abilityIndex;
              abilityStateIndex++) {
@@ -121,39 +124,37 @@ public class ClientInputEvents {
             if (abilityStates[abilityStateIndex].wasPressed() && !ModCompat.isValidWarframeAbility(chest)) {
                 player.sendSystemMessage(Component.translatable("overlay.yagens_attributes.not_valid_ability"));
             } else if (abilityStates[abilityStateIndex].wasPressed()
-                    && abilityCooldown[abilityStateIndex] <= 0 && isAbility) {
+                    && abilityCost[abilityStateIndex] <= energy && isAbility) {
                 switch (ability[abilityStateIndex]) {
                     case "nourish_armor_mod": {
-                        PacketDistributor.sendToServer(new AddNourishEffectPacket(BASIC_NOURISH_DURATION));
-                        abilityCooldown[abilityStateIndex] = NOURISH_COOLDOWN;
+                        PacketDistributor.sendToServer(new AddNourishEffectPacket());
+                        PacketDistributor.sendToServer(new EnergyPacket(-(abilityCost[abilityStateIndex])));
                         break;
                     }
                     case "blade_storm_armor_mod": {
                         if (!isBladeStormEffect) {
-                            PacketDistributor.sendToServer(new AddBladeStormEffectPacket(BASIC_BLADE_STORM_DURATION));
-                            abilityCooldown[abilityStateIndex] = BLADE_STORM_COOLDOWN;
+                            PacketDistributor.sendToServer(new AddBladeStormEffectPacket());
+                            PacketDistributor.sendToServer(new EnergyPacket(-(abilityCost[abilityStateIndex])));
                         }
                         break;
                     }
                 }
             } else if (abilityStates[abilityStateIndex].wasReleased() // for abilities more than one type
-                    && abilityCooldown[abilityStateIndex] <= 0
+                    && abilityCost[abilityStateIndex] <= energy
                     && isAbility) {
                 switch (ability[abilityStateIndex]) {
                     case "reservoirs_armor_mod": {
-                        if (abilityStates[abilityStateIndex].heldTicks() < 8) {
+                        if (abilityStates[abilityStateIndex].heldTicks() < 4) {
                             PacketDistributor.sendToServer(
                                     new CreateReservoirPacket(
-                                            player.getPersistentData().getInt("reservoir_type"),
-                                            BASIC_RESERVOIRS_DURATION,
-                                            BASIC_RESERVOIRS_RANGE));
-                            abilityCooldown[abilityStateIndex] = RESERVOIRS_COOLDOWN;
+                                            player.getPersistentData().getInt("reservoir_type")));
+                            PacketDistributor.sendToServer(new EnergyPacket(-(abilityCost[abilityStateIndex])));
                         }
                         break;
                     }
                 }
             } else if (abilityStates[abilityStateIndex].isHeld()) {// change ability type
-                if (abilityStates[abilityStateIndex].heldTicks() == 8) {
+                if (abilityStates[abilityStateIndex].heldTicks() == 4) {
                     switch (ability[abilityStateIndex]) {
                         case "reservoirs_armor_mod": {
                             int oldType = player.getPersistentData().getInt("reservoir_type");
@@ -163,16 +164,21 @@ public class ClientInputEvents {
                         }
                     }
                 }
-            } else if (abilityStates[abilityStateIndex].wasPressed()
-                    && abilityCooldown[abilityStateIndex] > 0) {
-                if (isBladeStormEffect) {// execute in advance
-                    PacketDistributor.sendToServer(ExecuteBladeStormPacket.INSTANCE);
+            } else if (abilityStates[abilityStateIndex].wasPressed()) {
+                if (abilityCost[abilityStateIndex] > energy) {
+                    if (isBladeStormEffect) {// execute in advance
+                        PacketDistributor.sendToServer(ExecuteBladeStormPacket.INSTANCE);
+                    } else {
+                        player.sendSystemMessage(
+                                Component.translatable("overlay.yagens_attributes.ability_cost",
+                                        abilityStateIndex + 1,
+                                        Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
+                                        abilityCost[abilityStateIndex]));
+                    }
                 } else {
-                    player.sendSystemMessage(
-                            Component.translatable("overlay.yagens_attributes.ability_cooldown",
-                                    abilityStateIndex + 1,
-                                    Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
-                                    abilityCooldown[abilityStateIndex] / 20));
+                    if (isBladeStormEffect) {// execute in advance
+                        PacketDistributor.sendToServer(ExecuteBladeStormPacket.INSTANCE);
+                    }
                 }
             }
         }
@@ -180,44 +186,10 @@ public class ClientInputEvents {
         update();
     }
 
-    public static String whichAbility(String modName) {
-        for (String ability : ABILITIES) {
-            if (ability.equals(modName)) {
-                return ability;
-            }
-        }
-        return null;
-    }
-
-    public static final List<String> ABILITIES = List.of(
-            "nourish_armor_mod",
-            "blade_storm_armor_mod",
-            "reservoirs_armor_mod",
-            "pre_shoot_armor_mod"
-    );
-
-    private static int[] abilityCooldown = {0, 0};
-
-    private static final int BASIC_NOURISH_DURATION = 600;
-    private static final int BASIC_BLADE_STORM_DURATION = 60;
-    private static final int BASIC_RESERVOIRS_DURATION = 600;
-
-    private static final float BASIC_RESERVOIRS_RANGE = 4.0f;
-
-    private static final int NOURISH_COOLDOWN = 900;
-    private static final int BLADE_STORM_COOLDOWN = 1200;
-    private static final int RESERVOIRS_COOLDOWN = 10;
-
     private static void update() {
         for (KeyState k : KEY_STATES) {
             k.update();
         }
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event) {
-        if (abilityCooldown[0] > 0) abilityCooldown[0]--;
-        if (abilityCooldown[1] > 0) abilityCooldown[1]--;
     }
 
     private static final int MAX_BLADE_STORM_RANGE = 20;

@@ -257,11 +257,13 @@ public class ModBonusEvent {
 
     @SubscribeEvent
     public static void onEffectExpire(MobEffectEvent.Expired event) {
+        if (event.getEffectInstance() == null) return;
         cleanUpReservoirBuffs(event.getEntity(), event.getEffectInstance().getEffect());
     }
 
     @SubscribeEvent
     public static void onEffectRemove(MobEffectEvent.Remove event) {
+        if (event.getEffectInstance() == null) return;
         cleanUpReservoirBuffs(event.getEntity(), event.getEffectInstance().getEffect());
     }
 

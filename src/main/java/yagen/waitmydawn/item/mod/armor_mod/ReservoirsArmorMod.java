@@ -31,7 +31,7 @@ public class ReservoirsArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
-                Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(),ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
+                Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
                 Component.translatable("warframe.yagens_attributes.reservoirs_armor_mod.1"),
                 Component.translatable("warframe.yagens_attributes.reservoirs_armor_mod.2"),
                 Component.translatable("warframe.yagens_attributes.reservoirs_armor_mod.3")
@@ -48,7 +48,13 @@ public class ReservoirsArmorMod extends AbstractMod {
         if (!level.isClientSide) {
             var cap = stack.getCapability(Capabilities.ItemHandler.ITEM);
 
-            
+            if (stack.get(ComponentRegistry.RESERVOIRS_ATTRIBUTES.get()) == null) {
+                stack.set(ComponentRegistry.RESERVOIRS_ATTRIBUTES.get(), new ComponentRegistry.ReservoirsAttributes(
+                        player.getRandom().nextDouble() * 5.0,
+                        player.getRandom().nextDouble() * 5.0,
+                        player.getRandom().nextDouble() * 5.0
+                ));
+            }
 
             if (cap instanceof ItemStackHandler itemHandler) {
 
@@ -62,6 +68,14 @@ public class ReservoirsArmorMod extends AbstractMod {
             }
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+    }
+
+    @Override
+    public boolean isActive() { return true;}
+
+    @Override
+    public double energyCost() {
+        return 25.0;
     }
 
     @Override

@@ -33,6 +33,14 @@ public class NourishArmorMod extends AbstractMod {
     }
 
     @Override
+    public boolean isActive() { return true;}
+
+    @Override
+    public double energyCost() {
+        return 75.0;
+    }
+
+    @Override
     public ResourceLocation getModResource() {
         return modId;
     }

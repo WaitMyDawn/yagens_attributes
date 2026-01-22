@@ -1,6 +1,5 @@
 package yagen.waitmydawn.util;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -68,7 +67,6 @@ public class TooltipsUtils {
             uniqueInfo.forEach((line) -> lines.add(Component.literal(" ").append(line.withStyle(line.getStyle().applyTo(getStyleFor(player, mod))))));
 
             lines.add(Component.empty());
-            //lines.add(whenInItem);
 
             return lines;
         }
@@ -76,7 +74,6 @@ public class TooltipsUtils {
     }
 
     private static final Style INFO_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
-    //private static final Style OBFUSCATED_STYLE = AbstractMod.ELDRITCH_OBFUSCATED_STYLE.applyTo(INFO_STYLE);
 
     public static List<FormattedCharSequence> createModDescriptionTooltip(AbstractMod mod, Font font) {
         Player player = MinecraftInstanceHelper.instance.player();
@@ -91,7 +88,6 @@ public class TooltipsUtils {
     }
 
     public static Style getStyleFor(Player player, AbstractMod mod) {
-        //return mod.obfuscateStats(player) ? OBFUSCATED_STYLE : INFO_STYLE;
         return INFO_STYLE;
     }
 
@@ -139,7 +135,7 @@ public class TooltipsUtils {
     @SubscribeEvent
     public static void updateRivenTypeTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if (!stack.is(ItemRegistry.MOD)) return;
+        if (!stack.is(ItemRegistry.MOD) || !IModContainer.isModContainer(stack)) return;
         if (!IModContainer.get(stack).getModAtIndex(0).getMod().getUniqueInfo(1, null).isEmpty()) return;
         Item rivenType = stack.get(ComponentRegistry.RIVEN_TYPE.get());
         if (rivenType == null) return;
@@ -153,7 +149,7 @@ public class TooltipsUtils {
     @SubscribeEvent
     public static void updateGraceAbilityTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if (!stack.is(ItemRegistry.MOD)) return;
+        if (!stack.is(ItemRegistry.MOD) || !IModContainer.isModContainer(stack)) return;
         if (!IModContainer.get(stack).getModAtIndex(0).getMod().getModName().equals("grace_armor_mod")) return;
         Attribute attribute = GraceArmorMod.getGraceAbility(stack);
         if (attribute == Attributes.MOVEMENT_SPEED.value()) return;
@@ -165,6 +161,30 @@ public class TooltipsUtils {
         for (int i = 0; i < tooltip.size(); i++)
             if (tooltip.get(i).getString().trim().isEmpty()) {
                 tooltip.add(i, line);
+                return;
+            }
+    }
+
+    @SubscribeEvent
+    public static void reservoirsTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (!stack.is(ItemRegistry.MOD) || !IModContainer.isModContainer(stack)) return;
+        if (!IModContainer.get(stack).getModAtIndex(0).getMod().getModName().equals("reservoirs_armor_mod")) return;
+        ComponentRegistry.ReservoirsAttributes reservoirsAttributes = stack.get(ComponentRegistry.RESERVOIRS_ATTRIBUTES.get());
+        if (reservoirsAttributes == null) return;
+        Component lineB = Component.translatable("item.yagens_attributes.reservoirs.tooltip2"
+                , String.format("%.1f", reservoirsAttributes.duration())).withStyle(ChatFormatting.BLUE);
+        Component lineR = Component.translatable("item.yagens_attributes.reservoirs.tooltip1"
+                , String.format("%.1f", reservoirsAttributes.strength())).withStyle(ChatFormatting.RED);
+        Component lineG = Component.translatable("item.yagens_attributes.reservoirs.tooltip3"
+                , String.format("%.1f", reservoirsAttributes.range())).withStyle(ChatFormatting.GREEN);
+
+        List<Component> tooltip = event.getToolTip();
+        for (int i = 0; i < tooltip.size(); i++)
+            if (tooltip.get(i).getString().trim().isEmpty()) {
+                tooltip.add(i, lineG);
+                tooltip.add(i, lineR);
+                tooltip.add(i, lineB);
                 return;
             }
     }

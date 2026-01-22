@@ -71,6 +71,12 @@ public class NetworkHandler {
                 SyncMissionDataPacket::handle
         );
 
+        registrar.playBidirectional(
+                EnergyPacket.TYPE,
+                EnergyPacket.STREAM_CODEC,
+                EnergyPacket::handle
+        );
+
         registrar.playToServer(
                 AirBrakePacket.TYPE,
                 AirBrakePacket.STREAM_CODEC,

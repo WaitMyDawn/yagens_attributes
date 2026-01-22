@@ -16,6 +16,8 @@
   "attribute.yagens_attributes.armor_toughness_penetration_percent": "Armor Toughness Penetration%%",
   "attribute.yagens_attributes.entity_level": "Level",
   "attribute.yagens_attributes.air_brake": "Air Brake Ability",
+  "attribute.yagens_attributes.max_energy": "Max Energy",
+  "attribute.yagens_attributes.energy_regen": "Energy Regen",
 
   "item.yagens_attributes.mod_essence": "Mod Essence",
   "item.yagens_attributes.mod_essence.tooltip1": "It can be used to upgrade Mod",
@@ -34,6 +36,9 @@
   "item.yagens_attributes.endo": "Endo",
   "item.yagens_attributes.teleport": "Mirror of Warp",
   "item.yagens_attributes.teleport.tooltip1": "Perhaps it didn't take you away.",
+  "item.yagens_attributes.reservoirs.tooltip1": "Pumilum: %.1f",
+  "item.yagens_attributes.reservoirs.tooltip2": "Grandiflorum: %.1f",
+  "item.yagens_attributes.reservoirs.tooltip3": "Hydrangea: %.1f",
 
   "block.yagens_attributes.mod_essence_block": "Mod Essence Block",
   "block.yagens_attributes.mod_operation_table": "Mod Operation Table",
@@ -89,6 +94,9 @@
   "effect.yagens_attributes.grandiflorum": "Grandiflorum",
   "effect.yagens_attributes.hydrangea": "Hydrangea",
 
+  "entity.yagens_attributes.blade_entity": "Blade",
+  "entity.yagens_attributes.reservoir": "Reservoir",
+
   "functions.yagens_attributes.scattershot_tool_mod.1": "Each arrow deals x0.4 damage.",
   "functions.yagens_attributes.xp_armor_mod.1": "Gain %d%% extra Exp after killing Mobs.",
   "functions.yagens_attributes.xp_armor_mod.2": "Exp gained from killing Mobs goes directly to you.",
@@ -111,7 +119,7 @@
   "warframe.yagens_attributes.pre_shoot_armor_mod.3": "When the Pain level is greater than 2 and Collaborative Proficiency is present, the critical chance will be increased by Pain level and Combo level.",
   "warframe.yagens_attributes.reservoirs_armor_mod.1": "Short press to release current reservoir.",
   "warframe.yagens_attributes.reservoirs_armor_mod.2": "Long press to switch reservoir.",
-  "warframe.yagens_attributes.reservoirs_armor_mod.3": "Some special items can be used to build a reservoir.",
+  "warframe.yagens_attributes.reservoirs_armor_mod.3": "Right click to open Reservoirs Menu, some special items can be used to build a reservoir.",
 
   "key.yagens_attributes.group_1": "Yagen's Attributes-General'",
   "key.yagens_attributes.client_configs_screen": "Open Configuration",
@@ -139,6 +147,8 @@
   "ui.yagens_attributes.open_info": "Open ",
   "ui.yagens_attributes.combo_position_title": "Configuration of Combo Count",
   "ui.yagens_attributes.mission_position_title": "Configuration of Mission Progress",
+  "ui.yagens_attributes.energy_bar_position_title": "Configuration of Energy Bar",
+  "ui.yagens_attributes.reservoirs_position_title": "Configuration of Reservoirs",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
   "ui.yagens_attributes.mission_position_explain.1": "Press Left Click to drag Mission Progress Area, ESC to save",
   "ui.yagens_attributes.damage_number_enlarge": "Damage Number Doubling Needs Blocks",
@@ -151,7 +161,7 @@
   "ui.yagens_attributes.mission_map_name": "Mission Map",
 
   "overlay.yagens_attributes.not_valid_ability": "Overloaded with Abilities, unable to active",
-  "overlay.yagens_attributes.ability_cooldown": "Ability %d %s Cooldown %d Seconds",
+  "overlay.yagens_attributes.ability_cost": "Energy shortage! Ability %d %s need %d energy.",
   "overlay.yagens_attributes.ring_cur_max": "Cur/Max : %d/%d",
   "overlay.yagens_attributes.ring_summon_count": "SummonCount = %d",
   "overlay.yagens_attributes.ring_distance": "Distance = %.0f",
@@ -227,6 +237,9 @@
   "tooltip.yagens_attributes.rarity": "%s",
   "tooltip.yagens_attributes.polarity": "%s",
   "tooltip.yagens_attributes.disposition": "Disposition: %.2f",
+  "tooltip.yagens_attributes.reservoirs.1": "Pumilum: +%.1f%% Strength",
+  "tooltip.yagens_attributes.reservoirs.2": "Grandiflorum: +%.1f%% Duration",
+  "tooltip.yagens_attributes.reservoirs.3": "Hydrangea: +%.1f%% Range",
 
   "tooltip.yagens_attributes.slash_addfirst": "+%.1f Slash Damage",
   "tooltip.yagens_attributes.slash_addlast": "+%.1f Slash Damage",

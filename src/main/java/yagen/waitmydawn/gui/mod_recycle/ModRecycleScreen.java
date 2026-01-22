@@ -1,33 +1,19 @@
 package yagen.waitmydawn.gui.mod_recycle;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec2;
 
 import yagen.waitmydawn.YagensAttributes;
-import yagen.waitmydawn.gui.mod_operation.ModOperationMenu;
-import yagen.waitmydawn.item.Mod;
 import yagen.waitmydawn.registries.ItemRegistry;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModRecycleScreen extends AbstractContainerScreen<ModRecycleMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "textures/gui/mod_recycle/mod_recycle.png");

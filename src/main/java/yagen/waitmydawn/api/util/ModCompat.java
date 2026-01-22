@@ -134,7 +134,16 @@ public class ModCompat {
         for (ModSlot slot : container.getActiveMods())
             if (slot.getMod().getRarity() == ModRarity.WARFRAME)
                 abilityCount++;
-        return abilityCount <= 2;
+        return abilityCount <= 4;
+    }
+
+    public static boolean hasReservoirs(ItemStack stack) {
+        if (!IModContainer.isModContainer(stack)) return false;
+        var container = IModContainer.get(stack);
+        for (ModSlot slot : container.getActiveMods())
+            if (slot.getMod().getModName().equals("reservoirs_armor_mod"))
+                return true;
+        return false;
     }
 
     public static boolean isModInItemStack(ItemStack stack, AbstractMod abstractMod) {

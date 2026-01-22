@@ -4,6 +4,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -21,10 +22,13 @@ import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.network.EnergyPacket;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
 import java.util.Set;
@@ -175,6 +179,23 @@ public class PlayerInteractionEvent {
             player.getPersistentData().putInt("AirBrakeTime", brakeTime + 1);
         } else if (!isAirBrake) {
             player.getPersistentData().putInt("AirBrakeTime", 0);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide || player.tickCount % 5 != 0) return;
+
+        double maxEnergy = player.getAttributeValue(YAttributes.MAX_ENERGY);
+        double energy = DataAttachmentRegistry.getEnergy(player);
+
+        if (energy < maxEnergy) {
+            double energyRegen = player.getAttributeValue(YAttributes.ENERGY_REGEN);
+            energy = energy + energyRegen;
+            if (energy > maxEnergy) energy = maxEnergy;
+            DataAttachmentRegistry.setEnergy(player, energy);
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new EnergyPacket(energy));
         }
     }
 }

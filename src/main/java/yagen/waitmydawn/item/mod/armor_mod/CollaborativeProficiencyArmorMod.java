@@ -17,6 +17,7 @@ public class CollaborativeProficiencyArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
         return List.of(
+                Component.translatable("warframe.yagens_attributes.passive"),
                 Component.translatable("warframe.yagens_attributes.collaborative_proficiency_armor_mod.1")
         );
     }
