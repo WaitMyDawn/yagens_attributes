@@ -461,5 +461,7 @@
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multibaseneg": "-%.2f%%盔甲韧性穿透百分比",
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multiply": "x%.2f%%盔甲韧性穿透百分比",
 
-  "attackevent.yagens_attributes.status_event": "触发了%s效果"
+  "attackevent.yagens_attributes.status_event": "触发了%s效果",
+
+  "jei.yagens_attributes.loot_stats_title": "Mod掉落"
 }

@@ -125,6 +125,8 @@
   "key.yagens_attributes.client_configs_screen": "Open Configuration",
   "key.yagens_attributes.ability_1": "Active Ability 1",
   "key.yagens_attributes.ability_2": "Active Ability 2",
+  "key.yagens_attributes.ability_3": "Active Ability 3",
+  "key.yagens_attributes.ability_4": "Active Ability 4",
   "key.yagens_attributes.air_brake": "Air Brake",
   "rarity.yagens_attributes.common": "Common",
   "rarity.yagens_attributes.uncommon": "Uncommon",
@@ -459,5 +461,7 @@
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multibaseneg": "-%.2f%% Armor Toughness Penetration %%",
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multiply": "x%.2f%% Armor Toughness Penetration %%",
 
-  "attackevent.yagens_attributes.status_event": "Trigger %s Status"
+  "attackevent.yagens_attributes.status_event": "Trigger %s Status",
+
+  "jei.yagens_attributes.loot_stats_title": "Mod Loot"
 }
