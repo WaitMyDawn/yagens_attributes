@@ -23,6 +23,8 @@ import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.jei.ClientLootLoader.LootInfo;
 
+import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
+
 public class ModLootStatsCategory implements IRecipeCategory<ModLootWrapper> {
 
     public static final RecipeType<ModLootWrapper> TYPE = RecipeType.create(YagensAttributes.MODID, "loot_stats", ModLootWrapper.class);
@@ -85,6 +87,15 @@ public class ModLootStatsCategory implements IRecipeCategory<ModLootWrapper> {
         }
 
         String tableName = recipe.tableId().getPath();
+        int slashIndex = tableName.lastIndexOf('/');
+        int additionalIndex = tableName.indexOf("additional_");
+        if (slashIndex != -1 && additionalIndex > slashIndex) {
+            String prefix = tableName.substring(0, slashIndex + 1);
+            String suffix = tableName.substring(additionalIndex + "additional_".length());
+            tableName = prefix + suffix;
+        }
+        tableName=deleteRepeatString(tableName);
+
         int maxWidth = 120;
         int textWidth = font.width(tableName);
 
@@ -132,10 +143,17 @@ public class ModLootStatsCategory implements IRecipeCategory<ModLootWrapper> {
                 case LEGENDARY -> recipe.legendary();
                 default -> 0;
             };
-            if (wight > 0)
-                guiGraphics.drawString(font,
-                        String.format("Chance: %.1f%%", 100.0 * wight / totalWeight),
-                        xPos, yPos, 0x000000, true);
+            if (wight > 0) {
+                Component chance = Component.literal(String.format("Chance: %.1f%% ", 100.0 * wight / totalWeight * recipe.baseChance() / TRANSFORM_POOL_BY_RARITY.get(currentRarity).size()));
+                guiGraphics.drawString(font, chance, xPos, yPos, 0x000000, false);
+                String rollsText;
+                if (Math.abs(recipe.minRolls() - recipe.maxRolls()) < 0.01f) {
+                    rollsText = String.format("Rolls: %d", (int) recipe.minRolls());
+                } else {
+                    rollsText = String.format("Rolls: %d-%d", (int) recipe.minRolls(), (int) recipe.maxRolls());
+                }
+                guiGraphics.drawString(font, rollsText, xPos + font.width(chance), yPos, 0x000000, false);
+            }
 
             yPos += lineHeight;
         }
@@ -165,4 +183,47 @@ public class ModLootStatsCategory implements IRecipeCategory<ModLootWrapper> {
             guiGraphics.drawString(font, s, currentX, yPos, 0xFF4500, true);
         }
     }
+
+    // input: archeology/kisegi_sanctuary_kisegi_sanctuary_archeology
+    // return: archeology/kisegi_sanctuary_archeology
+    public static String deleteRepeatString(String input) {
+        if (input == null || input.isEmpty()) return input;
+        int firstSlash = input.indexOf('/');
+        if (firstSlash == -1 || firstSlash == input.length() - 1) return input;
+        String prefix = input.substring(0, firstSlash + 1);
+        String path = input.substring(firstSlash + 1);
+        String[] parts = path.split("_");
+        if (parts.length <= 1) return input;
+        StringBuilder result = new StringBuilder(path.length());
+        int i = 0;
+        while (i < parts.length) {
+            boolean duplicated = false;
+            int maxLen = (parts.length - i) / 2;
+            for (int len = 1; len <= maxLen; len++) {
+                boolean same = true;
+                for (int j = 0; j < len; j++) {
+                    if (!parts[i + j].equals(parts[i + len + j])) {
+                        same = false;
+                        break;
+                    }
+                }
+                if (same) {
+                    for (int j = 0; j < len; j++) {
+                        result.append(parts[i + j]).append('_');
+                    }
+                    i += 2 * len;
+                    duplicated = true;
+                    break;
+                }
+            }
+            if (!duplicated) {
+                result.append(parts[i]).append('_');
+                i++;
+            }
+        }
+        if (result.length() > 0)
+            result.setLength(result.length() - 1);
+        return prefix + result;
+    }
+
 }
