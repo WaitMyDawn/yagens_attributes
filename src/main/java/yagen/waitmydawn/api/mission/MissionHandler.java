@@ -186,6 +186,12 @@ public class MissionHandler {
         return BOSS_TYPES.get(random.nextInt(BOSS_TYPES.size()));
     }
 
+    public static boolean isBoss(LivingEntity entity) {
+        if (entity == null) return false;
+        EntityType<?> type = entity.getType();
+        return BOSS_TYPES.contains(type);
+    }
+
     public static <T extends Mob> T summonEntity(EntityType<T> type,
                                                  ServerLevel level,
                                                  Vec3 pos) {

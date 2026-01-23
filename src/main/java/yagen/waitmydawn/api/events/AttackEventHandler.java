@@ -131,7 +131,7 @@ public class AttackEventHandler {
                 source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
-                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE)||
+                source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeTags.IS_EXPLOSION))
             return;
 
@@ -189,11 +189,10 @@ public class AttackEventHandler {
         if (!isMelee && (isArrow || isThrownTrident || isSpecialBow)) {
             updateCCModifier(attacker, 0);
             updateSCModifier(attacker, 0);
-        }
-        else if (isMelee) updateScopeModifier(attacker,true);
+        } else if (isMelee) updateScopeModifier(attacker, true);
 
         double cc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_CHANCE.get())).getValue();
-        updateScopeModifier(attacker,false);
+        updateScopeModifier(attacker, false);
         double cd = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.CRITICAL_DAMAGE.get())).getValue();
         double sc = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_CHANCE.get())).getValue();
         double lifeSteal = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.LIFE_STEAL.get())).getValue();
@@ -643,7 +642,7 @@ public class AttackEventHandler {
                         true));
             }
             case BLAST -> {
-                addBlast(target,attacker);
+                addBlast(target, attacker);
                 forceEffect(target, new MobEffectInstance(
                         MobEffectRegistry.BLAST_STATUS,
                         1,
@@ -653,13 +652,24 @@ public class AttackEventHandler {
                         true));
             }
             case MAGNETIC -> {
-                forceEffect(target, new MobEffectInstance(
-                        MobEffectRegistry.MAGNETIC_STATUS,
-                        (int) (20 * sd),
-                        0,
-                        false,
-                        true,
-                        true));
+                if (target.hasEffect(MobEffectRegistry.MAGNETIC_STATUS)) {
+                    int amp = target.getEffect(MobEffectRegistry.MAGNETIC_STATUS).getAmplifier();
+                    forceEffect(target, new MobEffectInstance(
+                            MobEffectRegistry.MAGNETIC_STATUS,
+                            (int) (20 * sd),
+                            Math.min(amp + 1, 5),
+                            false,
+                            true,
+                            true));
+                } else {
+                    forceEffect(target, new MobEffectInstance(
+                            MobEffectRegistry.MAGNETIC_STATUS,
+                            (int) (20 * sd),
+                            0,
+                            false,
+                            true,
+                            true));
+                }
                 forceEffect(target, new MobEffectInstance(
                         MobEffects.BLINDNESS,
                         (int) (20 * sd),

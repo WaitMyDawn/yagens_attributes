@@ -78,5 +78,12 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                         DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
+
+        tag(DamageTypeTags.NO_KNOCKBACK)
+                .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
     }
 }
