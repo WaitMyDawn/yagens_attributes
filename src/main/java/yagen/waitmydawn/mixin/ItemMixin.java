@@ -25,7 +25,7 @@ public class ItemMixin {
     private void setMaxStackSize(Item.Properties pProperties, CallbackInfo pCallbackInfo) {
         Item item = (Item) (Object) this;
         int maxStack = item.getDefaultMaxStackSize();
-        if (item instanceof BucketItem) {
+        if (item instanceof BucketItem || item instanceof MilkBucketItem) {
             maxStack = 16;
         } else if (item instanceof PotionItem) {
             maxStack = 64;

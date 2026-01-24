@@ -7,15 +7,16 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.registries.MenuRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 public class ReservoirsMenu extends AbstractContainerMenu {
-//    private final ItemStackHandler internalInventory;
-//    private final ContainerLevelAccess access;
     private final int lockedSlotIndex;
 
     public ReservoirsMenu(int containerId, Inventory playerInventory, FriendlyByteBuf extraData) {
@@ -24,8 +25,6 @@ public class ReservoirsMenu extends AbstractContainerMenu {
 
     public ReservoirsMenu(int containerId, Inventory playerInventory, ItemStackHandler inventory) {
         super(MenuRegistry.RESERVOIRS_MENU.get(), containerId);
-//        this.internalInventory = inventory;
-//        this.access = ContainerLevelAccess.NULL;
         this.lockedSlotIndex = playerInventory.selected;
 
         for (int i = 0; i < 3; i++) {
@@ -34,7 +33,8 @@ public class ReservoirsMenu extends AbstractContainerMenu {
                 public boolean mayPlace(@NotNull ItemStack stack) {
                     if (IModContainer.isModContainer(stack))
                         return IModContainer.get(stack).getModAtIndex(0).getMod().isReservoir();
-
+                    else if(ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()))
+                        return ISSCompat.isReservoir(stack);
                     return false;
                 }
             });

@@ -125,8 +125,14 @@ public class DataAttachmentRegistry {
         ).xmap(ReservoirBuffs::new, ReservoirBuffs::buffMap);
 
         public ReservoirBuffs add(Holder<MobEffect> effect, Holder<Attribute> attr, ResourceLocation id) {
+            List<ModifierData> oldList = this.buffMap.getOrDefault(effect, List.of());
+            for (ModifierData data : oldList) {
+                if (data.id().equals(id) && data.attribute().equals(attr)) {
+                    return this;
+                }
+            }
             Map<Holder<MobEffect>, List<ModifierData>> newMap = new HashMap<>(this.buffMap);
-            List<ModifierData> newList = new ArrayList<>(newMap.getOrDefault(effect, List.of()));
+            List<ModifierData> newList = new ArrayList<>(oldList);
             newList.add(new ModifierData(attr, id));
             newMap.put(effect, newList);
             return new ReservoirBuffs(newMap);

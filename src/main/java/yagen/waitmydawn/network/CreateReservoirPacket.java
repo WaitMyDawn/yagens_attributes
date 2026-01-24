@@ -12,14 +12,17 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModData;
 import yagen.waitmydawn.capabilities.ReservoirsInventoryHandler;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.entity.ReservoirEntity;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.EntityRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -46,7 +49,14 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
             ReservoirEntity reservoir = new ReservoirEntity(EntityRegistry.RESERVOIR.get(), level);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
             ItemStack itemStack = ReservoirsInventoryHandler.getReservoirAtIndex(chest, pkt.index, player);
-            if (itemStack.isEmpty() || !IModContainer.isModContainer(itemStack)) return;
+
+            if (itemStack.isEmpty()) return;
+            boolean isModContainer = IModContainer.isModContainer(itemStack);
+            boolean isSpellContainer = false;
+            if (!isModContainer && ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()))
+                isSpellContainer = ISSCompat.isSpellContainer(itemStack);
+            if (!isModContainer && !isSpellContainer) return;
+
             boolean isReservoirsAttributes = false;
             ComponentRegistry.ReservoirsAttributes reservoirsAttributes = chest.get(
                     ComponentRegistry.RESERVOIRS_ATTRIBUTES.get()
@@ -55,19 +65,19 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
             double valueFactor = 1.0;
             double durationFactor = 1.0;
             double rangeFactor = 1.0;
-            if (IModContainer.isModContainer(itemStack)) {
-                String typeId;
-                if (pkt.index == 0) {
-                    typeId = "grandiflorum";
-                    if (isReservoirsAttributes)
-                        durationFactor = durationFactor + 0.06 * reservoirsAttributes.duration();
-                } else if (pkt.index == 1) {
-                    typeId = "pumilum";
-                    if (isReservoirsAttributes) valueFactor = valueFactor + 0.06 * reservoirsAttributes.strength();
-                } else {
-                    typeId = "hydrangea";
-                    if (isReservoirsAttributes) rangeFactor = rangeFactor + 0.20 * reservoirsAttributes.range();
-                }
+            String typeId;
+            if (pkt.index == 0) {
+                typeId = "grandiflorum";
+                if (isReservoirsAttributes)
+                    durationFactor = durationFactor + 0.06 * reservoirsAttributes.duration();
+            } else if (pkt.index == 1) {
+                typeId = "pumilum";
+                if (isReservoirsAttributes) valueFactor = valueFactor + 0.06 * reservoirsAttributes.strength();
+            } else {
+                typeId = "hydrangea";
+                if (isReservoirsAttributes) rangeFactor = rangeFactor + 0.20 * reservoirsAttributes.range();
+            }
+            if (isModContainer) {
                 Pattern p = Pattern.compile(
                         "'[^']*\\.([^.]+)_([^']+)'.*args=\\[([0-9.]+)]");
                 ModData modData = IModContainer.get(itemStack).getModAtIndex(0);
@@ -123,12 +133,16 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
                         reservoir.addModifier(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute), modifier);
                     }
                 }
+            } else if (isSpellContainer) {
+                reservoir.setString(ISSCompat.getReservoirName(itemStack, valueFactor));
+                reservoir.setDuration(ISSCompat.getReservoirDuration(itemStack, player));
             }
             reservoir.setPos(player.getX(), player.getY() + 0.25, player.getZ());
             reservoir.setReservoirType(pkt.index);
             reservoir.setRange((float) (RANGE * rangeFactor));
             reservoir.setLifespan((int) (DURATION * durationFactor));
-            reservoir.setDuration((int) (DURATION * durationFactor));
+            if (isModContainer)
+                reservoir.setDuration((int) (DURATION * durationFactor));
 
             level.addFreshEntity(reservoir);
         });

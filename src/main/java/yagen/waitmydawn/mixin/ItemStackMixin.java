@@ -9,7 +9,7 @@ public class ItemStackMixin {
     @Overwrite
     public int getMaxStackSize() {
         Item item = ((ItemStack) (Object) this).getItem();
-        if (item == Items.TOTEM_OF_UNDYING) {
+        if (item == Items.TOTEM_OF_UNDYING || item == Items.POWDER_SNOW_BUCKET) {
             return 16;
         }
         return item.getDefaultMaxStackSize();

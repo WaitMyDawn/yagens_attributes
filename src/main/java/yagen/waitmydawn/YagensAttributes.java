@@ -4,11 +4,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -19,7 +16,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.registry.ModRegistry;
-import yagen.waitmydawn.compat.ISSAttributeSet;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.mixin.RangedAttributeAccessor;
@@ -80,7 +77,7 @@ public class YagensAttributes {
             ATTRIBUTE_SET.put(Attributes.ARMOR.value(), 6.0);
             ATTRIBUTE_SET.put(Attributes.ARMOR_TOUGHNESS.value(), 2.0);
             if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue())) {
-                ISSAttributeSet.addAttributeSet();
+                ISSCompat.addAttributeSet();
             }
         });
     }

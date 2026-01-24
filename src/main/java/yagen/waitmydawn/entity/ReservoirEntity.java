@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -20,9 +21,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.fml.ModList;
 import org.joml.Vector3f;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +35,7 @@ public class ReservoirEntity extends Entity {
     private static final EntityDataAccessor<Integer> TYPE = SynchedEntityData.defineId(ReservoirEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(ReservoirEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> RANGE = SynchedEntityData.defineId(ReservoirEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<String> STRING = SynchedEntityData.defineId(ReservoirEntity.class, EntityDataSerializers.STRING);
 
     private int lifespan = 0;
 
@@ -55,6 +60,10 @@ public class ReservoirEntity extends Entity {
         this.lifespan = ticks;
     }
 
+    public void setString(String string) {
+        this.entityData.set(STRING, string);
+    }
+
     public int getReservoirType() {
         return this.entityData.get(TYPE);
     }
@@ -67,11 +76,16 @@ public class ReservoirEntity extends Entity {
         return this.entityData.get(RANGE);
     }
 
+    public String getString() {
+        return this.entityData.get(STRING);
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(TYPE, 0);
         builder.define(DURATION, 0);
         builder.define(RANGE, 4.0f);
+        builder.define(STRING, "");
     }
 
     @Override
@@ -91,7 +105,7 @@ public class ReservoirEntity extends Entity {
             for (Player player : players) {
                 double distSqr = player.distanceToSqr(this.getX(), this.getY(), this.getZ());
                 if (distSqr <= r * r) {
-                    applyEffect(player, getReservoirType(), getDuration());
+                    applyEffect(player, getReservoirType(), getDuration(), getString());
                 }
             }
         } else {
@@ -99,26 +113,30 @@ public class ReservoirEntity extends Entity {
         }
     }
 
-    private void applyEffect(Player player, int type, int duration) {
-        Holder<MobEffect> effectHolder = switch(type) {
+    private void applyEffect(Player player, int type, int duration, String string) {
+        Holder<MobEffect> effectHolder = switch (type) {
             case 0 -> MobEffectRegistry.GRANDIFLORUM;
             case 1 -> MobEffectRegistry.PUMILUM;
             default -> MobEffectRegistry.HYDRANGEA;
         };
         player.addEffect(new MobEffectInstance(effectHolder, duration, 0));
+        if (string.isEmpty()) {
+            DataAttachmentRegistry.ReservoirBuffs oldData = player.getData(DataAttachmentRegistry.RESERVOIR_BUFFS);
+            DataAttachmentRegistry.ReservoirBuffs currentData = oldData;
+            for (StoredModifier storedModifier : this.storedModifiers) {
+                AttributeInstance attrInstance = player.getAttribute(storedModifier.attribute);
 
-        DataAttachmentRegistry.ReservoirBuffs currentData = player.getData(DataAttachmentRegistry.RESERVOIR_BUFFS);
-        for (StoredModifier storedModifier : this.storedModifiers) {
-            AttributeInstance attrInstance = player.getAttribute(storedModifier.attribute);
-
-            if (attrInstance != null) {
-                attrInstance.removeModifier(storedModifier.modifier.id());
-                attrInstance.addPermanentModifier(storedModifier.modifier);
-                currentData = currentData.add(effectHolder, storedModifier.attribute, storedModifier.modifier.id());
+                if (attrInstance != null) {
+                    attrInstance.removeModifier(storedModifier.modifier.id());
+                    attrInstance.addPermanentModifier(storedModifier.modifier);
+                    currentData = currentData.add(effectHolder, storedModifier.attribute, storedModifier.modifier.id());
+                }
             }
+            if (currentData != oldData)
+                player.setData(DataAttachmentRegistry.RESERVOIR_BUFFS, currentData);
+        }else if(ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue())){
+            ISSCompat.addSpellEffect(player,string,duration);
         }
-
-        player.setData(DataAttachmentRegistry.RESERVOIR_BUFFS, currentData);
     }
 
     private void spawnRingParticles() {
@@ -142,7 +160,8 @@ public class ReservoirEntity extends Entity {
         }
     }
 
-    public record StoredModifier(Holder<Attribute> attribute, AttributeModifier modifier) {}
+    public record StoredModifier(Holder<Attribute> attribute, AttributeModifier modifier) {
+    }
 
     private final List<StoredModifier> storedModifiers = new ArrayList<>();
 
@@ -159,6 +178,7 @@ public class ReservoirEntity extends Entity {
         this.setReservoirType(tag.getInt("Type"));
         this.setRange(tag.getFloat("Range"));
         this.setDuration(tag.getInt("Duration"));
+        this.setString(tag.getString("String"));
         this.lifespan = tag.getInt("Lifespan");
 
         if (tag.contains("StoredModifiers")) {
@@ -185,6 +205,7 @@ public class ReservoirEntity extends Entity {
         tag.putInt("Type", getReservoirType());
         tag.putInt("Duration", getDuration());
         tag.putFloat("Range", getRange());
+        tag.putString("String", getString());
         tag.putInt("Lifespan", lifespan);
 
         ListTag modList = new ListTag();

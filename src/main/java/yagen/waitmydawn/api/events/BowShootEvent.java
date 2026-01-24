@@ -212,7 +212,7 @@ public class BowShootEvent {
         if (player.level().isClientSide) return;
         ItemStack weaponStack = event.getSource().getWeaponItem();
         if (weaponStack == null) return;
-        if (!(weaponStack.getItem() instanceof BowItem)) return;
+        if (!(weaponStack.getItem() instanceof BowItem)&&!(weaponStack.getItem() instanceof CrossbowItem)) return;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         boolean isAbility = false;
