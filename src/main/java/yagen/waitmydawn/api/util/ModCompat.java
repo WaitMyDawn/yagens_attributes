@@ -1,6 +1,7 @@
 package yagen.waitmydawn.api.util;
 
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -99,11 +100,11 @@ public class ModCompat {
     public static boolean isCancelAttackDamage(Item item) {
         return
                 item == Items.ARROW ||
-                item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get() ||
-                item == LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get() ||
-                item == LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() ||
-                item == LEndersCataclysmItem.CURSED_BOW.get() ||
-                item == LEndersCataclysmItem.LASER_GATLING.get();
+                        item == LEndersCataclysmItem.WITHER_ASSAULT_SHOULDER_WEAPON.get() ||
+                        item == LEndersCataclysmItem.VOID_ASSAULT_SHOULDER_WEAPON.get() ||
+                        item == LEndersCataclysmItem.WRATH_OF_THE_DESERT.get() ||
+                        item == LEndersCataclysmItem.CURSED_BOW.get() ||
+                        item == LEndersCataclysmItem.LASER_GATLING.get();
     }
 
     public static ItemStack ensureModContainer(ItemStack stack, int maxSlots) {

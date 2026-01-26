@@ -81,7 +81,7 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
                 Pattern p = Pattern.compile(
                         "'[^']*\\.([^.]+)_([^']+)'.*args=\\[([0-9.]+)]");
                 ModData modData = IModContainer.get(itemStack).getModAtIndex(0);
-                List<MutableComponent> uniqueInfo = modData.getMod().getUniqueInfo(modData.getLevel(), player);
+                List<MutableComponent> uniqueInfo = modData.getMod().getUniqueInfo(modData.getLevel());
                 for (var comp : uniqueInfo) {
                     String key = String.valueOf(comp);
                     Matcher m = p.matcher(key);

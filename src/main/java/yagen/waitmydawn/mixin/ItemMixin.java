@@ -25,12 +25,13 @@ public class ItemMixin {
     private void setMaxStackSize(Item.Properties pProperties, CallbackInfo pCallbackInfo) {
         Item item = (Item) (Object) this;
         int maxStack = item.getDefaultMaxStackSize();
-        if (item instanceof BucketItem || item instanceof MilkBucketItem) {
+        if (item instanceof BucketItem || item instanceof MilkBucketItem || item instanceof SolidBucketItem) {
             maxStack = 16;
         } else if (item instanceof PotionItem) {
             maxStack = 64;
-        }
-        else if (item instanceof EnchantedBookItem) {
+        } else if (item instanceof EnchantedBookItem) {
+            maxStack = 64;
+        } else if (item instanceof BedItem) {
             maxStack = 64;
         }
         if (maxStack != item.getDefaultMaxStackSize())

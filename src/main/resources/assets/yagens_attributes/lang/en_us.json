@@ -31,6 +31,8 @@
   "item.yagens_attributes.unknown_riven.tooltip1": "Right click to reveal the Riven.",
   "item.yagens_attributes.kuva": "Kuva",
   "item.yagens_attributes.kuva.tooltip1": "It can be used to cycle Riven",
+  "item.yagens_attributes.kuva.tooltip2": "This item does not require the removal of the anvil penalty.",
+  "item.yagens_attributes.kuva.tooltip3": "When used in the offhand, it removes the anvil penalty from the mainhand item.",
   "item.yagens_attributes.mod": "Mod",
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "Endo",

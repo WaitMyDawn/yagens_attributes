@@ -44,8 +44,8 @@ public class ComboCountOverlay implements LayeredDraw.Layer {
         else
             color = ChatFormatting.GOLD.getColor();
 
-        int barX = ClientConfigs.COMBO_HUD_X.get() == -1 ? screenWidth / 2 : ClientConfigs.COMBO_HUD_X.get();
-        int barY = ClientConfigs.COMBO_HUD_Y.get() == -1 ? screenHeight / 2 : ClientConfigs.COMBO_HUD_Y.get();
+        int barX = ClientConfigs.COMBO_HUD_X.get() == -1 ? screenWidth / 2 + 70: ClientConfigs.COMBO_HUD_X.get();
+        int barY = ClientConfigs.COMBO_HUD_Y.get() == -1 ? screenHeight -40 : ClientConfigs.COMBO_HUD_Y.get();
 
         guiHelper.pose().pushPose();
         float scale = 2f;

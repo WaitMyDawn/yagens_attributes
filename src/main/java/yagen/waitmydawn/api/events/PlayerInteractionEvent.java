@@ -25,13 +25,16 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
+import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.config.ServerConfigs;
+import yagen.waitmydawn.gui.mod_operation.ModOperationMenu;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.network.EnergyPacket;
+import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static yagen.waitmydawn.api.attribute.DefaultItemAttributes.DEFAULTS;
@@ -99,12 +102,13 @@ public class PlayerInteractionEvent {
 
     @SubscribeEvent
     public static void modifierHandlerAfterCraft(PlayerEvent.ItemCraftedEvent event) {
-        ItemStack result = event.getCrafting();
-        if (!(result.getItem() instanceof BowItem)) return;
+        extendNewItemStackAttributes(event.getCrafting());
+    }
 
+    public static void extendNewItemStackAttributes(ItemStack result) {
         CustomData old = result.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
         CompoundTag tag = old.copyTag();
-        if (tag.contains("yagens_attributes_default_applied")) {
+        if (tag.contains("yagens_attributes_default_applied")) {// part 1 : change attribute_modifiers and delete marked
             var map = DEFAULTS.get(result.getItem());
             if (map == null) return;
 
@@ -116,13 +120,62 @@ public class PlayerInteractionEvent {
                     .collect(Collectors.toSet());
 
             final ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
-            existing.modifiers().stream().filter(e -> !ourKeys.contains(e.modifier().id()))
-                    .forEach(e -> builder.add(e.attribute(), e.modifier(), e.slot()));
+            // override by new ItemStack attribute_modifiers
+            ItemStack newStack = new ItemStack(result.getItem());
+            var origin = newStack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+            Set<ResourceLocation> originIds = origin.modifiers().stream()
+                    .map(e -> e.modifier().id())
+                    .collect(Collectors.toSet());
+            existing.modifiers().stream()
+                    .filter(e -> !ourKeys.contains(e.modifier().id())) // delete old default_ attributes by ya
+                    .filter(e -> !originIds.contains(e.modifier().id())) // escape origins
+                    .forEach(e ->
+                            builder.add(e.attribute(), e.modifier(), e.slot())
+                    );
+            origin.modifiers().forEach(e -> // complement
+                    builder.add(e.attribute(), e.modifier(), e.slot())
+            );
 
             result.set(DataComponents.ATTRIBUTE_MODIFIERS, builder.build());
             tag.remove("yagens_attributes_default_applied");
             result.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+            DefaultItemAttributes.apply(result);
         }
+        ItemAttributeModifiers defaultModifiers = result.getOrDefault(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(ItemAttributeModifiers.EMPTY)).modifiers();
+        if (!defaultModifiers.modifiers().isEmpty()) { // part 2 : change DEFAULT_ITEM_ATTRIBUTES
+//            ItemStack newStack = new ItemStack(result.getItem());
+//            var origin = newStack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+            var map = DEFAULTS.get(result.getItem());
+            if (map == null) return;
+            Set<ResourceLocation> ourKeys = map.keySet().stream()
+                    .map(BuiltInRegistries.ATTRIBUTE::getKey)
+                    .map(key -> ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "default_" + key.getPath()))
+                    .collect(Collectors.toSet());
+
+            var existing = result.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+            if (existing == ItemAttributeModifiers.EMPTY) return;
+            Map<ResourceLocation, ItemAttributeModifiers.Entry> existingMap = new HashMap<>();
+            existing.modifiers().forEach(e -> existingMap.put(e.modifier().id(), e));
+
+            List<ItemAttributeModifiers.Entry> merged = new ArrayList<>();
+            defaultModifiers.modifiers().forEach(def -> {
+                ResourceLocation id = def.modifier().id();
+                ItemAttributeModifiers.Entry exist = existingMap.get(id);
+                merged.add(exist != null ? exist : def);
+                ourKeys.remove(id);
+            });
+            ourKeys.forEach(id -> {
+                ItemAttributeModifiers.Entry exist = existingMap.get(id);
+                if (exist != null) {
+                    merged.add(exist);
+                }
+            });
+
+            ItemAttributeModifiers newModifiers =
+                    new ItemAttributeModifiers(merged, defaultModifiers.showInTooltip());
+            result.set(ComponentRegistry.DEFAULT_ITEM_ATTRIBUTES.get(), new ComponentRegistry.DefaultItemAttributes(newModifiers));
+        }
+        if (IModContainer.isModContainer(result)) ModOperationMenu.rebuildItemByMod(result);
     }
 
     @SubscribeEvent

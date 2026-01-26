@@ -31,6 +31,8 @@
   "item.yagens_attributes.unknown_riven.tooltip1": "右键以揭示裂罅",
   "item.yagens_attributes.kuva": "赤毒",
   "item.yagens_attributes.kuva.tooltip1": "可以用来循环裂罅",
+  "item.yagens_attributes.kuva.tooltip2": "该物品不需要消除铁砧惩罚",
+  "item.yagens_attributes.kuva.tooltip3": "在副手使用可以消除主手物品的铁砧惩罚",
   "item.yagens_attributes.mod": "Mod",
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "内源核心",

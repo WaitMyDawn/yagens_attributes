@@ -6,7 +6,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -74,7 +73,7 @@ public abstract class AbstractMod {
 
     public abstract ResourceLocation getModResource();
 
-    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
+    public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of();
     }
 

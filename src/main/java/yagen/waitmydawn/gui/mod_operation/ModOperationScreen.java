@@ -124,7 +124,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         if (selectedModIndex >= 0 && selectedModIndex < modSlots.size() && menu.getModSlot().getItem().is(ItemRegistry.FORMA.get())) {
             renderPolarityButtons(guiHelper, mouseX, mouseY);
         } else if (selectedModIndex >= 0 && selectedModIndex < modSlots.size() && menu.getModSlot().getItem().is(ItemRegistry.MOD.get())) {
-            boolean isRiven = IModContainer.get(menu.getModSlot().getItem()).getModAtIndex(0).getMod().getUniqueInfo(1, null).isEmpty();
+            boolean isRiven = IModContainer.get(menu.getModSlot().getItem()).getModAtIndex(0).getMod().getUniqueInfo(1).isEmpty();
             if (isRiven) {
                 renderCycleButtons(guiHelper, mouseX, mouseY);
                 renderCycleInfo(guiHelper, mouseX, mouseY);
@@ -305,7 +305,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             String polarity = polarities.get(slotInfo.modSlot.index());
 
             String modPolarity = slotInfo.modSlot.getMod().getModPolarity();
-            if (slotInfo.modSlot.getMod().getUniqueInfo(1, null).isEmpty()) {
+            if (slotInfo.modSlot.getMod().getUniqueInfo(1).isEmpty()) {
                 modPolarity = menu.getItemSlot().getItem().get(ComponentRegistry.RIVEN_POLARITY_TYPE.get());
             }
             if (polarity.equals(modPolarity)) multiply = 0.5f;
@@ -440,7 +440,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         String modPolarity = mod.getModPolarity();
         double disposition = 0.01;
 
-        if (mod.getUniqueInfo(modLevel, null).isEmpty()) {
+        if (mod.getUniqueInfo(modLevel).isEmpty()) {
             modPolarity = menu.getItemSlot().getItem().getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
             disposition = getDisposition(menu.getItemSlot().getItem().getItem());
         }
@@ -471,14 +471,14 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         //  Unique Info
         //
         List<MutableComponent> uniqueInfo;
-        if (mod.getUniqueInfo(modLevel, null).isEmpty()) {
+        if (mod.getUniqueInfo(modLevel).isEmpty()) {
             ComponentRegistry.RivenRawInfoList raw = menu.slots.get(ITEM_SLOT).getItem().get(ComponentRegistry.RIVEN_RAW_INFO.get());
             uniqueInfo = raw == null ? List.of()
                     : raw.raw().stream()
                     .map(r -> Component.translatable(r.key(), r.base() * modLevel))
                     .toList();
         } else {
-            uniqueInfo = mod.getUniqueInfo(modLevel, null);
+            uniqueInfo = mod.getUniqueInfo(modLevel);
         }
         FormattedText wholeText = uniqueInfo.stream()
                 .map(line -> Component.literal("• ").append(line))
@@ -724,14 +724,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         String polarity = polarities.get(selectedModIndex);
 
         String modPolarity = modSlot.getMod().getModPolarity();
-//        System.out.println("1 Riven Type: " + menu.getModSlot().getItem().getItem());
-        if (modSlot.getMod().getUniqueInfo(1, null).isEmpty()) {
-//            Item item = menu.getModSlot().getItem().get(ComponentRegistry.RIVEN_TYPE.get());
-//            System.out.println("2 Riven Type: " + menu.getModSlot().getItem().getItem()+" Item: " + item);
-//            if (item != null && item != menu.getItemSlot().getItem().getItem()) {
-//                System.out.println("3 Riven Type: " + menu.getModSlot().getItem().getItem()+" Item: " + item);
-//                return false;
-//            }
+        if (modSlot.getMod().getUniqueInfo(1).isEmpty()) {
             modPolarity = menu.getModSlot().getItem().get(ComponentRegistry.RIVEN_POLARITY_TYPE.get());
         }
 
@@ -760,7 +753,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
 
     private boolean isValidCycle() {
         if (!menu.getModSlot().getItem().is(ItemRegistry.MOD.get())) return false;
-        boolean isRiven = IModContainer.get(menu.getModSlot().getItem()).getModAtIndex(0).getMod().getUniqueInfo(1, null).isEmpty();
+        boolean isRiven = IModContainer.get(menu.getModSlot().getItem()).getModAtIndex(0).getMod().getUniqueInfo(1).isEmpty();
         if (!isRiven) return false;
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isCreative()) return true;
         return getPlayerKuvaCount() >= 4;

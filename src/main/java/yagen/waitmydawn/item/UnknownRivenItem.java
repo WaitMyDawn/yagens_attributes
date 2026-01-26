@@ -1,5 +1,7 @@
 package yagen.waitmydawn.item;
 
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -7,7 +9,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.*;
 import yagen.waitmydawn.capabilities.ModContainer;
@@ -29,10 +33,16 @@ public class UnknownRivenItem extends Item {
     }
 
     @Override
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
+                                @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+        tooltip.add(Component.translatable("item.yagens_attributes.unknown_riven.tooltip1")
+                .withStyle(ChatFormatting.DARK_PURPLE));
+    }
+
+    @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player,
                                                   InteractionHand hand) {
         if (!level.isClientSide) {
-            System.out.println("You are using unknown riven item");
             int bonus, penalty;
             switch (RandomSource.create().nextInt(4)) {
                 case 0 -> {

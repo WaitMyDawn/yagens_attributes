@@ -2,19 +2,14 @@ package yagen.waitmydawn.api.attribute;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
 import net.neoforged.fml.ModList;
-import yagen.waitmydawn.config.WeaponStatsManager;
-import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
-import yagen.waitmydawn.item.weapon.IronsSpellbooksItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
-import yagen.waitmydawn.item.weapon.TwilightForestItem;
-import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -217,7 +212,7 @@ public class DefaultDamageTypeRegistry {
                     .filter(item -> item instanceof BowItem || item instanceof CrossbowItem)
                     .toArray(Item[]::new);
 
-    public static float getTotalAttackDamage(Item item) {
+    public static float getBaseAttackDamage(Item item) {
         if (item instanceof BowItem) return 10f;
         if (item instanceof CrossbowItem) return 10f;
         if (ModList.get().isLoaded("cataclysm")) {
@@ -257,7 +252,7 @@ public class DefaultDamageTypeRegistry {
 
     public static void registerSingle(Item item, Map<DamageType, Float> dist) {
         if (item == null) return;//|| VANILLA_DAMAGE_TYPES.containsKey(item)
-        float total = getTotalAttackDamage(item);
+        float total = getBaseAttackDamage(item);
         Map<DamageType, Float> map = new HashMap<>();
         dist.forEach((k, v) -> {
             if (v != -1f)

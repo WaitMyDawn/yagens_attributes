@@ -3,7 +3,6 @@ package yagen.waitmydawn.item.mod.armor_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +18,7 @@ public class GraceArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
+    public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
                 Component.translatable("functions.yagens_attributes.grace_armor_mod.1",
                         String.format("%.2f", 0.1 + 0.05 * modLevel))

@@ -6,7 +6,6 @@ import yagen.waitmydawn.api.mods.ModRarity;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 
 
 import java.util.List;
@@ -15,7 +14,7 @@ public class SlashUpToolMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slash_up_tool_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
+    public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
                 Component.translatable("tooltip.yagens_attributes.slash_addition", 15 * modLevel)
         );

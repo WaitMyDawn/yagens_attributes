@@ -133,7 +133,6 @@ public class BowShootEvent {
                 bow.getEnchantmentLevel(level.registryAccess()
                         .registryOrThrow(Registries.ENCHANTMENT)
                         .getHolderOrThrow(Enchantments.INFINITY)) >= 1;
-//        player.sendSystemMessage(Component.literal("isInfinity:" + isInfinity));
 
         if (itemstack.isEmpty() && !isCreative) {
             if (!isInfinity) return;
@@ -212,7 +211,7 @@ public class BowShootEvent {
         if (player.level().isClientSide) return;
         ItemStack weaponStack = event.getSource().getWeaponItem();
         if (weaponStack == null) return;
-        if (!(weaponStack.getItem() instanceof BowItem)&&!(weaponStack.getItem() instanceof CrossbowItem)) return;
+        if (!(weaponStack.getItem() instanceof BowItem) && !(weaponStack.getItem() instanceof CrossbowItem)) return;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         boolean isAbility = false;

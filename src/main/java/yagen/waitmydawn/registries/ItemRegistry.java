@@ -39,27 +39,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> FORMA = ITEMS.register("forma",
             () -> new FormaItem(new Item.Properties()));
     public static final DeferredHolder<Item, Item> UNKNOWN_RIVEN = ITEMS.register("unknown_riven",
-            () -> new UnknownRivenItem(new Item.Properties()){
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
-                                            @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-
-                        tooltip.add(Component.translatable("item.yagens_attributes.unknown_riven.tooltip1")
-                                .withStyle(ChatFormatting.DARK_PURPLE));
-
-                }
-            });
+            () -> new UnknownRivenItem(new Item.Properties()));
     public static final DeferredHolder<Item, Item> KUVA = ITEMS.register("kuva",
-            () -> new Item(new Item.Properties()){
-                @Override
-                public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext ctx,
-                                            @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-
-                    tooltip.add(Component.translatable("item.yagens_attributes.kuva.tooltip1")
-                            .withStyle(ChatFormatting.DARK_RED));
-
-                }
-            });
+            () -> new KuvaItem(new Item.Properties()));
     public static final DeferredHolder<Item, Item> ORDIS = ITEMS.register("ordis",
             () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> PUMILUM = ITEMS.register("pumilum",

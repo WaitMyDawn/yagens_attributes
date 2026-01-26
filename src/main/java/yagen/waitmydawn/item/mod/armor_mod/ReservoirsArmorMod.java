@@ -6,12 +6,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.SimpleMenuProvider;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
@@ -29,7 +27,7 @@ public class ReservoirsArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "reservoirs_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel, LivingEntity player) {
+    public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
                 Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
                 Component.translatable("warframe.yagens_attributes.reservoirs_armor_mod.1"),

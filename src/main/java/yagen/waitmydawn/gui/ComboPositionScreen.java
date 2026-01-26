@@ -35,7 +35,7 @@ public class ComboPositionScreen extends Screen {
         }
         gfx.drawString(font, "3x/32  120", x, y, 0xFFFFFF, true);
         gfx.drawString(font, Component.translatable("ui.yagens_attributes.combo_position_explain.1"),
-                (width-font.width(Component.translatable("ui.yagens_attributes.combo_position_explain.1"))) / 2,
+                (width - font.width(Component.translatable("ui.yagens_attributes.combo_position_explain.1"))) / 2,
                 20, 0xFFFF55, true);
     }
 
@@ -64,8 +64,8 @@ public class ComboPositionScreen extends Screen {
     public boolean mouseReleased(double mx, double my, int btn) {
         if (btn == 0 && dragging) {
             dragging = false;
-            tempX=(int) mx - dragStartX;
-            tempY=(int) my - dragStartY;
+            tempX = (int) mx - dragStartX;
+            tempY = (int) my - dragStartY;
             return true;
         }
         return super.mouseReleased(mx, my, btn);
@@ -74,8 +74,8 @@ public class ComboPositionScreen extends Screen {
     @Override
     public boolean mouseDragged(double mx, double my, int btn, double dx, double dy) {
         if (dragging) {
-            tempX=(int) mx - dragStartX;
-            tempY=(int) my - dragStartY;
+            tempX = (int) mx - dragStartX;
+            tempY = (int) my - dragStartY;
             return true;
         }
         return super.mouseDragged(mx, my, btn, dx, dy);
@@ -84,9 +84,11 @@ public class ComboPositionScreen extends Screen {
     @Override
     public boolean keyPressed(int key, int scancode, int mods) {
         if (key == GLFW.GLFW_KEY_ESCAPE) {
-            ClientConfigs.COMBO_HUD_X.set(tempX);
-            ClientConfigs.COMBO_HUD_Y.set(tempY);
-            ClientConfigs.SPEC.save();
+            if (tempX != -1) {
+                ClientConfigs.COMBO_HUD_X.set(tempX);
+                ClientConfigs.COMBO_HUD_Y.set(tempY);
+                ClientConfigs.SPEC.save();
+            }
             tempX = -1;
             tempY = -1;
             assert this.minecraft != null;

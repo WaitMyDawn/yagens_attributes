@@ -62,7 +62,6 @@ public class MissionEvent {
         MinecraftServer server = Objects.requireNonNull(mob.getServer());
         MissionData data = MissionData.get(server);
         ResourceLocation taskId = ResourceLocation.parse(taskIdString);
-        System.out.println("taskId: " + taskId);
         MissionData.SharedTaskData sData = data.getSharedTaskById(level.dimension().location(), taskId);
         if (sData.missionType != MissionType.ASSASSINATION) return;
         if (!mob.getPersistentData().getString("TaskId").equals(taskId.toString())) return;
