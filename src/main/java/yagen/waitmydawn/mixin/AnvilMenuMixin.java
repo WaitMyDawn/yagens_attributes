@@ -85,7 +85,7 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
     @Final
     private DataSlot cost;
 
-    @ModifyConstant(method = "createResult", constant = @Constant(intValue = 40))
+    @ModifyConstant(method = "createResult", constant = @Constant(intValue = 40), require = 0)
     private int removeAnvilLevelCap(int oldLimit) {
         return Integer.MAX_VALUE;
     }
@@ -136,7 +136,8 @@ public abstract class AnvilMenuMixin extends ItemCombinerMenu {
                     value = "FIELD",
                     target = "Lnet/minecraft/world/entity/player/Abilities;instabuild:Z",
                     opcode = Opcodes.GETFIELD
-            )
+            ),
+            require = 0
     )
     private boolean forceCreativeCheck(Abilities instance) {
         return true;

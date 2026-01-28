@@ -1,6 +1,7 @@
 package yagen.waitmydawn.api.attribute;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.fml.ModList;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 
@@ -226,14 +228,15 @@ public class DefaultDamageTypeRegistry {
 
         ItemStack stack = new ItemStack(item);
         double damage = 0.0;
-
-        for (var entry : stack.getAttributeModifiers().modifiers()) {
-            if (entry.slot() == EquipmentSlotGroup.MAINHAND &&
-                    entry.attribute() == Attributes.ATTACK_DAMAGE &&
-                    entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
-                damage += entry.modifier().amount();
+        ItemAttributeModifiers modifiers = stack.getItem().components().get(DataComponents.ATTRIBUTE_MODIFIERS);
+        if (modifiers != null)
+            for (var entry : modifiers.modifiers()) {
+                if (entry.slot() == EquipmentSlotGroup.MAINHAND &&
+                        entry.attribute() == Attributes.ATTACK_DAMAGE &&
+                        entry.modifier().operation() == AttributeModifier.Operation.ADD_VALUE) {
+                    damage += entry.modifier().amount();
+                }
             }
-        }
         return (float) damage;
     }
 

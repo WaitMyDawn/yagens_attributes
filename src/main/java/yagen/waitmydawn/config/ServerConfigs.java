@@ -9,6 +9,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_OFFHAND;
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_COMBO;
     public static final ModConfigSpec.ConfigValue<Boolean> IF_LEVEL_BONUS;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_BULLET_JUMP;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_AIR_BRAKE;
     public static final ModConfigSpec.ConfigValue<Integer> SPLASH_POTION_COOLDOWN;
     public static final ModConfigSpec.ConfigValue<Integer> MAX_COMBO_LEVEL;
     public static final ModConfigSpec.ConfigValue<Integer> COMBO_LEVEL_NEEDED_COUNT;
@@ -39,6 +41,13 @@ public class ServerConfigs {
         BUILDER.push("Entity_Level");
         BUILDER.comment("Whether to active Level bonus for entities (default = true)");
         IF_LEVEL_BONUS = BUILDER.define("If_Level_Bonus", true);
+        BUILDER.pop();
+
+        BUILDER.push("Motion");
+        BUILDER.comment("Whether to active bullet jump (default = true)");
+        IF_BULLET_JUMP = BUILDER.define("If_Bullet_Jump", true);
+        BUILDER.comment("Whether to active air brake (default = true)");
+        IF_AIR_BRAKE = BUILDER.define("If_Air_Brake", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

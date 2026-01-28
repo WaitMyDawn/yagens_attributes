@@ -26,6 +26,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
 import yagen.waitmydawn.api.mods.IModContainer;
+import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.gui.mod_operation.ModOperationMenu;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
@@ -100,10 +101,10 @@ public class PlayerInteractionEvent {
         addNourishCount(player, Math.min(NOURISH_NEED, getNourishCount(player) + food.nutrition() * food.saturation()));
     }
 
-    @SubscribeEvent
-    public static void modifierHandlerAfterCraft(PlayerEvent.ItemCraftedEvent event) {
-        extendNewItemStackAttributes(event.getCrafting());
-    }
+//    @SubscribeEvent
+//    public static void modifierHandlerAfterCraft(PlayerEvent.ItemCraftedEvent event) {
+//        extendNewItemStackAttributes(event.getCrafting());
+//    }
 
     public static void extendNewItemStackAttributes(ItemStack result) {
         CustomData old = result.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
@@ -213,7 +214,6 @@ public class PlayerInteractionEvent {
         boolean isAirBrake = player.getPersistentData().getBoolean("AirBrake");
         boolean isBulletJump = player.getPersistentData().getBoolean("BulletJump");
         int brakeTime = player.getPersistentData().getInt("AirBrakeTime");
-
         if (isBulletJump) {
             Vec3 vec3 = player.getLookAngle().normalize().scale(jump.getValue() / jump.getBaseValue() * 1.25);
             player.moveTo(player.getX(), player.getY() + 0.5, player.getZ());
@@ -230,7 +230,7 @@ public class PlayerInteractionEvent {
             else
                 player.setDeltaMovement(vel.x, vel.y * 0.25, vel.z);
             player.getPersistentData().putInt("AirBrakeTime", brakeTime + 1);
-        } else if (!isAirBrake) {
+        } else if (!isAirBrake && ServerConfigs.IF_AIR_BRAKE.get()) {
             player.getPersistentData().putInt("AirBrakeTime", 0);
         }
     }

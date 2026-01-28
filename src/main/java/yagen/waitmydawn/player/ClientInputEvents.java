@@ -18,6 +18,8 @@ import net.neoforged.neoforge.client.event.InputEvent;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.config.ClientConfigs;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.gui.ClientConfigsScreen;
 import yagen.waitmydawn.network.*;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -72,7 +74,7 @@ public class ClientInputEvents {
             minecraft.setScreen(new ClientConfigsScreen());
         }
 
-        if (!player.isSpectator()) {
+        if (!player.isSpectator() && ClientConfigs.IF_AIR_BRAKE.get() && ServerConfigs.IF_AIR_BRAKE.get()) {
             if (!player.onGround() && AIR_BRAKE_STATE.wasPressed()) {
                 PacketDistributor.sendToServer(new AirBrakePacket(player.getUUID(), true));
                 player.getPersistentData().putBoolean("AirBrake", true);
@@ -87,7 +89,8 @@ public class ClientInputEvents {
             }
         }
 
-        if (!player.isSpectator() && player.onGround() && isShiftKeyDown && minecraft.options.keyJump.isDown()) {
+        if (!player.isSpectator() && ClientConfigs.IF_BULLET_JUMP.get() && ServerConfigs.IF_BULLET_JUMP.get()
+                && player.onGround() && isShiftKeyDown && minecraft.options.keyJump.isDown()) {
             PacketDistributor.sendToServer(new BulletJumpPacket(player.getUUID(), true));
             player.getPersistentData().putBoolean("BulletJump", true);
         }
@@ -105,10 +108,10 @@ public class ClientInputEvents {
                     break;
                 }
                 if (slot.getMod().isActive()) {
-                        ability[abilityIndex] = slot.getMod().getModName();
-                        abilityCost[abilityIndex] = slot.getMod().energyCost();
-                        abilityIndex++;
-                        isAbility = true;
+                    ability[abilityIndex] = slot.getMod().getModName();
+                    abilityCost[abilityIndex] = slot.getMod().energyCost();
+                    abilityIndex++;
+                    isAbility = true;
                 }
             }
         }

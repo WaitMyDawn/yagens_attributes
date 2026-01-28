@@ -34,7 +34,7 @@ import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import yagen.waitmydawn.YagensAttributes;
-import yagen.waitmydawn.api.entity.SummonEntityBlackList;
+import yagen.waitmydawn.api.entity.SummonEntityList;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 
 import java.util.*;
@@ -59,52 +59,59 @@ public class MissionHandler {
     public static void onServerStarted(ServerStartedEvent event) {
         if (executed) return;
         executed = true;
+
+        ServerLevel level = ServerLifecycleHooks.getCurrentServer().overworld();
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> type.getCategory() == MobCategory.MONSTER)
                 .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
-                .filter(type -> !type.is(SummonEntityBlackList.MONSTER_BLACK_LIST))
+                .filter(type -> !type.is(SummonEntityList.MONSTER_BLACK_LIST))
                 .forEach(type -> {
-                    EntityType<? extends Monster> type1 = (EntityType<? extends Monster>) type;
                     try {
+                        EntityType<? extends Monster> type1 = (EntityType<? extends Monster>) type;
+                        if (!isSafeMonster(type1, level)) return;
+                        if (isMultipartEntity(type1, level)) {
+                            return;
+                        }
                         MONSTER_TYPES.add(type1);
+                        Entity entity = type.create(level);
+                        if (entity instanceof LivingEntity living) {
+                            double maxHealth = living.getMaxHealth();
+                            if (maxHealth < 20)
+                                MONSTER_UNDER_20_TYPES.add(type1);
+                            else if (maxHealth > 20 && maxHealth < 30)
+                                MONSTER_20_30_TYPES.add(type1);
+                            else if (maxHealth > 30 && maxHealth < 60)
+                                MONSTER_30_60_TYPES.add(type1);
+                            else if (maxHealth > 60 && maxHealth < 200)
+                                MONSTER_60_200_TYPES.add(type1);
+                            else if (maxHealth > 200)
+                                MONSTER_OVER_200_TYPES.add(type1);
+                            else if (maxHealth == 20) {
+                                MONSTER_UNDER_20_TYPES.add(type1);
+                                MONSTER_20_30_TYPES.add(type1);
+                            } else if (maxHealth == 30) {
+                                MONSTER_20_30_TYPES.add(type1);
+                                MONSTER_30_60_TYPES.add(type1);
+                            } else if (maxHealth == 60) {
+                                MONSTER_30_60_TYPES.add(type1);
+                                MONSTER_60_200_TYPES.add(type1);
+                            } else if (maxHealth == 200) {
+                                MONSTER_60_200_TYPES.add(type1);
+                                MONSTER_OVER_200_TYPES.add(type1);
+                            }
+                        }
+//                        else if(entity instanceof LivingEntity living){
+//
+//                        }
                     } catch (ClassCastException e) {
                         System.out.println("fail to transform to Monster: " + type);
-                    }
-
-                    Entity entity = type.create(ServerLifecycleHooks.getCurrentServer().overworld());
-                    if (entity instanceof LivingEntity living) {
-                        double maxHealth = living.getMaxHealth();
-                        if (maxHealth < 20)
-                            MONSTER_UNDER_20_TYPES.add(type1);
-                        else if (maxHealth > 20 && maxHealth < 30)
-                            MONSTER_20_30_TYPES.add(type1);
-                        else if (maxHealth > 30 && maxHealth < 60)
-                            MONSTER_30_60_TYPES.add(type1);
-                        else if (maxHealth > 60 && maxHealth < 200)
-                            MONSTER_60_200_TYPES.add(type1);
-                        else if (maxHealth > 200)
-                            MONSTER_OVER_200_TYPES.add(type1);
-                        else if (maxHealth == 20) {
-                            MONSTER_UNDER_20_TYPES.add(type1);
-                            MONSTER_20_30_TYPES.add(type1);
-                        } else if (maxHealth == 30) {
-                            MONSTER_20_30_TYPES.add(type1);
-                            MONSTER_30_60_TYPES.add(type1);
-                        } else if (maxHealth == 60) {
-                            MONSTER_30_60_TYPES.add(type1);
-                            MONSTER_60_200_TYPES.add(type1);
-                        } else if (maxHealth == 200) {
-                            MONSTER_60_200_TYPES.add(type1);
-                            MONSTER_OVER_200_TYPES.add(type1);
-                        }
                     }
                 });
         BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
-                        || BuiltInRegistries.ENTITY_TYPE.getKey(type).toString().equals("born_in_chaos_v1:lord_pumpkinhead")
-                        || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()
+                        || type.is(SummonEntityList.BOSS_WHITE_LIST)
                 ))
-                .filter(type -> !type.is(SummonEntityBlackList.BOSS_BLACK_LIST))
+                .filter(type -> !type.is(SummonEntityList.BOSS_BLACK_LIST))
                 .forEach(type -> {
                     try {
                         BOSS_TYPES.add((EntityType<? extends Monster>) type);
@@ -192,13 +199,44 @@ public class MissionHandler {
         return BOSS_TYPES.contains(type);
     }
 
+    private static boolean isMultipartEntity(EntityType<?> type, ServerLevel level) {
+        Entity e = type.create(level);
+        if (!(e instanceof LivingEntity living)) return true;
+
+        return living.getParts() != null && living.getParts().length > 0;
+    }
+
+    private static boolean isSafeMonster(EntityType<? extends Monster> type, ServerLevel level) {
+        try {
+            Entity e = type.create(level);
+            if (!(e instanceof Monster m)) return false;
+            m.setPos(0, 0, 0);
+            m.tick();
+            return true;
+        } catch (Throwable t) {
+            System.out.println(Component.literal("type is not a safe monster: " + type + " " + t.getMessage()));
+            return false;
+        }
+    }
+
     public static <T extends Mob> T summonEntity(EntityType<T> type,
                                                  ServerLevel level,
                                                  Vec3 pos) {
-        T mob = type.create(level);
+        T mob = null;
+        try {
+            mob = type.create(level);
+        } catch (Throwable t) {
+            System.out.println(Component.literal("failed to summon mob: " + mob + " " + t.getMessage()));
+            return null;
+        }
         if (mob == null) return null;
-        mob.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
-        level.addFreshEntity(mob);
+        try {
+            mob.moveTo(pos.x, pos.y, pos.z, level.random.nextFloat() * 360F, 0);
+            level.addFreshEntity(mob);
+        } catch (Throwable t) {
+            System.out.println(Component.literal("failed to add mob: " + mob + " " + t.getMessage()));
+            return null;
+        }
 
         if (mob instanceof Warden warden) {
             Player nearest = warden.level().getNearestPlayer(warden, 32.0D);

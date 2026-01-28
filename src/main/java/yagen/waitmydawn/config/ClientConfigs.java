@@ -25,6 +25,10 @@ public class ClientConfigs {
 
     public static final ModConfigSpec.ConfigValue<Double> DAMAGE_NUMBER_ENLARGE;
 
+
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_BULLET_JUMP;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_AIR_BRAKE;
+
     /**
      * Damage Type Particle
      */
@@ -176,6 +180,13 @@ public class ClientConfigs {
         GAS_LIFE_TIME = BUILDER.define("Gas_Time", 50);
         BUILDER.pop();
 
+        BUILDER.pop();
+
+        BUILDER.push("Motion");
+        BUILDER.comment("Whether to active bullet jump (default = true)");
+        IF_BULLET_JUMP = BUILDER.define("If_Bullet_Jump", true);
+        BUILDER.comment("Whether to active air brake (default = true)");
+        IF_AIR_BRAKE = BUILDER.define("If_Air_Brake", true);
         BUILDER.pop();
 
 

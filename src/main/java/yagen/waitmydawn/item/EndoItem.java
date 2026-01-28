@@ -62,11 +62,12 @@ public class EndoItem extends Item {
                     taskId,
                     MissionType.fromString(endoInfo.missionType()), endoInfo.level(),
                     missionPosition,
-                    maxProgress, distance, missionRange, players))
+                    maxProgress, distance, missionRange, players)) {
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_created").withStyle(ChatFormatting.DARK_PURPLE));
-            if (!player.isCreative())
-                player.getItemInHand(hand).shrink(1);
-            sendMissionMap((ServerLevel) level, players, missionPosition, taskId);
+                if (!player.isCreative())
+                    player.getItemInHand(hand).shrink(1);
+                sendMissionMap((ServerLevel) level, players, missionPosition, taskId);
+            }
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);

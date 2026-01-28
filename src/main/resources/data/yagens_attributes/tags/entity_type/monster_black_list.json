@@ -3,6 +3,10 @@
   "values": [
     { "id": "minecraft:giant", "required": false },
     { "id": "minecraft:illusioner", "required": false },
+    { "id": "iceandfire:stone_statue", "required": false },
+    { "id": "alexscaves:luxtructosaurus", "required": false },
+    { "id": "alexscaves:watcher", "required": false },
+    { "id": "alexsmobs:void_worm", "required": false },
     { "id": "darkdoppelganger:dark_doppelganger_minion", "required": false },
     { "id": "irons_spellbooks:debug_wizard", "required": false },
     { "id": "irons_spellbooks:cultist", "required": false },

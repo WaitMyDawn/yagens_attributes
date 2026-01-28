@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 @Mixin(AnvilScreen.class)
 public class AnvilScreenMixin {
 
-    @ModifyConstant(method = "renderLabels", constant = @Constant(intValue = 40))
+    @ModifyConstant(method = "renderLabels", constant = @Constant(intValue = 40), require = 0)
     private int removeDisplayCap(int oldLimit) {
         return Integer.MAX_VALUE;
     }

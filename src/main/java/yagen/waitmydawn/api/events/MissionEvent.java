@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -109,7 +110,11 @@ public class MissionEvent {
                 serverPlayer.serverLevel(),
                 spawnPos,
                 taskId, sData.missionLevel);
-        mob.setTarget(player);
+        if (mob instanceof Monster monster
+                && monster.canAttack(player)
+                && monster.isAlive()) {
+            monster.setTarget(player);
+        }
         data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
 
