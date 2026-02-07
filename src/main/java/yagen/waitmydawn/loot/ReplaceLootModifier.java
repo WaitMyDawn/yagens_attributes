@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
 
@@ -45,7 +44,6 @@ public class ReplaceLootModifier extends LootModifier {
             ResourceLocation path = ResourceLocation.parse(resourceLocationKey);
             var lootTable = context.getLevel().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, path));
             ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
-            //use raw to avoid stack overflow/recursively adding all global loot modifiers
             lootTable.getRandomItemsRaw(context, objectarraylist::add);
             return objectarraylist;
         }

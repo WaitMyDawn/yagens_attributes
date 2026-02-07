@@ -20,7 +20,7 @@ public class RecipeGenerator extends RecipeProvider {
     }
 
     @Override
-    protected void buildRecipes(RecipeOutput recipeOutput) { // 有序合成
+    protected void buildRecipes(RecipeOutput recipeOutput) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
                 .pattern("MMM")
                 .pattern("MMM")
@@ -57,23 +57,10 @@ public class RecipeGenerator extends RecipeProvider {
                 .unlockedBy("mod_recycle_table", has(ItemRegistry.MOD_ESSENCE.get()))
                 .save(recipeOutput);
 
-        // 无序合成
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemRegistry.MOD_ESSENCE.get(),9)
                 .requires(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
                 .unlockedBy("mod_essence", has(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get()))
                 .save(recipeOutput);
-//        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemRegistry.createForma("Cth").getItem(),1)
-//                .requires(ItemRegistry.createForma("Nod").getItem())
-//                .unlockedBy("forma_cth", has(ItemRegistry.createForma("Nod").getItem()))
-//                .save(recipeOutput,YagensAttributes.MODID + ":forma_cth");
-//        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemRegistry.createForma("Nya").getItem(),1)
-//                .requires(ItemRegistry.createForma("Cth").getItem())
-//                .unlockedBy("forma_nya", has(ItemRegistry.createForma("Cth").getItem()))
-//                .save(recipeOutput,YagensAttributes.MODID + ":forma_nya");
-//        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemRegistry.createForma("Nod").getItem(),1)
-//                .requires(ItemRegistry.createForma("Nya").getItem())
-//                .unlockedBy("forma_nod", has(ItemRegistry.createForma("Nya").getItem()))
-//                .save(recipeOutput,YagensAttributes.MODID + ":forma_nod");
     }
 
     protected static <T extends AbstractCookingRecipe> void cookRecipes(

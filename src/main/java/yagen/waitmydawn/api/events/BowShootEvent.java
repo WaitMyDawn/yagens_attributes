@@ -34,6 +34,7 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.network.HeadShotSoundPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -211,7 +212,7 @@ public class BowShootEvent {
         if (player.level().isClientSide) return;
         ItemStack weaponStack = event.getSource().getWeaponItem();
         if (weaponStack == null) return;
-        if (!(weaponStack.getItem() instanceof BowItem) && !(weaponStack.getItem() instanceof CrossbowItem)) return;
+        if(!(event.getSource().getDirectEntity() instanceof AbstractArrow)) return;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         boolean isAbility = false;
@@ -242,8 +243,9 @@ public class BowShootEvent {
         double multiplier = Math.pow(volume / 0.7, 1.0 / 3.0);
         headHalf = Math.clamp(headHalf * multiplier, 0.1, 0.9);
         if (Math.abs(arrow.getY() - eyeHeight - livingEntity.getY()) <= headHalf) {
-            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.ARROW_HIT_PLAYER, SoundSource.PLAYERS, 1.0F, 1.0F);
+            if (player instanceof ServerPlayer serverPlayer) {
+                PacketDistributor.sendToPlayer(serverPlayer, new HeadShotSoundPacket());
+            }
             return true;
         }
         return false;

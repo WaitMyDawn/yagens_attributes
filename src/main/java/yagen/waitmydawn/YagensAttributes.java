@@ -23,7 +23,7 @@ import yagen.waitmydawn.mixin.RangedAttributeAccessor;
 import yagen.waitmydawn.network.NetworkHandler;
 import yagen.waitmydawn.registries.*;
 import yagen.waitmydawn.util.SupportedMod;
-import yagen.waitmydawn.util.YagenAttributesModCreativeTab;
+import yagen.waitmydawn.util.YagenAttributesCreativeTab;
 
 import java.util.Map;
 
@@ -40,7 +40,7 @@ public class YagensAttributes {
         modEventBus.addListener(NetworkHandler::onRegister);
         modEventBus.addListener(CapabilitiesRegistry::registerCapabilities);
 
-        YagenAttributesModCreativeTab.register(modEventBus);
+        YagenAttributesCreativeTab.register(modEventBus);
         MenuRegistry.register(modEventBus);
         ModRegistry.register(modEventBus);
         ItemRegistry.register(modEventBus);

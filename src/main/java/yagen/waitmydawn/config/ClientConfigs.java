@@ -29,6 +29,10 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Boolean> IF_BULLET_JUMP;
     public static final ModConfigSpec.ConfigValue<Boolean> IF_AIR_BRAKE;
 
+    public static final ModConfigSpec.ConfigValue<Double> HEADSHOT_VOLUME;
+    public static final ModConfigSpec.ConfigValue<Double> HEADSHOT_PITCH;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_HEADSHOT_SOUND;
+
     /**
      * Damage Type Particle
      */
@@ -187,6 +191,15 @@ public class ClientConfigs {
         IF_BULLET_JUMP = BUILDER.define("If_Bullet_Jump", true);
         BUILDER.comment("Whether to active air brake (default = true)");
         IF_AIR_BRAKE = BUILDER.define("If_Air_Brake", true);
+        BUILDER.pop();
+
+        BUILDER.push("Sound");
+        BUILDER.comment("Whether to play headshot sound (default = true)");
+        IF_HEADSHOT_SOUND = BUILDER.define("If_Headshot_Sound", true);
+        BUILDER.comment("The volume of headshot sound (default = 0.6)");
+        HEADSHOT_VOLUME = BUILDER.define("Volume", 0.6);
+        BUILDER.comment("The pitch of headshot sound (default = 1.2)");
+        HEADSHOT_PITCH = BUILDER.define("Pitch", 1.2);
         BUILDER.pop();
 
 

@@ -31,13 +31,14 @@ import java.util.ArrayList;
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class ClientInputEvents {
     private static final ArrayList<KeyState> KEY_STATES = new ArrayList<>();
+    private static final ArrayList<KeyState> KEY_STATES_ABILITY = new ArrayList<>();
 
     private static final KeyState CONFIG_SCREEN_STATE = register(KeyMappings.CONFIG_SCREEN);
     private static final KeyState AIR_BRAKE_STATE = register(KeyMappings.AIR_BRAKE);
-    private static final KeyState ABILITY_1_STATE = register(KeyMappings.ABILITY_1_KEYMAP);
-    private static final KeyState ABILITY_2_STATE = register(KeyMappings.ABILITY_2_KEYMAP);
-    private static final KeyState ABILITY_3_STATE = register(KeyMappings.ABILITY_3_KEYMAP);
-    private static final KeyState ABILITY_4_STATE = register(KeyMappings.ABILITY_4_KEYMAP);
+    private static final KeyState ABILITY_1_STATE = registerAbility(KeyMappings.ABILITY_1_KEYMAP);
+    private static final KeyState ABILITY_2_STATE = registerAbility(KeyMappings.ABILITY_2_KEYMAP);
+    private static final KeyState ABILITY_3_STATE = registerAbility(KeyMappings.ABILITY_3_KEYMAP);
+    private static final KeyState ABILITY_4_STATE = registerAbility(KeyMappings.ABILITY_4_KEYMAP);
 
     private static final KeyState[] abilityStates = {
             ABILITY_1_STATE,
@@ -95,6 +96,11 @@ public class ClientInputEvents {
             player.getPersistentData().putBoolean("BulletJump", true);
         }
 
+//        handleAbility(player);
+        update();
+    }
+
+    private static void handleAbility(Player player) {
         boolean isAbility = false;
         String[] ability = new String[4];
         double[] abilityCost = new double[4];
@@ -185,12 +191,24 @@ public class ClientInputEvents {
                 }
             }
         }
+    }
 
-        update();
+    @SubscribeEvent
+    public static void onClientTick(ClientTickEvent.Post event){
+        if (Minecraft.getInstance().player != null) {
+            handleAbility(Minecraft.getInstance().player);
+        }
+        updateAbility();
     }
 
     private static void update() {
         for (KeyState k : KEY_STATES) {
+            k.update();
+        }
+    }
+
+    private static void updateAbility() {
+        for (KeyState k : KEY_STATES_ABILITY) {
             k.update();
         }
     }
@@ -218,6 +236,12 @@ public class ClientInputEvents {
     private static KeyState register(KeyMapping key) {
         var k = new KeyState(key);
         KEY_STATES.add(k);
+        return k;
+    }
+
+    private static KeyState registerAbility(KeyMapping key) {
+        var k = new KeyState(key);
+        KEY_STATES_ABILITY.add(k);
         return k;
     }
 }

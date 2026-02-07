@@ -1,10 +1,8 @@
 package yagen.waitmydawn.util;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +21,7 @@ import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.api.mods.*;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.MOD)
-public class YagenAttributesModCreativeTab {
+public class YagenAttributesCreativeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TAB =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, YagensAttributes.MODID);
 

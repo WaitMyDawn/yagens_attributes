@@ -1,5 +1,6 @@
 package yagen.waitmydawn.api.events;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -8,10 +9,13 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -160,7 +164,6 @@ public class AttackEventHandler {
         if (weaponItem != null) isSpecialBow = ModCompat.isSpecialBow(weaponItem.getItem());
         if (weaponItem.getItem() == Items.ARROW) weaponItem = attacker.getMainHandItem();//fix for cursed_bow
         Map<DamageType, Float> dmgMap = new HashMap<>();
-
         if (!isArrow && !isThrownTrident)
             dmgMap.put(DamageType.IMPACT, 1f);
 
@@ -274,6 +277,10 @@ public class AttackEventHandler {
                 }
             }
         }
+        if (source.is(DamageTypeRegistry.FORCE_SLASH_STATUS)) {
+            statusEffect(DamageType.SLASH, attacker, target, adjustedTotal);
+        }
+
         if (lifeSteal > 0)
             attacker.setHealth(Math.min(attacker.getHealth() + adjustedTotal * (float) (lifeSteal), attacker.getMaxHealth()));
         if (healthHeal > 0)
@@ -281,10 +288,6 @@ public class AttackEventHandler {
 
 
         int color = 0xFFFFFF;
-//        if (source.is(DamageTypeTags.IS_EXPLOSION)) {
-//            criticalLevel = 0;
-//            color = 0xDAA520;
-//        }
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
         PacketDistributor.sendToPlayersTrackingEntity(target,
                 new DamageNumberPacket(pos, adjustedTotal, color, criticalLevel));
@@ -371,6 +374,11 @@ public class AttackEventHandler {
                 source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
             return;
+        String damageId = source.typeHolder()
+                .unwrapKey()
+                .map(k -> k.location().getPath())
+                .orElse("");
+        if (damageId.equals("bullet")) return;
 
         ItemStack weaponStack = event.getSource().getWeaponItem();
         int isValidity = 0;
@@ -427,7 +435,7 @@ public class AttackEventHandler {
         target.addEffect(instance);
     }
 
-    private static void statusEffect(DamageType type, LivingEntity attacker, LivingEntity target, float finalDamage) {
+    public static void statusEffect(DamageType type, LivingEntity attacker, LivingEntity target, float finalDamage) {
         AttributeInstance statusDuration = attacker.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.STATUS_DURATION.get()));
         if (statusDuration == null) return;
         double sd = statusDuration.getValue();

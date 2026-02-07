@@ -71,6 +71,12 @@ public class NetworkHandler {
                 SyncMissionDataPacket::handle
         );
 
+        registrar.playToClient(
+                HeadShotSoundPacket.TYPE,
+                HeadShotSoundPacket.STREAM_CODEC,
+                HeadShotSoundPacket::handle
+        );
+
         registrar.playBidirectional(
                 EnergyPacket.TYPE,
                 EnergyPacket.STREAM_CODEC,
