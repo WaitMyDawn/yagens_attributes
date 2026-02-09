@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.registries.ComponentRegistry;
 
 
@@ -21,7 +22,7 @@ public class GraceArmorMod extends AbstractMod {
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
                 Component.translatable("functions.yagens_attributes.grace_armor_mod.1",
-                        String.format("%.2f", 0.1 + 0.05 * modLevel))
+                        String.format("%.2f", 0.1 + ServerConfigs.MOD_RARE_GRACEFULLY_SERPENTINE.get().floatValue() * modLevel))
         );
     }
 
@@ -44,7 +45,7 @@ public class GraceArmorMod extends AbstractMod {
         setGraceAbility(attributeList.get(random.nextInt(attributeList.size())), stack);
     }
 
-    public static Map<Attribute, Double> ATTRIBUTE_SET =new HashMap<>();
+    public static Map<Attribute, Double> ATTRIBUTE_SET = new HashMap<>();
 
     public static double getBonus(Attribute attribute, double overflow) {
         double modifier = ATTRIBUTE_SET.get(attribute);

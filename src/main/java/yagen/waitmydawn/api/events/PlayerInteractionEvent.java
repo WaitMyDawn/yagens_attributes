@@ -98,7 +98,7 @@ public class PlayerInteractionEvent {
         if (!(itemStack.has(DataComponents.FOOD))) return;
         FoodProperties food = itemStack.get(DataComponents.FOOD);
         if (food == null) return;
-        addNourishCount(player, Math.min(NOURISH_NEED, getNourishCount(player) + food.nutrition() * food.saturation()));
+        addNourishCount(player, Math.min(ServerConfigs.MOD_WARFRAME_NOURISH_MAX_COUNT.get().floatValue(), getNourishCount(player) + food.nutrition() * food.saturation()));
     }
 
 //    @SubscribeEvent
@@ -238,7 +238,7 @@ public class PlayerInteractionEvent {
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         Player player = event.getEntity();
-        if (player.level().isClientSide || player.tickCount % 5 != 0) return;
+        if (player.level().isClientSide || player.tickCount % 10 != 0) return;
 
         double maxEnergy = player.getAttributeValue(YAttributes.MAX_ENERGY);
         double energy = DataAttachmentRegistry.getEnergy(player);

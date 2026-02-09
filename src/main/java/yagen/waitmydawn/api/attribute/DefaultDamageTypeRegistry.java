@@ -265,6 +265,11 @@ public class DefaultDamageTypeRegistry {
     }
 
     public static Map<DamageType, Float> get(Item item) {
-        return VANILLA_DAMAGE_TYPES.get(item);
+        try {
+            return VANILLA_DAMAGE_TYPES.get(item);
+        } catch (NullPointerException e) {
+            System.out.println("VANILLA_DAMAGE_TYPES not found: " + item + " NPE " + e.getMessage());
+            return null;
+        }
     }
 }

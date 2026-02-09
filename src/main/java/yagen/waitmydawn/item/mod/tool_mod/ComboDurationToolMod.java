@@ -7,6 +7,7 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class ComboDurationToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.combo_duration_add", 2f * modLevel)
+                Component.translatable("tooltips.yagens_attributes.combo_duration_add", String.format("%.2f", ServerConfigs.MOD_RARE_HARVEST_TIME.get().floatValue() * modLevel))
         );
     }
 

@@ -194,7 +194,7 @@ public class ClientInputEvents {
     }
 
     @SubscribeEvent
-    public static void onClientTick(ClientTickEvent.Post event){
+    public static void onClientTick(ClientTickEvent.Post event) {
         if (Minecraft.getInstance().player != null) {
             handleAbility(Minecraft.getInstance().player);
         }
@@ -213,7 +213,6 @@ public class ClientInputEvents {
         }
     }
 
-    private static final int MAX_BLADE_STORM_RANGE = 20;
 
     @SubscribeEvent
     public static void getBladeStormTargets(InputEvent.InteractionKeyMappingTriggered event) {
@@ -222,12 +221,13 @@ public class ClientInputEvents {
         Player player = instance.player;
 
         if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
+        double maxBladeStormRange = ServerConfigs.MOD_WARFRAME_BLADE_STORM_RANGE.get();
 
-        LivingEntity target = RayUtils.getTargetedLiving(player, MAX_BLADE_STORM_RANGE);
+        LivingEntity target = RayUtils.getTargetedLiving(player, maxBladeStormRange);
 
         if (target == null || target == player) return;
 
-        if (player.distanceTo(target) > MAX_BLADE_STORM_RANGE) return;
+        if (player.distanceTo(target) > maxBladeStormRange) return;
 
         PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));
         event.setCanceled(true);

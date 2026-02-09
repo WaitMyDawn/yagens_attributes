@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ColdToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltip.yagens_attributes.cold_addition", 18f * modLevel)
+                Component.translatable("tooltip.yagens_attributes.cold_addition", String.format("%.2f", ServerConfigs.MOD_UNCOMMON_ELEMENT.get().floatValue() * modLevel))
         );
     }
 

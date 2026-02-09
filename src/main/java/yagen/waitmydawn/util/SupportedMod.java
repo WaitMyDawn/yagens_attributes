@@ -1,6 +1,7 @@
 package yagen.waitmydawn.util;
 
 public enum SupportedMod {
+    TENNORY("tennory"),
     IRONS_SPELLBOOKS("irons_spellbooks"),
     CATACLYSM("cataclysm"),
     TWILIGHT_FOREST("twilightforest"),

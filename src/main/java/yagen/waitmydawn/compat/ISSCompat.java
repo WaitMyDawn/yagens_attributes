@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
+import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.lightning.ChargeSpell;
 import net.minecraft.world.effect.MobEffect;
@@ -12,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -44,7 +46,7 @@ public class ISSCompat {
         return (int) (spellInstance.getSpellPower(spellData.getLevel(), livingEntity) * 20);
     }
 
-    public static void addSpellEffect(LivingEntity livingEntity, String string,int duration) {
+    public static void addSpellEffect(LivingEntity livingEntity, String string, int duration) {
         int idx = string.lastIndexOf('_');
         String name = string.substring(0, idx);
         int level = Integer.parseInt(string.substring(idx + 1)) - 1;
@@ -53,21 +55,24 @@ public class ISSCompat {
             case "haste" -> MobEffectRegistry.HASTENED;
             case "angel_wing" -> MobEffectRegistry.ANGEL_WINGS;
             case "oakskin" -> MobEffectRegistry.OAKSKIN;
-            case "invisibility" ->MobEffectRegistry.TRUE_INVISIBILITY;
-            case "spider_aspect" ->MobEffectRegistry.SPIDER_ASPECT;
+            case "invisibility" -> MobEffectRegistry.TRUE_INVISIBILITY;
+            case "spider_aspect" -> MobEffectRegistry.SPIDER_ASPECT;
             default -> null;
         };
         if (mobEffect == null) return;
-        if(name.equals("invisibility")) level =0;
+        if (name.equals("invisibility")) level = 0;
         livingEntity.addEffect((new MobEffectInstance(mobEffect, duration, Math.max(0, level))));
     }
 
     public static boolean isReservoir(ItemStack itemStack) {
         if (!isSpellContainer(itemStack)) return false;
-        return switch (ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell().getSpellName())
-        {
-            case "charge", "haste", "angel_wing","oakskin","invisibility","spider_aspect" -> true;
+        return switch (ISpellContainer.get(itemStack).getSpellAtIndex(0).getSpell().getSpellName()) {
+            case "charge", "haste", "angel_wing", "oakskin", "invisibility", "spider_aspect" -> true;
             default -> false;
         };
+    }
+
+    public static boolean isStaffItem(Item item) {
+        return item instanceof StaffItem;
     }
 }

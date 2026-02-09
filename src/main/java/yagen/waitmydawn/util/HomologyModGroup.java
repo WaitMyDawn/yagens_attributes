@@ -32,7 +32,8 @@ public class HomologyModGroup {
         return List.of(
                 Set.of("puncture", "slash", "impact"),
                 Set.of("multishot"),
-                Set.of("scope")
+                Set.of("scope"),
+                Set.of("fury")
         );
     }
 

@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class ElectricityStatusToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltip.yagens_attributes.electricity_addition", 12f * modLevel),
-                Component.translatable("tooltips.yagens_attributes.status_chance_multibase", 12f * modLevel)
+                Component.translatable("tooltip.yagens_attributes.electricity_addition", String.format("%.2f", ServerConfigs.MOD_RARE_STATUS_ELEMENT.get().floatValue() * modLevel)),
+                Component.translatable("tooltips.yagens_attributes.status_chance_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_STATUS_ELEMENT.get().floatValue() * modLevel))
         );
     }
 

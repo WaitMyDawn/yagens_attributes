@@ -62,6 +62,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     compileOnly "curse.maven:irons-spells-n-spellbooks-855414:7402503"
+    compileOnly "curse.maven:tennory-1455673:7585430"
     compileOnly "curse.maven:jei-238222:7420587"
 }
 

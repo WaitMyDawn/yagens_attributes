@@ -19,6 +19,7 @@ import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModData;
 import yagen.waitmydawn.capabilities.ReservoirsInventoryHandler;
 import yagen.waitmydawn.compat.ISSCompat;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.ReservoirEntity;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.EntityRegistry;
@@ -29,8 +30,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record CreateReservoirPacket(int index) implements CustomPacketPayload {
-    private static final int DURATION = 600;
-    private static final float RANGE = 4.0f;
     public static final Type<CreateReservoirPacket> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "create_reservoir"));
 
@@ -44,6 +43,8 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
 
     public static void handle(CreateReservoirPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
+            int DURATION = 20 * ServerConfigs.MOD_WARFRAME_RESERVOIRS_DURATION.get();
+            float RANGE = ServerConfigs.MOD_WARFRAME_RESERVOIRS_RANGE.get().floatValue();
             ServerPlayer player = (ServerPlayer) ctx.player();
             Level level = player.level();
             ReservoirEntity reservoir = new ReservoirEntity(EntityRegistry.RESERVOIR.get(), level);

@@ -1,0 +1,22 @@
+{
+  "riven_disposition": 1.1,
+  "attributes": {
+    "yagens_attributes:critical_chance": 0.12,
+    "yagens_attributes:status_chance": 0.2
+  },
+  "damage_distribution": {
+    "IMPACT": -1,
+    "PUNCTURE": -1,
+    "SLASH": -1,
+    "COLD": 0,
+    "TOXIN": 0,
+    "ELECTRICITY": 1,
+    "HEAT": 0,
+    "CORROSIVE": 0,
+    "VIRAL": 0,
+    "GAS": 0,
+    "RADIATION": 0,
+    "MAGNETIC": 0,
+    "BLAST": 0
+  }
+}

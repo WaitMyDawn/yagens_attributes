@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class FirerateToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.firerate_multibase", 18f * modLevel)
+                Component.translatable("tooltips.yagens_attributes.firerate_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_FLAME_FEATHER.get().floatValue() * modLevel))
         );
     }
 

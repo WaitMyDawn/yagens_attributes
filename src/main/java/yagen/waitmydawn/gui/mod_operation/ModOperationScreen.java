@@ -475,7 +475,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             ComponentRegistry.RivenRawInfoList raw = menu.slots.get(ITEM_SLOT).getItem().get(ComponentRegistry.RIVEN_RAW_INFO.get());
             uniqueInfo = raw == null ? List.of()
                     : raw.raw().stream()
-                    .map(r -> Component.translatable(r.key(), r.base() * modLevel))
+                    .map(r -> Component.translatable(r.key(), String.format("%.2f",r.base() * modLevel)))
                     .toList();
         } else {
             uniqueInfo = mod.getUniqueInfo(modLevel);

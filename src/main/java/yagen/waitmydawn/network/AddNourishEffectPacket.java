@@ -8,24 +8,26 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
 public record AddNourishEffectPacket() implements CustomPacketPayload {
-    private static final int DURATION = 600;
     public static final Type<AddNourishEffectPacket> TYPE =
             new Type<>(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "add_nourish"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, AddNourishEffectPacket> STREAM_CODEC =
             StreamCodec.of(
-                    (buf, pkt) -> {},
+                    (buf, pkt) -> {
+                    },
                     buf -> new AddNourishEffectPacket()
             );
 
     public static void handle(AddNourishEffectPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
+            int duration = 20 * ServerConfigs.MOD_WARFRAME_NOURISH_DURATION.get();
             ServerPlayer player = (ServerPlayer) ctx.player();
-            player.addEffect(new MobEffectInstance(MobEffectRegistry.NOURISH, DURATION, 0));
-            player.getPersistentData().putInt("YANourishLeft", DURATION);
+            player.addEffect(new MobEffectInstance(MobEffectRegistry.NOURISH, duration, 0));
+            player.getPersistentData().putInt("YANourishLeft", duration);
         });
     }
 

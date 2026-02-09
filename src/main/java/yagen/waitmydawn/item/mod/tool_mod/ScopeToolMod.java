@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,7 +16,9 @@ public class ScopeToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("damagebonus.yagens_attributes.scope_tool_mod.1", 27f * modLevel)
+                Component.translatable("damagebonus.yagens_attributes.scope_tool_mod.1",
+                        String.format("%.2f", ServerConfigs.MOD_RARE_SCOPE.get().floatValue() * modLevel),
+                        String.format("%d", ServerConfigs.MOD_RARE_SCOPE_DURATION.get()))
         );
     }
 

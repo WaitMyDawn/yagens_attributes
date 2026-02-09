@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.registries.ComponentRegistry;
 
 import java.util.Arrays;
@@ -57,11 +58,11 @@ public class ReservoirsScreen extends AbstractContainerScreen<ReservoirsMenu> {
         if (isHovering(leftPos + ATTRIBUTE_START_X, topPos + ATTRIBUTE_START_Y,
                 ATTRIBUTE_DISTANCE * 2 + ATTRIBUTE_WIDTH, ATTRIBUTE_HEIGHT, mouseX, mouseY)) {
             Component lineB = Component.translatable("tooltip.yagens_attributes.reservoirs.2"
-                    , String.format("%.1f", 6 * reservoirsAttributes.duration())).withStyle(ChatFormatting.BLUE);
+                    , String.format("%.1f", ServerConfigs.MOD_WARFRAME_RESERVOIRS_DURATION_FACTOR.get() * 100 * reservoirsAttributes.duration())).withStyle(ChatFormatting.BLUE);
             Component lineR = Component.translatable("tooltip.yagens_attributes.reservoirs.1"
-                    , String.format("%.1f", 6 * reservoirsAttributes.strength())).withStyle(ChatFormatting.RED);
+                    , String.format("%.1f", ServerConfigs.MOD_WARFRAME_RESERVOIRS_STRENGTH_FACTOR.get() * 100 * reservoirsAttributes.strength())).withStyle(ChatFormatting.RED);
             Component lineG = Component.translatable("tooltip.yagens_attributes.reservoirs.3"
-                    , String.format("%.1f", 20 * reservoirsAttributes.range())).withStyle(ChatFormatting.GREEN);
+                    , String.format("%.1f", ServerConfigs.MOD_WARFRAME_RESERVOIRS_RANGE_FACTOR.get() * 100 * reservoirsAttributes.range())).withStyle(ChatFormatting.GREEN);
             List<Component> lines = Arrays.asList(lineB, lineR, lineG);
             guiHelper.renderTooltip(font, lines, Optional.empty(), mouseX, mouseY);
         }

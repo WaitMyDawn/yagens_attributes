@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class PilotArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("functions.yagens_attributes.pilot_armor_mod.1", 8 * modLevel)
+                Component.translatable("functions.yagens_attributes.pilot_armor_mod.1", String.format("%.2f", ServerConfigs.MOD_COMMON_BEAR_WING.get().floatValue() * modLevel))
         );
     }
 

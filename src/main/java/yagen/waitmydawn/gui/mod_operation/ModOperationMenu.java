@@ -237,7 +237,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
         Map<DamageType, Float> base = new HashMap<>();
         boolean isWeapon = false;
         if (ModCompat.validLocation(stack.getItem()) == 1) {
-            base = new HashMap<>(DefaultDamageTypeRegistry.get(stack.getItem()));
+            base = DefaultDamageTypeRegistry.get(stack.getItem());
+            if (base == null) return;
             if (base.isEmpty()) {
                 System.out.println("rebuild Item is Weapon but empty!!!");
                 return;

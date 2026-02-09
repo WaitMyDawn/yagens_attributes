@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ public class ScattershotToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.multishot_multiply", String.format("%.1f", 60f * modLevel)),
-                Component.translatable("tooltips.yagens_attributes.shoot_spread_add", 0.8f * modLevel),
-                Component.translatable("functions.yagens_attributes.scattershot_tool_mod.1" )
-        );
+                Component.translatable("tooltips.yagens_attributes.multishot_multiply", String.format("%.2f", ServerConfigs.MOD_RARE_SCATTER_SHOT_MULTISHOT.get().floatValue() * modLevel)),
+                Component.translatable("tooltips.yagens_attributes.shoot_spread_add", String.format("%.2f", ServerConfigs.MOD_RARE_SCATTER_SHOT_SPREAD.get().floatValue() * modLevel)),
+                Component.translatable("functions.yagens_attributes.scattershot_tool_mod.1", String.format("%.2f", ServerConfigs.MOD_RARE_SCATTER_SHOT_DAMAGE.get().floatValue()))
+                );
     }
 
     public ScattershotToolMod() {

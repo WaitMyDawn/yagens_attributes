@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class JumpStrengthArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.jump_strength_multibase", 10f * modLevel),
-                Component.translatable("tooltips.yagens_attributes.safe_fall_distance_multibase", 10f * modLevel)
+                Component.translatable("tooltips.yagens_attributes.jump_strength_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_SPRING_SHOES.get().floatValue() * modLevel)),
+                Component.translatable("tooltips.yagens_attributes.safe_fall_distance_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_SPRING_SHOES.get().floatValue() * modLevel))
         );
     }
 
@@ -26,7 +27,9 @@ public class JumpStrengthArmorMod extends AbstractMod {
     }
 
     @Override
-    public boolean isReservoir() { return true; }
+    public boolean isReservoir() {
+        return true;
+    }
 
     @Override
     public ResourceLocation getModResource() {

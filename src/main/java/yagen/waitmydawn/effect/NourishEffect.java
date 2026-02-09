@@ -4,6 +4,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -13,10 +14,8 @@ public class NourishEffect extends MobEffect {
         super(mobEffectCategory, color);
     }
 
-    public static float NOURISH_NEED = 1024f;
-
     private static final class Nourish {
-        double enhance = 1.05;
+        double enhance = ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get();
         float nourishCount = 0f;
 
         Nourish(double enhance, float nourishCount) {
@@ -28,13 +27,15 @@ public class NourishEffect extends MobEffect {
     public static final Map<LivingEntity, Nourish> NOURISH_MAP = new WeakHashMap<>();
 
     public static void addNourishCount(LivingEntity entity, float nourishCount) {
-        double enhance = Math.min(1.05 + 0.45 * nourishCount / NOURISH_NEED, 1.5);
+        double enhance = Math.min(ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get() +
+                (ServerConfigs.MOD_WARFRAME_NOURISH_MAX_ENHANCE.get() - ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get())
+                        * nourishCount / ServerConfigs.MOD_WARFRAME_NOURISH_MAX_COUNT.get(), ServerConfigs.MOD_WARFRAME_NOURISH_MAX_ENHANCE.get());
         NOURISH_MAP.put(entity, new Nourish(enhance, nourishCount));
     }
 
     public static double getNourishEnhance(LivingEntity entity) {
         Nourish n = NOURISH_MAP.get(entity);
-        return n == null ? 1.05 : n.enhance;
+        return n == null ? ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get() : n.enhance;
     }
 
     public static float getNourishCount(LivingEntity entity) {

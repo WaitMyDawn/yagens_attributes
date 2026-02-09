@@ -21,6 +21,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -34,10 +35,13 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.compat.TennoryCompat;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.network.HeadShotSoundPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.Map;
 import java.util.Set;
@@ -159,8 +163,11 @@ public class BowShootEvent {
     public static void FireRate(LivingEntityUseItemEvent.Tick event) {
         if (!(event.getEntity() instanceof Player player)) return;
         Item item = event.getItem().getItem();
-        if (!(item instanceof ProjectileWeaponItem || item instanceof TridentItem || ModCompat.isSpecialBow(item)))
-            return;
+        boolean isBowAndTrident = item instanceof ProjectileWeaponItem || item instanceof TridentItem || ModCompat.isSpecialBow(item);
+        if (!isBowAndTrident)
+            if (ModList.get().isLoaded(SupportedMod.TENNORY.getValue()))
+                if (!TennoryCompat.isGlaive(item))
+                    return;
 
         double rate = player.getAttribute(YAttributes.FIRE_RATE).getValue();
         if (rate == 1) return;
@@ -212,7 +219,7 @@ public class BowShootEvent {
         if (player.level().isClientSide) return;
         ItemStack weaponStack = event.getSource().getWeaponItem();
         if (weaponStack == null) return;
-        if(!(event.getSource().getDirectEntity() instanceof AbstractArrow)) return;
+        if (!(event.getSource().getDirectEntity() instanceof AbstractArrow)) return;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         boolean isAbility = false;
@@ -226,7 +233,7 @@ public class BowShootEvent {
             }
         }
         if (!isAbility) return;
-        if (player.getRandom().nextFloat() > 0.5f) return;
+        if (player.getRandom().nextFloat() > ServerConfigs.MOD_WARFRAME_COLLABORATIVE_PROFICIENCY.get() / 100.0) return;
         double comboDuration = 20 * player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(YAttributes.COMBO_DURATION.get())).getValue();
         DataAttachmentRegistry.Combo old = player.getData(DataAttachmentRegistry.COMBO.get());
         DataAttachmentRegistry.Combo updated = old.withCount(old.count() + 1)

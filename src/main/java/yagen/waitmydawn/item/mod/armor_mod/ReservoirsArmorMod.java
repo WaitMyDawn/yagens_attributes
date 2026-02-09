@@ -69,7 +69,9 @@ public class ReservoirsArmorMod extends AbstractMod {
     }
 
     @Override
-    public boolean isActive() { return true;}
+    public boolean isActive() {
+        return true;
+    }
 
     @Override
     public double energyCost() {

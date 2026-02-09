@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class MovementSpeedArmorMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.movement_speed_multibase", 10f * modLevel)
+                Component.translatable("tooltips.yagens_attributes.movement_speed_multibase", String.format("%.2f", ServerConfigs.MOD_UNCOMMON_CLOUD_PIERCING_BOOTS.get().floatValue() * modLevel))
         );
     }
 

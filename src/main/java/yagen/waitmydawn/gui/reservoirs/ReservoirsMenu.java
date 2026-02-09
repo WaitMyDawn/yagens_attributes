@@ -33,7 +33,7 @@ public class ReservoirsMenu extends AbstractContainerMenu {
                 public boolean mayPlace(@NotNull ItemStack stack) {
                     if (IModContainer.isModContainer(stack))
                         return IModContainer.get(stack).getModAtIndex(0).getMod().isReservoir();
-                    else if(ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()))
+                    else if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()))
                         return ISSCompat.isReservoir(stack);
                     return false;
                 }
@@ -71,7 +71,7 @@ public class ReservoirsMenu extends AbstractContainerMenu {
     }
 
     public ItemStack getItemStack() {
-        return this.slots.get(lockedSlotIndex+30).getItem();
+        return this.slots.get(lockedSlotIndex + 30).getItem();
     }
 
     @Override

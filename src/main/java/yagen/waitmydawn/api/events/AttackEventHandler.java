@@ -1,6 +1,5 @@
 package yagen.waitmydawn.api.events;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
@@ -9,13 +8,10 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -109,7 +105,7 @@ public class AttackEventHandler {
                 var container = IModContainer.get(weaponItem);
                 for (ModSlot slot : container.getActiveMods()) {
                     if (slot.getMod().getModName().equals("scattershot_tool_mod")) {
-                        damage = damage * 0.4f;
+                        damage = damage * ServerConfigs.MOD_RARE_SCATTER_SHOT_DAMAGE.get().floatValue();
                         break;
                     }
                 }
@@ -242,7 +238,9 @@ public class AttackEventHandler {
         int statusOverloadLevel = ModCompat.ModLevelInItemStack(weaponItem, ModRegistry.STATUS_OVERLOAD_TOOL_MOD.get());
         if (isMelee && statusOverloadLevel > 0) {
             int statusCount = ModCompat.getHarmfulEffects(target).size();
-            adjustedTotal = adjustedTotal * (1f + 0.12f * statusOverloadLevel * statusCount);
+            adjustedTotal = adjustedTotal * (1f +
+                    ServerConfigs.MOD_LEGENDARY_CONDITION_OVERLOAD.get().floatValue() / 100
+                            * statusOverloadLevel * statusCount);
         }
 
         if (attacker.hasEffect(MobEffectRegistry.NOURISH)) {
@@ -260,7 +258,7 @@ public class AttackEventHandler {
             var container = IModContainer.get(weaponItem);
             for (ModSlot slot : container.getActiveMods()) {
                 if (slot.getMod().getModName().equals("health_heal_tool_mod")) {
-                    healthHeal = scCount * slot.getLevel();
+                    healthHeal = (int) (scCount * slot.getLevel() * ServerConfigs.MOD_LEGENDARY_STATUS_HEAL.get());
                     break;
                 }
             }
@@ -336,7 +334,7 @@ public class AttackEventHandler {
             ItemStack chest = target.getItemBySlot(EquipmentSlot.CHEST);
             int pilotLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.PILOT_ARMOR_MOD.get());
             if (pilotLevel != 0)
-                factorPilot = 1f - pilotLevel * 0.08f;
+                factorPilot = Math.max(0f, 1f - pilotLevel * ServerConfigs.MOD_COMMON_BEAR_WING.get().floatValue() / 100);
         }
 
         if (sourceEntity.hasEffect(MobEffectRegistry.PUNCTURE_STATUS)) {

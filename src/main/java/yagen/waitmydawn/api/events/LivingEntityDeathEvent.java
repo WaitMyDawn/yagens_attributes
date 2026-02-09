@@ -28,6 +28,7 @@ import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
@@ -94,7 +95,7 @@ public class LivingEntityDeathEvent {
         int originalExp = event.getDroppedExperience();
         if (originalExp <= 0) return;
         event.setDroppedExperience(0);
-        int total = (int) (originalExp * (1 + 0.4f * modLevel));
+        int total = (int) (originalExp * (1 + ServerConfigs.MOD_RARE_BOUNTY_HUNTER.get() * modLevel));
         player.giveExperiencePoints(total);
     }
 
@@ -127,8 +128,8 @@ public class LivingEntityDeathEvent {
     public static void TeleportItemDrop(LivingDeathEvent event) {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide) return;
-        if(entity.getRandom().nextDouble()<0.5) return;
-        if(!entity.getType().is(Tags.EntityTypes.BOSSES)) return;
+        if (entity.getRandom().nextDouble() < 0.5) return;
+        if (!entity.getType().is(Tags.EntityTypes.BOSSES)) return;
 
         ServerLevel level = (ServerLevel) entity.level();
         Vec3 pos = entity.position();
@@ -150,9 +151,11 @@ public class LivingEntityDeathEvent {
                 .getEntitiesOfClass(LivingEntity.class,
                         player.getBoundingBox().inflate(64.0));
         for (LivingEntity target : nearby) {
-            if (target instanceof Player) target.heal(2 * modLevel);
+            if (target instanceof Player)
+                target.heal(ServerConfigs.MOD_RARE_THORN_AURA_INCREASE.get().floatValue() * modLevel);
         }
-        player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE), modLevel);
+        player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE),
+                ServerConfigs.MOD_RARE_THORN_AURA_DECREASE.get().floatValue() * modLevel);
     }
 
     private static ItemStack findTotem(Player player) {

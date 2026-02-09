@@ -2,7 +2,6 @@ package yagen.waitmydawn.api.events;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -32,6 +31,7 @@ import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
@@ -200,8 +200,8 @@ public class ModBonusEvent {
         ResourceLocation MODIFIER_ID = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_bonus");
         ResourceLocation MODIFIER_ID_SPEED = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_overflow");
         AttributeInstance attributeInstanceSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        if(attributeInstanceSpeed == null) return;
-        if(chest==ItemStack.EMPTY) {
+        if (attributeInstanceSpeed == null) return;
+        if (chest == ItemStack.EMPTY) {
             removeGraceBonus(player, MODIFIER_ID);
             if (attributeInstanceSpeed.getModifier(MODIFIER_ID_SPEED) != null)
                 attributeInstanceSpeed.removeModifier(MODIFIER_ID_SPEED);
@@ -211,7 +211,7 @@ public class ModBonusEvent {
         AttributeInstance attributeInstance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attribute));
         if (attributeInstance == null) return;
         if (attributeInstance == Attributes.MOVEMENT_SPEED) {
-            removeGraceBonus(player,MODIFIER_ID);
+            removeGraceBonus(player, MODIFIER_ID);
             return;
         } else if (attributeInstance.getModifier(MODIFIER_ID) != null)
             attributeInstance.removeModifier(MODIFIER_ID);
@@ -223,7 +223,7 @@ public class ModBonusEvent {
             if (slot.getMod().getModName().equals("grace_armor_mod")) {
                 if (attribute == Attributes.MOVEMENT_SPEED.value()) return;
 
-                double limit = 0.1 + 0.05 * slot.getLevel();
+                double limit = 0.1 + ServerConfigs.MOD_RARE_GRACEFULLY_SERPENTINE.get() * slot.getLevel();
                 double overflow = player.getSpeed() - limit;
                 if (overflow <= 0) return;
                 double bonus = GraceArmorMod.getBonus(attribute, overflow);
@@ -267,7 +267,7 @@ public class ModBonusEvent {
         cleanUpReservoirBuffs(event.getEntity(), event.getEffectInstance().getEffect());
     }
 
-    private static void removeGraceBonus(Player player,ResourceLocation MODIFIER_ID) {
+    private static void removeGraceBonus(Player player, ResourceLocation MODIFIER_ID) {
         GraceArmorMod.ATTRIBUTE_SET.forEach((attr, value) -> {
             AttributeInstance instance = player.getAttribute(BuiltInRegistries.ATTRIBUTE.wrapAsHolder(attr));
             if (instance != null)
@@ -315,7 +315,7 @@ public class ModBonusEvent {
 
         AttributeModifier mod = new AttributeModifier(
                 MODIFIER_ID,
-                -(scopeLevel + 1) * 0.135 - (scopeGalLevel + 1) * 0.4,
+                -(scopeLevel + 1) * ServerConfigs.MOD_RARE_SCOPE.get()/200 - (scopeGalLevel + 1) * ServerConfigs.MOD_LEGENDARY_GALVANIZED_SCOPE_KILLBONUS.get(),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
         if (mode) criticalChance.addPermanentModifier(mod);
@@ -327,8 +327,9 @@ public class ModBonusEvent {
             int amplifier = player.getEffect(MobEffectRegistry.MULTISHOT_GALVANIZED).getAmplifier();
             player.addEffect(new MobEffectInstance(
                     MobEffectRegistry.MULTISHOT_GALVANIZED,
-                    400,
-                    Math.min(amplifier + 1, 4),
+                    ServerConfigs.MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT_DURATION.get() * 20,
+                    Math.min(amplifier + 1,
+                            Math.min(255, ServerConfigs.MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT_STACK.get() - 1)),
                     false,
                     true,
                     true
@@ -336,14 +337,14 @@ public class ModBonusEvent {
         } else {
             player.addEffect(new MobEffectInstance(
                     MobEffectRegistry.MULTISHOT_GALVANIZED,
-                    400,
+                    ServerConfigs.MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT_DURATION.get() * 20,
                     0,
                     false,
                     true,
                     true
             ));
         }
-        player.getPersistentData().putInt("gal_multishot_left", 400);
+        player.getPersistentData().putInt("gal_multishot_left", ServerConfigs.MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT_DURATION.get() * 20);
     }
 
     public static void ScopeGalvanizedToolModBonus(Player player) {
@@ -351,8 +352,9 @@ public class ModBonusEvent {
             int amplifier = player.getEffect(MobEffectRegistry.SCOPE_GALVANIZED).getAmplifier();
             player.addEffect(new MobEffectInstance(
                     MobEffectRegistry.SCOPE_GALVANIZED,
-                    240,
-                    Math.min(amplifier + 1, 4),
+                    ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20,
+                    Math.min(amplifier + 1,
+                            Math.min(255, ServerConfigs.MOD_LEGENDARY_GALVANIZED_SCOPE_STACK.get() - 1)),
                     false,
                     true,
                     true
@@ -360,20 +362,20 @@ public class ModBonusEvent {
         } else {
             player.addEffect(new MobEffectInstance(
                     MobEffectRegistry.SCOPE_GALVANIZED,
-                    240,
+                    ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20,
                     0,
                     false,
                     true,
                     true
             ));
         }
-        player.getPersistentData().putInt("gal_scope_left", 240);
+        player.getPersistentData().putInt("gal_scope_left", ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20);
     }
 
     public static void ScopeToolModBonus(Player player, int modLevel, int factor) {
         player.addEffect(new MobEffectInstance(
                 MobEffectRegistry.SCOPE,
-                240,
+                ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20,
                 modLevel * factor - 1,
                 false,
                 true,

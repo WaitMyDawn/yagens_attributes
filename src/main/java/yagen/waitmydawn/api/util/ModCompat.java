@@ -13,10 +13,12 @@ import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.item.weapon.IceAndFireCEItem;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.api.registry.ModRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.*;
 
@@ -29,9 +31,15 @@ public class ModCompat {
                 || (itemStack.getItem() instanceof ArmorItem armor && armor.getEquipmentSlot() == EquipmentSlot.CHEST)
                 || item instanceof MaceItem
                 || item instanceof ShieldItem;
-        if (ModList.get().isLoaded("cataclysm")) {
-            return defaultTagItem || isCataclysmTool(item) || isCataclysmArmor(item) || isCataclysmShield(item);
+        if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {
+            if (defaultTagItem || isCataclysmTool(item) || isCataclysmArmor(item) || isCataclysmShield(item))
+                return true;
         }
+        if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue())) {
+            if (defaultTagItem || ISSCompat.isStaffItem(item))
+                return true;
+        }
+
         return defaultTagItem;
     }
 
@@ -42,14 +50,19 @@ public class ModCompat {
             return 2;
         else if (item instanceof ShieldItem)
             return 3;
-        else if (isCataclysmTool(item))
-            return 1;
-        else if (isCataclysmArmor(item))
-            return 2;
-        else if (isCataclysmShield(item))
-            return 3;
-        else
-            return 0;
+        if (ModList.get().isLoaded(SupportedMod.CATACLYSM.getValue())) {
+            if (isCataclysmTool(item))
+                return 1;
+            else if (isCataclysmArmor(item))
+                return 2;
+            else if (isCataclysmShield(item))
+                return 3;
+        }
+        if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue())) {
+            if (ISSCompat.isStaffItem(item)) return 1;
+        }
+
+        return 0;
     }
 
     public static boolean isCataclysmTool(Item item) {

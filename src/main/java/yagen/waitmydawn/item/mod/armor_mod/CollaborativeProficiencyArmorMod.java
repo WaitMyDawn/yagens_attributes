@@ -7,6 +7,7 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
+import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class CollaborativeProficiencyArmorMod extends AbstractMod {
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
                 Component.translatable("warframe.yagens_attributes.passive"),
-                Component.translatable("warframe.yagens_attributes.collaborative_proficiency_armor_mod.1")
+                Component.translatable("warframe.yagens_attributes.collaborative_proficiency_armor_mod.1", String.format("%.2f", ServerConfigs.MOD_WARFRAME_COLLABORATIVE_PROFICIENCY.get().floatValue() * modLevel))
         );
     }
 

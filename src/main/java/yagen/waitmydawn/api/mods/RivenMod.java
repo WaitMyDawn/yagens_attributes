@@ -40,7 +40,7 @@ public final class RivenMod extends AbstractMod {
                         stack.get(ComponentRegistry.RIVEN_RAW_INFO.get());
                 if (raw != null) {
                     return raw.raw().stream()
-                            .map(r -> Component.translatable(r.key(), r.base() * modLevel))
+                            .map(r -> Component.translatable(r.key(), String.format("%.2f",r.base() * modLevel)))
                             .toList();
                 }
                 break;
