@@ -51,9 +51,15 @@ public class MobEffectRegistry {
             "grandiflorum", () -> new GrandiflorumEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> HYDRANGEA = MOB_EFFECT_DEFERRED_REGISTER.register(
             "hydrangea", () -> new HydrangeaEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> THERMAL_SUNDER = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "thermal_sunder", () -> new ThermalSunderStatusEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> REDLINE = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "redline", () -> new RedlineEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 
     public static final DeferredHolder<MobEffect, MobEffect> MULTISHOT_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
             "multishot_galvanized", () -> new MultishotGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> FURY_KILL = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "fury_kill", () -> new FuryKillEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> SCOPE_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
             "scope_galvanized", () -> new ScopeGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 

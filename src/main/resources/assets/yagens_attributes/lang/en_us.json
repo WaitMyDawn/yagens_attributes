@@ -97,6 +97,9 @@
   "effect.yagens_attributes.pumilum": "Pumilum",
   "effect.yagens_attributes.grandiflorum": "Grandiflorum",
   "effect.yagens_attributes.hydrangea": "Hydrangea",
+  "effect.yagens_attributes.fury_kill": "Berserker Fury",
+  "effect.yagens_attributes.redline": "Redline",
+  "effect.yagens_attributes.thermal_sunder": "Thermal Sunder",
 
   "entity.yagens_attributes.blade_entity": "Blade",
   "entity.yagens_attributes.reservoir": "Reservoir",
@@ -124,6 +127,8 @@
   "warframe.yagens_attributes.reservoirs_armor_mod.1": "Short press to release current reservoir.",
   "warframe.yagens_attributes.reservoirs_armor_mod.2": "Long press to switch reservoir.",
   "warframe.yagens_attributes.reservoirs_armor_mod.3": "Right click to open Reservoirs Menu, some special items can be used to build a reservoir.",
+  "warframe.yagens_attributes.thermal_sunder_armor_mod.1": "Right click to absorb kinetic energy, charging battery power by 10%% to inflict a Cold status on all enemies in range.",
+  "warframe.yagens_attributes.thermal_sunder_armor_mod.2": "Long press to expend kinetic energy, draining battery power by 10%% to inflict a Heat status on all enemies in range.",
 
   "key.yagens_attributes.group_1": "Yagen's Attributes-General'",
   "key.yagens_attributes.client_configs_screen": "Open Configuration",
@@ -155,6 +160,7 @@
   "ui.yagens_attributes.mission_position_title": "Configuration of Mission Progress",
   "ui.yagens_attributes.energy_bar_position_title": "Configuration of Energy Bar",
   "ui.yagens_attributes.reservoirs_position_title": "Configuration of Reservoirs",
+  "ui.yagens_attributes.battery_position_title": "Configuration of Battery",
   "ui.yagens_attributes.combo_position_explain.1": "Press Left Click to drag Combo Count, ESC to save",
   "ui.yagens_attributes.mission_position_explain.1": "Press Left Click to drag Mission Progress Area, ESC to save",
   "ui.yagens_attributes.damage_number_enlarge": "Damage Number Doubling Needs Blocks",
@@ -214,6 +220,7 @@
   "mod.yagens_attributes.scattershot_tool_mod": "Scattered Shot",
   "mod.yagens_attributes.firerate_tool_mod": "Flame Feather",
   "mod.yagens_attributes.scope_tool_mod": "Scope",
+  "mod.yagens_attributes.fury_kill_tool_mod": "Berserker Fury",
   "mod.yagens_attributes.xp_armor_mod": "Bounty Hunter",
   "mod.yagens_attributes.grace_armor_mod": "Gracefully Serpentine",
   "mod.yagens_attributes.health_trans_armor_mod": "Thorn Aura",
@@ -229,10 +236,12 @@
   "mod.yagens_attributes.reservoirs_armor_mod": "Reservoirs",
   "mod.yagens_attributes.blade_storm_armor_mod": "Blade Storm",
   "mod.yagens_attributes.pre_shoot_armor_mod": "Preparatory Shooting",
+  "mod.yagens_attributes.thermal_sunder_armor_mod": "Thermal Sunder",
 
   "damagebonus.yagens_attributes.scope_tool_mod.1": "+ %f%% Critical Chance for %d seconds after a headshot",
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "+ %f%% Multi Shot for %d seconds after killing, up to %d stacks",
   "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "+ %f%% Critical Chance for %d seconds after headshot killing, up to %d stacks",
+  "killbonus.yagens_attributes.fury_kill_tool_mod.1": "+ %f%% Attack Speed for %d seconds after killing, up to %d stacks",
 
   "tooltip.yagens_attributes.item_upgrade_info": "Level: %d Exp: %d%%",
   "tooltip.yagens_attributes.item_upgrade_info_max_level": "Level: %d",

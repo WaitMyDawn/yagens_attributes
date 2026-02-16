@@ -30,7 +30,7 @@
           "functions": [
             {
               "function": "yagens_attributes:set_endo",
-              "level": 1,
+              "level": 2,
               "missionType": "Exterminate"
             }
           ],

@@ -33,6 +33,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     public static final TagKey<DamageType> SLASH_STATUS_DAMAGE_TYPE = create("slash_status");
     public static final TagKey<DamageType> TOXIN_STATUS_DAMAGE_TYPE = create("toxin_status");
     public static final TagKey<DamageType> HEAT_STATUS_DAMAGE_TYPE = create("heat_status");
+    public static final TagKey<DamageType> COLD_STATUS_DAMAGE_TYPE = create("cold_status");
+    public static final TagKey<DamageType> BLAST_STATUS_DAMAGE_TYPE = create("blast_status");
     public static final TagKey<DamageType> ELECTRICITY_STATUS_DAMAGE_TYPE = create("electricity_status");
     public static final TagKey<DamageType> GAS_STATUS_DAMAGE_TYPE = create("gas_status");
 
@@ -44,6 +46,10 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 .add(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE);
         tag(HEAT_STATUS_DAMAGE_TYPE)
                 .add(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE);
+        tag(COLD_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE);
+        tag(BLAST_STATUS_DAMAGE_TYPE)
+                .add(DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE);
         tag(ELECTRICITY_STATUS_DAMAGE_TYPE)
                 .add(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE);
         tag(GAS_STATUS_DAMAGE_TYPE)
@@ -66,6 +72,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
 
@@ -76,6 +84,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
 
@@ -83,6 +93,8 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 .add(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE,
+                        DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE,
                         DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE);
     }

@@ -130,8 +130,10 @@ public class AttackEventHandler {
         if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeTags.IS_EXPLOSION))
             return;
 
@@ -302,11 +304,13 @@ public class AttackEventHandler {
             color = 0x7CFC00;
         else if (source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE))
             color = 0xFF7518;
+        else if (source.is(DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE))
+            color = 0x87CEEB;
         else if (source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE))
             color = 0xA020F0;
         else if (source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
             color = 0x006400;
-        else if (source.is(DamageTypeTags.IS_EXPLOSION))
+        else if (source.is(DamageTypeTags.IS_EXPLOSION) || source.is(DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE))
             color = 0xDAA520;
         if (color == 0xFFFFFF) return;
         if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;

@@ -44,6 +44,9 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_THORN_AURA_DECREASE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_SPRING_SHOES;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_BOUNTY_HUNTER;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_BERSERKER_FURY;
+    public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_BERSERKER_FURY_DURATION;
+    public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_BERSERKER_FURY_STACK;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_EDGE_DISC;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_STATUS_HEAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT;
@@ -66,6 +69,9 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_RESERVOIRS_STRENGTH_FACTOR;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_BLADE_STORM_DURATION;
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_BLADE_STORM_RANGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER_RANGE;
+    public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_THERMAL_SUNDER_DURATION;
 
     static {
 
@@ -240,6 +246,15 @@ public class ServerConfigs {
         MOD_RARE_BOUNTY_HUNTER = BUILDER.define("Value", 40.0);
         BUILDER.pop();
 
+        BUILDER.push("Rare_Berserker_Fury");
+        BUILDER.comment("Value of Berserker Fury Mod per level (default = 7.0)");
+        MOD_RARE_BERSERKER_FURY = BUILDER.define("Value", 7.0);
+        BUILDER.comment("Duration of Berserker Fury Mod (default = 10)");
+        MOD_RARE_BERSERKER_FURY_DURATION = BUILDER.define("Duration", 10);
+        BUILDER.comment("Stack of Berserker Fury Mod bonus (default = 2)");
+        MOD_RARE_BERSERKER_FURY_STACK = BUILDER.define("Stack", 2);
+        BUILDER.pop();
+
         BUILDER.push("Legendary_Edge_Disc");
         BUILDER.comment("Value of Legendary Edge Disc Mod per level (default = 15.0)");
         MOD_LEGENDARY_EDGE_DISC = BUILDER.define("Value", 15.0);
@@ -311,14 +326,20 @@ public class ServerConfigs {
         MOD_WARFRAME_BLADE_STORM_RANGE = BUILDER.define("Range", 20.0);
         BUILDER.pop();
 
+        BUILDER.push("Warframe_Thermal_Sunder");
+        BUILDER.comment("Base Damage of Warframe Thermal Sunder Mod (default = 2.0)");
+        MOD_WARFRAME_THERMAL_SUNDER = BUILDER.define("Base_Damage", 2.0);
+        BUILDER.comment("Duration of Warframe Thermal Sunder Mod (default = 30, seconds)");
+        MOD_WARFRAME_THERMAL_SUNDER_DURATION = BUILDER.define("Duration", 30);
+        BUILDER.comment("Range of Warframe Thermal Sunder Mod (default = 10.0)");
+        MOD_WARFRAME_THERMAL_SUNDER_RANGE = BUILDER.define("Range", 10.0);
+        BUILDER.pop();
+
         BUILDER.pop();
         /**
          * Mod config
          */
 
         SPEC = BUILDER.build();
-    }
-
-    public static void ensureLoaded() {
     }
 }

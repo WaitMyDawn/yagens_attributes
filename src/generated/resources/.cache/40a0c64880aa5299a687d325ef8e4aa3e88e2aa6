@@ -1,12 +1,14 @@
-// 1.21.1	2026-01-23T17:32:36.4510599	Tags for minecraft:damage_type mod id yagens_attributes
+// 1.21.1	2026-02-16T21:18:20.3896364	Tags for minecraft:damage_type mod id yagens_attributes
 f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_armor.json
 f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_effects.json
 2444197e53919c88c344dce15f6543b5d25c177c data/minecraft/tags/damage_type/bypasses_enchantments.json
-1994807f2ccaf7d4206a804e93d691ad7dc058e6 data/minecraft/tags/damage_type/bypasses_invulnerability.json
+f46e0329e4d33f7050415326f9259fc54332ee87 data/minecraft/tags/damage_type/bypasses_invulnerability.json
 f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_resistance.json
 f2a9cd79d1fbd9c47b4a569de3bc8af3b15d1fb6 data/minecraft/tags/damage_type/bypasses_shield.json
-1994807f2ccaf7d4206a804e93d691ad7dc058e6 data/minecraft/tags/damage_type/no_impact.json
-1994807f2ccaf7d4206a804e93d691ad7dc058e6 data/minecraft/tags/damage_type/no_knockback.json
+f46e0329e4d33f7050415326f9259fc54332ee87 data/minecraft/tags/damage_type/no_impact.json
+f46e0329e4d33f7050415326f9259fc54332ee87 data/minecraft/tags/damage_type/no_knockback.json
+fd93b5f9db8ff2289e392ff3a742e60630df0523 data/yagens_attributes/tags/damage_type/blast_status.json
+725c38a2f47c03eb2544f98c3dddc5e5987c8262 data/yagens_attributes/tags/damage_type/cold_status.json
 3302daf1062f47e4b0f5f6da50028aa34bb8340b data/yagens_attributes/tags/damage_type/electricity_status.json
 c307fb6712ae1d46c8753bb8acd523e922d5bc7c data/yagens_attributes/tags/damage_type/gas_status.json
 21962e4e68c0c4c99a86649a3b821107558df262 data/yagens_attributes/tags/damage_type/heat_status.json

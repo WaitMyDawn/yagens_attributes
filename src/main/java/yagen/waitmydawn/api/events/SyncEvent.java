@@ -6,6 +6,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.network.BatteryPowerPacket;
 import yagen.waitmydawn.network.EnergyPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
@@ -17,6 +18,9 @@ public class SyncEvent {
         if (event.getEntity() instanceof ServerPlayer player) {
             PacketDistributor.sendToPlayer(player, new EnergyPacket(
                     DataAttachmentRegistry.getEnergy(player)
+            ));
+            PacketDistributor.sendToPlayer(player, new BatteryPowerPacket(
+                    DataAttachmentRegistry.getBatteryPower(player)
             ));
         }
     }

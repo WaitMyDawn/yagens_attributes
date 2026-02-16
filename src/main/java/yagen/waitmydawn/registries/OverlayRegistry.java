@@ -16,6 +16,7 @@ public class OverlayRegistry {
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "scan_info"), ScanInfoOverlay.instance);
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "mission"), MissionOverlay.instance);
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "energy_bar"), EnergyBarOverlay.instance);
+        event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "battery"), BatteryOverlay.instance);
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "reservoirs"), ReservoirsOverlay.instance);
     }
 }

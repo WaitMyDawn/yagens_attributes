@@ -178,6 +178,13 @@ public class DataAttachmentRegistry {
 //                    .copyOnDeath()
                     .build());
 
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>>
+            BATTERY_POWER = ATTACHMENT_TYPES.register("battery_power",
+            () -> AttachmentType.builder(() -> 0.0)
+                    .serialize(Codec.DOUBLE)
+//                    .copyOnDeath()
+                    .build());
+
     public static double getEnergy(Entity entity) {
         return entity.getData(ENERGY.get());
     }
@@ -188,5 +195,17 @@ public class DataAttachmentRegistry {
 
     public static void reduceEnergy(Entity entity, double value) {
         entity.setData(ENERGY.get(), Math.max(getEnergy(entity) + value, 0.0));
+    }
+
+    public static double getBatteryPower(Entity entity) {
+        return entity.getData(BATTERY_POWER.get());
+    }
+
+    public static void setBatteryPower(Entity entity, double value) {
+        entity.setData(BATTERY_POWER.get(), Math.min(100.0, Math.max(0, value)));
+    }
+
+    public static void reduceBatteryPower(Entity entity, double value) {
+        entity.setData(BATTERY_POWER.get(), Math.max(getBatteryPower(entity) + value, 0.0));
     }
 }

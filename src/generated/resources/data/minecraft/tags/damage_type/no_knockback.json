@@ -3,6 +3,8 @@
     "yagens_attributes:slash_status_damage_type",
     "yagens_attributes:toxin_status_damage_type",
     "yagens_attributes:heat_status_damage_type",
+    "yagens_attributes:cold_status_damage_type",
+    "yagens_attributes:blast_status_damage_type",
     "yagens_attributes:electricity_status_damage_type",
     "yagens_attributes:gas_status_damage_type"
   ]

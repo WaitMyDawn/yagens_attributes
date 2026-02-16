@@ -30,6 +30,7 @@ import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.gui.mod_operation.ModOperationMenu;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.network.BatteryPowerPacket;
 import yagen.waitmydawn.network.EnergyPacket;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -242,6 +243,8 @@ public class PlayerInteractionEvent {
 
         double maxEnergy = player.getAttributeValue(YAttributes.MAX_ENERGY);
         double energy = DataAttachmentRegistry.getEnergy(player);
+        double batteryPower = DataAttachmentRegistry.getBatteryPower(player);
+        boolean isRedline = player.hasEffect(MobEffectRegistry.REDLINE);
 
         if (energy < maxEnergy) {
             double energyRegen = player.getAttributeValue(YAttributes.ENERGY_REGEN);
@@ -249,6 +252,11 @@ public class PlayerInteractionEvent {
             if (energy > maxEnergy) energy = maxEnergy;
             DataAttachmentRegistry.setEnergy(player, energy);
             PacketDistributor.sendToPlayer((ServerPlayer) player, new EnergyPacket(energy));
+        }
+        if (!(batteryPower == 100.0 && isRedline)) {
+            batteryPower = Math.max(0, batteryPower - 1.5);
+            DataAttachmentRegistry.setBatteryPower(player, batteryPower);
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new BatteryPowerPacket(batteryPower));
         }
     }
 }

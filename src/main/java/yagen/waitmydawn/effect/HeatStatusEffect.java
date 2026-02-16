@@ -42,14 +42,28 @@ public class HeatStatusEffect extends MobEffect {
                 .add(new Heat(damage, ticksLeft, sourceEntity));
     }
 
+    public static int heatSize(LivingEntity entity) {
+        List<Heat> list = HEAT_MAP.get(entity);
+        return list == null ? 0 : list.size();
+    }
+
+    public static void removeHeat(LivingEntity entity) {
+        if (entity == null) return;
+        HEAT_MAP.remove(entity);
+        if (entity.hasEffect(MobEffectRegistry.HEAT_STATUS)) {
+            updateModifiers(entity, -1);
+            entity.removeEffect(MobEffectRegistry.HEAT_STATUS);
+        }
+    }
+
     @Override
     public void onEffectAdded(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
     }
 
-    private final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
+    private static final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
 
-    private void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
+    private static void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
         AttributeInstance armor = pLivingEntity.getAttribute(Attributes.ARMOR);
         if (armor == null) return;
         armor.removeModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "heat_armor"));

@@ -25,12 +25,19 @@ public class ColdStatusEffect extends MobEffect {
     @Override
     public void onEffectAdded(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         super.onEffectAdded(pLivingEntity, pAmplifier);
-
     }
 
-    private final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
+    public static void removeCold(LivingEntity entity) {
+        if (entity == null) return;
+        if (entity.hasEffect(MobEffectRegistry.COLD_STATUS)) {
+            updateModifiers(entity, -1);
+            entity.removeEffect(MobEffectRegistry.COLD_STATUS);
+        }
+    }
 
-    private void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
+    private static final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
+
+    private static void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
         AttributeInstance move = pLivingEntity.getAttribute(Attributes.MOVEMENT_SPEED);
         AttributeInstance attack_speed = pLivingEntity.getAttribute(Attributes.ATTACK_SPEED);
         if (move == null || attack_speed == null) return;

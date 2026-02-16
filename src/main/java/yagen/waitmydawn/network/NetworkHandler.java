@@ -77,6 +77,18 @@ public class NetworkHandler {
                 HeadShotSoundPacket::handle
         );
 
+        registrar.playToClient(
+                BatteryPowerPacket.TYPE,
+                BatteryPowerPacket.STREAM_CODEC,
+                BatteryPowerPacket::handle
+        );
+
+        registrar.playToClient(
+                ThermalSunderClientPacket.TYPE,
+                ThermalSunderClientPacket.STREAM_CODEC,
+                ThermalSunderClientPacket::handle
+        );
+
         registrar.playBidirectional(
                 EnergyPacket.TYPE,
                 EnergyPacket.STREAM_CODEC,
@@ -123,6 +135,12 @@ public class NetworkHandler {
                 CreateReservoirPacket.TYPE,
                 CreateReservoirPacket.STREAM_CODEC,
                 CreateReservoirPacket::handle
+        );
+
+        registrar.playToServer(
+                ThermalSunderPacket.TYPE,
+                ThermalSunderPacket.STREAM_CODEC,
+                ThermalSunderPacket::handle
         );
     }
 }

@@ -161,16 +161,22 @@ public class ClientInputEvents {
                         }
                         break;
                     }
+                    case "thermal_sunder_armor_mod": {
+                        if (abilityStates[abilityStateIndex].heldTicks() < 4) {
+                            PacketDistributor.sendToServer(new ThermalSunderPacket(ClientConfigs.IF_REVERSAL_THERMAL_SUNDER.get()));
+                            PacketDistributor.sendToServer(new EnergyPacket(-(abilityCost[abilityStateIndex])));
+                        }
+                    }
                 }
             } else if (abilityStates[abilityStateIndex].isHeld()) {// change ability type
                 if (abilityStates[abilityStateIndex].heldTicks() == 4) {
-                    switch (ability[abilityStateIndex]) {
-                        case "reservoirs_armor_mod": {
-                            int oldType = player.getPersistentData().getInt("reservoir_type");
-                            if (oldType >= 2) player.getPersistentData().putInt("reservoir_type", 0);
-                            else player.getPersistentData().putInt("reservoir_type", oldType + 1);
-                            break;
-                        }
+                    if (ability[abilityStateIndex].equals("reservoirs_armor_mod")) {
+                        int oldType = player.getPersistentData().getInt("reservoir_type");
+                        if (oldType >= 2) player.getPersistentData().putInt("reservoir_type", 0);
+                        else player.getPersistentData().putInt("reservoir_type", oldType + 1);
+                    } else if (abilityCost[abilityStateIndex] <= energy && ability[abilityStateIndex].equals("thermal_sunder_armor_mod")) {
+                        PacketDistributor.sendToServer(new ThermalSunderPacket(!ClientConfigs.IF_REVERSAL_THERMAL_SUNDER.get()));
+                        PacketDistributor.sendToServer(new EnergyPacket(-(abilityCost[abilityStateIndex])));
                     }
                 }
             } else if (abilityStates[abilityStateIndex].wasPressed()) {

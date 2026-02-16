@@ -20,7 +20,7 @@ public class ImpactStatusEffect extends MobEffect {
         super(mobEffectCategory, color);
     }
 
-    private final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
+    private static final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
 
     private void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
         AttributeInstance move = pLivingEntity.getAttribute(Attributes.MOVEMENT_SPEED);

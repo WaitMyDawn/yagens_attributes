@@ -97,6 +97,9 @@
   "effect.yagens_attributes.pumilum": "山丹",
   "effect.yagens_attributes.grandiflorum": "翠雀",
   "effect.yagens_attributes.hydrangea": "绣球",
+  "effect.yagens_attributes.fury_kill": "嗜血 狂怒",
+  "effect.yagens_attributes.redline": "赤限",
+  "effect.yagens_attributes.thermal_sunder": "热能抽离",
 
   "entity.yagens_attributes.blade_entity": "剑刃",
   "entity.yagens_attributes.reservoir": "蓄能池",
@@ -124,6 +127,8 @@
   "warframe.yagens_attributes.reservoirs_armor_mod.1": "轻按激活释放当前蓄能池",
   "warframe.yagens_attributes.reservoirs_armor_mod.2": "长按激活转换蓄能池",
   "warframe.yagens_attributes.reservoirs_armor_mod.3": "右键打开蓄能池界面，一些特殊物品能够构筑蓄能池",
+  "warframe.yagens_attributes.thermal_sunder_armor_mod.1": "轻按激活从附近吸收动能，为电池提供10%%充能的同时在范围内触发冰冻异况",
+  "warframe.yagens_attributes.thermal_sunder_armor_mod.2": "长按激活向附近释放动能，消耗10%%电池电量的同时在范围内触发火焰异况",
 
   "key.yagens_attributes.group_1": "Yagen的属性 通用",
   "key.yagens_attributes.client_configs_screen": "打开 配置",
@@ -155,6 +160,7 @@
   "ui.yagens_attributes.mission_position_title": "任务进度配置界面",
   "ui.yagens_attributes.energy_bar_position_title": "能量条配置界面",
   "ui.yagens_attributes.reservoirs_position_title": "蓄能池配置界面",
+  "ui.yagens_attributes.battery_position_title": "电池配置界面",
   "ui.yagens_attributes.combo_position_explain.1": "按住左键拖拽，ESC自动保存",
   "ui.yagens_attributes.mission_position_explain.1": "按住左键拖拽，ESC自动保存",
   "ui.yagens_attributes.damage_number_enlarge": "伤害数字大小倍增需要格数",
@@ -214,6 +220,7 @@
   "mod.yagens_attributes.scattershot_tool_mod": "霰弹射击",
   "mod.yagens_attributes.firerate_tool_mod": "火翎羽",
   "mod.yagens_attributes.scope_tool_mod": "氩晶瞄具",
+  "mod.yagens_attributes.fury_kill_tool_mod": "嗜血 狂怒",
   "mod.yagens_attributes.xp_armor_mod": "赏金猎人",
   "mod.yagens_attributes.grace_armor_mod": "优雅蛇行",
   "mod.yagens_attributes.health_trans_armor_mod": "荆棘之环",
@@ -229,10 +236,12 @@
   "mod.yagens_attributes.reservoirs_armor_mod": "蓄能池",
   "mod.yagens_attributes.blade_storm_armor_mod": "剑刃风暴",
   "mod.yagens_attributes.pre_shoot_armor_mod": "预备射击",
+  "mod.yagens_attributes.thermal_sunder_armor_mod": "热能抽离",
 
   "damagebonus.yagens_attributes.scope_tool_mod.1": "爆头后+%f%%暴击几率，持续%d秒",
   "killbonus.yagens_attributes.multishot_galvanized_tool_mod.1": "击杀后+%f%%多重射击，持续%d秒，最高%d层",
   "killbonus.yagens_attributes.scope_galvanized_tool_mod.1": "爆头击杀后+%f%%暴击几率，持续%d秒，最高%d层",
+  "killbonus.yagens_attributes.fury_kill_tool_mod.1": "头击杀后+%f%%攻击速度，持续%d秒，最高%d层",
 
   "tooltip.yagens_attributes.item_upgrade_info": "等级: %d 经验: %d%%",
   "tooltip.yagens_attributes.item_upgrade_info_max_level": "等级: %d",

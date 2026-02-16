@@ -1,4 +1,6 @@
-// 1.21.1	2026-02-06T14:39:48.4886429	Registries
+// 1.21.1	2026-02-16T21:18:20.4083324	Registries
+7847fa61e8d182bed6600c01b85a4f7a96904b4f data/yagens_attributes/damage_type/blast_status_damage_type.json
+4df41dca3973464c21764619cfaa29eeb7a05696 data/yagens_attributes/damage_type/cold_status_damage_type.json
 9774b099411b9b499fb80a8b101512a0195036c4 data/yagens_attributes/damage_type/electricity_status_damage_type.json
 63da04d8085c1b1f2f328f6913c4fd3af9f153ef data/yagens_attributes/damage_type/force_slash_status.json
 7aae00e2a2d4dcebc22dc7746803a9eb613e6757 data/yagens_attributes/damage_type/gas_status_damage_type.json

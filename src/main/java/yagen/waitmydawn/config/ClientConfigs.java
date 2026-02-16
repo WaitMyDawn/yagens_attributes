@@ -12,6 +12,8 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> MISSION_HUD_Y;
     public static final ModConfigSpec.ConfigValue<Integer> ENERGY_BAR_X;
     public static final ModConfigSpec.ConfigValue<Integer> ENERGY_BAR_Y;
+    public static final ModConfigSpec.ConfigValue<Integer> BATTERY_X;
+    public static final ModConfigSpec.ConfigValue<Integer> BATTERY_Y;
     public static final ModConfigSpec.ConfigValue<Integer> RESERVOIRS_X;
     public static final ModConfigSpec.ConfigValue<Integer> RESERVOIRS_Y;
 
@@ -33,6 +35,9 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Double> HEADSHOT_PITCH;
     public static final ModConfigSpec.ConfigValue<Boolean> IF_HEADSHOT_SOUND;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_THERMAL_SUNDER_SOUND;
+    public static final ModConfigSpec.ConfigValue<Double> THERMAL_SUNDER_VOLUME;
+    public static final ModConfigSpec.ConfigValue<Double> THERMAL_SUNDER_PITCH;
     /**
      * Damage Type Particle
      */
@@ -65,6 +70,8 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> GAS_LIFE_TIME;
     public static final ModConfigSpec.ConfigValue<Double> GAS_MAX_SIZE;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_REVERSAL_THERMAL_SUNDER;
+
     static {
         BUILDER.push("ComboHUD");
         BUILDER.comment("You can change this by an operation screen in game");
@@ -94,11 +101,19 @@ public class ClientConfigs {
         ENERGY_BAR_Y = BUILDER.define("Y", -1);
         BUILDER.pop();
 
+        BUILDER.push("BatteryHUD");
+        BUILDER.comment("You can change this by an operation screen in game");
+        BUILDER.comment("X position of battery (-1 = default)");
+        BATTERY_X = BUILDER.define("X", -1);
+        BUILDER.comment("Y position of battery (-1 = default)");
+        BATTERY_Y = BUILDER.define("Y", -1);
+        BUILDER.pop();
+
         BUILDER.push("ReservoirsHUD");
         BUILDER.comment("You can change this by an operation screen in game");
-        BUILDER.comment("X position of energy bar (-1 = default)");
+        BUILDER.comment("X position of reservoirs (-1 = default)");
         RESERVOIRS_X = BUILDER.define("X", -1);
-        BUILDER.comment("Y position of energy bar (-1 = default)");
+        BUILDER.comment("Y position of reservoirs (-1 = default)");
         RESERVOIRS_Y = BUILDER.define("Y", -1);
         BUILDER.pop();
 
@@ -194,12 +209,23 @@ public class ClientConfigs {
         BUILDER.pop();
 
         BUILDER.push("Sound");
+        BUILDER.comment("Whether to play Thermal Sunder sound (default = true)");
+        IF_THERMAL_SUNDER_SOUND = BUILDER.define("If_Thermal_Sunder_Sound", true);
+        BUILDER.comment("The volume of Thermal Sunder sound (default = 1.0)");
+        THERMAL_SUNDER_VOLUME = BUILDER.define("Volume", 3.0);
+        BUILDER.comment("The pitch of Thermal Sunder sound (default = 1.0)");
+        THERMAL_SUNDER_PITCH = BUILDER.define("Pitch", 1.0);
         BUILDER.comment("Whether to play headshot sound (default = true)");
         IF_HEADSHOT_SOUND = BUILDER.define("If_Headshot_Sound", true);
         BUILDER.comment("The volume of headshot sound (default = 0.6)");
         HEADSHOT_VOLUME = BUILDER.define("Volume", 0.6);
         BUILDER.comment("The pitch of headshot sound (default = 1.2)");
         HEADSHOT_PITCH = BUILDER.define("Pitch", 1.2);
+        BUILDER.pop();
+
+        BUILDER.push("Reversal");
+        BUILDER.comment("Whether to reversal Thermal Sunder (default = false)");
+        IF_REVERSAL_THERMAL_SUNDER = BUILDER.define("Thermal_Sunder", false);
         BUILDER.pop();
 
 

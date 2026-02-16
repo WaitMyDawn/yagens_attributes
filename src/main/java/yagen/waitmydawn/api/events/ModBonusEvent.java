@@ -55,12 +55,16 @@ public class ModBonusEvent {
         if (!IModContainer.isModContainer(itemStack)) return;
         var container = IModContainer.get(itemStack);
         for (ModSlot slot : container.getActiveMods()) {
-            if (slot.getMod().getModName().equals("multishot_galvanized_tool_mod"))
+            if (slot.getMod().getModName().equals("multishot_galvanized_tool_mod")) {
                 MultishotGalvanizedToolModBonus(player);
-            else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod"))
+            } else if (slot.getMod().getModName().equals("scope_galvanized_tool_mod")) {
                 if (source.getDirectEntity() instanceof AbstractArrow arrow)
                     if (isHeadShot(livingEntity, arrow, player))
                         ScopeGalvanizedToolModBonus(player);
+            } else if (slot.getMod().getModName().equals("fury_kill_tool_mod")) {
+                FuryKillModBonus(player, slot.getLevel());
+            }
+
         }
     }
 
@@ -315,7 +319,7 @@ public class ModBonusEvent {
 
         AttributeModifier mod = new AttributeModifier(
                 MODIFIER_ID,
-                -(scopeLevel + 1) * ServerConfigs.MOD_RARE_SCOPE.get()/200 - (scopeGalLevel + 1) * ServerConfigs.MOD_LEGENDARY_GALVANIZED_SCOPE_KILLBONUS.get(),
+                -(scopeLevel + 1) * ServerConfigs.MOD_RARE_SCOPE.get() / 200 - (scopeGalLevel + 1) * ServerConfigs.MOD_LEGENDARY_GALVANIZED_SCOPE_KILLBONUS.get(),
                 AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
         if (mode) criticalChance.addPermanentModifier(mod);
@@ -370,6 +374,31 @@ public class ModBonusEvent {
             ));
         }
         player.getPersistentData().putInt("gal_scope_left", ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20);
+    }
+
+    public static void FuryKillModBonus(Player player, int modLevel) {
+        if (player.hasEffect(MobEffectRegistry.FURY_KILL)) {
+            int amplifier = player.getEffect(MobEffectRegistry.FURY_KILL).getAmplifier();
+            player.addEffect(new MobEffectInstance(
+                    MobEffectRegistry.FURY_KILL,
+                    ServerConfigs.MOD_RARE_BERSERKER_FURY_DURATION.get() * 20,
+                    Math.min(amplifier + modLevel,
+                            Math.min(255, ServerConfigs.MOD_RARE_BERSERKER_FURY_STACK.get() * 5 - 1)),
+                    false,
+                    true,
+                    true
+            ));
+        } else {
+            player.addEffect(new MobEffectInstance(
+                    MobEffectRegistry.FURY_KILL,
+                    ServerConfigs.MOD_RARE_BERSERKER_FURY_DURATION.get() * 20,
+                    modLevel - 1,
+                    false,
+                    true,
+                    true
+            ));
+        }
+        player.getPersistentData().putInt("fury_kill_left", ServerConfigs.MOD_RARE_SCOPE_DURATION.get() * 20);
     }
 
     public static void ScopeToolModBonus(Player player, int modLevel, int factor) {

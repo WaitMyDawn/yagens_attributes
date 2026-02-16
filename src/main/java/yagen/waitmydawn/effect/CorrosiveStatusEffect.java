@@ -27,7 +27,7 @@ public class CorrosiveStatusEffect extends MobEffect {
         super.onEffectAdded(pLivingEntity, pAmplifier);
     }
 
-    private final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
+    private static final Map<LivingEntity, Integer> lastAmplifier = new WeakHashMap<>();
 
     private void updateModifiers(LivingEntity pLivingEntity, int pAmplifier) {
         AttributeInstance armor = pLivingEntity.getAttribute(Attributes.ARMOR);

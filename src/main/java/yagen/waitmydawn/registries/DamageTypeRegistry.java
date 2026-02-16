@@ -18,6 +18,8 @@ public class DamageTypeRegistry {
     public static final ResourceKey<DamageType> FORCE_SLASH_STATUS = register("force_slash_status");
     public static final ResourceKey<DamageType> TOXIN_STATUS_DAMAGE_TYPE = register("toxin_status_damage_type");
     public static final ResourceKey<DamageType> HEAT_STATUS_DAMAGE_TYPE = register("heat_status_damage_type");
+    public static final ResourceKey<DamageType> COLD_STATUS_DAMAGE_TYPE = register("cold_status_damage_type");
+    public static final ResourceKey<DamageType> BLAST_STATUS_DAMAGE_TYPE = register("blast_status_damage_type");
     public static final ResourceKey<DamageType> ELECTRICITY_STATUS_DAMAGE_TYPE = register("electricity_status_damage_type");
     public static final ResourceKey<DamageType> GAS_STATUS_DAMAGE_TYPE = register("gas_status_damage_type");
 
@@ -36,6 +38,14 @@ public class DamageTypeRegistry {
                 0f));
         context.register(HEAT_STATUS_DAMAGE_TYPE, new DamageType(
                 HEAT_STATUS_DAMAGE_TYPE.location().getPath(),
+                DamageScaling.NEVER,
+                0f));
+        context.register(COLD_STATUS_DAMAGE_TYPE, new DamageType(
+                COLD_STATUS_DAMAGE_TYPE.location().getPath(),
+                DamageScaling.NEVER,
+                0f));
+        context.register(BLAST_STATUS_DAMAGE_TYPE, new DamageType(
+                BLAST_STATUS_DAMAGE_TYPE.location().getPath(),
                 DamageScaling.NEVER,
                 0f));
         context.register(ELECTRICITY_STATUS_DAMAGE_TYPE, new DamageType(

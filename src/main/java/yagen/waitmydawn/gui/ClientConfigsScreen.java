@@ -37,6 +37,13 @@ public class ClientConfigsScreen extends Screen {
                 })
                 .bounds((this.width - 200) / 2, 30, 200, 20)
                 .build());
+        this.addRenderableWidget(Button.builder(Component.translatable("ui.yagens_attributes.open_info")
+                        .append(Component.translatable("ui.yagens_attributes.battery_position_title")), b -> {
+                    assert this.minecraft != null;
+                    this.minecraft.setScreen(new BatteryPositionScreen(this));
+                })
+                .bounds((this.width - 200) / 2, 60, 200, 20)
+                .build());
     }
 
     private void initPage0() {
