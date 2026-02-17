@@ -85,6 +85,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> CRITICAL_CHANCE_COMBO_TOOL_MOD = registerMod(new CriticalChanceComboToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_COMBO_TOOL_MOD = registerMod(new StatusChanceComboToolMod());
     public static final Supplier<AbstractMod> MOVEMENT_SPEED_ARMOR_MOD = registerMod(new MovementSpeedArmorMod());
+    public static final Supplier<AbstractMod> STRETCH_ARMOR_MOD = registerMod(new StretchArmorMod());
 
     /**
      * RARE
@@ -110,6 +111,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> HEALTH_TRANS_ARMOR_MOD = registerMod(new HealthTransArmorMod());
     public static final Supplier<AbstractMod> FLOW_ARMOR_MOD = registerMod(new FlowArmorMod());
     public static final Supplier<AbstractMod> EFFICIENCY_ARMOR_MOD = registerMod(new EfficiencyArmorMod());
+    public static final Supplier<AbstractMod> OVEREXTENDED_ARMOR_MOD = registerMod(new OverextendedArmorMod());
 
     /**
      * LEGENDARY

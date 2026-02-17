@@ -215,6 +215,7 @@
   "mod.yagens_attributes.status_chance_combo_tool_mod": "老旧眼镜",
   "mod.yagens_attributes.movement_speed_armor_mod": "穿云靴",
   "mod.yagens_attributes.jump_strength_armor_mod": "弹簧鞋",
+  "mod.yagens_attributes.stretch_armor_mod": "延伸",
 
   "mod.yagens_attributes.multishot_tool_mod": "多重射击",
   "mod.yagens_attributes.critical_rare_tool_mod": "无名手套",
@@ -231,6 +232,7 @@
   "mod.yagens_attributes.health_trans_armor_mod": "荆棘之环",
   "mod.yagens_attributes.flow_armor_mod": "川流不息",
   "mod.yagens_attributes.efficiency_armor_mod": "远古稳定器",
+  "mod.yagens_attributes.overextended_armor_mod": "过度延展",
 
   "mod.yagens_attributes.slash_up_tool_mod": "锐刃",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "镀层 多重射击",

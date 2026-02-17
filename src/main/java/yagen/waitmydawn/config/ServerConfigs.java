@@ -28,6 +28,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_FURY;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_ANTIQUATED_GLASSES;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_CLOUD_PIERCING_BOOTS;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_STRETCH;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_STATUS_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_PHYSICAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_HARVEST_TIME;
@@ -49,6 +50,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_BERSERKER_FURY_STACK;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLOW;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_ANCIENT_STABILIZER;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_OVEREXTENDED_RANGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_OVEREXTENDED_STRENGTH;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_EDGE_DISC;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_STATUS_HEAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT;
@@ -180,6 +183,11 @@ public class ServerConfigs {
         MOD_UNCOMMON_CLOUD_PIERCING_BOOTS = BUILDER.define("Value", 10.0);
         BUILDER.pop();
 
+        BUILDER.push("Uncommon_Stretch");
+        BUILDER.comment("Value of Uncommon Stretch Mod per level (default = 9.0)");
+        MOD_UNCOMMON_STRETCH = BUILDER.define("Value", 9.0);
+        BUILDER.pop();
+
         BUILDER.push("Rare_Status_Element");
         BUILDER.comment("Value of Rare Status Element Mods per level (default = 12.0)");
         MOD_RARE_STATUS_ELEMENT = BUILDER.define("Value", 12.0);
@@ -265,6 +273,13 @@ public class ServerConfigs {
         BUILDER.push("Rare_Ancient_Stabilizer");
         BUILDER.comment("Value of Rare Ancient Stabilizer Mod per level (default = 6.0)");
         MOD_RARE_ANCIENT_STABILIZER = BUILDER.define("Value", 6.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Overextended");
+        BUILDER.comment("Range Value of Rare Overextended Mod per level (default = 18.0)");
+        MOD_RARE_OVEREXTENDED_RANGE = BUILDER.define("Range", 18.0);
+        BUILDER.comment("Strength Value of Rare Overextended Mod per level (default = 12.0, negative)");
+        MOD_RARE_OVEREXTENDED_STRENGTH = BUILDER.define("Strength", 12.0);
         BUILDER.pop();
 
         BUILDER.push("Legendary_Edge_Disc");

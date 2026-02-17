@@ -215,7 +215,8 @@
   "mod.yagens_attributes.status_chance_combo_tool_mod": "Antiquated Glasses",
   "mod.yagens_attributes.movement_speed_armor_mod": "Cloud Piercing Boots",
   "mod.yagens_attributes.jump_strength_armor_mod": "Spring Shoes",
-  
+  "mod.yagens_attributes.stretch_armor_mod": "Stretch",
+
   "mod.yagens_attributes.critical_rare_tool_mod": "Nameless Glove",
   "mod.yagens_attributes.multishot_tool_mod": "Multiply Shot",
   "mod.yagens_attributes.heat_status_tool_mod": "Piercing Blame",
@@ -231,6 +232,7 @@
   "mod.yagens_attributes.health_trans_armor_mod": "Thorn Aura",
   "mod.yagens_attributes.flow_armor_mod": "Flow",
   "mod.yagens_attributes.efficiency_armor_mod": "Ancient Stabilizer",
+  "mod.yagens_attributes.overextended_armor_mod": "Overextended",
 
   "mod.yagens_attributes.slash_up_tool_mod": "Edge Disc",
   "mod.yagens_attributes.multishot_galvanized_tool_mod": "Galvanized Multiply Shot",
