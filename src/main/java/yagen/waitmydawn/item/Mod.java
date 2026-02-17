@@ -45,8 +45,8 @@ public class Mod extends Item implements IMod {
 
     @Override
     public @Nullable String getCreatorModId(ItemStack itemStack) {
-        var spell = getModSlotFromStack(itemStack).getMod();
-        var id = ModRegistry.REGISTRY.getKey(spell);
+        var mod = getModSlotFromStack(itemStack).getMod();
+        var id = ModRegistry.REGISTRY.getKey(mod);
         return id == null ? super.getCreatorModId(itemStack) : id.getNamespace();
     }
 

@@ -373,6 +373,8 @@ public class AttackEventHandler {
         if (source.is(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.HEAT_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.COLD_STATUS_DAMAGE_TYPE) ||
+                source.is(DamageTypeRegistry.BLAST_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.ELECTRICITY_STATUS_DAMAGE_TYPE) ||
                 source.is(DamageTypeRegistry.GAS_STATUS_DAMAGE_TYPE))
             return;

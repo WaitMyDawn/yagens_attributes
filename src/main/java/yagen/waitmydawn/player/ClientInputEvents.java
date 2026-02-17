@@ -15,6 +15,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.util.ModCompat;
@@ -124,6 +125,8 @@ public class ClientInputEvents {
 
         abilityIndex = Math.min(ability.length, abilityIndex);
         double energy = DataAttachmentRegistry.getEnergy(player);
+        double efficiencyFactor = 2 - player.getAttributeValue(YAttributes.ABILITY_EFFICIENCY);
+        energy = energy / efficiencyFactor;
         for (int abilityStateIndex = 0;
              abilityStateIndex < abilityIndex;
              abilityStateIndex++) {
@@ -188,7 +191,7 @@ public class ClientInputEvents {
                                 Component.translatable("overlay.yagens_attributes.ability_cost",
                                         abilityStateIndex + 1,
                                         Component.translatable("mod.yagens_attributes." + ability[abilityStateIndex]),
-                                        abilityCost[abilityStateIndex]));
+                                        (String.format("%.1f", abilityCost[abilityStateIndex] * efficiencyFactor))));
                     }
                 } else {
                     if (isBladeStormEffect) {// execute in advance
@@ -225,14 +228,13 @@ public class ClientInputEvents {
         if (event.isCanceled() || event.isAttack()) return;
         Minecraft instance = Minecraft.getInstance();
         Player player = instance.player;
-
+        if (player == null) return;
         if (!player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
-        double maxBladeStormRange = ServerConfigs.MOD_WARFRAME_BLADE_STORM_RANGE.get();
 
+        double maxBladeStormRange = ServerConfigs.MOD_WARFRAME_BLADE_STORM_RANGE.get() * player.getAttributeValue(YAttributes.ABILITY_RANGE);
         LivingEntity target = RayUtils.getTargetedLiving(player, maxBladeStormRange);
 
         if (target == null || target == player) return;
-
         if (player.distanceTo(target) > maxBladeStormRange) return;
 
         PacketDistributor.sendToServer(new SendBladeStormTargetPacket(target.getId()));

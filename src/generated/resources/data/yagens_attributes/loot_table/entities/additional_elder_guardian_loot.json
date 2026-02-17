@@ -41,11 +41,26 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "common_weight": 500,
               "function": "yagens_attributes:randomize_mod",
-              "legendary_weight": 1,
-              "rare_weight": 100,
-              "uncommon_weight": 400
+              "legendary_weight": 1
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "yagens_attributes:specialize_mod",
+              "level_percent_inf": 5,
+              "level_percent_sup": 80,
+              "mod_id": "yagens_attributes:efficiency_armor_mod"
             }
           ],
           "name": "yagens_attributes:mod"

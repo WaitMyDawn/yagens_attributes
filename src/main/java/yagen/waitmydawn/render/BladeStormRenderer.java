@@ -27,13 +27,5 @@ public class BladeStormRenderer {
         blade.moveTo(start.x, start.y, start.z);
         blade.shoot(vel.x, vel.y, vel.z, 0.3F, 0);
         level.addFreshEntity(blade);
-
-
-//        int flightTicks = (int) (start.distanceTo(end) * 5);
-//        ServerTasks.runLater(level, flightTicks, () -> {
-//            if (target.isAlive()) {
-//                player.attack(target);
-//            }
-//        });
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.util.BladeStormTargets;
 
@@ -29,12 +30,14 @@ public record SendBladeStormTargetPacket(int targetId) implements CustomPacketPa
             Entity entity = sp.serverLevel().getEntity(pkt.targetId);
             if (entity instanceof LivingEntity living &&
                     living.level() == sp.level() &&
-                    sp.distanceTo(living) <= ServerConfigs.MOD_WARFRAME_BLADE_STORM_RANGE.get()) {
+                    sp.distanceTo(living) <= ServerConfigs.MOD_WARFRAME_BLADE_STORM_RANGE.get() * sp.getAttributeValue(YAttributes.ABILITY_RANGE)) {
                 BladeStormTargets.add(sp, living);
             }
         });
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type() { return TYPE; }
+    public Type<? extends CustomPacketPayload> type() {
+        return TYPE;
+    }
 }

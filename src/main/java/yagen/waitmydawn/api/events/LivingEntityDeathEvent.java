@@ -6,7 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -29,6 +31,7 @@ import yagen.waitmydawn.api.mods.ModRarity;
 import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.config.ServerConfigs;
+import yagen.waitmydawn.entity.EnergyOrbEntity;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
@@ -36,6 +39,7 @@ import yagen.waitmydawn.registries.ItemRegistry;
 import java.util.List;
 import java.util.Objects;
 
+import static yagen.waitmydawn.api.entity.EntityHandler.spawnEnergyOrb;
 import static yagen.waitmydawn.api.util.ModCompat.ModLevelInItemStack;
 import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
@@ -156,6 +160,34 @@ public class LivingEntityDeathEvent {
         }
         player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE),
                 ServerConfigs.MOD_RARE_THORN_AURA_DECREASE.get().floatValue() * modLevel);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        if (event.getEntity().level().isClientSide) return;
+        if (event.getEntity() instanceof Monster monster) {
+            double maxHealth = monster.getAttributeValue(Attributes.MAX_HEALTH);
+            double chance = 0.0;
+            if (maxHealth <= 50) {
+                // 0 ~ 50 HP -> 0% ~ 5%
+                chance = maxHealth * 0.001;
+            } else if (maxHealth <= 1000) {
+                // 50 ~ 1000 HP -> 5% ~ 20%
+                chance = 0.05 + (maxHealth - 50) * (0.15 / 950.0);
+            } else {
+                // > 1000 HP -> 20%
+                chance = 0.2;
+            }
+
+            if (monster.getRandom().nextFloat() < chance) {
+                int energyValue = 50;
+                if (monster.getRandom().nextFloat() < 0.25f) {
+                    energyValue = 25;
+                }
+
+                spawnEnergyOrb(monster.level(), new Vec3(monster.getX(), monster.getY() + 0.5, monster.getZ()), energyValue);
+            }
+        }
     }
 
     private static ItemStack findTotem(Player player) {

@@ -118,6 +118,26 @@ public class YAttributes {
                     () -> new RangedAttribute("attribute.yagens_attributes.energy_regen", 1.0D, 0.0D, 1024.0D)
                             .setSyncable(true));
 
+    public static final DeferredHolder<Attribute, Attribute> ABILITY_EFFICIENCY =
+            ATTRIBUTES.register("ability_efficiency",
+                    () -> new RangedAttribute("attribute.yagens_attributes.ability_efficiency", 1.0D, 0.0D, 1.75D)
+                            .setSyncable(true));
+
+    public static final DeferredHolder<Attribute, Attribute> ABILITY_DURATION =
+            ATTRIBUTES.register("ability_duration",
+                    () -> new RangedAttribute("attribute.yagens_attributes.ability_duration", 1.0D, 0.0D, 1024.0D)
+                            .setSyncable(true));
+
+    public static final DeferredHolder<Attribute, Attribute> ABILITY_RANGE =
+            ATTRIBUTES.register("ability_range",
+                    () -> new RangedAttribute("attribute.yagens_attributes.ability_range", 1.0D, 0.0D, 1024.0D)
+                            .setSyncable(true));
+
+    public static final DeferredHolder<Attribute, Attribute> ABILITY_STRENGTH =
+            ATTRIBUTES.register("ability_strength",
+                    () -> new RangedAttribute("attribute.yagens_attributes.ability_strength", 1.0D, 0.0D, 1024.0D)
+                            .setSyncable(true));
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(

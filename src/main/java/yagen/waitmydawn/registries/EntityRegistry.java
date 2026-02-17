@@ -9,6 +9,7 @@ import net.minecraft.world.entity.EntityType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import yagen.waitmydawn.entity.BladeEntity;
+import yagen.waitmydawn.entity.EnergyOrbEntity;
 import yagen.waitmydawn.entity.ReservoirEntity;
 
 import java.util.function.Supplier;
@@ -33,8 +34,17 @@ public class EntityRegistry {
     public static final Supplier<EntityType<ReservoirEntity>> RESERVOIR =
             ENTITIES.register("reservoir",
                     () -> EntityType.Builder.<ReservoirEntity>of(
-                            ReservoirEntity::new, MobCategory.MISC)
-                    .sized(0.5f, 0.5f)
-                    .build("reservoir"));
+                                    ReservoirEntity::new, MobCategory.MISC)
+                            .sized(0.5f, 0.5f)
+                            .build("reservoir"));
+
+    public static final DeferredHolder<EntityType<?>, EntityType<EnergyOrbEntity>> ENERGY_ORB =
+            ENTITIES.register("energy_orb",
+                    () -> EntityType.Builder.<EnergyOrbEntity>of(
+                                    EnergyOrbEntity::new, MobCategory.MISC)
+                            .sized(0.25F, 0.25F)
+                            .clientTrackingRange(10)
+                            .updateInterval(1)
+                            .build("energy_orb"));
 }
 

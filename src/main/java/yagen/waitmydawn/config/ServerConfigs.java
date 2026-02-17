@@ -47,6 +47,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_BERSERKER_FURY;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_BERSERKER_FURY_DURATION;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_BERSERKER_FURY_STACK;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLOW;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_ANCIENT_STABILIZER;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_EDGE_DISC;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_STATUS_HEAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT;
@@ -253,6 +255,16 @@ public class ServerConfigs {
         MOD_RARE_BERSERKER_FURY_DURATION = BUILDER.define("Duration", 10);
         BUILDER.comment("Stack of Berserker Fury Mod bonus (default = 2)");
         MOD_RARE_BERSERKER_FURY_STACK = BUILDER.define("Stack", 2);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Flow");
+        BUILDER.comment("Value of Rare Flow Mod per level (default = 20.0)");
+        MOD_RARE_FLOW = BUILDER.define("Value", 20.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Ancient_Stabilizer");
+        BUILDER.comment("Value of Rare Ancient Stabilizer Mod per level (default = 6.0)");
+        MOD_RARE_ANCIENT_STABILIZER = BUILDER.define("Value", 6.0);
         BUILDER.pop();
 
         BUILDER.push("Legendary_Edge_Disc");

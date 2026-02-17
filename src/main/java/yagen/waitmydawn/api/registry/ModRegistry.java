@@ -108,6 +108,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> XP_ARMOR_MOD = registerMod(new XpArmorMod());
     public static final Supplier<AbstractMod> GRACE_ARMOR_MOD = registerMod(new GraceArmorMod());
     public static final Supplier<AbstractMod> HEALTH_TRANS_ARMOR_MOD = registerMod(new HealthTransArmorMod());
+    public static final Supplier<AbstractMod> FLOW_ARMOR_MOD = registerMod(new FlowArmorMod());
+    public static final Supplier<AbstractMod> EFFICIENCY_ARMOR_MOD = registerMod(new EfficiencyArmorMod());
 
     /**
      * LEGENDARY

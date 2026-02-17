@@ -15,6 +15,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModData;
 import yagen.waitmydawn.capabilities.ReservoirsInventoryHandler;
@@ -43,9 +44,9 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
 
     public static void handle(CreateReservoirPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            int DURATION = 20 * ServerConfigs.MOD_WARFRAME_RESERVOIRS_DURATION.get();
-            float RANGE = ServerConfigs.MOD_WARFRAME_RESERVOIRS_RANGE.get().floatValue();
             ServerPlayer player = (ServerPlayer) ctx.player();
+            int DURATION = (int) (20 * ServerConfigs.MOD_WARFRAME_RESERVOIRS_DURATION.get() * player.getAttributeValue(YAttributes.ABILITY_DURATION));
+            float RANGE = (float) (ServerConfigs.MOD_WARFRAME_RESERVOIRS_RANGE.get().floatValue() * player.getAttributeValue(YAttributes.ABILITY_RANGE));
             Level level = player.level();
             ReservoirEntity reservoir = new ReservoirEntity(EntityRegistry.RESERVOIR.get(), level);
             ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -63,7 +64,7 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
                     ComponentRegistry.RESERVOIRS_ATTRIBUTES.get()
             );
             if (reservoirsAttributes != null) isReservoirsAttributes = true;
-            double valueFactor = 1.0;
+            double valueFactor = player.getAttributeValue(YAttributes.ABILITY_STRENGTH);
             double durationFactor = 1.0;
             double rangeFactor = 1.0;
             String typeId;
@@ -73,7 +74,7 @@ public record CreateReservoirPacket(int index) implements CustomPacketPayload {
                     durationFactor = durationFactor + 0.06 * reservoirsAttributes.duration();
             } else if (pkt.index == 1) {
                 typeId = "pumilum";
-                if (isReservoirsAttributes) valueFactor = valueFactor + 0.06 * reservoirsAttributes.strength();
+                if (isReservoirsAttributes) valueFactor = valueFactor * (1 + 0.06 * reservoirsAttributes.strength());
             } else {
                 typeId = "hydrangea";
                 if (isReservoirsAttributes) rangeFactor = rangeFactor + 0.20 * reservoirsAttributes.range();

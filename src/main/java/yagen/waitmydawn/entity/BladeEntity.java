@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.server.level.ServerPlayer;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.registries.EntityRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
@@ -47,9 +48,7 @@ public class BladeEntity extends ThrowableProjectile {
         if (getOwner() instanceof ServerPlayer player &&
                 result.getEntity() instanceof LivingEntity target &&
                 target.isAlive()) {
-            target.hurt(player.damageSources().playerAttack(player), (float) player.getAttributeValue(Attributes.ATTACK_DAMAGE) * 0.8f);
-//            player.attack(target); // useful for first BladeEntity, the others make empty hand damages
-//            player.resetAttackStrengthTicker(); // useless
+            target.hurt(player.damageSources().playerAttack(player), (float) (player.getAttributeValue(Attributes.ATTACK_DAMAGE) * player.getAttributeValue(YAttributes.ABILITY_STRENGTH)));
         }
         this.discard();
     }

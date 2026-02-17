@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.DamageType;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.events.AttackEventHandler;
 import yagen.waitmydawn.api.util.DamageCompat;
 import yagen.waitmydawn.config.ServerConfigs;
@@ -42,7 +43,7 @@ public record ThermalSunderPacket(boolean state) implements CustomPacketPayload 
     public static void handle(ThermalSunderPacket pkt, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             ServerPlayer player = (ServerPlayer) ctx.player();
-            double baseDamage = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER.get();
+            double baseDamage = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER.get() * player.getAttributeValue(YAttributes.ABILITY_STRENGTH);
             DamageType damageType;
             int amp;
             if (pkt.state()) {
@@ -50,8 +51,8 @@ public record ThermalSunderPacket(boolean state) implements CustomPacketPayload 
                 baseDamage *= 2;
             } else damageType = DamageType.COLD;
             double batteryPower = DataAttachmentRegistry.getBatteryPower(player);
-            double radius = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_RANGE.get();
-            int duration = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_DURATION.get() * 20;
+            double radius = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_RANGE.get() * player.getAttributeValue(YAttributes.ABILITY_RANGE);
+            int duration = (int) (ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_DURATION.get() * 20 * player.getAttributeValue(YAttributes.ABILITY_DURATION));
             boolean isInfinite = batteryPower == 100 && player.hasEffect(MobEffectRegistry.REDLINE);
             Vec3 center = player.position();
             baseDamage = baseDamage * (1 + batteryPower * 0.04);

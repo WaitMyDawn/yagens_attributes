@@ -57,6 +57,7 @@ public class ClientSetup {
             };
             EntityRenderers.register(EntityRegistry.BLADE.get(), BladeEntityRenderer::new);
             EntityRenderers.register(EntityRegistry.RESERVOIR.get(), ReservoirRenderer::new);
+            EntityRenderers.register(EntityRegistry.ENERGY_ORB.get(), EnergyOrbRenderer::new);
         });
         e.enqueueWork(ClientSetup::init);
     }

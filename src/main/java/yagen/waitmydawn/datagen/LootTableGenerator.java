@@ -706,8 +706,14 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
-                                                    .apply(RandomizeModFunction.builder(500, 400, 100, 1, 0, 50)))
+                                                    .apply(RandomizeModFunction.builder(50, 40, 10, 1, 0, 50)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.8f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(SpecializeModFunction.builder("yagens_attributes:efficiency_armor_mod", 5, 80)))
+                            )
             );
             consumer.accept(
                     ResourceKey.create(
