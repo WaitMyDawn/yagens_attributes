@@ -212,15 +212,15 @@ public class ClientConfigs {
         BUILDER.comment("Whether to play Thermal Sunder sound (default = true)");
         IF_THERMAL_SUNDER_SOUND = BUILDER.define("If_Thermal_Sunder_Sound", true);
         BUILDER.comment("The volume of Thermal Sunder sound (default = 1.0)");
-        THERMAL_SUNDER_VOLUME = BUILDER.define("Volume", 3.0);
+        THERMAL_SUNDER_VOLUME = BUILDER.define("Thermal_Sunder_Volume", 1.0);
         BUILDER.comment("The pitch of Thermal Sunder sound (default = 1.0)");
-        THERMAL_SUNDER_PITCH = BUILDER.define("Pitch", 1.0);
+        THERMAL_SUNDER_PITCH = BUILDER.define("Thermal_Sunder_Pitch", 1.0);
         BUILDER.comment("Whether to play headshot sound (default = true)");
         IF_HEADSHOT_SOUND = BUILDER.define("If_Headshot_Sound", true);
         BUILDER.comment("The volume of headshot sound (default = 0.6)");
-        HEADSHOT_VOLUME = BUILDER.define("Volume", 0.6);
+        HEADSHOT_VOLUME = BUILDER.define("Headshot_Volume", 0.6);
         BUILDER.comment("The pitch of headshot sound (default = 1.2)");
-        HEADSHOT_PITCH = BUILDER.define("Pitch", 1.2);
+        HEADSHOT_PITCH = BUILDER.define("Headshot_Pitch", 1.2);
         BUILDER.pop();
 
         BUILDER.push("Reversal");

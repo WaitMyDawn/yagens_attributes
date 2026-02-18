@@ -52,6 +52,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_ANCIENT_STABILIZER;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_OVEREXTENDED_RANGE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_OVEREXTENDED_STRENGTH;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_CONTINUITY;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_MEDITATION_RUNE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_EDGE_DISC;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_STATUS_HEAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT;
@@ -280,6 +282,16 @@ public class ServerConfigs {
         MOD_RARE_OVEREXTENDED_RANGE = BUILDER.define("Range", 18.0);
         BUILDER.comment("Strength Value of Rare Overextended Mod per level (default = 12.0, negative)");
         MOD_RARE_OVEREXTENDED_STRENGTH = BUILDER.define("Strength", 12.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Continuity");
+        BUILDER.comment("Value of Rare Continuity Mod per level (default = 6.0)");
+        MOD_RARE_CONTINUITY = BUILDER.define("Value", 6.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Meditation_Rune");
+        BUILDER.comment("Value of Rare Meditation Rune Mod per level (default = 6.0)");
+        MOD_RARE_MEDITATION_RUNE = BUILDER.define("Value", 6.0);
         BUILDER.pop();
 
         BUILDER.push("Legendary_Edge_Disc");

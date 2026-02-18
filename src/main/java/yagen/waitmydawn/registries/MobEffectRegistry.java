@@ -52,7 +52,7 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> HYDRANGEA = MOB_EFFECT_DEFERRED_REGISTER.register(
             "hydrangea", () -> new HydrangeaEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> THERMAL_SUNDER = MOB_EFFECT_DEFERRED_REGISTER.register(
-            "thermal_sunder", () -> new ThermalSunderStatusEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+            "thermal_sunder", () -> new ThermalSunderStatusEffect(MobEffectCategory.HARMFUL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> REDLINE = MOB_EFFECT_DEFERRED_REGISTER.register(
             "redline", () -> new RedlineEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 

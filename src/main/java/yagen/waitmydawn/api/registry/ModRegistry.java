@@ -112,6 +112,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> FLOW_ARMOR_MOD = registerMod(new FlowArmorMod());
     public static final Supplier<AbstractMod> EFFICIENCY_ARMOR_MOD = registerMod(new EfficiencyArmorMod());
     public static final Supplier<AbstractMod> OVEREXTENDED_ARMOR_MOD = registerMod(new OverextendedArmorMod());
+    public static final Supplier<AbstractMod> CONTINUITY_ARMOR_MOD = registerMod(new ContinuityArmorMod());
+    public static final Supplier<AbstractMod> STRENGTH_ARMOR_MOD = registerMod(new StrengthArmorMod());
 
     /**
      * LEGENDARY
