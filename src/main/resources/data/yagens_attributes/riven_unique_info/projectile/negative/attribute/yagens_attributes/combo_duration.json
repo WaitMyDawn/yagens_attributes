@@ -1,0 +1,7 @@
+[
+  {
+    "operation": "addneg",
+    "weight": 3,
+    "base_value": 1.25
+  }
+]

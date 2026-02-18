@@ -1,0 +1,12 @@
+[
+  {
+    "operation": "add",
+    "weight": 1,
+    "base_value": 0.15
+  },
+  {
+    "operation": "multibase",
+    "weight": 1,
+    "base_value": 3.75
+  }
+]

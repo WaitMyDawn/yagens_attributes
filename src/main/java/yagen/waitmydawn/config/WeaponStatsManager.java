@@ -12,9 +12,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.DamageType;
 import yagen.waitmydawn.api.attribute.DefaultDamageTypeRegistry;
@@ -26,11 +23,8 @@ import java.util.Map;
 
 import static yagen.waitmydawn.api.attribute.DefaultDamageTypeRegistry.*;
 
-@EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class WeaponStatsManager extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-
-    public static final WeaponStatsManager INSTANCE = new WeaponStatsManager();
 
     public WeaponStatsManager() {
         super(GSON, "weapon_stats");
@@ -104,10 +98,5 @@ public class WeaponStatsManager extends SimpleJsonResourceReloadListener {
                 DefaultItemAttributes.DEFAULTS.size(),
                 RivenModPool.DISPOSITION_MAP.size()
         );
-    }
-
-    @SubscribeEvent
-    public static void onAddReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(INSTANCE);
     }
 }
