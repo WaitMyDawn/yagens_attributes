@@ -21,6 +21,7 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.minecraft.world.level.Level;
 
@@ -38,6 +39,7 @@ import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.registries.BlockRegistry;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.util.HomologyModGroup;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -281,19 +283,10 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 float val = Float.parseFloat(m.group(3)); // 50.0
                 if (m.group(0).contains("tooltips")) // attributes
                 {
-                    String attributeName = YagensAttributes.MODID + ":" + m.group(1);
-                    Attribute attribute = BuiltInRegistries.ATTRIBUTE
-                            .get(ResourceLocation.tryParse(attributeName));
+                    String[] parts = m.group(0).split("'")[1].split("\\.");
+                    Attribute attribute = getModAttribute(parts[parts.length - 2], m.group(1));
                     if (attribute == null) {
-                        attribute = BuiltInRegistries.ATTRIBUTE
-                                .get(ResourceLocation.tryParse("minecraft:generic." + m.group(1)));
-                        if (attribute == null) {
-                            attribute = BuiltInRegistries.ATTRIBUTE
-                                    .get(ResourceLocation.tryParse("minecraft:player." + m.group(1)));
-                            if (attribute == null) {
-                                continue;
-                            }
-                        }
+                        continue;
                     }
 
                     AttributeModifier.Operation op = null;
@@ -633,6 +626,24 @@ public class ModOperationMenu extends AbstractContainerMenu {
             if (stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
         }
         return remain == 0;
+    }
+
+    public static Attribute getModAttribute(String modId, String pathName) {
+        if (modId.equals(YagensAttributes.MODID)) {
+            Attribute attribute = BuiltInRegistries.ATTRIBUTE
+                    .get(ResourceLocation.tryParse(YagensAttributes.MODID + ":" + pathName));
+            if (attribute != null) return attribute;
+
+            attribute = BuiltInRegistries.ATTRIBUTE
+                    .get(ResourceLocation.tryParse("minecraft:generic." + pathName));
+            if (attribute != null) return attribute;
+
+            attribute = BuiltInRegistries.ATTRIBUTE
+                    .get(ResourceLocation.tryParse("minecraft:player." + pathName));
+            if (attribute != null) return attribute;
+        }
+        return BuiltInRegistries.ATTRIBUTE
+                .get(ResourceLocation.tryParse(modId + ":" + pathName));
     }
 
     @Override

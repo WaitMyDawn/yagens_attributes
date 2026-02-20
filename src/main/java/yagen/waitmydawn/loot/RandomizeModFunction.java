@@ -53,7 +53,6 @@ public class RandomizeModFunction extends LootItemConditionalFunction {
 
     @Override
     protected ItemStack run(ItemStack stack, LootContext ctx) {
-        YagensAttributes.LOGGER.info("RandomizeModFunction called!");
         RandomSource rand = ctx.getRandom();
 
         int total = commonWeight + uncommonWeight + rareWeight + legendaryWeight;

@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.neoforged.fml.ModList;
 import org.slf4j.Logger;
 import yagen.waitmydawn.api.mods.RivenUniqueInfo;
 
@@ -80,6 +81,9 @@ public class RivenStatsManager extends SimpleJsonResourceReloadListener {
                     String fileName = parts[4];
                     String listKey = category + "/" + polarity;
 
+                    if (!modId.equals("minecraft") && !modId.equals("yagens_attributes") && !ModList.get().isLoaded(modId))
+                        return;
+
                     attributeBuffer.computeIfAbsent(listKey, k -> new HashMap<>())
                             .computeIfAbsent(modId, k -> new ArrayList<>())
                             .add(new PendingFile(fileName, entries));
@@ -107,7 +111,6 @@ public class RivenStatsManager extends SimpleJsonResourceReloadListener {
             List<RivenUniqueInfo> targetList = getTargetList(keys[0], keys[1]);
             if (targetList == null) return;
 
-            Set<String> claimedSimpleNames = new HashSet<>();
             List<String> sortedMods = modMap.keySet().stream()
                     .sorted(MOD_PRIORITY)
                     .toList();
@@ -118,14 +121,10 @@ public class RivenStatsManager extends SimpleJsonResourceReloadListener {
 
                 for (PendingFile file : files) {
                     String rawFileName = file.fileName;
-                    String finalPathName;
+                    String finalPathName = rawFileName;
 
-                    if (!claimedSimpleNames.contains(rawFileName)) {
-                        finalPathName = rawFileName;
-                        claimedSimpleNames.add(rawFileName);
-                    } else {
+                    if (!modId.equals("yagens_attributes") && !modId.equals("minecraft"))
                         finalPathName = modId + "." + rawFileName;
-                    }
 
                     for (RivenStatConfig.Entry entry : file.entries) {
                         // Key: tooltips.<modid>.<final_name>_<operation>

@@ -82,14 +82,34 @@ public class UnknownRivenItem extends Item {
             targetWeapon = RivenModPool.randomWeapon(rnd);
         }
 
+        List<RivenUniqueInfo> posPool;
+        List<RivenUniqueInfo> negPool;
         List<RivenUniqueInfo> lines = new ArrayList<>();
         if (targetWeapon instanceof ProjectileWeaponItem) {
-            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.PROJECTILE_POSITIVE, bonus, rnd));
-            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.PROJECTILE_NEGATIVE, penalty, rnd));
+            posPool = RivenUniqueInfo.PROJECTILE_POSITIVE;
+            negPool = RivenUniqueInfo.PROJECTILE_NEGATIVE;
         } else {
-            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.MELEE_POSITIVE, bonus, rnd));
-            lines.addAll(RivenUniqueInfo.draw(RivenUniqueInfo.MELEE_NEGATIVE, penalty, rnd));
+            posPool = RivenUniqueInfo.MELEE_POSITIVE;
+            negPool = RivenUniqueInfo.MELEE_NEGATIVE;
         }
+
+        List<RivenUniqueInfo> chosenPositives = RivenUniqueInfo.draw(posPool, bonus, rnd);
+
+        java.util.Set<String> usedAttributes = chosenPositives.stream()
+                .map(info -> getAttributeKey(info.key()))
+                .collect(Collectors.toSet());
+
+        List<RivenUniqueInfo> validNegPool = negPool.stream()
+                .filter(info -> {
+                    String attrKey = getAttributeKey(info.key());
+                    return !usedAttributes.contains(attrKey);
+                })
+                .toList();
+
+        List<RivenUniqueInfo> chosenNegatives = RivenUniqueInfo.draw(validNegPool, penalty, rnd);
+
+        lines.addAll(chosenPositives);
+        lines.addAll(chosenNegatives);
 
         List<RivenUniqueInfo> scaledLines = scaleLines(lines, bonus, penalty, targetWeapon, rnd);
 
@@ -123,6 +143,17 @@ public class UnknownRivenItem extends Item {
             "3p0n", new Coeff(0.75f, 0f),
             "3p1n", new Coeff(0.9375f, 0.75f)
     );
+
+    private static String getAttributeKey(String key) {
+        if (key == null || key.isEmpty()) return "null";
+        int lastDotIndex = key.lastIndexOf('.');
+        String keyName = (lastDotIndex != -1) ? key.substring(lastDotIndex + 1) : key;
+        int lastUnderscoreIndex = keyName.lastIndexOf('_');
+        if (lastUnderscoreIndex != -1) {
+            return keyName.substring(0, lastUnderscoreIndex);
+        }
+        return keyName;
+    }
 
     private static List<RivenUniqueInfo> scaleLines(List<RivenUniqueInfo> lines,
                                                     int posCnt,
