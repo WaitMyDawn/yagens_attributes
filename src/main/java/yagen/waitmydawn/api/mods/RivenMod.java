@@ -3,8 +3,10 @@ package yagen.waitmydawn.api.mods;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.item.ItemStack;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.gui.mod_operation.ModOperationMenu;
 import yagen.waitmydawn.registries.ComponentRegistry;
 
 import java.util.List;
@@ -40,7 +42,22 @@ public final class RivenMod extends AbstractMod {
                         stack.get(ComponentRegistry.RIVEN_RAW_INFO.get());
                 if (raw != null) {
                     return raw.raw().stream()
-                            .map(r -> Component.translatable(r.key(), String.format("%.2f",r.base() * modLevel)))
+                            .map(r -> {
+                                String modId = ModOperationMenu.getModIdFromKey(r.key());
+                                if (modId == null || modId.equals(YagensAttributes.MODID))
+                                    return Component.translatable(r.key(), String.format("%.2f", r.base() * modLevel));
+                                else {
+                                    String operation = ModOperationMenu.getOperationFromKey(r.key());
+                                    String attributeString = ModOperationMenu.getModAttributeFromKey(r.key());
+                                    Attribute attribute = ModOperationMenu.getModAttribute(modId, attributeString);
+                                    if (attribute == null)
+                                        return Component.translatable(r.key(), String.format("%.2f", r.base() * modLevel));
+                                    return Component.translatable(
+                                            "tooltips.yagens_attributes.general._" + operation,
+                                            String.format("%.2f", r.base() * modLevel),
+                                            Component.translatable(attribute.getDescriptionId()));
+                                }
+                            })
                             .toList();
                 }
                 break;

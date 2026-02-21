@@ -510,6 +510,12 @@
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multibaseneg": "-%.2f%% Armor Toughness Penetration %%",
   "tooltips.yagens_attributes.armor_toughness_penetration_percent_multiply": "x%.2f%% Armor Toughness Penetration %%",
 
+  "tooltips.yagens_attributes.general._add": "+%.1f%s",
+  "tooltips.yagens_attributes.general._addneg": "-%.1f%s",
+  "tooltips.yagens_attributes.general._multibase": "+%.2f%%%s",
+  "tooltips.yagens_attributes.general._multibaseneg": "-%.2f%%%s",
+  "tooltips.yagens_attributes.general._multiply": "x%.2f%%%s",
+
   "attackevent.yagens_attributes.status_event": "Trigger %s Status",
 
   "jei.yagens_attributes.loot_stats_title": "Mod Loot"

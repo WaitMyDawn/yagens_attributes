@@ -17,6 +17,8 @@ public record RivenUniqueInfo(String key, int weight, double baseValue) {
     public static List<RivenUniqueInfo> MELEE_NEGATIVE = new ArrayList<>();
     public static List<RivenUniqueInfo> PROJECTILE_POSITIVE = new ArrayList<>();
     public static List<RivenUniqueInfo> PROJECTILE_NEGATIVE = new ArrayList<>();
+    public static List<RivenUniqueInfo> STAFF_POSITIVE = new ArrayList<>();
+    public static List<RivenUniqueInfo> STAFF_NEGATIVE = new ArrayList<>();
 
     public static final Set<String> ATTRIBUTES_MODID = new HashSet<>();
 
@@ -25,6 +27,8 @@ public record RivenUniqueInfo(String key, int weight, double baseValue) {
         MELEE_NEGATIVE.clear();
         PROJECTILE_POSITIVE.clear();
         PROJECTILE_NEGATIVE.clear();
+        STAFF_POSITIVE.clear();
+        STAFF_NEGATIVE.clear();
         ATTRIBUTES_MODID.clear();
     }
 

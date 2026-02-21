@@ -283,8 +283,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 float val = Float.parseFloat(m.group(3)); // 50.0
                 if (m.group(0).contains("tooltips")) // attributes
                 {
-                    String[] parts = m.group(0).split("'")[1].split("\\.");
-                    Attribute attribute = getModAttribute(parts[parts.length - 2], m.group(1));
+                    Attribute attribute = getModAttribute(getModIdFromRawKey(m.group(0)), m.group(1));
                     if (attribute == null) {
                         continue;
                     }
@@ -626,6 +625,25 @@ public class ModOperationMenu extends AbstractContainerMenu {
             if (stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
         }
         return remain == 0;
+    }
+
+    public static String getModIdFromRawKey(String key) {
+        String[] parts = key.split("'")[1].split("\\.");
+        return parts[parts.length - 2];
+    }
+
+    public static String getModIdFromKey(String key) {
+        String[] parts = key.split("\\.");
+        if (parts.length < 2) return null;
+        return parts[parts.length - 2];
+    }
+
+    public static String getOperationFromKey(String key) {
+        return key.substring(key.lastIndexOf('_') + 1);
+    }
+
+    public static String getModAttributeFromKey(String key) {
+        return key.substring(key.lastIndexOf('.') + 1, key.lastIndexOf('_'));
     }
 
     public static Attribute getModAttribute(String modId, String pathName) {

@@ -20,6 +20,7 @@ import net.minecraft.world.phys.Vec2;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.mods.RivenMod;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.item.Mod;
 import yagen.waitmydawn.player.ClientRenderCache;
@@ -256,7 +257,6 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     private void renderItemInfo(GuiGraphics guiHelper, int mouseX, int mouseY) {
         var poseStack = guiHelper.pose();
         float scale = 0.8F;
-        float reverse = 1.0F / scale;
 
         ComponentRegistry.UpgradeData data = ComponentRegistry.getUpgrade(menu.getItemSlot().getItem());
         Component itemInfo = Component.translatable(
@@ -472,11 +472,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         //
         List<MutableComponent> uniqueInfo;
         if (mod.getUniqueInfo(modLevel).isEmpty()) {
-            ComponentRegistry.RivenRawInfoList raw = menu.slots.get(ITEM_SLOT).getItem().get(ComponentRegistry.RIVEN_RAW_INFO.get());
-            uniqueInfo = raw == null ? List.of()
-                    : raw.raw().stream()
-                    .map(r -> Component.translatable(r.key(), String.format("%.2f",r.base() * modLevel)))
-                    .toList();
+            uniqueInfo= RivenMod.getRivenUniqueInfo(menu.slots.get(ITEM_SLOT).getItem(), modLevel);
         } else {
             uniqueInfo = mod.getUniqueInfo(modLevel);
         }

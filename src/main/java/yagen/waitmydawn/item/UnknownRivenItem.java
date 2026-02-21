@@ -11,12 +11,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ProjectileWeaponItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.fml.ModList;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.*;
 import yagen.waitmydawn.capabilities.ModContainer;
+import yagen.waitmydawn.compat.ISSCompat;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
+import yagen.waitmydawn.util.SupportedMod;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -85,7 +88,10 @@ public class UnknownRivenItem extends Item {
         List<RivenUniqueInfo> posPool;
         List<RivenUniqueInfo> negPool;
         List<RivenUniqueInfo> lines = new ArrayList<>();
-        if (targetWeapon instanceof ProjectileWeaponItem) {
+        if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()) && ISSCompat.isStaffItem(targetWeapon)) {
+            posPool = RivenUniqueInfo.STAFF_POSITIVE;
+            negPool = RivenUniqueInfo.STAFF_NEGATIVE;
+        } else if (targetWeapon instanceof ProjectileWeaponItem) {
             posPool = RivenUniqueInfo.PROJECTILE_POSITIVE;
             negPool = RivenUniqueInfo.PROJECTILE_NEGATIVE;
         } else {

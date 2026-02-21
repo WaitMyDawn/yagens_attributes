@@ -100,9 +100,10 @@ public class RivenStatsManager extends SimpleJsonResourceReloadListener {
 
         processAttributes(attributeBuffer);
 
-        LOGGER.info("Riven Stats Reloaded. MeleePos: {}, MeleeNeg: {}, ProjPos: {}, ProjNeg: {}",
+        LOGGER.info("Riven Stats Reloaded. MeleePos: {}, MeleeNeg: {}, ProjPos: {}, ProjNeg: {}, StaffPos: {}, StaffNeg: {}",
                 RivenUniqueInfo.MELEE_POSITIVE.size(), RivenUniqueInfo.MELEE_NEGATIVE.size(),
-                RivenUniqueInfo.PROJECTILE_POSITIVE.size(), RivenUniqueInfo.PROJECTILE_NEGATIVE.size());
+                RivenUniqueInfo.PROJECTILE_POSITIVE.size(), RivenUniqueInfo.PROJECTILE_NEGATIVE.size(),
+                RivenUniqueInfo.STAFF_POSITIVE.size(), RivenUniqueInfo.STAFF_NEGATIVE.size());
     }
 
     private void processAttributes(Map<String, Map<String, List<PendingFile>>> buffer) {
@@ -141,6 +142,8 @@ public class RivenStatsManager extends SimpleJsonResourceReloadListener {
             return "positive".equals(polarity) ? RivenUniqueInfo.MELEE_POSITIVE : RivenUniqueInfo.MELEE_NEGATIVE;
         } else if ("projectile".equals(category)) {
             return "positive".equals(polarity) ? RivenUniqueInfo.PROJECTILE_POSITIVE : RivenUniqueInfo.PROJECTILE_NEGATIVE;
+        }else if ("staff".equals(category)) {
+            return "positive".equals(polarity) ? RivenUniqueInfo.STAFF_POSITIVE : RivenUniqueInfo.STAFF_NEGATIVE;
         }
         return null;
     }

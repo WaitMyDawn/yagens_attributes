@@ -1,0 +1,12 @@
+[
+  {
+    "operation": "addneg",
+    "weight": 1,
+    "base_value": 0.025
+  },
+  {
+    "operation": "multibaseneg",
+    "weight": 4,
+    "base_value": 2.5
+  }
+]
