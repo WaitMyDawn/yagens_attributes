@@ -62,6 +62,7 @@ public class YagensAttributes {
         event.enqueueWork(() -> {
             Map<ResourceLocation, Double> map = Map.of(
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.max_health"), 2_147_483_647D,
+                    ResourceLocation.fromNamespaceAndPath("minecraft", "generic.max_absorption"), 2_147_483_647D,
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.armor"), 2_147_483_647D,
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.armor_toughness"), 2_147_483_647D,
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.attack_damage"), 2_147_483_647D,

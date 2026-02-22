@@ -5,27 +5,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 
 import java.util.Objects;
-import java.util.Random;
 
 import static yagen.waitmydawn.api.mission.MissionData.*;
 import static yagen.waitmydawn.api.mission.MissionHandler.*;
@@ -58,7 +52,7 @@ public class MissionEvent {
 
         if (mob.level().isClientSide) return;
         String taskIdString = mob.getPersistentData().getString("TaskId");
-        if(taskIdString.equals("")) return;
+        if (taskIdString.equals("")) return;
         ServerLevel level = (ServerLevel) mob.level();
         MinecraftServer server = Objects.requireNonNull(mob.getServer());
         MissionData data = MissionData.get(server);
@@ -95,11 +89,11 @@ public class MissionEvent {
         Vec3 spawnPos = null;
         if (sData.summonCount < areaEntityCount * areaCur) {// summon according to current area
             BlockPos basicSpawnBlock = getBasicSpawnBlockPosByEye(player);
-            spawnPos = getCorrectSpawnPos(level, basicSpawnBlock);
+            spawnPos = getCorrectSpawnPos(level, basicSpawnBlock, player.position(), false);
         } else if (isAllInMissionPosition(server, sData)
                 && sData.progress < sData.maxProgress) {// compensatory summon
             BlockPos basicSpawnBlock = getBasicSpawnBlockPosByArea(sData.missionPosition, sData.missionRange, player);
-            spawnPos = getCorrectSpawnPos(level, basicSpawnBlock);
+            spawnPos = getCorrectSpawnPos(level, basicSpawnBlock, player.position(), true);
         }
         if (spawnPos == null || !level.getWorldBorder().isWithinBounds(spawnPos)) return;
         ServerPlayer serverPlayer = (ServerPlayer) player;
@@ -137,13 +131,14 @@ public class MissionEvent {
         ResourceLocation taskId = active.getKey();
         ServerPlayer serverPlayer = (ServerPlayer) player;
         BlockPos basicSpawnBlock = getBasicSpawnBlockPosByArea(sData.missionPosition, sData.missionRange, player);
-        Vec3 spawnPos = getCorrectSpawnPos(level, basicSpawnBlock);
+        Vec3 spawnPos = getCorrectSpawnPos(level, basicSpawnBlock, player.position(), true);
         Mob mob = summonAssassinationEntity(
                 randomBossType(serverPlayer.getRandom()),
                 serverPlayer.serverLevel(),
                 spawnPos,
                 taskId, sData.missionLevel);
-        mob.setTarget(player);
+        if (mob != null && mob.canAttack(player) && mob.isAlive())
+            mob.setTarget(player);
         data.addSummonCount(serverPlayer.serverLevel(), player.level().dimension().location(), taskId);
     }
 

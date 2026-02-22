@@ -138,6 +138,16 @@ public class YAttributes {
                     () -> new RangedAttribute("attribute.yagens_attributes.ability_strength", 1.0D, 0.0D, 1024.0D)
                             .setSyncable(true));
 
+    public static final DeferredHolder<Attribute, Attribute> MAX_SHIELD =
+            ATTRIBUTES.register("max_shield",
+                    () -> new RangedAttribute("attribute.yagens_attributes.max_shield", 0.0D, 0.0D, 2_147_483_647D)
+                            .setSyncable(true));
+
+    public static final DeferredHolder<Attribute, Attribute> SHIELD_REGEN =
+            ATTRIBUTES.register("shield_regen",
+                    () -> new RangedAttribute("attribute.yagens_attributes.shield_regen", 0.1D, 0.0D, 1024.0D)
+                            .setSyncable(true));
+
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
         e.getTypes().forEach(

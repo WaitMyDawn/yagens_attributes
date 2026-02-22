@@ -22,6 +22,8 @@
   "attribute.yagens_attributes.ability_duration": "Ability Duration",
   "attribute.yagens_attributes.ability_range": "Ability Range",
   "attribute.yagens_attributes.ability_strength": "Ability Strength",
+  "attribute.yagens_attributes.max_shield": "Max Shield",
+  "attribute.yagens_attributes.shield_regen": "Shield Regen",
 
   "item.yagens_attributes.mod_essence": "Mod Essence",
   "item.yagens_attributes.mod_essence.tooltip1": "It can be used to upgrade Mod",

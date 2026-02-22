@@ -80,11 +80,15 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER_RANGE;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_THERMAL_SUNDER_DURATION;
 
+    public static final ModConfigSpec.ConfigValue<Boolean> BAN_SHIELD_MECHANISM;
+
     static {
 
-        BUILDER.push("Optimize for Vanilla");
+        BUILDER.push("Optimize_for_Vanilla");
         BUILDER.comment("The cooldown you use splash potion or lingering potion (default = 20, Integer, tick)");
         SPLASH_POTION_COOLDOWN = BUILDER.defineInRange("Potion_Cooldown", 20, 0, 100);
+        BUILDER.comment("Whether to ban Shield Mechanism? This changes absorption mechanism. (default = false)");
+        BAN_SHIELD_MECHANISM = BUILDER.define("Ban_Shield_Mechanism", false);
         BUILDER.pop();
 
         BUILDER.push("Ban");

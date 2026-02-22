@@ -1,7 +1,5 @@
 package yagen.waitmydawn.item;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -14,8 +12,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import static yagen.waitmydawn.api.mission.MissionHandler.randomMonsterType;
-import static yagen.waitmydawn.api.mission.MissionHandler.summonEntity;
+import static yagen.waitmydawn.api.mission.MissionHandler.*;
 
 public class SummonItem extends Item {
 
@@ -35,11 +32,10 @@ public class SummonItem extends Item {
 
             Vec3 spawnPos = Vec3.atCenterOf(((BlockHitResult) result).getBlockPos());
             Vec3 finalPos = new Vec3(spawnPos.x, spawnPos.y + 1, spawnPos.z);
-            summonEntity(randomMonsterType(serverPlayer.getRandom()),
+            summonEntity(randomBossType(serverPlayer.getRandom()),
                     serverPlayer.serverLevel(),
                     finalPos
             );
-            player.sendSystemMessage(Component.literal("Entity Summoned!"));
         }
         return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand),
                 level.isClientSide);

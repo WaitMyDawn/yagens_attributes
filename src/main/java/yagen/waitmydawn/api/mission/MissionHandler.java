@@ -35,7 +35,6 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.entity.SummonEntityList;
-import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,9 +99,6 @@ public class MissionHandler {
                                 MONSTER_OVER_200_TYPES.add(type1);
                             }
                         }
-//                        else if(entity instanceof LivingEntity living){
-//
-//                        }
                     } catch (ClassCastException e) {
                         System.out.println("fail to transform to Monster: " + type);
                     }
@@ -371,14 +367,47 @@ public class MissionHandler {
         return BlockPos.containing(missionPosition.add(offset));
     }
 
-    public static Vec3 getCorrectSpawnPos(Level level, BlockPos basicSpawnBlock) {
-        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
+    public static Vec3 getCorrectSpawnPos(Level level, BlockPos basicSpawnBlock, Vec3 playerPosition, boolean isArea) {
+        int surfaceY = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
         Vec3 spawnPos;
-        if (level.dimension() == Level.NETHER && y > 125) {//nether floor
-            int startY = basicSpawnBlock.getY();
-            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+        int startY;
+        int sup;
+        if (level.dimension() == Level.NETHER && surfaceY > 124) {//nether floor
+            if (!isArea) {
+                startY = basicSpawnBlock.getY();
+                sup = Math.min(124, startY + 12);
+                for (int yi = startY; yi <= sup; yi++) {
+                    m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                    BlockState below = level.getBlockState(m.below());
+                    BlockState here = level.getBlockState(m);
 
-            for (int yi = startY; yi <= startY + 12; yi++) {
+                    if (below.canOcclude() && here.isAir() && level.noCollision(
+                            AABB.ofSize(Vec3.atCenterOf(m).add(0, 0.5, 0), 0.8, 1.8, 0.8))) {
+                        spawnPos = Vec3.atCenterOf(m);
+                        return spawnPos;
+                    }
+                }
+            } else {
+                startY = (int) playerPosition.y;
+                sup = Math.min(123, startY + 12);
+                for (int yi = startY - 6; yi <= sup; yi++) {
+                    m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+                    BlockState below = level.getBlockState(m.below());
+                    BlockState here = level.getBlockState(m);
+
+                    if (below.canOcclude() && here.isAir() && level.noCollision(
+                            AABB.ofSize(Vec3.atCenterOf(m).add(0, 0.5, 0), 0.8, 1.8, 0.8))) {
+                        spawnPos = Vec3.atCenterOf(m);
+                        return spawnPos;
+                    }
+                }
+            }
+        }
+        if (isArea) {
+            startY = (int) playerPosition.y;
+            sup = Math.min(320, startY + 12);
+            for (int yi = startY - 3; yi <= sup; yi++) {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState below = level.getBlockState(m.below());
                 BlockState here = level.getBlockState(m);
@@ -389,20 +418,22 @@ public class MissionHandler {
                     return spawnPos;
                 }
             }
-        }
-        if (y - basicSpawnBlock.getY() > 12) return null;// too high or air land blocked
-        spawnPos = Vec3.atCenterOf(new BlockPos(basicSpawnBlock.getX(), y, basicSpawnBlock.getZ()));
+            return Vec3.atCenterOf(new BlockPos(basicSpawnBlock.getX(), startY, basicSpawnBlock.getZ()));
+        } else if (surfaceY - basicSpawnBlock.getY() > 12) return null;// too high or air land blocked
+        spawnPos = Vec3.atCenterOf(new BlockPos(basicSpawnBlock.getX(), surfaceY, basicSpawnBlock.getZ()));
         return spawnPos;
     }
 
-    public static BlockPos getCorrectTreasurePos(Level level, BlockPos basicSpawnBlock) {
-        int y = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
+    public static BlockPos getCorrectTreasurePos(Level level,
+                                                 BlockPos basicSpawnBlock // missionPos ~ playerPos when used Endo
+    ) {
+        int surfaceY = level.getHeight(Heightmap.Types.WORLD_SURFACE, basicSpawnBlock.getX(), basicSpawnBlock.getZ());
         BlockPos spawnPos;
         int startY = basicSpawnBlock.getY();
-        if (level.dimension() == Level.NETHER && y > 125) {//nether floor
+        if (level.dimension() == Level.NETHER && surfaceY > 124) {//nether floor
             BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
 
-            for (int yi = startY / 2; yi <= 124; yi++) {
+            for (int yi = Math.max(6, startY - 6); yi <= 123; yi++) {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState here = level.getBlockState(m);
                 BlockState below = level.getBlockState(m.below());
@@ -412,23 +443,24 @@ public class MissionHandler {
                 }
             }
         }
-        spawnPos = new BlockPos(basicSpawnBlock.getX(), y, basicSpawnBlock.getZ());
-        if (level.getBlockState(spawnPos.below()).canOcclude()
-                && level.getBlockState(spawnPos).isAir())
-            return spawnPos;
-        else {
-            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
-
-            for (int yi = y; yi >= -32; yi--) {
-                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
-                BlockState here = level.getBlockState(m);
-                BlockState below = level.getBlockState(m.below());
-                if (below.canOcclude() && here.isAir()) {
-                    spawnPos = m;
-                    return spawnPos;
-                }
-            }
-        }
+        spawnPos = new BlockPos(basicSpawnBlock.getX(), surfaceY, basicSpawnBlock.getZ());
+//        if (level.getBlockState(spawnPos).isAir()) {
+//            BlockState belowState = level.getBlockState(spawnPos.below());
+//            if (belowState.canOcclude() || !belowState.getFluidState().isEmpty())
+//                return spawnPos;
+//        } else {
+//            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
+//
+//            for (int yi = surfaceY; yi >= -32; yi--) {
+//                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
+//                BlockState here = level.getBlockState(m);
+//                BlockState below = level.getBlockState(m.below());
+//                if (below.canOcclude() && here.isAir()) {
+//                    spawnPos = m;
+//                    return spawnPos;
+//                }
+//            }
+//        }
         return spawnPos;
     }
 
