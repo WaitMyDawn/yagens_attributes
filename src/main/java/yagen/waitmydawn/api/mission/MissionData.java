@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -187,27 +188,25 @@ public class MissionData extends SavedData {
     }
 
     public static int clearSummonedEntitiesByTaskId(ServerLevel level, ResourceLocation taskId) {
-        AtomicInteger clearCount = new AtomicInteger();
-        level.getAllEntities().forEach(entity -> {
-            if (!(entity instanceof Mob mob)) return;
-            if (mob.getPersistentData().getString("TaskId").equals(taskId.toString())) {
-                mob.discard();
-                clearCount.getAndIncrement();
-            }
-        });
-        return clearCount.get();
+        List<Mob> toRemove = new ArrayList<>();
+        for (Entity entity : level.getAllEntities())
+            if (entity instanceof Mob mob)
+                if (taskId.toString().equals(mob.getPersistentData().getString("TaskId")))
+                    toRemove.add(mob);
+        for (Mob mob : toRemove)
+            mob.discard();
+        return toRemove.size();
     }
 
     public static int clearSummonedEntities(ServerLevel level) {
-        AtomicInteger clearCount = new AtomicInteger();
-        level.getAllEntities().forEach(entity -> {
-            if (!(entity instanceof Mob mob)) return;
-            if (!mob.getPersistentData().getString("TaskId").equals("")) {
-                mob.discard();
-                clearCount.getAndIncrement();
-            }
-        });
-        return clearCount.get();
+        List<Mob> toRemove = new ArrayList<>();
+        for (Entity entity : level.getAllEntities())
+            if (entity instanceof Mob mob)
+                if (!mob.getPersistentData().getString("TaskId").equals(""))
+                    toRemove.add(mob);
+        for (Mob mob : toRemove)
+            mob.discard();
+        return toRemove.size();
     }
 
     public static double distanceToMissionPosition(Player player, SharedTaskData sData) {

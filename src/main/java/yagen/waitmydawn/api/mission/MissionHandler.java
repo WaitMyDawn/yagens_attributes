@@ -61,8 +61,21 @@ public class MissionHandler {
 
         ServerLevel level = ServerLifecycleHooks.getCurrentServer().overworld();
         BuiltInRegistries.ENTITY_TYPE.stream()
+                .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
+                        || type.is(SummonEntityList.BOSS_WHITE_LIST)
+                ))
+                .filter(type -> !type.is(SummonEntityList.BOSS_BLACK_LIST))
+                .forEach(type -> {
+                    try {
+                        BOSS_TYPES.add((EntityType<? extends Monster>) type);
+                    } catch (ClassCastException e) {
+                        System.out.println("fail to transform to Monster (Boss): " + type);
+                    }
+                });
+        BuiltInRegistries.ENTITY_TYPE.stream()
                 .filter(type -> type.getCategory() == MobCategory.MONSTER)
-                .filter(type -> !type.is(Tags.EntityTypes.BOSSES))
+                .filter(type -> !isBoss(type))
+                .filter(type -> !type.is(SummonEntityList.BOSS_BLACK_LIST))
                 .filter(type -> !type.is(SummonEntityList.MONSTER_BLACK_LIST))
                 .forEach(type -> {
                     try {
@@ -101,18 +114,6 @@ public class MissionHandler {
                         }
                     } catch (ClassCastException e) {
                         System.out.println("fail to transform to Monster: " + type);
-                    }
-                });
-        BuiltInRegistries.ENTITY_TYPE.stream()
-                .filter(type -> (type.is(Tags.EntityTypes.BOSSES)
-                        || type.is(SummonEntityList.BOSS_WHITE_LIST)
-                ))
-                .filter(type -> !type.is(SummonEntityList.BOSS_BLACK_LIST))
-                .forEach(type -> {
-                    try {
-                        BOSS_TYPES.add((EntityType<? extends Monster>) type);
-                    } catch (ClassCastException e) {
-                        System.out.println("fail to transform to Monster (Boss): " + type);
                     }
                 });
 //        MONSTER_TYPES.forEach(type ->
@@ -192,6 +193,11 @@ public class MissionHandler {
     public static boolean isBoss(LivingEntity entity) {
         if (entity == null) return false;
         EntityType<?> type = entity.getType();
+        return BOSS_TYPES.contains(type);
+    }
+
+    public static boolean isBoss(EntityType<?> type) {
+        if (type == null) return false;
         return BOSS_TYPES.contains(type);
     }
 
@@ -391,7 +397,7 @@ public class MissionHandler {
             } else {
                 startY = (int) playerPosition.y;
                 sup = Math.min(123, startY + 12);
-                for (int yi = startY - 6; yi <= sup; yi++) {
+                for (int yi = startY - 2; yi <= sup; yi++) {
                     m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                     BlockState below = level.getBlockState(m.below());
                     BlockState here = level.getBlockState(m);
@@ -407,7 +413,7 @@ public class MissionHandler {
         if (isArea) {
             startY = (int) playerPosition.y;
             sup = Math.min(320, startY + 12);
-            for (int yi = startY - 3; yi <= sup; yi++) {
+            for (int yi = startY - 2; yi <= sup; yi++) {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState below = level.getBlockState(m.below());
                 BlockState here = level.getBlockState(m);
@@ -437,30 +443,15 @@ public class MissionHandler {
                 m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
                 BlockState here = level.getBlockState(m);
                 BlockState below = level.getBlockState(m.below());
-                if (below.canOcclude() && here.isAir()) {
+                if (!below.isAir() && here.isAir()) {
                     spawnPos = m;
                     return spawnPos;
                 }
             }
+            spawnPos = basicSpawnBlock;
+        } else {
+            spawnPos = new BlockPos(basicSpawnBlock.getX(), surfaceY, basicSpawnBlock.getZ());
         }
-        spawnPos = new BlockPos(basicSpawnBlock.getX(), surfaceY, basicSpawnBlock.getZ());
-//        if (level.getBlockState(spawnPos).isAir()) {
-//            BlockState belowState = level.getBlockState(spawnPos.below());
-//            if (belowState.canOcclude() || !belowState.getFluidState().isEmpty())
-//                return spawnPos;
-//        } else {
-//            BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
-//
-//            for (int yi = surfaceY; yi >= -32; yi--) {
-//                m.set(basicSpawnBlock.getX(), yi, basicSpawnBlock.getZ());
-//                BlockState here = level.getBlockState(m);
-//                BlockState below = level.getBlockState(m.below());
-//                if (below.canOcclude() && here.isAir()) {
-//                    spawnPos = m;
-//                    return spawnPos;
-//                }
-//            }
-//        }
         return spawnPos;
     }
 
@@ -491,7 +482,7 @@ public class MissionHandler {
         MapItemSavedData mapData = MapItemSavedData.createFresh(
                 missionPosition.x(),
                 missionPosition.z(),
-                (byte) 4,
+                (byte) 3,
                 true,
                 true,
                 serverLevel.dimension()

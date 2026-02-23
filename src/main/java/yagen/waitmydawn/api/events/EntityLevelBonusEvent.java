@@ -18,12 +18,14 @@ import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
+import static yagen.waitmydawn.api.mission.MissionHandler.isBoss;
+
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
 public class EntityLevelBonusEvent {
     @SubscribeEvent
     public static void entityJoinBonusEvent(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide) return;
-        if(!ServerConfigs.IF_LEVEL_BONUS.get()) return;
+        if (!ServerConfigs.IF_LEVEL_BONUS.get()) return;
         if (!(event.getEntity() instanceof LivingEntity livingEntity)) return;
         if (!(livingEntity instanceof Enemy)) return;
         setBaseLevel(livingEntity);
@@ -56,8 +58,7 @@ public class EntityLevelBonusEvent {
         if (entityLevel == null) return;
 
         EntityType<?> type = entity.getType();
-        if (type.is(Tags.EntityTypes.BOSSES)
-                || type == DarkDoppelgangerEntity.DARK_DOPPELGANGER.get()) {
+        if (isBoss(type) || type.is(Tags.EntityTypes.BOSSES)) {
             if (entityLevel.getModifier(ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "boss_level")) == null) {
                 entityLevel.addPermanentModifier(new AttributeModifier(
                         ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "boss_level"),

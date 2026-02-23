@@ -22,6 +22,8 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.config.ClientConfigs;
 
+import static yagen.waitmydawn.api.mission.MissionHandler.isBoss;
+
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class LevelRender {
     @SubscribeEvent
@@ -59,7 +61,7 @@ public class LevelRender {
         float scale = 0.025F;
 
         if (ClientConfigs.LV_CONTENT_ENLARGE.get()) {
-            float enlarge = (float) Math.pow(height * boundingBox.getXsize() * boundingBox.getZsize() / 0.7,1.0/3.0);
+            float enlarge = (float) Math.pow(height * boundingBox.getXsize() * boundingBox.getZsize() / 0.7, 1.0 / 3.0);
             if (enlarge > 1)
                 scale = (float) Math.min(0.125, (scale * (1 + (enlarge - 1) * 0.5)));
         }
@@ -69,7 +71,7 @@ public class LevelRender {
         Font font = instance.font;
         int color = 0xFFFFFF;
         Font.DisplayMode mode = Font.DisplayMode.NORMAL;
-        if (livingEntity.getType().is(Tags.EntityTypes.BOSSES)) {
+        if (livingEntity.getType().is(Tags.EntityTypes.BOSSES) || isBoss(livingEntity.getType())) {
             color = ClientConfigs.LV_BOSS_COLOR.get();
             if (ClientConfigs.BOSS_LV_SEE_THROUGH.get()) mode = Font.DisplayMode.SEE_THROUGH;
         }

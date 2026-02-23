@@ -12,6 +12,7 @@
     "CraftingMenuMixin",
     "ItemStackMixin",
     "ItemMixin",
+    "ClientPacketListenerMixin",
     "CombatRulesMixin",
     "RangedAttributeAccessor"
   ],

@@ -11,6 +11,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import yagen.waitmydawn.registries.ComponentRegistry;
 
 @Mixin(Item.class)
 public class ItemMixin {
@@ -36,6 +38,5 @@ public class ItemMixin {
         }
         if (maxStack != item.getDefaultMaxStackSize())
             components = PatchedDataComponentMap.fromPatch(components, DataComponentPatch.builder().set(DataComponents.MAX_STACK_SIZE, maxStack).build());
-
     }
 }

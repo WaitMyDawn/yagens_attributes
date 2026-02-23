@@ -71,6 +71,7 @@ public class ClientConfigs {
     public static final ModConfigSpec.ConfigValue<Double> GAS_MAX_SIZE;
 
     public static final ModConfigSpec.ConfigValue<Boolean> IF_REVERSAL_THERMAL_SUNDER;
+    public static final ModConfigSpec.ConfigValue<Boolean> IF_FIX_GAIN_XP;
 
     static {
         BUILDER.push("ComboHUD");
@@ -226,6 +227,12 @@ public class ClientConfigs {
         BUILDER.push("Reversal");
         BUILDER.comment("Whether to reversal Thermal Sunder (default = false)");
         IF_REVERSAL_THERMAL_SUNDER = BUILDER.define("Thermal_Sunder", false);
+        BUILDER.pop();
+
+        BUILDER.push("Animation");
+        IF_FIX_GAIN_XP = BUILDER.comment("If true, prevents weapon swing animation reset when the weapon (ModContainer with a not max level) gains exp.")
+                .comment("This fixes compatibility with mods like Better Combat.")
+                .define("smooth_weapon_upgrade", true);
         BUILDER.pop();
 
 

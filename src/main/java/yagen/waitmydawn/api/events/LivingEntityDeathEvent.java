@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static yagen.waitmydawn.api.entity.EntityHandler.spawnEnergyOrb;
+import static yagen.waitmydawn.api.mission.MissionHandler.isBoss;
 import static yagen.waitmydawn.api.util.ModCompat.ModLevelInItemStack;
 import static yagen.waitmydawn.api.util.ModCompat.TRANSFORM_POOL_BY_RARITY;
 
@@ -133,7 +134,7 @@ public class LivingEntityDeathEvent {
         LivingEntity entity = event.getEntity();
         if (entity.level().isClientSide) return;
         if (entity.getRandom().nextDouble() < 0.5) return;
-        if (!entity.getType().is(Tags.EntityTypes.BOSSES)) return;
+        if (!entity.getType().is(Tags.EntityTypes.BOSSES) && !isBoss(entity.getType())) return;
 
         ServerLevel level = (ServerLevel) entity.level();
         Vec3 pos = entity.position();

@@ -161,6 +161,23 @@
         }
       ],
       "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "yagens_attributes:rarity_mod",
+              "level_percent_sup": 100,
+              "rarity": 5
+            }
+          ],
+          "name": "yagens_attributes:mod"
+        }
+      ],
+      "rolls": 1.0
     }
   ],
   "random_sequence": "yagens_attributes:chests/mission/assassination_treasure_2"

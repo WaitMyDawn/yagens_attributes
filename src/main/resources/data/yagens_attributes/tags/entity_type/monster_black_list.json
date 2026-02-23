@@ -5,6 +5,7 @@
     { "id": "minecraft:illusioner", "required": false },
     { "id": "iceandfire:stone_statue", "required": false },
     { "id": "alexscaves:luxtructosaurus", "required": false },
+    { "id": "alexscaves:gum_worm", "required": false },
     { "id": "alexscaves:watcher", "required": false },
     { "id": "alexsmobs:void_worm", "required": false },
     { "id": "darkdoppelganger:dark_doppelganger_minion", "required": false },

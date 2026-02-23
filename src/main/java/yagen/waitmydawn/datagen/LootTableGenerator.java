@@ -617,7 +617,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.ENDO.get())
-                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,1), MissionType.EXTERMINATE.getValue())))
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0, 1), MissionType.EXTERMINATE.getValue())))
                                     .when(LootItemRandomChanceCondition.randomChance(0.2f)))
             );
             consumer.accept(
@@ -635,7 +635,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.ENDO.get())
-                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1,2), MissionType.EXTERMINATE.getValue())))
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1, 2), MissionType.EXTERMINATE.getValue())))
                             )
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
@@ -806,7 +806,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.MOD.get())
-                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0,100)))
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.1f)))
             );
 
@@ -1115,7 +1115,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.ENDO.get())
-                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,1), MissionType.ASSASSINATION.getValue())))
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0, 1), MissionType.ASSASSINATION.getValue())))
                                     .when(LootItemRandomChanceCondition.randomChance(0.5f)))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
@@ -1156,7 +1156,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.ENDO.get())
-                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0,2), MissionType.ASSASSINATION.getValue())))
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(0, 2), MissionType.ASSASSINATION.getValue())))
                                     .when(LootItemRandomChanceCondition.randomChance(0.9f)))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
@@ -1204,7 +1204,7 @@ public class LootTableGenerator {
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
                                             LootItem.lootTableItem(ItemRegistry.ENDO.get())
-                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1,2), MissionType.ASSASSINATION.getValue()))))
+                                                    .apply(SetEndoFunction.builder(MissionType.getRandomLevel(1, 2), MissionType.ASSASSINATION.getValue()))))
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
@@ -1220,7 +1220,7 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(Items.NETHERITE_INGOT)
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4))))
-                                    )
+                            )
                             .withPool(LootPool.lootPool()
                                     .setRolls(ConstantValue.exactly(1))
                                     .add(
@@ -1276,6 +1276,12 @@ public class LootTableGenerator {
                                             LootItem.lootTableItem(Items.IRON_BLOCK)
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6))))
                                     .when(LootItemRandomChanceCondition.randomChance(0.80f)))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.1f)))
             );
 
             consumer.accept(
@@ -1324,6 +1330,12 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(Items.IRON_BLOCK)
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100)))
+                                    .when(LootItemRandomChanceCondition.randomChance(0.5f)))
             );
             consumer.accept(
                     ResourceKey.create(
@@ -1371,6 +1383,11 @@ public class LootTableGenerator {
                                     .add(
                                             LootItem.lootTableItem(Items.IRON_BLOCK)
                                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 6)))))
+                            .withPool(LootPool.lootPool()
+                                    .setRolls(ConstantValue.exactly(1))
+                                    .add(
+                                            LootItem.lootTableItem(ItemRegistry.MOD.get())
+                                                    .apply(RarityModFunction.builder(ModRarity.WARFRAME.getValue(), 0, 100))))
             );
         }
     }
