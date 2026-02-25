@@ -25,6 +25,10 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.minecraft.world.level.Level;
 
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.DamageType;
@@ -32,12 +36,10 @@ import yagen.waitmydawn.api.attribute.DefaultDamageTypeRegistry;
 import yagen.waitmydawn.api.events.OperationModEvent;
 import yagen.waitmydawn.api.mods.*;
 import yagen.waitmydawn.api.util.ModCompat;
+import yagen.waitmydawn.capabilities.ModPoolData;
 import yagen.waitmydawn.item.Mod;
 import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
-import yagen.waitmydawn.registries.MenuRegistry;
-import yagen.waitmydawn.registries.ItemRegistry;
-import yagen.waitmydawn.registries.BlockRegistry;
-import yagen.waitmydawn.registries.ComponentRegistry;
+import yagen.waitmydawn.registries.*;
 import yagen.waitmydawn.util.HomologyModGroup;
 import yagen.waitmydawn.util.SupportedMod;
 
@@ -80,6 +82,33 @@ public class ModOperationMenu extends AbstractContainerMenu {
         }
     };
 
+    // Mod Pool
+    private final ModPoolData modPoolData;
+    private final PageProxyHandler proxyHandler;
+    private static final ItemStackHandler EMPTY_HANDLER = new ItemStackHandler(27);
+
+    // Sync Integers
+    private final DataSlot pageSlot = DataSlot.standalone();
+    private final DataSlot totalPagesSlot = DataSlot.standalone();
+    // 0 = Player Inventory, 1 = Mod Pool
+    private final DataSlot modeSlot = new DataSlot() {
+        private int value = 0;
+
+        @Override
+        public int get() {
+            return value;
+        }
+
+        @Override
+        public void set(int pValue) {
+            this.value = pValue;
+            updateSlotActiveStates();
+        }
+    };
+
+    private final List<ToggleableSlot> playerInvSlots = new ArrayList<>();
+    private final List<ToggleableSlotItemHandler> modPoolSlots = new ArrayList<>();
+
     public ModOperationMenu(int containerId, Inventory inv, FriendlyByteBuf extraData) {
         this(containerId, inv, ContainerLevelAccess.NULL);
     }
@@ -93,9 +122,13 @@ public class ModOperationMenu extends AbstractContainerMenu {
         this.level = inv.player.level();
         this.player = inv.player;
 
-        // default player inventory
-        addPlayerInventory(inv);
-        addPlayerHotbar(inv);
+        // Mod Pool
+        this.modPoolData = inv.player.getData(DataAttachmentRegistry.MOD_POOL);
+        this.proxyHandler = new PageProxyHandler();
+
+        this.addDataSlot(pageSlot);       // ID: 0
+        this.addDataSlot(totalPagesSlot); // ID: 1
+        this.addDataSlot(modeSlot);       // ID: 2
 
         // put in item
         itemSlot = new Slot(itemContainer, 0, 80, 18) {
@@ -152,10 +185,40 @@ public class ModOperationMenu extends AbstractContainerMenu {
             }
         };
 
+        // --- Operation Slots (0, 1, 2) ---
         this.addSlot(itemSlot);
         this.addSlot(modSlot);
         this.addSlot(resultSlot);
 
+        // --- Player Inventory Slots (3 rows x 9 columns) ---
+        // Indices 3 to 29
+        for (int i = 0; i < 3; ++i) {
+            for (int l = 0; l < 9; ++l) {
+                ToggleableSlot slot = new ToggleableSlot(inv, l + i * 9 + 9, 8 + l * 18, 84 + i * 18);
+                this.addSlot(slot);
+                this.playerInvSlots.add(slot);
+            }
+        }
+
+        // --- Mod Pool Slots (3 rows x 9 columns) ---
+        // Indices 30 to 56
+        for (int i = 0; i < 3; ++i) {
+            for (int l = 0; l < 9; ++l) {
+                ToggleableSlotItemHandler slot = new ToggleableSlotItemHandler(proxyHandler, l + i * 9, 8 + l * 18, 84 + i * 18);
+                this.addSlot(slot);
+                this.modPoolSlots.add(slot);
+            }
+        }
+
+        // --- Player Hotbar (Always visible) ---
+        // Indices 57 to 65
+        for (int i = 0; i < 9; ++i) {
+            this.addSlot(new Slot(inv, i, 8 + i * 18, 142));
+        }
+
+        // Initial setup
+        refreshProxyTarget();
+        updateSlotActiveStates();
     }
 
     private void addPlayerInventory(Inventory playerInventory) {
@@ -170,6 +233,82 @@ public class ModOperationMenu extends AbstractContainerMenu {
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
         }
+    }
+
+    // --- Mod Pool Logic ---
+
+    public boolean isModPoolMode() {
+        return modeSlot.get() == 1;
+    }
+
+    public void toggleModPoolMode() {
+        int current = modeSlot.get();
+        modeSlot.set(current == 0 ? 1 : 0);
+
+        if (!player.level().isClientSide) {
+            modPoolData.cleanEmptyPages();
+            refreshProxyTarget();
+        }
+        // Slot states updated by DataSlot.set() hook
+    }
+
+    private void updateSlotActiveStates() {
+        boolean showPool = isModPoolMode();
+
+        // Use setActive instead of moving coordinates
+        for (ToggleableSlot slot : playerInvSlots) {
+            slot.setActive(!showPool);
+        }
+        for (ToggleableSlotItemHandler slot : modPoolSlots) {
+            slot.setActive(showPool);
+        }
+    }
+
+    public void changePage(int offset) {
+        if (!isModPoolMode()) return;
+        int max = modPoolData.getPageCount();
+        int current = pageSlot.get();
+        int newPage = current + offset;
+
+        if (newPage >= 0 && newPage < max) {
+            pageSlot.set(newPage);
+            refreshProxyTarget();
+            this.broadcastChanges();
+        }
+    }
+
+    public void jumpToPage(int pageIndex) {
+        if (!isModPoolMode()) return;
+        int max = modPoolData.getPageCount();
+        int actual = Math.max(0, Math.min(pageIndex, max - 1));
+
+        pageSlot.set(actual);
+        refreshProxyTarget();
+        this.broadcastChanges();
+    }
+
+    public void refreshProxyTarget() {
+        if (modPoolData.getPages().isEmpty()) {
+            modPoolData.ensurePage(0);
+        }
+
+        int max = modPoolData.getPageCount();
+        totalPagesSlot.set(max);
+
+        int currentPage = pageSlot.get();
+        if (currentPage >= max && max > 0) {
+            currentPage = max - 1;
+            pageSlot.set(currentPage);
+        }
+        proxyHandler.setTarget(modPoolData.getPage(currentPage));
+    }
+
+    public int getCurrentPage() {
+        return pageSlot.get();
+    }
+
+    public int getTotalPages() {
+        return totalPagesSlot.get();
     }
 
     public void setSelectedMod(int index) {
@@ -838,26 +977,73 @@ public class ModOperationMenu extends AbstractContainerMenu {
     @Override
     public ItemStack quickMoveStack(Player playerIn, int index) {
         Slot sourceSlot = slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
+        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;
         ItemStack sourceStack = sourceSlot.getItem();
         ItemStack copyOfSourceStack = sourceStack.copy();
 
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
-            if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;
+        // Constants defining slot ranges
+        int OPERATION_END = 3;
+        int PLAYER_MAIN_START = 3;
+        int PLAYER_MAIN_END = 30; // 27 slots
+        int MOD_POOL_START = 30;
+        int MOD_POOL_END = 57;    // 27 slots
+        int HOTBAR_START = 57;
+        int HOTBAR_END = 66;      // 9 slots
+
+        boolean isPoolMode = isModPoolMode();
+
+        // 1. From Operation Slots (0-2) -> To Storage
+        if (index < OPERATION_END) {
+            // Try Hotbar first
+            if (isPoolMode) {
+                // If in Pool Mode, try Mod Pool and Hotbar
+                if (!moveItemStackTo(sourceStack, MOD_POOL_START, MOD_POOL_END, false))
+                    if (!moveItemStackTo(sourceStack, HOTBAR_START, HOTBAR_END, false))
+                        return ItemStack.EMPTY;
+            } else {
+                // If in Inv Mode, try Hotbar and Main Inventory
+                if (!moveItemStackTo(sourceStack, HOTBAR_START, HOTBAR_END, false))
+                    if (!moveItemStackTo(sourceStack, PLAYER_MAIN_START, PLAYER_MAIN_END, false))
+                        return ItemStack.EMPTY;
             }
-        } else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
-                return ItemStack.EMPTY;
+        }
+        // 2. From Storage -> Operation or Other Storage
+        else {
+            // Try to move to Operation Slots first (if valid)
+            if (ModCompat.isWeaponToolOrArmor(sourceStack)) {
+                if (!moveItemStackTo(sourceStack, 0, 1, false)) return ItemStack.EMPTY;
+            } else if (sourceStack.is(ItemRegistry.MOD.get()) || sourceStack.is(ItemRegistry.FORMA.get())) {
+                if (!moveItemStackTo(sourceStack, 1, 2, false)) return ItemStack.EMPTY;
             }
-        } else {
-            return ItemStack.EMPTY;
+
+            // Transfer between storages
+            if (isPoolMode) {
+                // In Pool Mode: Transfer between Mod Pool and Hotbar
+                if (index >= MOD_POOL_START && index < MOD_POOL_END) {
+                    // Pool -> Hotbar
+                    if (!moveItemStackTo(sourceStack, HOTBAR_START, HOTBAR_END, false))
+                        return ItemStack.EMPTY;
+                } else if (index >= HOTBAR_START && index < HOTBAR_END) {
+                    // Hotbar -> Pool
+                    if (!moveItemStackTo(sourceStack, MOD_POOL_START, MOD_POOL_END, false))
+                        return ItemStack.EMPTY;
+                }
+            } else {
+                // In Inv Mode: Transfer between Player Inv and Hotbar
+                if (index >= PLAYER_MAIN_START && index < PLAYER_MAIN_END) {
+                    // Player -> Hotbar
+                    if (!moveItemStackTo(sourceStack, HOTBAR_START, HOTBAR_END, false)) return ItemStack.EMPTY;
+                } else if (index >= HOTBAR_START && index < HOTBAR_END) {
+                    // Hotbar -> Player
+                    if (!moveItemStackTo(sourceStack, PLAYER_MAIN_START, PLAYER_MAIN_END, false))
+                        return ItemStack.EMPTY;
+                }
+            }
         }
-        if (sourceStack.getCount() == 0) {
-            sourceSlot.set(ItemStack.EMPTY);
-        } else {
-            sourceSlot.setChanged();
-        }
+
+        if (sourceStack.getCount() == 0) sourceSlot.set(ItemStack.EMPTY);
+        else sourceSlot.setChanged();
+
         sourceSlot.onTake(playerIn, sourceStack);
         return copyOfSourceStack;
     }
@@ -873,10 +1059,97 @@ public class ModOperationMenu extends AbstractContainerMenu {
     public void removed(Player pPlayer) {
         if (pPlayer instanceof ServerPlayer) {
             super.removed(pPlayer);
+            if (!pPlayer.level().isClientSide) {
+                modPoolData.cleanEmptyPages();
+            }
             this.access.execute((p_39796_, p_39797_) -> {
                 this.clearContainer(pPlayer, this.modContainer);
                 this.clearContainer(pPlayer, this.itemContainer);
             });
+        }
+    }
+
+    // --- Custom Slot Classes for "isActive" Control ---
+    public static class ToggleableSlot extends Slot {
+        private boolean active = true;
+
+        public ToggleableSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        @Override
+        public boolean isActive() {
+            return active;
+        }
+    }
+
+    public static class ToggleableSlotItemHandler extends SlotItemHandler {
+        private boolean active = true;
+
+        public ToggleableSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
+            super(itemHandler, index, xPosition, yPosition);
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        @Override
+        public boolean isActive() {
+            return active;
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return stack.is(ItemRegistry.MOD.get());
+        }
+    }
+
+    // Proxy Handler
+    private static class PageProxyHandler implements IItemHandlerModifiable {
+        private IItemHandlerModifiable target = EMPTY_HANDLER;
+
+        public void setTarget(IItemHandlerModifiable target) {
+            this.target = target;
+        }
+
+        @Override
+        public void setStackInSlot(int slot, ItemStack stack) {
+            target.setStackInSlot(slot, stack);
+        }
+
+        @Override
+        public int getSlots() {
+            return target.getSlots();
+        }
+
+        @Override
+        public ItemStack getStackInSlot(int slot) {
+            return target.getStackInSlot(slot);
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+            return target.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            return target.extractItem(slot, amount, simulate);
+        }
+
+        @Override
+        public int getSlotLimit(int slot) {
+            return target.getSlotLimit(slot);
+        }
+
+        @Override
+        public boolean isItemValid(int slot, ItemStack stack) {
+            return target.isItemValid(slot, stack);
         }
     }
 }

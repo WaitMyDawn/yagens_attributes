@@ -178,6 +178,10 @@
   "ui.yagens_attributes.mission_created": "任务已创建！",
   "ui.yagens_attributes.mission_map_pos": "任务地点",
   "ui.yagens_attributes.mission_map_name": "任务地图",
+  "ui.yagens_attributes.mod_pool_title": "Mod池",
+  "ui.yagens_attributes.toggle_mod_pool": "切换模式",
+  "ui.yagens_attributes.mod_stored": "Mod已存入Mod池",
+  "ui.yagens_attributes.tidy_mod_pool": "整理Mod池",
 
   "overlay.yagens_attributes.not_valid_ability": "天赋超载，无法使用",
   "overlay.yagens_attributes.ability_cost": "能量不足！天赋%d %s 需要%d能量",

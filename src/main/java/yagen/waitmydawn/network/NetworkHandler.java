@@ -142,5 +142,29 @@ public class NetworkHandler {
                 ThermalSunderPacket.STREAM_CODEC,
                 ThermalSunderPacket::handle
         );
+
+        registrar.playToServer(
+                PageChangePacket.TYPE,
+                PageChangePacket.STREAM_CODEC,
+                PageChangePacket::handle
+        );
+
+        registrar.playToServer(
+                TogglePoolPacket.TYPE,
+                TogglePoolPacket.STREAM_CODEC,
+                TogglePoolPacket::handle
+        );
+
+        registrar.playToServer(
+                PacketJumpToPage.TYPE,
+                PacketJumpToPage.STREAM_CODEC,
+                PacketJumpToPage::handle
+        );
+
+        registrar.playToServer(
+                TidyModPoolPacket.TYPE,
+                TidyModPoolPacket.STREAM_CODEC,
+                TidyModPoolPacket::handle
+        );
     }
 }

@@ -3,8 +3,11 @@ package yagen.waitmydawn.api.events;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -25,6 +28,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.*;
+import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.config.ClientConfigs;
 import yagen.waitmydawn.config.ServerConfigs;
@@ -34,6 +38,7 @@ import yagen.waitmydawn.network.BatteryPowerPacket;
 import yagen.waitmydawn.network.EnergyPacket;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
+import yagen.waitmydawn.registries.ItemRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
 
 import java.util.*;
@@ -257,6 +262,21 @@ public class PlayerInteractionEvent {
             batteryPower = Math.max(0, batteryPower - 1.5);
             DataAttachmentRegistry.setBatteryPower(player, batteryPower);
             PacketDistributor.sendToPlayer((ServerPlayer) player, new BatteryPowerPacket(batteryPower));
+        }
+    }
+
+    @SubscribeEvent
+    public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (event.getLevel().isClientSide) return;
+        if (event.getEntity().isShiftKeyDown() && event.getItemStack().is(ItemRegistry.MOD.get())) {
+            var modPool = event.getEntity().getData(DataAttachmentRegistry.MOD_POOL);
+            ItemStack stack = event.getItemStack();
+            ItemStack remaining = modPool.insertMod(stack, false);
+            if (remaining.getCount() < stack.getCount()) {
+                event.getEntity().setItemInHand(event.getHand(), remaining);
+                event.getEntity().displayClientMessage(Component.translatable("ui.yagens_attributes.mod_stored"), true);
+                event.setCanceled(true);
+            }
         }
     }
 }

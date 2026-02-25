@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.*;
@@ -17,12 +19,18 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.api.mods.RivenMod;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.item.Mod;
+import yagen.waitmydawn.network.PacketJumpToPage;
+import yagen.waitmydawn.network.PageChangePacket;
+import yagen.waitmydawn.network.TidyModPoolPacket;
+import yagen.waitmydawn.network.TogglePoolPacket;
 import yagen.waitmydawn.player.ClientRenderCache;
 import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
@@ -44,9 +52,9 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     private static final int CYCLE_BUTTON_X = 98;
     private static final int CYCLE_BUTTON_Y = 59;
     //slot indexes (vanilla inventory has 36 slots)
-    private static final int ITEM_SLOT = 36 + 0;
-    private static final int MOD_SLOT = 36 + 1;
-    private static final int EXTRACTION_SLOT = 36 + 2;
+    private static final int ITEM_SLOT = 0;
+    private static final int MOD_SLOT = 1;
+    private static final int EXTRACTION_SLOT = 2;
     //locations to draw mod icons
     private static final int MOD_BG_X = 133;
     private static final int MOD_BG_Y = 7;
@@ -64,6 +72,14 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     protected ArrayList<ModSlotInfo> modSlots;
     private int selectedModIndex = -1;
     private int operationErrorCode = 0;
+
+    // Mod Pool UI Components
+    private Button togglePoolButton;
+    private Button tidyPoolButton;
+    private Button prevPageButton;
+    private Button nextPageButton;
+    private EditBox pageEditBox;
+    private boolean isEditingPage = false;
 
     public ModOperationScreen(ModOperationMenu menu, Inventory playerInventory, Component title) {
         super(menu, playerInventory, title);
@@ -86,6 +102,46 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         cycleButton = this.addWidget(
                 Button.builder(CommonComponents.GUI_DONE, (p_169823_) -> this.onCycle()).bounds(0, 0, 14, 14).build()
         );
+
+        // --- Mod Pool Buttons ---
+
+        // 1. Toggle Button
+        int centerX = this.leftPos + 88;
+        int bottomY = this.topPos + 166;
+
+        togglePoolButton = this.addRenderableWidget(Button.builder(Component.literal("M"), (b) -> {
+                    PacketDistributor.sendToServer(new TogglePoolPacket());
+                })
+                .bounds(centerX + -44, bottomY, 12, 12) // Small 12x12 button
+                .tooltip(Tooltip.create(Component.translatable("ui.yagens_attributes.toggle_mod_pool")))
+                .build());
+
+        tidyPoolButton = this.addRenderableWidget(
+                Button.builder(Component.literal("T"), b -> {
+                            PacketDistributor.sendToServer(new TidyModPoolPacket());
+                        })
+                        .bounds(centerX + 32, bottomY, 12, 12)
+                        .tooltip(Tooltip.create(Component.translatable("ui.yagens_attributes.tidy_mod_pool")))
+                        .build()
+        );
+
+        // 2. Page Controls (Left of GUI )
+        prevPageButton = this.addRenderableWidget(Button.builder(Component.literal("<"), (b) -> {
+            PacketDistributor.sendToServer(new PageChangePacket(-1));
+        }).bounds(centerX - 30, bottomY, 12, 12).build());
+
+        nextPageButton = this.addRenderableWidget(Button.builder(Component.literal(">"), (b) -> {
+            PacketDistributor.sendToServer(new PageChangePacket(1));
+        }).bounds(centerX + 18, bottomY, 12, 12).build());
+
+        // 3. Edit Box
+        pageEditBox = new EditBox(this.font, centerX - 16, bottomY + 1, 32, 10, Component.literal("Page"));
+        pageEditBox.setMaxLength(3);
+        pageEditBox.setVisible(false);
+        pageEditBox.setBordered(true);
+        pageEditBox.setFilter(s -> s.matches("\\d*"));
+        this.addRenderableWidget(pageEditBox);
+
         modSlots = new ArrayList<>();
         generateModSlots();
     }
@@ -99,6 +155,16 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
     @Override
     public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
         try {
+            // Handle visibility
+            boolean isPool = menu.isModPoolMode();
+
+            // Update Toggle Text: "M" for goto ModPool, "I" for goto Inventory
+            togglePoolButton.setMessage(isPool ? Component.literal("I") : Component.literal("M"));
+            tidyPoolButton.visible = isPool;
+            prevPageButton.visible = isPool;
+            nextPageButton.visible = isPool;
+            pageEditBox.setVisible(isPool && isEditingPage);
+
             super.render(guiHelper, mouseX, mouseY, delta);
             renderTooltip(guiHelper, mouseX, mouseY);
         } catch (Exception ignore) {
@@ -151,6 +217,99 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
             guiHelper.blit(TEXTURE, leftPos + 35, topPos + 51, 0, 213, 28, 22);
             if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
                 guiHelper.renderTooltip(font, getErrorMessage(operationErrorCode), mouseX, mouseY);
+            }
+        }
+
+        if (menu.isModPoolMode()) {
+            if (!isEditingPage) {
+                // "x/x" format
+                String text = (menu.getCurrentPage() + 1) + "/" + Math.max(1, menu.getTotalPages());
+                int textWidth = font.width(text);
+                int textHeight = font.lineHeight;
+                int textX = pageEditBox.getX() + (pageEditBox.getWidth() - textWidth) / 2;
+                int textY = pageEditBox.getY() + (pageEditBox.getHeight() - textHeight) / 2;
+                guiHelper.drawString(font, text, textX, textY, 0xFFFFFF, true);
+
+                // Highlight on hover
+                if (mouseX >= textX && mouseX <= textX + textWidth &&
+                        mouseY >= textY && mouseY <= textY + textHeight) {
+                    guiHelper.fill(textX, textY + textHeight - 1, textX + textWidth, textY + textHeight, 0xFFFFFF);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        // Render main title
+        guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+
+        // Dynamic Inventory Title
+        Component invTitle = menu.isModPoolMode()
+                ? Component.translatable("ui.yagens_attributes.mod_pool_title")
+                : this.playerInventoryTitle;
+        guiGraphics.drawString(this.font, invTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (menu.isModPoolMode() && !isEditingPage && button == 0) {
+            // Check if clicking page text
+            String text = (menu.getCurrentPage() + 1) + "/" + Math.max(1, menu.getTotalPages());
+            int textWidth = font.width(text);
+            int textHeight = font.lineHeight;
+            int textX = pageEditBox.getX() + (pageEditBox.getWidth() - textWidth) / 2;
+            int textY = pageEditBox.getY() + (pageEditBox.getHeight() - textHeight) / 2;
+
+            if (mouseX >= textX && mouseX <= textX + textWidth && mouseY >= textY && mouseY <= textY + textHeight) {
+                startEditing();
+                return true;
+            }
+        }
+
+        if (isEditingPage && !pageEditBox.isMouseOver(mouseX, mouseY)) {
+            stopEditing(true);
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (isEditingPage) {
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                stopEditing(true);
+                return true;
+            } else if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                stopEditing(false);
+                return true;
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private void startEditing() {
+        this.isEditingPage = true;
+        this.pageEditBox.setVisible(true);
+        this.pageEditBox.setValue(String.valueOf(menu.getCurrentPage() + 1));
+        this.pageEditBox.setFocused(true);
+        this.setFocused(this.pageEditBox);
+    }
+
+    private void stopEditing(boolean apply) {
+        this.isEditingPage = false;
+        this.pageEditBox.setVisible(false);
+        this.setFocused(null);
+
+        if (apply) {
+            try {
+                String value = this.pageEditBox.getValue();
+                if (!value.isEmpty()) {
+                    int page = Integer.parseInt(value);
+                    // Send packet (convert 1-based index to 0-based)
+                    PacketDistributor.sendToServer(new PacketJumpToPage(page - 1));
+                }
+            } catch (NumberFormatException ignored) {
             }
         }
     }
@@ -472,7 +631,7 @@ public class ModOperationScreen extends AbstractContainerScreen<ModOperationMenu
         //
         List<MutableComponent> uniqueInfo;
         if (mod.getUniqueInfo(modLevel).isEmpty()) {
-            uniqueInfo= RivenMod.getRivenUniqueInfo(menu.slots.get(ITEM_SLOT).getItem(), modLevel);
+            uniqueInfo = RivenMod.getRivenUniqueInfo(menu.slots.get(ITEM_SLOT).getItem(), modLevel);
         } else {
             uniqueInfo = mod.getUniqueInfo(modLevel);
         }

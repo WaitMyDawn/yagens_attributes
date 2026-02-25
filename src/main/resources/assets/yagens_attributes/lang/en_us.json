@@ -178,6 +178,10 @@
   "ui.yagens_attributes.mission_created": "Mission Created!",
   "ui.yagens_attributes.mission_map_pos": "Mission Position",
   "ui.yagens_attributes.mission_map_name": "Mission Map",
+  "ui.yagens_attributes.mod_pool_title": "Mod Pool",
+  "ui.yagens_attributes.toggle_mod_pool": "Switching Mode",
+  "ui.yagens_attributes.mod_stored": "Mods has been stored in mod pool",
+  "ui.yagens_attributes.tidy_mod_pool": "Tidy Mod Pool",
 
   "overlay.yagens_attributes.not_valid_ability": "Overloaded with Abilities, unable to active",
   "overlay.yagens_attributes.ability_cost": "Energy shortage! Ability %d %s need %d energy.",

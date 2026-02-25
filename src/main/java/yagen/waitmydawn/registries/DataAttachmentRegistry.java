@@ -2,11 +2,15 @@ package yagen.waitmydawn.registries;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
+import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import yagen.waitmydawn.YagensAttributes;
 
 import com.mojang.serialization.Codec;
@@ -15,9 +19,11 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import yagen.waitmydawn.capabilities.ModPoolData;
 import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 
 public class DataAttachmentRegistry {
@@ -208,4 +214,10 @@ public class DataAttachmentRegistry {
     public static void reduceBatteryPower(Entity entity, double value) {
         entity.setData(BATTERY_POWER.get(), Math.max(getBatteryPower(entity) + value, 0.0));
     }
+
+    public static final Supplier<AttachmentType<ModPoolData>> MOD_POOL = ATTACHMENT_TYPES.register("mod_pool",
+            () -> AttachmentType.builder(ModPoolData::new)
+                    .serialize(ModPoolData.CODEC)
+                    .copyOnDeath()
+                    .build());
 }
