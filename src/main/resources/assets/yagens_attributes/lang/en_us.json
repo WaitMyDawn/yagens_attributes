@@ -212,6 +212,7 @@
   "mod.yagens_attributes.status_duration_tool_mod": "Torturous Entanglement",
   "mod.yagens_attributes.status_chance_tool_mod": "The Eye of Pain",
   "mod.yagens_attributes.combo_duration_tool_mod": "Harvest Time",
+  "mod.yagens_attributes.damage_tool_mod": "Omni Nanocube",
   "mod.yagens_attributes.armor_armor_mod": "Sharp Horn of Rhisoil",
   "mod.yagens_attributes.health_armor_mod": "Vitality",
   "mod.yagens_attributes.armor_toughness_armor_mod": "Nephila Silk Belt",
@@ -285,6 +286,8 @@
   "tooltip.yagens_attributes.reservoirs.2": "Grandiflorum: +%.1f%% Duration",
   "tooltip.yagens_attributes.reservoirs.3": "Hydrangea: +%.1f%% Range",
 
+  "tooltip.yagens_attributes.damage_multiply": "+%.2f%% Damage",
+  "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%% Damage",
   "tooltip.yagens_attributes.slash_addfirst": "+%.1f Slash Damage",
   "tooltip.yagens_attributes.slash_addlast": "+%.1f Slash Damage",
   "tooltip.yagens_attributes.slash_addfirstneg": "-%.1f Slash Damage",

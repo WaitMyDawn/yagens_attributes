@@ -26,6 +26,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_BEAR_WING;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_REDIRECTION;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_AUGUR_MESSAGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_DAMAGE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BLADE_STORM;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BONE_FINGER_BOX;
@@ -188,6 +189,11 @@ public class ServerConfigs {
         BUILDER.push("Common_Augur_Message");
         BUILDER.comment("Value of Common Augur Message Mod per level (default = 4.8)");
         MOD_COMMON_AUGUR_MESSAGE = BUILDER.define("Value", 4.8);
+        BUILDER.pop();
+
+        BUILDER.push("Common_Damage");
+        BUILDER.comment("Value of Common Damage Mod per level (default = 18.0)");
+        MOD_COMMON_DAMAGE = BUILDER.define("Value", 18.0);
         BUILDER.pop();
 
         BUILDER.push("Uncommon_Element");

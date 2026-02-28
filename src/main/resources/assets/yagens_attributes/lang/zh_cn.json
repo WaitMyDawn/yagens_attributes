@@ -212,6 +212,7 @@
   "mod.yagens_attributes.status_duration_tool_mod": "缠绞苦痛",
   "mod.yagens_attributes.status_chance_tool_mod": "苦痛之视",
   "mod.yagens_attributes.combo_duration_tool_mod": "收割时刻",
+  "mod.yagens_attributes.damage_tool_mod": "万用纳米立方",
   "mod.yagens_attributes.armor_armor_mod": "泥犀锐角",
   "mod.yagens_attributes.health_armor_mod": "生命力",
   "mod.yagens_attributes.armor_toughness_armor_mod": "缠丝腰带",
@@ -285,6 +286,8 @@
   "tooltip.yagens_attributes.reservoirs.2": "翠雀: +%.1f%% 持续时间",
   "tooltip.yagens_attributes.reservoirs.3": "绣球: +%.1f%% 范围",
 
+  "tooltip.yagens_attributes.damage_multiply": "+%.2f%%伤害",
+  "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%%伤害",
   "tooltip.yagens_attributes.slash_addfirst": "+%.1f切割伤害",
   "tooltip.yagens_attributes.slash_addlast": "+%.1f切割伤害",
   "tooltip.yagens_attributes.slash_addfirstneg": "-%.1f切割伤害",

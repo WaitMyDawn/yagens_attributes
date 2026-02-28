@@ -391,6 +391,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
         Map<DamageType, Float> addLastMap = new HashMap<>();
         Map<DamageType, Float> additionMap = new HashMap<>();
         Map<DamageType, Float> multiplyMap = new HashMap<>();
+        float damageMultiplier = 1.0f;
 
         base.keySet().forEach(t -> multiplyMap.put(t, 1.0F));
 
@@ -457,20 +458,27 @@ public class ModOperationMenu extends AbstractContainerMenu {
                 } else if (m.group(0).contains("tooltip")) // damage map
                 {
                     if (!isWeapon) return;
-                    DamageType type = DamageType.valueOf(m.group(1).toUpperCase(Locale.ROOT));
-                    if (ELEMENTS.contains(type) && !orderDamageType.contains(type)) orderDamageType.add(type);
+                    if (m.group(1).contains("damage")) {
+                        if (m.group(2).equals("multiply"))
+                            damageMultiplier = damageMultiplier + val / 100.0F;
+                        else if (m.group(2).equals("multiplyneg"))
+                            damageMultiplier = damageMultiplier - val / 100.0F;
+                    } else {
+                        DamageType type = DamageType.valueOf(m.group(1).toUpperCase(Locale.ROOT));
+                        if (ELEMENTS.contains(type) && !orderDamageType.contains(type)) orderDamageType.add(type);
 
-                    switch (m.group(2)) {
-                        case "addition" -> additionMap.merge(type, val / 100F, Float::sum);
-                        case "additionneg" -> additionMap.merge(type, -val / 100F, Float::sum);
-                        case "multiply" -> {
-                            float factor = val / 100.0F;
-                            multiplyMap.merge(type, factor, (old, inc) -> old * inc); // 连乘
+                        switch (m.group(2)) {
+                            case "addition" -> additionMap.merge(type, val / 100F, Float::sum);
+                            case "additionneg" -> additionMap.merge(type, -val / 100F, Float::sum);
+                            case "multiply" -> {
+                                float factor = val / 100.0F;
+                                multiplyMap.merge(type, factor, (old, inc) -> old * inc);
+                            }
+                            case "addlast" -> addLastMap.merge(type, val, Float::sum);
+                            case "addlastneg" -> addLastMap.merge(type, -val, Float::sum);
+                            case "addfirst" -> addFirstMap.merge(type, val, Float::sum);
+                            case "addfirstneg" -> addFirstMap.merge(type, -val, Float::sum);
                         }
-                        case "addlast" -> addLastMap.merge(type, val, Float::sum);
-                        case "addlastneg" -> addLastMap.merge(type, -val, Float::sum);
-                        case "addfirst" -> addFirstMap.merge(type, val, Float::sum);
-                        case "addfirstneg" -> addFirstMap.merge(type, -val, Float::sum);
                     }
                 }
             }
@@ -482,13 +490,14 @@ public class ModOperationMenu extends AbstractContainerMenu {
         if (isWeapon) {
             baseTotalDamage = base.values().stream().reduce(0f, Float::sum) + addFirstMap.values().stream().reduce(0f, Float::sum);
 
+            float damageMultiplierCopy = damageMultiplier;
             base.forEach((type, dmg) -> {
                 float addFirst = addFirstMap.getOrDefault(type, 0F);
                 float addLast = addLastMap.getOrDefault(type, 0F);
                 float addition = additionMap.getOrDefault(type, 0F);
                 float multiply = multiplyMap.getOrDefault(type, 1F);
 
-                float finalDmg = (dmg + addFirst + baseTotalDamage * addition) * multiply + addLast;
+                float finalDmg = (dmg + addFirst + baseTotalDamage * addition) * damageMultiplierCopy * multiply + addLast;
                 if (finalDmg <= 0f && orderDamageType.contains(type)) orderDamageType.remove(type);
                 result.put(type, Math.max(0F, finalDmg));
             });
@@ -709,7 +718,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
         String polarity = rivenStack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
         ItemStack modStack = createRandomModItem(bonus, penalty, rivenContainer.getLevel(), polarity, rivenType);
         modStack.set(ComponentRegistry.RIVEN_CYCLE_COUNT.get(),
-                modStack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0) + 1);
+                rivenStack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0) + 1);
         getModSlot().set(modStack);
     }
 

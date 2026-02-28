@@ -66,6 +66,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> REACH_TOOL_MOD = registerMod(new ReachToolMod());
     public static final Supplier<AbstractMod> STATUS_DURATION_TOOL_MOD = registerMod(new StatusDurationToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_TOOL_MOD = registerMod(new StatusChanceToolMod());
+    public static final Supplier<AbstractMod> DAMAGE_TOOL_MOD = registerMod(new DamageToolMod());
 
     public static final Supplier<AbstractMod> HEALTH_ARMOR_MOD = registerMod(new HealthArmorMod());
     public static final Supplier<AbstractMod> REDIRECTION_ARMOR_MOD = registerMod(new RedirectionArmorMod());
