@@ -68,9 +68,11 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> STATUS_CHANCE_TOOL_MOD = registerMod(new StatusChanceToolMod());
 
     public static final Supplier<AbstractMod> HEALTH_ARMOR_MOD = registerMod(new HealthArmorMod());
+    public static final Supplier<AbstractMod> REDIRECTION_ARMOR_MOD = registerMod(new RedirectionArmorMod());
     public static final Supplier<AbstractMod> ARMOR_ARMOR_MOD = registerMod(new ArmorArmorMod());
     public static final Supplier<AbstractMod> ARMOR_TOUGHNESS_ARMOR_MOD = registerMod(new ArmorToughnessArmorMod());
     public static final Supplier<AbstractMod> PILOT_ARMOR_MOD = registerMod(new PilotArmorMod());
+    public static final Supplier<AbstractMod> AUGUR_MESSAGE_ARMOR_MOD = registerMod(new AugurMessageArmorMod());
 
     /**
      * UNCOMMON
@@ -86,6 +88,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> STATUS_CHANCE_COMBO_TOOL_MOD = registerMod(new StatusChanceComboToolMod());
     public static final Supplier<AbstractMod> MOVEMENT_SPEED_ARMOR_MOD = registerMod(new MovementSpeedArmorMod());
     public static final Supplier<AbstractMod> STRETCH_ARMOR_MOD = registerMod(new StretchArmorMod());
+    public static final Supplier<AbstractMod> AUGUR_REACH_ARMOR_MOD = registerMod(new AugurReachArmorMod());
 
     /**
      * RARE
@@ -114,6 +117,12 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> OVEREXTENDED_ARMOR_MOD = registerMod(new OverextendedArmorMod());
     public static final Supplier<AbstractMod> CONTINUITY_ARMOR_MOD = registerMod(new ContinuityArmorMod());
     public static final Supplier<AbstractMod> STRENGTH_ARMOR_MOD = registerMod(new StrengthArmorMod());
+    public static final Supplier<AbstractMod> RAGE_ARMOR_MOD = registerMod(new RageArmorMod());
+    public static final Supplier<AbstractMod> BLIND_RAGE_ARMOR_MOD = registerMod(new BlindRageArmorMod());
+    public static final Supplier<AbstractMod> FLEETING_EXPERTISE_ARMOR_MOD = registerMod(new FleetingExpertiseArmorMod());
+    public static final Supplier<AbstractMod> NARROW_MINDED_ARMOR_MOD = registerMod(new NarrowMindedArmorMod());
+    public static final Supplier<AbstractMod> TRANSIENT_FORTITUDE_ARMOR_MOD = registerMod(new TransientFortitudeArmorMod());
+    public static final Supplier<AbstractMod> AUGUR_SECRETS_ARMOR_MOD = registerMod(new AugurSecretsArmorMod());
 
     /**
      * LEGENDARY

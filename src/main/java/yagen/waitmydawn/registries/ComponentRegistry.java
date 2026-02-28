@@ -356,6 +356,12 @@ public class ComponentRegistry {
             .persistent(RivenRawInfoList.CODEC)
             .networkSynchronized(RivenRawInfoList.STREAM_CODEC)
             .cacheEncoding());
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>>
+            RIVEN_CYCLE_COUNT = register("riven_cycle_count", b -> b
+            .persistent(Codec.INT)
+            .networkSynchronized(ByteBufCodecs.INT)
+            .cacheEncoding()
+    );
 
     public static List<String> getPolarities(ItemStack stack) {
         return stack.getOrDefault(STRING_LIST_DATA,

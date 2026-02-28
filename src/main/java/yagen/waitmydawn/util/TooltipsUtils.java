@@ -139,10 +139,15 @@ public class TooltipsUtils {
         if (!IModContainer.get(stack).getModAtIndex(0).getMod().getUniqueInfo(1).isEmpty()) return;
         Item rivenType = stack.get(ComponentRegistry.RIVEN_TYPE.get());
         if (rivenType == null) return;
+        int cycleCount = stack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0);
 
         MutableComponent line = Component.translatable("tooltip.yagens_attributes.riven_type",
                         rivenType.getDescription())
                 .withStyle(Style.EMPTY.withColor(0x8A2BE2));
+        if (cycleCount != 0) {
+            line.append(" ")
+                    .append(Component.translatable("tooltip.yagens_attributes.riven_cycle_count", cycleCount));
+        }
         event.getToolTip().add(line);
     }
 

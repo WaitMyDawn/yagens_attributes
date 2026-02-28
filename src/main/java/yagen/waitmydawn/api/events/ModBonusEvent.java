@@ -30,9 +30,11 @@ import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mods.IModContainer;
 import yagen.waitmydawn.api.mods.ModSlot;
+import yagen.waitmydawn.api.registry.ModRegistry;
 import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
+import yagen.waitmydawn.network.EnergyPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
 import yagen.waitmydawn.network.SyncPreShootCountPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -89,6 +91,29 @@ public class ModBonusEvent {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void rageModConvertEvent(LivingDamageEvent.Post event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (!(player instanceof ServerPlayer)) return;
+        double maxEnergy = player.getAttributeValue(YAttributes.MAX_ENERGY);
+        double energy = DataAttachmentRegistry.getEnergy(player);
+        if (energy >= maxEnergy) return;
+        AttributeInstance maxAbsAttr = player.getAttribute(Attributes.MAX_ABSORPTION);
+        if (maxAbsAttr == null) return;
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        int rageLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.RAGE_ARMOR_MOD.get());
+        if (rageLevel == 0) return;
+        double damage = event.getNewDamage();
+        double shield = player.getAbsorptionAmount();
+        double damageOnHealth = damage - shield;
+        if (damageOnHealth <= 0) return;
+
+        energy = Math.min(maxEnergy,
+                energy + damageOnHealth * rageLevel * ServerConfigs.MOD_RARE_RAGE.get());
+        DataAttachmentRegistry.setEnergy(player, energy);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new EnergyPacket(energy));
     }
 
     @SubscribeEvent

@@ -195,6 +195,10 @@ public class DataAttachmentRegistry {
         return entity.getData(ENERGY.get());
     }
 
+    /**
+     * @param entity You need to test MAX_ENERGY Attribute when you call this method
+     * @param value Check it before you called to save time to send packet
+     */
     public static void setEnergy(Entity entity, double value) {
         entity.setData(ENERGY.get(), value);
     }

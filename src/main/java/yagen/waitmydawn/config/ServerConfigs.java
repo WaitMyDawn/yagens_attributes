@@ -6,6 +6,8 @@ public class ServerConfigs {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
     public static final ModConfigSpec SPEC;
 
+    public static final ModConfigSpec.ConfigValue<Double> CONFIG_VERSION;
+
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_OFFHAND;
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_MEAT_SHREDDER_COMBO;
     public static final ModConfigSpec.ConfigValue<Boolean> IF_LEVEL_BONUS;
@@ -22,6 +24,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_NEPHILA_SILK_BELT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_RESERVED_VITALITY;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_BEAR_WING;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_REDIRECTION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_AUGUR_MESSAGE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BLADE_STORM;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BONE_FINGER_BOX;
@@ -29,6 +33,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_ANTIQUATED_GLASSES;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_CLOUD_PIERCING_BOOTS;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_STRETCH;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_AUGUR_REACH;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_STATUS_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_PHYSICAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_HARVEST_TIME;
@@ -54,6 +59,16 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_OVEREXTENDED_STRENGTH;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_CONTINUITY;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_MEDITATION_RUNE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_BLIND_RAGE_STRENGTH;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_BLIND_RAGE_EFFICIENCY;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLEETING_EXPERTISE_DURATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_NARROW_MINDED_RANGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_NARROW_MINDED_DURATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_TRANSIENT_FORTITUDE_STRENGTH;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_TRANSIENT_FORTITUDE_DURATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_RAGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_AUGUR_SECRETS;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_EDGE_DISC;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_STATUS_HEAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_LEGENDARY_GALVANIZED_MULTIPLY_SHOT;
@@ -80,9 +95,15 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER_RANGE;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_THERMAL_SUNDER_DURATION;
 
+    public static final ModConfigSpec.ConfigValue<Double> MOD_SET_AUGUR;
+
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_SHIELD_MECHANISM;
 
     static {
+        BUILDER.push("Config_Version");
+        BUILDER.comment("This is used to update changed default value, it is best not to make any manual modifications.");
+        CONFIG_VERSION = BUILDER.define("Config_Version", 1.28);
+        BUILDER.pop();
 
         BUILDER.push("Optimize_for_Vanilla");
         BUILDER.comment("The cooldown you use splash potion or lingering potion (default = 20, Integer, tick)");
@@ -159,6 +180,16 @@ public class ServerConfigs {
         MOD_COMMON_BEAR_WING = BUILDER.define("Value", 8.0);
         BUILDER.pop();
 
+        BUILDER.push("Common_Redirection");
+        BUILDER.comment("Value of Common Redirection Mod per level (default = 4.0)");
+        MOD_COMMON_REDIRECTION = BUILDER.define("Value", 4.0);
+        BUILDER.pop();
+
+        BUILDER.push("Common_Augur_Message");
+        BUILDER.comment("Value of Common Augur Message Mod per level (default = 4.8)");
+        MOD_COMMON_AUGUR_MESSAGE = BUILDER.define("Value", 4.8);
+        BUILDER.pop();
+
         BUILDER.push("Uncommon_Element");
         BUILDER.comment("Value of Uncommon Element Mods per level (default = 18.0)");
         MOD_UNCOMMON_ELEMENT = BUILDER.define("Value", 18.0);
@@ -192,6 +223,11 @@ public class ServerConfigs {
         BUILDER.push("Uncommon_Stretch");
         BUILDER.comment("Value of Uncommon Stretch Mod per level (default = 9.0)");
         MOD_UNCOMMON_STRETCH = BUILDER.define("Value", 9.0);
+        BUILDER.pop();
+
+        BUILDER.push("Uncommon_Augur_Reach");
+        BUILDER.comment("Value of Uncommon Augur Reach Mod per level (default = 6.0)");
+        MOD_UNCOMMON_AUGUR_REACH = BUILDER.define("Value", 6.0);
         BUILDER.pop();
 
         BUILDER.push("Rare_Status_Element");
@@ -277,8 +313,8 @@ public class ServerConfigs {
         BUILDER.pop();
 
         BUILDER.push("Rare_Ancient_Stabilizer");
-        BUILDER.comment("Value of Rare Ancient Stabilizer Mod per level (default = 6.0)");
-        MOD_RARE_ANCIENT_STABILIZER = BUILDER.define("Value", 6.0);
+        BUILDER.comment("Value of Rare Ancient Stabilizer Mod per level (default = 5.0)");
+        MOD_RARE_ANCIENT_STABILIZER = BUILDER.define("Value", 5.0);
         BUILDER.pop();
 
         BUILDER.push("Rare_Overextended");
@@ -296,6 +332,44 @@ public class ServerConfigs {
         BUILDER.push("Rare_Meditation_Rune");
         BUILDER.comment("Value of Rare Meditation Rune Mod per level (default = 6.0)");
         MOD_RARE_MEDITATION_RUNE = BUILDER.define("Value", 6.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Soulfire_Lantern");
+        BUILDER.comment("Value of Rare Soulfire Lantern Mod per level (default = 9.9)");
+        MOD_RARE_BLIND_RAGE_STRENGTH = BUILDER.define("Strength", 9.9);
+        BUILDER.comment("Value of Rare Soulfire Lantern Mod per level (default = 5.5, negative)");
+        MOD_RARE_BLIND_RAGE_EFFICIENCY = BUILDER.define("Efficiency", 5.5);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Torrent_Flux");
+        BUILDER.comment("Value of Rare Torrent Flux Mod per level (default = 10.0)");
+        MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY = BUILDER.define("Efficiency", 10.0);
+        BUILDER.comment("Value of Rare Torrent Flux Mod per level (default = 10.0, negative)");
+        MOD_RARE_FLEETING_EXPERTISE_DURATION = BUILDER.define("Duration", 10.0);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Veiled_Crescent");
+        BUILDER.comment("Value of Rare Veiled Crescent Mod per level (default = 9.9)");
+        MOD_RARE_NARROW_MINDED_DURATION = BUILDER.define("Duration", 9.9);
+        BUILDER.comment("Value of Rare Veiled Crescent Mod per level (default = 6.6, negative)");
+        MOD_RARE_NARROW_MINDED_RANGE = BUILDER.define("Range", 6.6);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Oblivion_Rite");
+        BUILDER.comment("Value of Rare Oblivion Rite Mod per level (default = 5.5)");
+        MOD_RARE_TRANSIENT_FORTITUDE_STRENGTH = BUILDER.define("Strength", 5.5);
+        BUILDER.comment("Value of Rare Oblivion Rite Mod per level (default = 2.75, negative)");
+        MOD_RARE_TRANSIENT_FORTITUDE_DURATION = BUILDER.define("Duration", 2.75);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Rage");
+        BUILDER.comment("Value of Rare Rage Mod per level (default = 1.2)");
+        MOD_RARE_RAGE = BUILDER.define("Value", 1.2);
+        BUILDER.pop();
+
+        BUILDER.push("Rare_Augur_Secrets");
+        BUILDER.comment("Value of Rare Augur Secrets Mod per level (default = 4.8)");
+        MOD_RARE_AUGUR_SECRETS = BUILDER.define("Value", 4.8);
         BUILDER.pop();
 
         BUILDER.push("Legendary_Edge_Disc");
@@ -376,6 +450,11 @@ public class ServerConfigs {
         MOD_WARFRAME_THERMAL_SUNDER_DURATION = BUILDER.define("Duration", 30);
         BUILDER.comment("Range of Warframe Thermal Sunder Mod (default = 10.0)");
         MOD_WARFRAME_THERMAL_SUNDER_RANGE = BUILDER.define("Range", 10.0);
+        BUILDER.pop();
+
+        BUILDER.push("Set_Augur");
+        BUILDER.comment("Value of Augur Set Mod per Mod (default = 3.0)");
+        MOD_SET_AUGUR = BUILDER.define("Value", 3.0);
         BUILDER.pop();
 
         BUILDER.pop();

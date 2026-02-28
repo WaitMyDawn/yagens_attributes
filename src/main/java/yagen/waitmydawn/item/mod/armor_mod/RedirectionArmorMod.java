@@ -10,19 +10,19 @@ import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
-public class EfficiencyArmorMod extends AbstractMod {
-    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "efficiency_armor_mod");
+public class RedirectionArmorMod extends AbstractMod {
+    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "redirection_armor_mod");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.ability_efficiency_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.get().floatValue() * modLevel))
+                Component.translatable("tooltips.yagens_attributes.max_shield_add", String.format("%.1f", ServerConfigs.MOD_COMMON_REDIRECTION.get().floatValue() * modLevel))
         );
     }
 
-    public EfficiencyArmorMod() {
-        super(6, "Nya", ModRarity.RARE);
-        this.baseCapacityCost = 3;
+    public RedirectionArmorMod() {
+        super(10, "Nod", ModRarity.COMMON);
+        this.baseCapacityCost = 2;
     }
 
     @Override

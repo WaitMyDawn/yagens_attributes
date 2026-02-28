@@ -98,6 +98,12 @@ public abstract class AbstractMod {
         return InteractionResultHolder.pass(stack);
     }
 
+    /**
+     * Mod Set
+     * @return boolean
+     */
+    public boolean isAugurSet(){ return false; }
+
     public boolean isReservoir() { return false;}
 
     public boolean isActive() { return false;}

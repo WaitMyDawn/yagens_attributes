@@ -21,7 +21,6 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.minecraft.world.level.Level;
 
@@ -41,7 +40,6 @@ import yagen.waitmydawn.item.Mod;
 import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.registries.*;
 import yagen.waitmydawn.util.HomologyModGroup;
-import yagen.waitmydawn.util.SupportedMod;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -710,6 +708,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
         Item rivenType = rivenStack.get(ComponentRegistry.RIVEN_TYPE.get());
         String polarity = rivenStack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
         ItemStack modStack = createRandomModItem(bonus, penalty, rivenContainer.getLevel(), polarity, rivenType);
+        modStack.set(ComponentRegistry.RIVEN_CYCLE_COUNT.get(),
+                modStack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0) + 1);
         getModSlot().set(modStack);
     }
 
@@ -947,10 +947,12 @@ public class ModOperationMenu extends AbstractContainerMenu {
         ComponentRegistry.RivenRawInfoList data = from.get(ComponentRegistry.RIVEN_RAW_INFO.get());
         String rivenPolarity = from.get(ComponentRegistry.RIVEN_POLARITY_TYPE.get());
         Item rivenType = from.get(ComponentRegistry.RIVEN_TYPE.get());
+        int cycleCount = from.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0);
         if (data != null) {
             to.set(ComponentRegistry.RIVEN_RAW_INFO.get(), data);
             to.set(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), rivenPolarity);
             to.set(ComponentRegistry.RIVEN_TYPE.get(), rivenType);
+            to.set(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), cycleCount);
         }
     }
 
@@ -958,10 +960,13 @@ public class ModOperationMenu extends AbstractContainerMenu {
         weapon.remove(ComponentRegistry.RIVEN_RAW_INFO.get());
         weapon.remove(ComponentRegistry.RIVEN_POLARITY_TYPE.get());
         weapon.remove(ComponentRegistry.RIVEN_TYPE.get());
+        weapon.remove(ComponentRegistry.RIVEN_CYCLE_COUNT.get());
     }
 
     private static boolean hasRivenModData(ItemStack weapon) {
-        return weapon.has(ComponentRegistry.RIVEN_RAW_INFO.get()) && weapon.has(ComponentRegistry.RIVEN_POLARITY_TYPE.get()) && weapon.has(ComponentRegistry.RIVEN_TYPE.get());
+        return weapon.has(ComponentRegistry.RIVEN_RAW_INFO.get())
+                && weapon.has(ComponentRegistry.RIVEN_POLARITY_TYPE.get())
+                && weapon.has(ComponentRegistry.RIVEN_TYPE.get());
     }
 
     private static final int HOTBAR_SLOT_COUNT = 9;

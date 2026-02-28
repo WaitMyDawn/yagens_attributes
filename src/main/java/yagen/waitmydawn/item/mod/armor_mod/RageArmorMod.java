@@ -10,24 +10,19 @@ import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.List;
 
-public class EfficiencyArmorMod extends AbstractMod {
-    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "efficiency_armor_mod");
+public class RageArmorMod extends AbstractMod {
+    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "rage_armor_mod");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.ability_efficiency_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.get().floatValue() * modLevel))
+                Component.translatable("functions.yagens_attributes.rage_armor_mod.1", String.format("%.0f", ServerConfigs.MOD_RARE_RAGE.get().floatValue() * modLevel * 100))
         );
     }
 
-    public EfficiencyArmorMod() {
-        super(6, "Nya", ModRarity.RARE);
-        this.baseCapacityCost = 3;
-    }
-
-    @Override
-    public boolean isReservoir() {
-        return true;
+    public RageArmorMod() {
+        super(5, "Cth", ModRarity.RARE);
+        this.baseCapacityCost = 4;
     }
 
     @Override

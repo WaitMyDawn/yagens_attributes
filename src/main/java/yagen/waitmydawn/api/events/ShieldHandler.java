@@ -32,26 +32,7 @@ public class ShieldHandler {
             LivingEntity entity = event.getEntity();
 
             float amountToAdd = 4.0F * (event.getEffectInstance().getAmplifier() + 1);
-            float currentAbsorption = entity.getAbsorptionAmount();
-            float newTotalAbsorption = currentAbsorption + amountToAdd;
-
-            AttributeInstance maxAbsAttr = entity.getAttribute(Attributes.MAX_ABSORPTION);
-            AttributeInstance maxShieldAttr = entity.getAttribute(YAttributes.MAX_SHIELD);
-
-            if (maxAbsAttr != null) {
-                double requiredCap = newTotalAbsorption;
-                if (maxShieldAttr != null) {
-                    requiredCap = Math.max(requiredCap, maxShieldAttr.getValue());
-                }
-
-                maxAbsAttr.removeModifier(ABSORPTION_MODIFIER);
-                maxAbsAttr.addPermanentModifier(new AttributeModifier(
-                        ABSORPTION_MODIFIER,
-                        requiredCap,
-                        AttributeModifier.Operation.ADD_VALUE));
-            }
-
-            entity.setAbsorptionAmount(newTotalAbsorption);
+            addAbsorption(entity, amountToAdd);
         }
     }
 
@@ -112,5 +93,29 @@ public class ShieldHandler {
                 }
             }
         }
+    }
+
+    public static void addAbsorption(LivingEntity entity, float amount) {
+        if (ServerConfigs.BAN_SHIELD_MECHANISM.get()) return;
+        float currentAbsorption = entity.getAbsorptionAmount();
+        float newTotalAbsorption = currentAbsorption + amount;
+
+        AttributeInstance maxAbsAttr = entity.getAttribute(Attributes.MAX_ABSORPTION);
+        AttributeInstance maxShieldAttr = entity.getAttribute(YAttributes.MAX_SHIELD);
+
+        if (maxAbsAttr != null) {
+            double requiredCap = newTotalAbsorption;
+            if (maxShieldAttr != null) {
+                requiredCap = Math.max(requiredCap, maxShieldAttr.getValue());
+            }
+
+            maxAbsAttr.removeModifier(ABSORPTION_MODIFIER);
+            maxAbsAttr.addPermanentModifier(new AttributeModifier(
+                    ABSORPTION_MODIFIER,
+                    requiredCap,
+                    AttributeModifier.Operation.ADD_VALUE));
+        }
+
+        entity.setAbsorptionAmount(newTotalAbsorption);
     }
 }

@@ -144,19 +144,16 @@ public class LivingEntityDeathEvent {
 
     @SubscribeEvent
     public static void HealthTrans(LivingDeathEvent event) {
-        LivingEntity entity = event.getEntity();
-        if (entity.level().isClientSide) return;
         if (!(event.getSource().getEntity() instanceof Player player)) return;
-        if (entity instanceof Player || !(entity instanceof Mob)) return;
+        if (player.level().isClientSide) return;
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         int modLevel = ModLevelInItemStack(chest, ModRegistry.HEALTH_TRANS_ARMOR_MOD.get());
         if (modLevel == 0) return;
-        List<LivingEntity> nearby = player.level()
-                .getEntitiesOfClass(LivingEntity.class,
-                        player.getBoundingBox().inflate(64.0));
-        for (LivingEntity target : nearby) {
-            if (target instanceof Player)
+        List<Player> nearby = player.level()
+                .getEntitiesOfClass(Player.class,
+                        player.getBoundingBox().inflate(32.0));
+        for (Player target : nearby) {
                 target.heal(ServerConfigs.MOD_RARE_THORN_AURA_INCREASE.get().floatValue() * modLevel);
         }
         player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE),
