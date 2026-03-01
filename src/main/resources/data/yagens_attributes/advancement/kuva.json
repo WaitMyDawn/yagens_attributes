@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "id": "yagens_attributes:kuva"
+    },
+    "title": {
+      "translate": "advancements.yagens_attributes.kuva.title"
+    },
+    "description": {
+      "translate": "advancements.yagens_attributes.kuva.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "yagens_attributes:root",
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "yagens_attributes:kuva"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_item"
+    ]
+  ]
+}

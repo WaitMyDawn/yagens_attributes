@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "id": "yagens_attributes:kuva"
+      },
+      "title": {
+        "translate": "advancements.yagens_attributes.thousand_cycles.title"
+      },
+      "description": {
+        "translate": "advancements.yagens_attributes.thousand_cycles.description"
+      },
+      "frame": "challenge",
+      "show_toast": true,
+      "announce_to_chat": true,
+      "hidden": false
+    },
+    "parent": "yagens_attributes:unknown_riven",
+    "criteria": {
+      "requirement": {
+        "trigger": "yagens_attributes:riven_cycle",
+        "conditions": {
+          "count": {
+            "min": 1000
+          }
+        }
+      }
+    },
+    "requirements": [
+      [
+        "requirement"
+      ]
+    ]
+  }

@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "id": "yagens_attributes:mod"
+    },
+    "title": {
+      "translate": "advancements.yagens_attributes.first_mod.title"
+    },
+    "description": {
+      "translate": "advancements.yagens_attributes.first_mod.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "yagens_attributes:root",
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "yagens_attributes:mod"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_item"
+    ]
+  ]
+}

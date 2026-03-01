@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "id": "yagens_attributes:mod_essence"
+    },
+    "title": {
+      "translate": "advancements.yagens_attributes.root.title"
+    },
+    "description": {
+      "translate": "advancements.yagens_attributes.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/stone.png",
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "get_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "yagens_attributes:mod_essence"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get_item"
+    ]
+  ]
+}

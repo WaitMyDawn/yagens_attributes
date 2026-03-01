@@ -680,6 +680,12 @@ public class ModOperationMenu extends AbstractContainerMenu {
         ComponentRegistry.setPolarities(itemStack, polarities);
         ComponentRegistry.setUpgrade(itemStack, data.withPolarity(1));
         getModSlot().remove(1);
+
+        if (slotCount > 0 && polarities.size() == slotCount && !polarities.contains("")) {
+//            for (String type : polarities)
+//                if (type.isEmpty()) return;
+            CriteriaRegistry.FULLY_POLARIZED.get().trigger(pPlayer);
+        }
     }
 
     public void doCycle(ServerPlayer pPlayer) {
@@ -717,8 +723,10 @@ public class ModOperationMenu extends AbstractContainerMenu {
         Item rivenType = rivenStack.get(ComponentRegistry.RIVEN_TYPE.get());
         String polarity = rivenStack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
         ItemStack modStack = createRandomModItem(bonus, penalty, rivenContainer.getLevel(), polarity, rivenType);
+        int cycleCount = rivenStack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0) + 1;
         modStack.set(ComponentRegistry.RIVEN_CYCLE_COUNT.get(),
-                rivenStack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0) + 1);
+                cycleCount);
+        CriteriaRegistry.RIVEN_CYCLE.get().trigger(pPlayer, cycleCount);
         getModSlot().set(modStack);
     }
 

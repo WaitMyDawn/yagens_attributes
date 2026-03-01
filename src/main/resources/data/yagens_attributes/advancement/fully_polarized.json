@@ -1,0 +1,28 @@
+{
+  "display": {
+    "icon": {
+      "id": "yagens_attributes:forma"
+    },
+    "title": {
+      "translate": "advancements.yagens_attributes.fully_polarized.title"
+    },
+    "description": {
+      "translate": "advancements.yagens_attributes.fully_polarized.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "yagens_attributes:root",
+  "criteria": {
+    "requirement": {
+      "trigger": "yagens_attributes:fully_polarized"
+    }
+  },
+  "requirements": [
+    [
+      "requirement"
+    ]
+  ]
+}

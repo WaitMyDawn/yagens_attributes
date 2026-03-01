@@ -6,6 +6,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -39,6 +40,7 @@ public class YagensAttributes {
         modEventBus.addListener(ModRegistry::registerRegistry);
         modEventBus.addListener(NetworkHandler::onRegister);
         modEventBus.addListener(CapabilitiesRegistry::registerCapabilities);
+        NeoForge.EVENT_BUS.addListener(PotionRegistry::onBrewingRecipeRegister);
 
         YagenAttributesCreativeTab.register(modEventBus);
         MenuRegistry.register(modEventBus);
@@ -52,6 +54,8 @@ public class YagensAttributes {
         DataAttachmentRegistry.register(modEventBus);
         ParticleRegistry.register(modEventBus);
         EntityRegistry.register(modEventBus);
+        CriteriaRegistry.register(modEventBus);
+        PotionRegistry.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, String.format("%s/%s-client.toml", YagensAttributes.MODID, YagensAttributes.MODID));
         modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfigs.SPEC, String.format("%s/%s-server.toml", YagensAttributes.MODID, YagensAttributes.MODID));
