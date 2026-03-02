@@ -8,6 +8,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownTrident;
@@ -200,6 +201,17 @@ public class AttackEventHandler {
         int scCount = (int) sc;
         sc = sc - scCount;
 
+        // vigilante set mod
+        if (!isMelee) {
+            if (IModContainer.isModContainer(weaponItem)) {
+                int vigilanteCount = 0;
+                for (ModSlot slot : IModContainer.get(weaponItem).getActiveMods())
+                    if (slot.getMod().isVigilanteSet()) vigilanteCount++;
+                if (attacker.getRandom().nextDouble() < ServerConfigs.MOD_SET_VIGILANTE.get() * vigilanteCount / 100)
+                    cc = cc + 1;
+            }
+        }
+
         // cold status
         float coldTocd = 0;
         if (target.hasEffect(MobEffectRegistry.COLD_STATUS)) {
@@ -280,11 +292,21 @@ public class AttackEventHandler {
         if (source.is(DamageTypeRegistry.FORCE_SLASH_STATUS)) {
             statusEffect(DamageType.SLASH, attacker, target, adjustedTotal);
         }
+        // hunter set mod
+        if (!isMelee) {
+            int modLevel = ModCompat.ModLevelInItemStack(weaponItem, ModRegistry.HUNTER_MUNITIONS_TOOL_MOD.get());
+            if (modLevel != 0)
+                if (attacker.getRandom().nextDouble() <
+                        modLevel * ServerConfigs.MOD_UNCOMMON_HUNTER_MUNITIONS.get() / 100)
+                    statusEffect(DamageType.SLASH, attacker, target, adjustedTotal);
+        }
 
         if (lifeSteal > 0)
-            attacker.setHealth(Math.min(attacker.getHealth() + adjustedTotal * (float) (lifeSteal), attacker.getMaxHealth()));
+            if (attacker.isAlive())
+                attacker.setHealth(Math.min(attacker.getHealth() + adjustedTotal * (float) (lifeSteal), attacker.getMaxHealth()));
         if (healthHeal > 0)
-            attacker.setHealth(Math.min(attacker.getHealth() + healthHeal, attacker.getMaxHealth()));
+            if (attacker.isAlive())
+                attacker.setHealth(Math.min(attacker.getHealth() + healthHeal, attacker.getMaxHealth()));
 
 
         int color = 0xFFFFFF;
@@ -323,6 +345,53 @@ public class AttackEventHandler {
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
         PacketDistributor.sendToPlayersTrackingEntity(target,
                 new DamageNumberPacket(pos, event.getNewDamage(), color, 0));
+    }
+
+    private static final Map<UUID, Float> ABSORPTION_CACHE = new HashMap<>();
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onDamagePre(LivingDamageEvent.Pre event) {
+        if (event.getSource().is(DamageTypeRegistry.TOXIN_STATUS_DAMAGE_TYPE)) {
+            LivingEntity entity = event.getEntity();
+            float currentAbsorption = entity.getAbsorptionAmount();
+
+            if (currentAbsorption > 0) {
+                ABSORPTION_CACHE.put(entity.getUUID(), currentAbsorption);
+                entity.setAbsorptionAmount(0.0F);
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onDamagePost(LivingDamageEvent.Post event) {
+        LivingEntity entity = event.getEntity();
+        UUID uuid = entity.getUUID();
+
+        if (ABSORPTION_CACHE.containsKey(uuid)) {
+            float originalAbsorption = ABSORPTION_CACHE.remove(uuid);
+            entity.setAbsorptionAmount(originalAbsorption);
+        }
+    }
+
+    // hunter set mod
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void companionModifier(LivingIncomingDamageEvent event) {
+        if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) return;
+        if (!(attacker instanceof OwnableEntity pet && pet.getOwner() instanceof ServerPlayer player)) return;
+        if (!event.getEntity().hasEffect(MobEffectRegistry.SLASH_STATUS)) return;
+
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack mainHand = player.getItemBySlot(EquipmentSlot.MAINHAND);
+        int hunterCount = 0;
+
+        if (IModContainer.isModContainer(chest))
+            for (ModSlot slot : IModContainer.get(chest).getActiveMods())
+                if (slot.getMod().isHunterSet()) hunterCount++;
+        if (IModContainer.isModContainer(mainHand))
+            for (ModSlot slot : IModContainer.get(mainHand).getActiveMods())
+                if (slot.getMod().isHunterSet()) hunterCount++;
+        if (hunterCount > 0)
+            event.setAmount(event.getAmount() * (1 + hunterCount * ServerConfigs.MOD_SET_HUNTER.get().floatValue() / 100f));
     }
 
     // puncture

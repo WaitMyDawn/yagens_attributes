@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "yagens_attributes:item/hunter_adrenaline_armor_mod"
+  }
+}

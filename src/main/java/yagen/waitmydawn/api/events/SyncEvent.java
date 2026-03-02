@@ -25,15 +25,18 @@ public class SyncEvent {
 
     @SubscribeEvent
     public static void syncConfigVersion(ModConfigEvent.Loading event) {
-        if (event.getConfig().getSpec() == ServerConfigs.SPEC){
-            double newVersion = 1.29;
-            if (ServerConfigs.CONFIG_VERSION.get() < newVersion) {
-                ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.set(5.0);
-                ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_DURATION.set(10.0);
-                ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY.set(10.0);
-                ServerConfigs.CONFIG_VERSION.set(newVersion);
-                ServerConfigs.SPEC.save();
+        if (event.getConfig().getSpec() == ServerConfigs.SPEC) {
+            double newVersion = 1.29; // latest version, doesn't follow mod version
+            if (ServerConfigs.CONFIG_VERSION.get() == 1.28) { // changes after 1.28
+                if (ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.get() == 6.0) // old default value
+                    ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.set(ServerConfigs.MOD_RARE_ANCIENT_STABILIZER.getDefault());
+                if (ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY.get() == 12.0) {
+                    ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_DURATION.set(ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_DURATION.getDefault());
+                    ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY.set(ServerConfigs.MOD_RARE_FLEETING_EXPERTISE_EFFICIENCY.getDefault());
+                }
             }
+            ServerConfigs.CONFIG_VERSION.set(newVersion);
+            ServerConfigs.SPEC.save();
         }
     }
 

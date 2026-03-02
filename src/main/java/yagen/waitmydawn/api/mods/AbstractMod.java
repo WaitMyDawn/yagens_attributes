@@ -104,6 +104,10 @@ public abstract class AbstractMod {
      */
     public boolean isAugurSet(){ return false; }
 
+    public boolean isHunterSet(){ return false; }
+
+    public boolean isVigilanteSet(){ return false; }
+
     public boolean isReservoir() { return false;}
 
     public boolean isActive() { return false;}

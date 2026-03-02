@@ -16,7 +16,8 @@ public class FirerateToolMod extends AbstractMod {
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel) {
         return List.of(
-                Component.translatable("tooltips.yagens_attributes.firerate_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_FLAME_FEATHER.get().floatValue() * modLevel))
+                Component.translatable("tooltips.yagens_attributes.firerate_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_FLAME_FEATHER.get().floatValue() * modLevel)),
+                Component.translatable("tooltip.yagens_attributes.damage_multiplyneg", String.format("%.2f", ServerConfigs.MOD_RARE_FLAME_FEATHER_DAMAGE.get().floatValue() * modLevel))
         );
     }
 
@@ -24,9 +25,6 @@ public class FirerateToolMod extends AbstractMod {
         super(5, "Nya", ModRarity.RARE);
         this.baseCapacityCost = 6;
     }
-
-    @Override
-    public boolean isReservoir() { return true; }
 
     @Override
     public ResourceLocation getModResource() {

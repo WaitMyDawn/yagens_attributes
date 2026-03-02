@@ -104,14 +104,17 @@ public class ModBonusEvent {
         if (maxAbsAttr == null) return;
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         int rageLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.RAGE_ARMOR_MOD.get());
-        if (rageLevel == 0) return;
+        int hunterLevel = ModCompat.ModLevelInItemStack(chest, ModRegistry.HUNTER_ADRENALINE_ARMOR_MOD.get());
+        if (rageLevel + hunterLevel == 0) return;
         double damage = event.getNewDamage();
         double shield = player.getAbsorptionAmount();
         double damageOnHealth = damage - shield;
         if (damageOnHealth <= 0) return;
 
         energy = Math.min(maxEnergy,
-                energy + damageOnHealth * rageLevel * ServerConfigs.MOD_RARE_RAGE.get());
+                energy + damageOnHealth *
+                        (rageLevel * ServerConfigs.MOD_RARE_RAGE.get()
+                                + hunterLevel * ServerConfigs.MOD_COMMON_HUNTER_ADRENALINE.get()));
         DataAttachmentRegistry.setEnergy(player, energy);
         PacketDistributor.sendToPlayer((ServerPlayer) player, new EnergyPacket(energy));
     }

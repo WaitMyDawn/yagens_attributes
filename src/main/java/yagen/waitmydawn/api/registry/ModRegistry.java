@@ -74,6 +74,8 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> ARMOR_TOUGHNESS_ARMOR_MOD = registerMod(new ArmorToughnessArmorMod());
     public static final Supplier<AbstractMod> PILOT_ARMOR_MOD = registerMod(new PilotArmorMod());
     public static final Supplier<AbstractMod> AUGUR_MESSAGE_ARMOR_MOD = registerMod(new AugurMessageArmorMod());
+    public static final Supplier<AbstractMod> VIGILANTE_ARMAMENTS_ARMOR_MOD = registerMod(new VigilanteArmamentsToolMod());
+    public static final Supplier<AbstractMod> HUNTER_ADRENALINE_ARMOR_MOD = registerMod(new HunterAdrenalineArmorMod());
 
     /**
      * UNCOMMON
@@ -82,14 +84,17 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> COLD_TOOL_MOD = registerMod(new ColdToolMod());
     public static final Supplier<AbstractMod> ELECTRICITY_TOOL_MOD = registerMod(new ElectricityToolMod());
     public static final Supplier<AbstractMod> TOXIN_TOOL_MOD = registerMod(new ToxinToolMod());
-
     public static final Supplier<AbstractMod> FURY_TOOL_MOD = registerMod(new FuryToolMod());
     public static final Supplier<AbstractMod> CRITICAL_HIT_TOOL_MOD = registerMod(new CriticalHitToolMod());
     public static final Supplier<AbstractMod> CRITICAL_CHANCE_COMBO_TOOL_MOD = registerMod(new CriticalChanceComboToolMod());
     public static final Supplier<AbstractMod> STATUS_CHANCE_COMBO_TOOL_MOD = registerMod(new StatusChanceComboToolMod());
+    public static final Supplier<AbstractMod> HUNTER_MUNITIONS_TOOL_MOD = registerMod(new HunterMunitionsToolMod());
+    public static final Supplier<AbstractMod> VIGILANTE_FERVOR_TOOL_MOD = registerMod(new VigilanteFervorToolMod());
+
     public static final Supplier<AbstractMod> MOVEMENT_SPEED_ARMOR_MOD = registerMod(new MovementSpeedArmorMod());
     public static final Supplier<AbstractMod> STRETCH_ARMOR_MOD = registerMod(new StretchArmorMod());
     public static final Supplier<AbstractMod> AUGUR_REACH_ARMOR_MOD = registerMod(new AugurReachArmorMod());
+
 
     /**
      * RARE
@@ -97,7 +102,6 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> SLASH_TOOL_MOD = registerMod(new SlashToolMod());
     public static final Supplier<AbstractMod> IMPACT_TOOL_MOD = registerMod(new ImpactToolMod());
     public static final Supplier<AbstractMod> PUNCTURE_TOOL_MOD = registerMod(new PunctureToolMod());
-
     public static final Supplier<AbstractMod> HEAT_STATUS_TOOL_MOD = registerMod(new HeatStatusToolMod());
     public static final Supplier<AbstractMod> COLD_STATUS_TOOL_MOD = registerMod(new ColdStatusToolMod());
     public static final Supplier<AbstractMod> TOXIN_STATUS_TOOL_MOD = registerMod(new ToxinStatusToolMod());
@@ -109,6 +113,7 @@ public class ModRegistry {
     public static final Supplier<AbstractMod> FIRERATE_TOOL_MOD = registerMod(new FirerateToolMod());
     public static final Supplier<AbstractMod> SCOPE_TOOL_MOD = registerMod(new ScopeToolMod());
     public static final Supplier<AbstractMod> FURY_KILL_TOOL_MOD = registerMod(new FuryKillToolMod());
+
     public static final Supplier<AbstractMod> JUMP_STRENGTH_ARMOR_MOD = registerMod(new JumpStrengthArmorMod());
     public static final Supplier<AbstractMod> XP_ARMOR_MOD = registerMod(new XpArmorMod());
     public static final Supplier<AbstractMod> GRACE_ARMOR_MOD = registerMod(new GraceArmorMod());
@@ -142,10 +147,10 @@ public class ModRegistry {
     /**
      * WARFRAME
      */
-    public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorMod());
     public static final Supplier<AbstractMod> COLLABORATIVE_PROFICIENCY_ARMOR_MOD = registerMod(new CollaborativeProficiencyArmorMod());
+    public static final Supplier<AbstractMod> PRE_SHOOT_ARMOR_MOD = registerMod(new PreShootArmorMod());
+    public static final Supplier<AbstractMod> NOURISH_ARMOR_MOD = registerMod(new NourishArmorMod());
     public static final Supplier<AbstractMod> BLADE_STORM_ARMOR_MOD = registerMod(new BladeStormArmorMod());
+    public static final Supplier<AbstractMod> RESERVOIRS_ARMOR_MOD = registerMod(new ReservoirsArmorMod());
     public static final Supplier<AbstractMod> THERMAL_SUNDER_ARMOR_MOD = registerMod(new ThermalSunderArmorMod());
-    public static final Supplier<AbstractMod> PRE_SHOOT_TOOL_MOD = registerMod(new PreShootArmorMod());
-    public static final Supplier<AbstractMod> RESERVOIRS_TOOL_MOD = registerMod(new ReservoirsArmorMod());
 }

@@ -27,6 +27,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_REDIRECTION;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_AUGUR_MESSAGE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_DAMAGE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_VIGILANTE_ARMAMENTS;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_COMMON_HUNTER_ADRENALINE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BLADE_STORM;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_BONE_FINGER_BOX;
@@ -35,11 +37,14 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_CLOUD_PIERCING_BOOTS;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_STRETCH;
     public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_AUGUR_REACH;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_HUNTER_MUNITIONS;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_UNCOMMON_VIGILANTE_FERVOR;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_STATUS_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_PHYSICAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_HARVEST_TIME;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_NAMELESS_GLOVE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLAME_FEATHER;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLAME_FEATHER_DAMAGE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_SCOPE;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_RARE_SCOPE_DURATION;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_MULTIPLY_SHOT;
@@ -97,6 +102,8 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_THERMAL_SUNDER_DURATION;
 
     public static final ModConfigSpec.ConfigValue<Double> MOD_SET_AUGUR;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_SET_VIGILANTE;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_SET_HUNTER;
 
     public static final ModConfigSpec.ConfigValue<Boolean> BAN_SHIELD_MECHANISM;
 
@@ -196,6 +203,16 @@ public class ServerConfigs {
         MOD_COMMON_DAMAGE = BUILDER.define("Value", 18.0);
         BUILDER.pop();
 
+        BUILDER.push("Common_Vigilante_Armaments");
+        BUILDER.comment("Value of Common Vigilante Armaments Mod per level (default = 12.0)");
+        MOD_COMMON_VIGILANTE_ARMAMENTS = BUILDER.define("Value", 12.0);
+        BUILDER.pop();
+
+        BUILDER.push("Common_Hunter_Adrenaline");
+        BUILDER.comment("Value of Common Hunter Adrenaline Mod per level (default = 1.35)");
+        MOD_COMMON_HUNTER_ADRENALINE = BUILDER.define("Value", 1.35);
+        BUILDER.pop();
+
         BUILDER.push("Uncommon_Element");
         BUILDER.comment("Value of Uncommon Element Mods per level (default = 18.0)");
         MOD_UNCOMMON_ELEMENT = BUILDER.define("Value", 18.0);
@@ -236,6 +253,16 @@ public class ServerConfigs {
         MOD_UNCOMMON_AUGUR_REACH = BUILDER.define("Value", 6.0);
         BUILDER.pop();
 
+        BUILDER.push("Uncommon_Hunter_Munitions");
+        BUILDER.comment("Value of Uncommon Hunter Munitions Mod per level (default = 6.0)");
+        MOD_UNCOMMON_HUNTER_MUNITIONS = BUILDER.define("Value", 6.0);
+        BUILDER.pop();
+
+        BUILDER.push("Uncommon_Vigilante_Fervor");
+        BUILDER.comment("Value of Uncommon Vigilante Fervor Mod per level (default = 9.0)");
+        MOD_UNCOMMON_VIGILANTE_FERVOR = BUILDER.define("Value", 9.0);
+        BUILDER.pop();
+
         BUILDER.push("Rare_Status_Element");
         BUILDER.comment("Value of Rare Status Element Mods per level (default = 12.0)");
         MOD_RARE_STATUS_ELEMENT = BUILDER.define("Value", 12.0);
@@ -258,7 +285,9 @@ public class ServerConfigs {
 
         BUILDER.push("Rare_Flame_Feather");
         BUILDER.comment("Value of Rare Flame Feather Mod per level (default = 18.0)");
-        MOD_RARE_FLAME_FEATHER = BUILDER.define("Value", 18.0);
+        MOD_RARE_FLAME_FEATHER = BUILDER.define("Firerate", 18.0);
+        BUILDER.comment("Value of Rare Flame Feather Mod per level (default = 3.0, negative)");
+        MOD_RARE_FLAME_FEATHER_DAMAGE = BUILDER.define("Damage", 3.0);
         BUILDER.pop();
 
         BUILDER.push("Rare_Scope");
@@ -458,9 +487,13 @@ public class ServerConfigs {
         MOD_WARFRAME_THERMAL_SUNDER_RANGE = BUILDER.define("Range", 10.0);
         BUILDER.pop();
 
-        BUILDER.push("Set_Augur");
+        BUILDER.push("Set_Mod");
         BUILDER.comment("Value of Augur Set Mod per Mod (default = 3.0)");
-        MOD_SET_AUGUR = BUILDER.define("Value", 3.0);
+        MOD_SET_AUGUR = BUILDER.define("Augur", 3.0);
+        BUILDER.comment("Value of Vigilante Set Mod per Mod (default = 5.0)");
+        MOD_SET_VIGILANTE = BUILDER.define("Vigilante", 5.0);
+        BUILDER.comment("Value of Hunter Set Mod per Mod (default = 25.0)");
+        MOD_SET_HUNTER = BUILDER.define("Hunter", 25.0);
         BUILDER.pop();
 
         BUILDER.pop();
