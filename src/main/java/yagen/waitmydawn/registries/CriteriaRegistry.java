@@ -6,7 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import yagen.waitmydawn.YagensAttributes;
-import yagen.waitmydawn.advancement.FullyPolarizedTrigger;
+import yagen.waitmydawn.advancement.TemplateTrigger;
 import yagen.waitmydawn.advancement.RivenCycleTrigger;
 
 public class CriteriaRegistry {
@@ -15,8 +15,14 @@ public class CriteriaRegistry {
 
     public static final DeferredHolder<CriterionTrigger<?>, RivenCycleTrigger> RIVEN_CYCLE =
             TRIGGERS.register("riven_cycle", RivenCycleTrigger::new);
-    public static final DeferredHolder<CriterionTrigger<?>, FullyPolarizedTrigger> FULLY_POLARIZED =
-            TRIGGERS.register("fully_polarized", FullyPolarizedTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, TemplateTrigger> FULLY_POLARIZED =
+            TRIGGERS.register("fully_polarized", TemplateTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, TemplateTrigger> EXTERMINATE_ENDO =
+            TRIGGERS.register("exterminate_endo", TemplateTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, TemplateTrigger> ASSASSINATION_ENDO =
+            TRIGGERS.register("assassination_endo", TemplateTrigger::new);
+    public static final DeferredHolder<CriterionTrigger<?>, TemplateTrigger> MAX_LEVEL =
+            TRIGGERS.register("max_level", TemplateTrigger::new);
 
     public static void register(IEventBus eventBus) {
         TRIGGERS.register(eventBus);

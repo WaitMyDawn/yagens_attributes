@@ -20,6 +20,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import yagen.waitmydawn.capabilities.ModPoolData;
+import yagen.waitmydawn.capabilities.PlayerBossData;
 import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.*;
@@ -197,7 +198,7 @@ public class DataAttachmentRegistry {
 
     /**
      * @param entity You need to test MAX_ENERGY Attribute when you call this method
-     * @param value Check it before you called to save time to send packet
+     * @param value  Check it before you called to save time to send packet
      */
     public static void setEnergy(Entity entity, double value) {
         entity.setData(ENERGY.get(), value);
@@ -222,6 +223,19 @@ public class DataAttachmentRegistry {
     public static final Supplier<AttachmentType<ModPoolData>> MOD_POOL = ATTACHMENT_TYPES.register("mod_pool",
             () -> AttachmentType.builder(ModPoolData::new)
                     .serialize(ModPoolData.CODEC)
+                    .copyOnDeath()
+                    .build());
+
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<PlayerBossData>> BOSSES_LIST =
+            ATTACHMENT_TYPES.register("bosses_list",
+                    () -> AttachmentType.builder(() -> new PlayerBossData())
+                            .serialize(PlayerBossData.CODEC)
+                            .copyOnDeath()
+                            .build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>>
+            IS_NEW_BOSS = ATTACHMENT_TYPES.register("is_new_boss",
+            () -> AttachmentType.builder(() -> false)
+                    .serialize(Codec.BOOL)
                     .copyOnDeath()
                     .build());
 }

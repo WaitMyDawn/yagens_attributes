@@ -3,6 +3,7 @@ package yagen.waitmydawn.item.mod.armor_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
@@ -14,7 +15,7 @@ public class StrengthArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "strength_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("tooltips.yagens_attributes.ability_strength_multibase", String.format("%.2f", ServerConfigs.MOD_RARE_MEDITATION_RUNE.get().floatValue() * modLevel))
         );

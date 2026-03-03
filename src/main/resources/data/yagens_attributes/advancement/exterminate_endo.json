@@ -1,23 +1,23 @@
 {
   "display": {
     "icon": {
-      "id": "yagens_attributes:forma"
+      "id": "yagens_attributes:endo"
     },
     "title": {
-      "translate": "advancements.yagens_attributes.fully_polarized.title"
+      "translate": "advancements.yagens_attributes.exterminate_endo.title"
     },
     "description": {
-      "translate": "advancements.yagens_attributes.fully_polarized.description"
+      "translate": "advancements.yagens_attributes.exterminate_endo.description"
     },
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "yagens_attributes:forma",
+  "parent": "yagens_attributes:endo",
   "criteria": {
     "requirement": {
-      "trigger": "yagens_attributes:fully_polarized"
+      "trigger": "yagens_attributes:exterminate_endo"
     }
   },
   "requirements": [

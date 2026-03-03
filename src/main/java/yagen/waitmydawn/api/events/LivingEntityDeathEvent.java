@@ -3,9 +3,11 @@ package yagen.waitmydawn.api.events;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
@@ -23,6 +25,7 @@ import net.neoforged.neoforge.event.entity.living.LivingExperienceDropEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import yagen.waitmydawn.YagensAttributes;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
 import yagen.waitmydawn.api.mods.AbstractMod;
@@ -33,6 +36,7 @@ import yagen.waitmydawn.api.mods.ModSlot;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.EnergyOrbEntity;
 import yagen.waitmydawn.entity.others.DarkDoppelgangerEntity;
+import yagen.waitmydawn.registries.CriteriaRegistry;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
@@ -154,7 +158,7 @@ public class LivingEntityDeathEvent {
                 .getEntitiesOfClass(Player.class,
                         player.getBoundingBox().inflate(32.0));
         for (Player target : nearby) {
-                target.heal(ServerConfigs.MOD_RARE_THORN_AURA_INCREASE.get().floatValue() * modLevel);
+            target.heal(ServerConfigs.MOD_RARE_THORN_AURA_INCREASE.get().floatValue() * modLevel);
         }
         player.hurt(player.damageSources().source(DamageTypeRegistry.SLASH_STATUS_DAMAGE_TYPE),
                 ServerConfigs.MOD_RARE_THORN_AURA_DECREASE.get().floatValue() * modLevel);
@@ -193,5 +197,15 @@ public class LivingEntityDeathEvent {
             if (stack.is(Items.TOTEM_OF_UNDYING)) return stack;
         }
         return ItemStack.EMPTY;
+    }
+
+    @SubscribeEvent
+    public static void maxLevelAdvancement(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (!(event.getSource().getEntity() instanceof ServerPlayer serverPlayer)) return;
+        AttributeInstance attribute = entity.getAttribute(YAttributes.ENTITY_LEVEL);
+        if (attribute == null) return;
+        if (attribute.getValue() == 9999.0D)
+            CriteriaRegistry.MAX_LEVEL.get().trigger(serverPlayer);
     }
 }

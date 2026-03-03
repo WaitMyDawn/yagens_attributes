@@ -42,6 +42,7 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_STATUS_ELEMENT;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_PHYSICAL;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_HARVEST_TIME;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_HARVEST_TIME_STATUS_CHANCE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_NAMELESS_GLOVE;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLAME_FEATHER;
     public static final ModConfigSpec.ConfigValue<Double> MOD_RARE_FLAME_FEATHER_DAMAGE;
@@ -275,7 +276,9 @@ public class ServerConfigs {
 
         BUILDER.push("Rare_Harvest_Time");
         BUILDER.comment("Value of Rare Harvest Time Mod per level (default = 2.0)");
-        MOD_RARE_HARVEST_TIME = BUILDER.define("Value", 2.0);
+        MOD_RARE_HARVEST_TIME = BUILDER.define("Combo_Duration", 2.0);
+        BUILDER.comment("Value of Rare Harvest Time Mod per level (default = 8.0)");
+        MOD_RARE_HARVEST_TIME_STATUS_CHANCE = BUILDER.define("Status_Chance", 8.0);
         BUILDER.pop();
 
         BUILDER.push("Rare_Nameless_Glove");

@@ -1,23 +1,23 @@
 {
   "display": {
     "icon": {
-      "id": "yagens_attributes:forma"
+      "id": "minecraft:bone"
     },
     "title": {
-      "translate": "advancements.yagens_attributes.fully_polarized.title"
+      "translate": "advancements.yagens_attributes.max_level.title"
     },
     "description": {
-      "translate": "advancements.yagens_attributes.fully_polarized.description"
+      "translate": "advancements.yagens_attributes.max_level.description"
     },
     "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
   },
-  "parent": "yagens_attributes:forma",
+  "parent": "yagens_attributes:root",
   "criteria": {
     "requirement": {
-      "trigger": "yagens_attributes:fully_polarized"
+      "trigger": "yagens_attributes:max_level"
     }
   },
   "requirements": [

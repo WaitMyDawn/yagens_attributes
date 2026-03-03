@@ -167,7 +167,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
 
                 var mutable = IModContainer.get(itemStack).mutableCopy();
                 AbstractMod mod = mutable.getModAtIndex(selectedModIndex).getMod();
-                if (mod.getUniqueInfo(1).isEmpty()) {
+                if (mod.getUniqueInfo(1, player).isEmpty()) {
                     clearRivenRawInfo(itemStack);
                 } else if (mod.getModName().equals("grace_armor_mod")) {
                     clearGraceAbility(itemStack);
@@ -329,7 +329,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
         int level = modData.getLevel();
 
         // only RivenMod by empty getUniqueInfo
-        if (mod.getUniqueInfo(level).isEmpty()) {
+        if (mod.getUniqueInfo(level, player).isEmpty()) {
             Item item = modStack.get(ComponentRegistry.RIVEN_TYPE.get());
             if (item != null && item != itemStack.getItem()) {
                 return;
@@ -404,14 +404,14 @@ public class ModOperationMenu extends AbstractContainerMenu {
             int lvl = slot.getLevel();
             // riven info on the weapon
             List<MutableComponent> uniqueInfo;
-            if (mod.getUniqueInfo(lvl).isEmpty()) {
+            if (mod.getUniqueInfo(lvl, null).isEmpty()) {
                 ComponentRegistry.RivenRawInfoList raw = stack.get(ComponentRegistry.RIVEN_RAW_INFO.get());
                 uniqueInfo = raw == null ? List.of()
                         : raw.raw().stream()
                         .map(r -> Component.translatable(r.key(), r.base() * lvl))
                         .toList();
             } else {
-                uniqueInfo = mod.getUniqueInfo(lvl);
+                uniqueInfo = mod.getUniqueInfo(lvl, null);
             }
             for (var comp : uniqueInfo) {
                 String key = String.valueOf(comp);  // like translation{key='tooltip.yagens_attributes.slash_addition', args=[50]}
@@ -682,8 +682,6 @@ public class ModOperationMenu extends AbstractContainerMenu {
         getModSlot().remove(1);
 
         if (slotCount > 0 && polarities.size() == slotCount && !polarities.contains("")) {
-//            for (String type : polarities)
-//                if (type.isEmpty()) return;
             CriteriaRegistry.FULLY_POLARIZED.get().trigger(pPlayer);
         }
     }
@@ -856,7 +854,7 @@ public class ModOperationMenu extends AbstractContainerMenu {
                     resultStack.setCount(1);
                     IModContainer.createModContainer(modData.getMod(), modData.getLevel(), resultStack);
 
-                    if (modData.getMod().getUniqueInfo(modData.getLevel()).isEmpty()) {
+                    if (modData.getMod().getUniqueInfo(modData.getLevel(), player).isEmpty()) {
                         copyRivenRawInfo(itemStack, resultStack);
                     } else if (modData.getMod().getModName().equals("grace_armor_mod")) {
                         copyGraceAbility(itemStack, resultStack);

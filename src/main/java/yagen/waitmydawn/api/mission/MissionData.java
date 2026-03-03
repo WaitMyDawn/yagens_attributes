@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -26,6 +27,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import yagen.waitmydawn.network.SyncMissionDataPacket;
+import yagen.waitmydawn.registries.CriteriaRegistry;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.LootTableRegistry;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.network.NetworkHandler;
@@ -35,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static yagen.waitmydawn.api.mission.MissionHandler.bossTypeSize;
 import static yagen.waitmydawn.api.mission.MissionHandler.getCorrectTreasurePos;
 
 
@@ -104,6 +108,13 @@ public class MissionData extends SavedData {
             if (player != null) {
                 player.sendSystemMessage(Component.translatable("ui.yagens_attributes.mission_treasure_created")
                         .append(Component.literal("[" + chestPos + "]").withStyle(ChatFormatting.GOLD)));
+                if (sData.missionLevel == 2 && sData.missionType == MissionType.EXTERMINATE)
+                    CriteriaRegistry.EXTERMINATE_ENDO.get().trigger(player);
+                else if (sData.missionLevel == 2 && sData.missionType == MissionType.ASSASSINATION && sData.players.size() == 1) {
+                    player.setData(DataAttachmentRegistry.IS_NEW_BOSS, false);
+                    if (player.getData(DataAttachmentRegistry.BOSSES_LIST).getSize() >= bossTypeSize())
+                        CriteriaRegistry.ASSASSINATION_ENDO.get().trigger(player);
+                }
             }
         }
 
@@ -266,6 +277,19 @@ public class MissionData extends SavedData {
             checkCompleted(level, levelId, taskId, sData);
             setDirty();
             sendPacket(level, taskId, sData);
+
+            // handler of boss advancement
+            if (sData.players.size() == 1) {
+                for (UUID uuid : sData.players) {
+                    ServerPlayer player = level.getServer().getPlayerList().getPlayer(uuid);
+                    if (player != null && player.getData(DataAttachmentRegistry.IS_NEW_BOSS.get())) {
+                        if (sData.missionLevel == 2 && sData.missionType == MissionType.ASSASSINATION) {
+                            player.setData(DataAttachmentRegistry.IS_NEW_BOSS.get(), false);
+                            player.getData(DataAttachmentRegistry.BOSSES_LIST.get()).removeLatestBoss();
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -73,7 +73,7 @@ public abstract class AbstractMod {
 
     public abstract ResourceLocation getModResource();
 
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel,Player player) {
         return List.of();
     }
 

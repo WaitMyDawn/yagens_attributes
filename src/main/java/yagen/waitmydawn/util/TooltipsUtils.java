@@ -47,7 +47,7 @@ public class TooltipsUtils {
             var levelText = Component.literal(String.valueOf(modData.getLevel()));
 
             String modPolarity = mod.getModPolarity();
-            var uniqueInfo = mod.getUniqueInfo(modLevel);
+            var uniqueInfo = mod.getUniqueInfo(modLevel, player);
             if (uniqueInfo.isEmpty()) {
                 uniqueInfo = RivenMod.getRivenUniqueInfo(stack, modLevel);
                 modPolarity = stack.getOrDefault(ComponentRegistry.RIVEN_POLARITY_TYPE.get(), "Riven");
@@ -135,8 +135,9 @@ public class TooltipsUtils {
     @SubscribeEvent
     public static void updateRivenTypeTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
+        if(event.getEntity() == null) return;
         if (!stack.is(ItemRegistry.MOD) || !IModContainer.isModContainer(stack)) return;
-        if (!IModContainer.get(stack).getModAtIndex(0).getMod().getUniqueInfo(1).isEmpty()) return;
+        if (!IModContainer.get(stack).getModAtIndex(0).getMod().getUniqueInfo(1, event.getEntity()).isEmpty()) return;
         Item rivenType = stack.get(ComponentRegistry.RIVEN_TYPE.get());
         if (rivenType == null) return;
         int cycleCount = stack.getOrDefault(ComponentRegistry.RIVEN_CYCLE_COUNT.get(), 0);

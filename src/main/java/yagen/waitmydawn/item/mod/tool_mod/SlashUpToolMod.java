@@ -1,5 +1,6 @@
 package yagen.waitmydawn.item.mod.tool_mod;
 
+import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.*;
 import yagen.waitmydawn.api.mods.ModRarity;
@@ -15,7 +16,7 @@ public class SlashUpToolMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "slash_up_tool_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("tooltip.yagens_attributes.slash_addition", String.format("%.2f", ServerConfigs.MOD_LEGENDARY_EDGE_DISC.get().floatValue() * modLevel))
         );

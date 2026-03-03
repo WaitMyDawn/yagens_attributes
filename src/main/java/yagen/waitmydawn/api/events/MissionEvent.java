@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +19,8 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mission.MissionData;
 import yagen.waitmydawn.api.mission.MissionType;
+import yagen.waitmydawn.capabilities.PlayerBossData;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
 import java.util.Objects;
 
@@ -132,8 +135,14 @@ public class MissionEvent {
         ServerPlayer serverPlayer = (ServerPlayer) player;
         BlockPos basicSpawnBlock = getBasicSpawnBlockPosByArea(sData.missionPosition, sData.missionRange, player);
         Vec3 spawnPos = getCorrectSpawnPos(level, basicSpawnBlock, player.position(), true);
+        EntityType<? extends Monster> bossType = randomBossType(serverPlayer.getRandom());
+        if (sData.missionLevel == 2 && sData.players.size() == 1) {
+            PlayerBossData bossData = player.getData(DataAttachmentRegistry.BOSSES_LIST);
+            boolean isNewBoss = bossData.addBoss(bossType);
+            player.setData(DataAttachmentRegistry.IS_NEW_BOSS, isNewBoss);
+        }
         Mob mob = summonAssassinationEntity(
-                randomBossType(serverPlayer.getRandom()),
+                bossType,
                 serverPlayer.serverLevel(),
                 spawnPos,
                 taskId, sData.missionLevel);

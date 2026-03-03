@@ -3,6 +3,7 @@ package yagen.waitmydawn.item.mod.tool_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
@@ -14,7 +15,7 @@ public class StatusChanceComboToolMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "status_chance_combo_tool_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("tooltips.yagens_attributes.combo_bonus_sc_add", String.format("%.2f", ServerConfigs.MOD_UNCOMMON_ANTIQUATED_GLASSES.get().floatValue() * modLevel))
         );

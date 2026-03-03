@@ -5,6 +5,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
@@ -19,7 +20,7 @@ public class GraceArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "grace_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("functions.yagens_attributes.grace_armor_mod.1",
                         String.format("%.2f", 0.1 + ServerConfigs.MOD_RARE_GRACEFULLY_SERPENTINE.get().floatValue() * modLevel))

@@ -201,6 +201,10 @@ public class MissionHandler {
         return BOSS_TYPES.contains(type);
     }
 
+    public static int bossTypeSize(){
+        return BOSS_TYPES.size();
+    }
+
     private static boolean isMultipartEntity(EntityType<?> type, ServerLevel level) {
         Entity e = type.create(level);
         if (!(e instanceof LivingEntity living)) return true;

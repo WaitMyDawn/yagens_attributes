@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
-public class FullyPolarizedTrigger extends SimpleCriterionTrigger<FullyPolarizedTrigger.TriggerInstance> {
+public class TemplateTrigger extends SimpleCriterionTrigger<TemplateTrigger.TriggerInstance> {
 
     @Override
     public @NotNull Codec<TriggerInstance> codec() {

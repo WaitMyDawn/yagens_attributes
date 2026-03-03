@@ -3,6 +3,7 @@ package yagen.waitmydawn.item.mod.armor_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.AbstractMod;
 import yagen.waitmydawn.api.mods.ModRarity;
@@ -14,7 +15,7 @@ public class RedirectionArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "redirection_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("tooltips.yagens_attributes.max_shield_add", String.format("%.1f", ServerConfigs.MOD_COMMON_REDIRECTION.get().floatValue() * modLevel))
         );

@@ -3,6 +3,7 @@ package yagen.waitmydawn.item.mod.armor_mod;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.item.FormaType;
 import yagen.waitmydawn.api.mods.AbstractMod;
@@ -15,7 +16,7 @@ public class CollaborativeProficiencyArmorMod extends AbstractMod {
     private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "collaborative_proficiency_armor_mod");
 
     @Override
-    public List<MutableComponent> getUniqueInfo(int modLevel) {
+    public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         return List.of(
                 Component.translatable("warframe.yagens_attributes.passive"),
                 Component.translatable("warframe.yagens_attributes.collaborative_proficiency_armor_mod.1", String.format("%.2f", ServerConfigs.MOD_WARFRAME_COLLABORATIVE_PROFICIENCY.get().floatValue() * modLevel))

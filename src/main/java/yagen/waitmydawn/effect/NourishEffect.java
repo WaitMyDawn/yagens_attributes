@@ -3,7 +3,9 @@ package yagen.waitmydawn.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.config.ServerConfigs;
 
 import java.util.Map;
@@ -27,9 +29,12 @@ public class NourishEffect extends MobEffect {
     public static final Map<LivingEntity, Nourish> NOURISH_MAP = new WeakHashMap<>();
 
     public static void addNourishCount(LivingEntity entity, float nourishCount) {
+        double maxEnhance = ServerConfigs.MOD_WARFRAME_NOURISH_MAX_ENHANCE.get();
+        AttributeInstance attributeInstance = entity.getAttribute(YAttributes.ABILITY_STRENGTH);
+        if (attributeInstance != null) maxEnhance = 1 + (maxEnhance - 1) * attributeInstance.getValue();
         double enhance = Math.min(ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get() +
-                (ServerConfigs.MOD_WARFRAME_NOURISH_MAX_ENHANCE.get() - ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get())
-                        * nourishCount / ServerConfigs.MOD_WARFRAME_NOURISH_MAX_COUNT.get(), ServerConfigs.MOD_WARFRAME_NOURISH_MAX_ENHANCE.get());
+                (maxEnhance - ServerConfigs.MOD_WARFRAME_NOURISH_INIT_ENHANCE.get())
+                        * nourishCount / ServerConfigs.MOD_WARFRAME_NOURISH_MAX_COUNT.get(), maxEnhance);
         NOURISH_MAP.put(entity, new Nourish(enhance, nourishCount));
     }
 
