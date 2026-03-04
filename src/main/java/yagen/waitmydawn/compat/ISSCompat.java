@@ -1,21 +1,22 @@
 package yagen.waitmydawn.compat;
 
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
-import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.item.weapons.StaffItem;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
-import io.redspace.ironsspellbooks.spells.lightning.ChargeSpell;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import yagen.waitmydawn.item.RingOfKingItem;
+
+import java.util.Set;
 
 import static yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod.ATTRIBUTE_SET;
 
@@ -74,5 +75,14 @@ public class ISSCompat {
 
     public static boolean isStaffItem(Item item) {
         return item instanceof StaffItem;
+    }
+
+    public static void addRingAttributes(Set<RingOfKingItem.RingAttribute> attributes){
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 }

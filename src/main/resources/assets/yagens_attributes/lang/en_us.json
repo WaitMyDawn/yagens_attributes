@@ -76,6 +76,8 @@
   "item.minecraft.splash_potion.effect.kuva": "Splash Potion of Kuva",
   "item.minecraft.lingering_potion.effect.kuva": "Lingering Potion of Kuva",
   "item.minecraft.tipped_arrow.effect.kuva": "Arrow of Kuva",
+  "item.yagens_attributes.ring_of_king.1": "Exclusive to: %s",
+  "item.yagens_attributes.ring_of_king.2": "It still thirsts for the blood of kings.",
 
   "block.yagens_attributes.mod_essence_block": "Mod Essence Block",
   "block.yagens_attributes.mod_operation_table": "Mod Operation Table",
@@ -322,6 +324,7 @@
   "tooltip.yagens_attributes.reservoirs.1": "Pumilum: +%.1f%% Strength",
   "tooltip.yagens_attributes.reservoirs.2": "Grandiflorum: +%.1f%% Duration",
   "tooltip.yagens_attributes.reservoirs.3": "Hydrangea: +%.1f%% Range",
+  "tooltip.yagens_attributes.hold_shift": "Hold down Shift to display the Boss list.",
 
   "tooltip.yagens_attributes.damage_multiply": "+%.2f%% Damage",
   "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%% Damage",

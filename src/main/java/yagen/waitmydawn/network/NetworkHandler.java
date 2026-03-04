@@ -89,6 +89,12 @@ public class NetworkHandler {
                 ThermalSunderClientPacket::handle
         );
 
+        registrar.playToClient(
+                SyncBossDataPacket.TYPE,
+                SyncBossDataPacket.STREAM_CODEC,
+                SyncBossDataPacket::handle
+        );
+
         registrar.playBidirectional(
                 EnergyPacket.TYPE,
                 EnergyPacket.STREAM_CODEC,

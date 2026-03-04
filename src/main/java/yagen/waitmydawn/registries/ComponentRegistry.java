@@ -3,6 +3,7 @@ package yagen.waitmydawn.registries;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -388,5 +389,17 @@ public class ComponentRegistry {
         stack.set(ENDO_INFO, info);
     }
 
-
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<UUID>> OWNER = // true
+            COMPONENTS.register("owner", () ->
+                    DataComponentType.<UUID>builder()
+                            .persistent(UUIDUtil.CODEC)
+                            .networkSynchronized(UUIDUtil.STREAM_CODEC)
+                            .build()
+            );
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> // display
+            OWNER_STRING = register("owner_string", b -> b
+            .persistent(Codec.STRING)
+            .networkSynchronized(ByteBufCodecs.STRING_UTF8)
+            .cacheEncoding()
+    );
 }

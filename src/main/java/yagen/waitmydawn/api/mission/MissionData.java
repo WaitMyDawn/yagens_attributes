@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -26,6 +27,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import yagen.waitmydawn.item.RingOfKingItem;
+import yagen.waitmydawn.network.SyncBossDataPacket;
 import yagen.waitmydawn.network.SyncMissionDataPacket;
 import yagen.waitmydawn.registries.CriteriaRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
@@ -112,8 +115,12 @@ public class MissionData extends SavedData {
                     CriteriaRegistry.EXTERMINATE_ENDO.get().trigger(player);
                 else if (sData.missionLevel == 2 && sData.missionType == MissionType.ASSASSINATION && sData.players.size() == 1) {
                     player.setData(DataAttachmentRegistry.IS_NEW_BOSS, false);
-                    if (player.getData(DataAttachmentRegistry.BOSSES_LIST).getSize() >= bossTypeSize())
+                    PacketDistributor.sendToPlayer(player, new SyncBossDataPacket(player.getData(DataAttachmentRegistry.BOSSES_LIST.get())));
+                    if (player.getData(DataAttachmentRegistry.BOSSES_LIST).getSize() >= bossTypeSize()) {
                         CriteriaRegistry.ASSASSINATION_ENDO.get().trigger(player);
+                        // active RoK
+                        RingOfKingItem.findEquippedRing(player).ifPresent(stack -> RingOfKingItem.bindToPlayer(stack, player));
+                    }
                 }
             }
         }

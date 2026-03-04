@@ -76,6 +76,8 @@
   "item.minecraft.splash_potion.effect.kuva": "喷溅型赤毒药水",
   "item.minecraft.lingering_potion.effect.kuva": "滞留型赤毒药水",
   "item.minecraft.tipped_arrow.effect.kuva": "赤毒之箭",
+  "item.yagens_attributes.ring_of_king.1": "独属于：%s",
+  "item.yagens_attributes.ring_of_king.2": "它仍然渴求王者鲜血",
 
   "block.yagens_attributes.mod_essence_block": "Mod精华块",
   "block.yagens_attributes.mod_operation_table": "Mod操作台",
@@ -322,6 +324,7 @@
   "tooltip.yagens_attributes.reservoirs.1": "山丹: +%.1f%% 强度",
   "tooltip.yagens_attributes.reservoirs.2": "翠雀: +%.1f%% 持续时间",
   "tooltip.yagens_attributes.reservoirs.3": "绣球: +%.1f%% 范围",
+  "tooltip.yagens_attributes.hold_shift": "按住Shift显示Boss名录",
 
   "tooltip.yagens_attributes.damage_multiply": "+%.2f%%伤害",
   "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%%伤害",

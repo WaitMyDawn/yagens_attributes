@@ -56,6 +56,15 @@ public class RecipeGenerator extends RecipeProvider {
                 .define('W',Items.WATER_BUCKET)
                 .unlockedBy("mod_recycle_table", has(ItemRegistry.MOD_ESSENCE.get()))
                 .save(recipeOutput);
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.RING_OF_KING.get())
+                .pattern("KKG")
+                .pattern("KKN")
+                .pattern("GNN")
+                .define('K', ItemRegistry.KUVA.get())
+                .define('G', Items.GOLD_INGOT)
+                .define('N', Items.NETHERITE_INGOT)
+                .unlockedBy("ring_of_king", has(ItemRegistry.KUVA.get()))
+                .save(recipeOutput);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemRegistry.MOD_ESSENCE.get(),9)
                 .requires(ItemRegistry.MOD_ESSENCE_BLOCK_ITEM.get())
