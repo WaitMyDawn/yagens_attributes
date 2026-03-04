@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import yagen.waitmydawn.item.RingOfKingItem;
 
+import java.util.List;
 import java.util.Set;
 
 import static yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod.ATTRIBUTE_SET;
@@ -77,12 +78,39 @@ public class ISSCompat {
         return item instanceof StaffItem;
     }
 
-    public static void addRingAttributes(Set<RingOfKingItem.RingAttribute> attributes){
+    public static void addRingAttributes(List<RingOfKingItem.RingAttribute> attributes) {
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_VALUE));
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
         attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.FIRE_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ICE_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ICE_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ICE_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.NATURE_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.NATURE_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.NATURE_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ENDER_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ENDER_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ENDER_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.BLOOD_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.BLOOD_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.BLOOD_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.HOLY_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.HOLY_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.HOLY_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ELDRITCH_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.ELDRITCH_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.LIGHTNING_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.LIGHTNING_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.LIGHTNING_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.EVOCATION_SPELL_POWER, 0.75, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.EVOCATION_SPELL_POWER, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.EVOCATION_SPELL_POWER, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.COOLDOWN_REDUCTION, 0.5, AttributeModifier.Operation.ADD_VALUE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.COOLDOWN_REDUCTION, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        attributes.add(new RingOfKingItem.RingAttribute(AttributeRegistry.COOLDOWN_REDUCTION, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 }

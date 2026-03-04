@@ -88,8 +88,8 @@ file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]]
     modId="curios"
-    mandatory=true
-    versionRange="[9.5.1,)"
+    type="required"
+    versionRange="[9.2.2+1.21.1,)"
     ordering="NONE"
     side="BOTH"
 

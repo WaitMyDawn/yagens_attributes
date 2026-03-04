@@ -13,6 +13,7 @@ import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.config.WeaponStatsManager;
 import yagen.waitmydawn.network.BatteryPowerPacket;
 import yagen.waitmydawn.network.EnergyPacket;
+import yagen.waitmydawn.network.SyncBossDataPacket;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME)
@@ -50,6 +51,10 @@ public class SyncEvent {
             PacketDistributor.sendToPlayer(player, new BatteryPowerPacket(
                     DataAttachmentRegistry.getBatteryPower(player)
             ));
+            PacketDistributor.sendToPlayer(player, new SyncBossDataPacket(
+                    player.getData(DataAttachmentRegistry.BOSSES_LIST.get())
+            ));
+
         }
     }
 }

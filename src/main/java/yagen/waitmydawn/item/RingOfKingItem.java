@@ -48,9 +48,10 @@ public class RingOfKingItem extends Item implements ICurioItem {
 
     @Override
     public boolean canEquip(SlotContext slotContext, ItemStack stack) {
+        LivingEntity entity = slotContext.entity();
+        if(findEquippedRing(entity).isPresent()) return false;
         if (stack.has(ComponentRegistry.OWNER)) {
             UUID ownerUUID = stack.get(ComponentRegistry.OWNER);
-            LivingEntity entity = slotContext.entity();
 
             if (entity instanceof Player player) {
                 return player.getUUID().equals(ownerUUID);
@@ -77,11 +78,28 @@ public class RingOfKingItem extends Item implements ICurioItem {
         }
     }
 
+    @Override
+    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(
+            SlotContext slotContext, ResourceLocation id, ItemStack stack) {
+        Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
+
+        if ("ring".equals(slotContext.identifier())) {
+            ItemAttributeModifiers stored = stack.get(ComponentRegistry.STORED_MODIFIERS);
+            if (stored != null) {
+                for (ItemAttributeModifiers.Entry entry : stored.modifiers()) {
+                    modifiers.put(entry.attribute(), entry.modifier());
+                }
+            }
+        }
+
+        return modifiers;
+    }
+    public static List<RingAttribute> attributes = new ArrayList<>();
+
     public static void bindToPlayer(ItemStack stack, ServerPlayer player) {
         if (!stack.has(ComponentRegistry.OWNER.get())) {
             stack.set(ComponentRegistry.OWNER.get(), player.getUUID());
 
-            Set<RingAttribute> attributes = new HashSet<>();
             attributes.add(new RingAttribute(Attributes.ATTACK_DAMAGE, 10, AttributeModifier.Operation.ADD_VALUE));
             attributes.add(new RingAttribute(Attributes.ATTACK_DAMAGE, 1, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
             attributes.add(new RingAttribute(Attributes.ATTACK_DAMAGE, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
@@ -114,7 +132,43 @@ public class RingOfKingItem extends Item implements ICurioItem {
             attributes.add(new RingAttribute(YAttributes.ENERGY_REGEN, 0.5, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
             if (ModList.get().isLoaded(SupportedMod.IRONS_SPELLBOOKS.getValue()))
                 ISSCompat.addRingAttributes(attributes);
+
+            addRingAttributes(stack, attributes, 6);
         }
+    }
+
+    public static void addRingAttributes(ItemStack stack, List<RingAttribute> potentialAttributes, int countToPick) {
+        if (stack.isEmpty() || potentialAttributes.isEmpty() || countToPick <= 0) {
+            return;
+        }
+
+        List<RingAttribute> pool = new ArrayList<>(potentialAttributes);
+        Collections.shuffle(pool);
+
+        int limit = Math.min(countToPick, pool.size());
+        List<RingAttribute> selectedAttributes = pool.subList(0, limit);
+
+        ItemAttributeModifiers currentModifiers = stack.getOrDefault(ComponentRegistry.STORED_MODIFIERS, ItemAttributeModifiers.EMPTY);
+
+        Random random = new Random();
+
+        for (RingAttribute entry : selectedAttributes) {
+            double randomMultiplier = 0.5 + (random.nextDouble() * 0.5);
+            double finalAmount = entry.amount() * randomMultiplier;
+
+            ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID,
+                    "ring_" + entry.attribute().getKey().location().getPath() + "_" + entry.operation.id());
+
+            AttributeModifier modifier = new AttributeModifier(modifierId, finalAmount, entry.operation());
+
+            currentModifiers = currentModifiers.withModifierAdded(
+                    entry.attribute(),
+                    modifier,
+                    EquipmentSlotGroup.ANY
+            );
+        }
+
+        stack.set(ComponentRegistry.STORED_MODIFIERS, currentModifiers);
     }
 
     public static void addRingAttribute(
@@ -127,9 +181,9 @@ public class RingOfKingItem extends Item implements ICurioItem {
 
         AttributeModifier modifier = new AttributeModifier(modifierId, amount, operation);
 
-        ItemAttributeModifiers current = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
+        ItemAttributeModifiers current = stack.getOrDefault(ComponentRegistry.STORED_MODIFIERS, ItemAttributeModifiers.EMPTY);
         ItemAttributeModifiers updated = current.withModifierAdded(attribute, modifier, EquipmentSlotGroup.ANY);
-        stack.set(DataComponents.ATTRIBUTE_MODIFIERS, updated);
+        stack.set(ComponentRegistry.STORED_MODIFIERS, updated);
     }
 
     public record RingAttribute(Holder<Attribute> attribute,
@@ -143,20 +197,9 @@ public class RingOfKingItem extends Item implements ICurioItem {
     }
 
     @Override
-    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(
-            SlotContext slotContext, ResourceLocation id, ItemStack stack) {
-        Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
-
-        ItemAttributeModifiers itemModifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
-
-        for (ItemAttributeModifiers.Entry entry : itemModifiers.modifiers()) {
-            modifiers.put(entry.attribute(), entry.modifier());
-        }
-        return modifiers;
-    }
-
-    @Override
     public void appendHoverText(@NotNull ItemStack stack, @NotNull TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag) {
+        tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.1").withStyle(ChatFormatting.LIGHT_PURPLE));
+
         UUID ownerUUID = stack.get(ComponentRegistry.OWNER);
         Player ownerPlayer = null;
         if (ownerUUID != null && context.level() != null) {
@@ -170,28 +213,17 @@ public class RingOfKingItem extends Item implements ICurioItem {
                 displayName = ownerPlayer.getGameProfile().getName();
                 stack.set(ComponentRegistry.OWNER_STRING.get(), displayName);
             }
-            tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.1"
-                            + displayName)
+            tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.2"
+                            ,displayName)
                     .withStyle(ChatFormatting.GOLD));
+
         } else {
-            tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.2")
+            tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.3")
+                    .withStyle(ChatFormatting.DARK_RED));
+            tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.4")
                     .withStyle(ChatFormatting.DARK_RED));
         }
-        Player player = Minecraft.getInstance().player;
-        if (Screen.hasShiftDown() && player != null) {
-            List<EntityType<? extends Monster>> allBosses = MissionHandler.getBossTypes();
-            PlayerBossData bossData = player.getData(DataAttachmentRegistry.BOSSES_LIST.get());
-            List<EntityType<?>> bossList = bossData.getList();
-            for (EntityType<? extends Monster> boss : allBosses) {
-                if (bossList.contains(boss)) tooltipComponents.add(boss.getDescription().copy()
-                        .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.STRIKETHROUGH));
-                else tooltipComponents.add(boss.getDescription().copy()
-                        .withStyle(ChatFormatting.DARK_RED));
-            }
-        } else if (player != null) {
-            tooltipComponents.add(Component.translatable("tooltip.yagens_attributes.hold_shift")
-                    .withStyle(ChatFormatting.DARK_GRAY));
-        }
+
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 

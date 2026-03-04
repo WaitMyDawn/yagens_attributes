@@ -76,8 +76,11 @@
   "item.minecraft.splash_potion.effect.kuva": "喷溅型赤毒药水",
   "item.minecraft.lingering_potion.effect.kuva": "滞留型赤毒药水",
   "item.minecraft.tipped_arrow.effect.kuva": "赤毒之箭",
-  "item.yagens_attributes.ring_of_king.1": "独属于：%s",
-  "item.yagens_attributes.ring_of_king.2": "它仍然渴求王者鲜血",
+  "item.yagens_attributes.ring_of_king": "王之戒",
+  "item.yagens_attributes.ring_of_king.1": "只有真正的君王才能得到它的认可",
+  "item.yagens_attributes.ring_of_king.2": "独属于：%s",
+  "item.yagens_attributes.ring_of_king.3": "它仍然渴求众王的鲜血",
+  "item.yagens_attributes.ring_of_king.4": "你需要在最高难度的刺杀任务刺杀它们",
 
   "block.yagens_attributes.mod_essence_block": "Mod精华块",
   "block.yagens_attributes.mod_operation_table": "Mod操作台",

@@ -1,8 +1,12 @@
 package yagen.waitmydawn.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -12,7 +16,9 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.DamageType;
 import yagen.waitmydawn.api.attribute.DamageTypeUtils;
+import yagen.waitmydawn.api.mission.MissionHandler;
 import yagen.waitmydawn.api.mods.*;
+import yagen.waitmydawn.capabilities.PlayerBossData;
 import yagen.waitmydawn.item.Mod;
 
 import net.minecraft.ChatFormatting;
@@ -24,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import yagen.waitmydawn.item.mod.armor_mod.GraceArmorMod;
 import yagen.waitmydawn.registries.ComponentRegistry;
+import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.ItemRegistry;
 
 import java.util.ArrayList;
@@ -135,7 +142,7 @@ public class TooltipsUtils {
     @SubscribeEvent
     public static void updateRivenTypeTooltip(ItemTooltipEvent event) {
         ItemStack stack = event.getItemStack();
-        if(event.getEntity() == null) return;
+        if (event.getEntity() == null) return;
         if (!stack.is(ItemRegistry.MOD) || !IModContainer.isModContainer(stack)) return;
         if (!IModContainer.get(stack).getModAtIndex(0).getMod().getUniqueInfo(1, event.getEntity()).isEmpty()) return;
         Item rivenType = stack.get(ComponentRegistry.RIVEN_TYPE.get());
@@ -193,5 +200,41 @@ public class TooltipsUtils {
                 tooltip.add(i, lineB);
                 return;
             }
+    }
+
+    @SubscribeEvent
+    public static void ringOfKingTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        if (stack.getItem() != ItemRegistry.RING_OF_KING.get()) return;
+
+        Player player = Minecraft.getInstance().player;
+        List<Component> tooltipComponents = new ArrayList<>();
+
+        if (Screen.hasShiftDown() && player != null) {
+            List<EntityType<? extends Monster>> allBosses = MissionHandler.getBossTypes();
+            PlayerBossData bossData = player.getData(DataAttachmentRegistry.BOSSES_LIST.get());
+            List<EntityType<?>> bossList = bossData.getList();
+            for (EntityType<? extends Monster> boss : allBosses) {
+                if (bossList.contains(boss)) tooltipComponents.add(boss.getDescription().copy()
+                        .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.STRIKETHROUGH));
+                else tooltipComponents.add(boss.getDescription().copy()
+                        .withStyle(ChatFormatting.DARK_RED));
+            }
+        } else if (player != null) {
+            tooltipComponents.add(Component.translatable("tooltip.yagens_attributes.hold_shift")
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        }
+
+        List<Component> tooltip = event.getToolTip();
+
+        boolean isAdvancedTooltip = false;
+        for (int i = 0; i < tooltip.size(); i++)
+            if (tooltip.get(i).getString().contains(YagensAttributes.MODID)) {
+                isAdvancedTooltip = true;
+                for (int j = tooltipComponents.size() - 1; j >= 0; j--)
+                    tooltip.add(i, tooltipComponents.get(j));
+                break;
+            }
+        if (!isAdvancedTooltip) tooltip.addAll(tooltipComponents);
     }
 }

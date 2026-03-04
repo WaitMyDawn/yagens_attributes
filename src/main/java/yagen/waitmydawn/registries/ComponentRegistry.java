@@ -402,4 +402,18 @@ public class ComponentRegistry {
             .networkSynchronized(ByteBufCodecs.STRING_UTF8)
             .cacheEncoding()
     );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemAttributeModifiers>> STORED_MODIFIERS =
+            COMPONENTS.register("stored_modifiers", () -> DataComponentType.<ItemAttributeModifiers>builder()
+                    .persistent(ItemAttributeModifiers.CODEC)
+                    .networkSynchronized(ItemAttributeModifiers.STREAM_CODEC)
+                    .build()
+            );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>>
+            KUVA_TIME = register("kuva_time", b -> b
+            .persistent(Codec.LONG)
+            .networkSynchronized(ByteBufCodecs.VAR_LONG)
+            .cacheEncoding()
+    );
 }

@@ -76,8 +76,11 @@
   "item.minecraft.splash_potion.effect.kuva": "Splash Potion of Kuva",
   "item.minecraft.lingering_potion.effect.kuva": "Lingering Potion of Kuva",
   "item.minecraft.tipped_arrow.effect.kuva": "Arrow of Kuva",
-  "item.yagens_attributes.ring_of_king.1": "Exclusive to: %s",
-  "item.yagens_attributes.ring_of_king.2": "It still thirsts for the blood of kings.",
+  "item.yagens_attributes.ring_of_king": "Ring Of King",
+  "item.yagens_attributes.ring_of_king.1": "Only a true king can receive its approval.",
+  "item.yagens_attributes.ring_of_king.2": "Exclusive to: %s",
+  "item.yagens_attributes.ring_of_king.3": "It still thirsts for the blood of kings.You need assassinate them in the max level Assassination Mission.",
+  "item.yagens_attributes.ring_of_king.4": "You need assassinate them in the max level Assassination Mission.",
 
   "block.yagens_attributes.mod_essence_block": "Mod Essence Block",
   "block.yagens_attributes.mod_operation_table": "Mod Operation Table",
