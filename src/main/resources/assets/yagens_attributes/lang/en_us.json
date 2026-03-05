@@ -63,7 +63,7 @@
   "item.yagens_attributes.kuva": "Kuva",
   "item.yagens_attributes.kuva.tooltip1": "It can be used to cycle Riven",
   "item.yagens_attributes.kuva.tooltip2": "This item does not require the removal of the anvil penalty.",
-  "item.yagens_attributes.kuva.tooltip3": "When used in the offhand, it removes the anvil penalty from the mainhand item.",
+  "item.yagens_attributes.kuva.tooltip3": "When used in the offhand, it removes the anvil penalty from the mainhand item. Besides, It can also be fed with some strange items.",
   "item.yagens_attributes.mod": "Mod",
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "Endo",
@@ -81,6 +81,8 @@
   "item.yagens_attributes.ring_of_king.2": "Exclusive to: %s",
   "item.yagens_attributes.ring_of_king.3": "It still thirsts for the blood of kings.You need assassinate them in the max level Assassination Mission.",
   "item.yagens_attributes.ring_of_king.4": "You need assassinate them in the max level Assassination Mission.",
+  "item.yagens_attributes.ring_of_king.5": "It is still hungry.",
+  "item.yagens_attributes.ring_of_king.6": "Time since last feeding of Kuva: ",
 
   "block.yagens_attributes.mod_essence_block": "Mod Essence Block",
   "block.yagens_attributes.mod_operation_table": "Mod Operation Table",
@@ -327,7 +329,8 @@
   "tooltip.yagens_attributes.reservoirs.1": "Pumilum: +%.1f%% Strength",
   "tooltip.yagens_attributes.reservoirs.2": "Grandiflorum: +%.1f%% Duration",
   "tooltip.yagens_attributes.reservoirs.3": "Hydrangea: +%.1f%% Range",
-  "tooltip.yagens_attributes.hold_shift": "Hold down Shift to display the Boss list.",
+  "tooltip.yagens_attributes.hold_shift": "Hold down Shift to display more infos.",
+  "tooltip.yagens_attributes.hold_shift.rok.1": "Hold down Shift to display the Boss list.",
 
   "tooltip.yagens_attributes.damage_multiply": "+%.2f%% Damage",
   "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%% Damage",

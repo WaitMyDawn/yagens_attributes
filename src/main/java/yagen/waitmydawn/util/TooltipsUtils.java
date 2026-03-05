@@ -36,6 +36,7 @@ import yagen.waitmydawn.registries.ItemRegistry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class TooltipsUtils {
@@ -210,19 +211,38 @@ public class TooltipsUtils {
         Player player = Minecraft.getInstance().player;
         List<Component> tooltipComponents = new ArrayList<>();
 
-        if (Screen.hasShiftDown() && player != null) {
-            List<EntityType<? extends Monster>> allBosses = MissionHandler.getBossTypes();
-            PlayerBossData bossData = player.getData(DataAttachmentRegistry.BOSSES_LIST.get());
-            List<EntityType<?>> bossList = bossData.getList();
-            for (EntityType<? extends Monster> boss : allBosses) {
-                if (bossList.contains(boss)) tooltipComponents.add(boss.getDescription().copy()
-                        .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.STRIKETHROUGH));
-                else tooltipComponents.add(boss.getDescription().copy()
+        UUID ownerUUID = stack.get(ComponentRegistry.OWNER);
+
+        if (ownerUUID != null) {
+            if (Screen.hasShiftDown()) { // kuva hungry
+                ComponentRegistry.KuvaTime kuvaTime = stack.getOrDefault(ComponentRegistry.KUVA_TIME.get(),
+                        ComponentRegistry.KuvaTime.EMPTY);
+                long startTime = kuvaTime.startTime();
+                long diffTime = System.currentTimeMillis() / 1000 - startTime;
+                Component time = formatTimeDifference(diffTime);
+                Component isHungry = Component.empty();
+                if (diffTime > kuvaTime.continuity())
+                    isHungry = Component.translatable("item.yagens_attributes.ring_of_king.5");
+                tooltipComponents.add(isHungry.copy().append(
+                                Component.translatable("item.yagens_attributes.ring_of_king.6")).append(time)
                         .withStyle(ChatFormatting.DARK_RED));
-            }
-        } else if (player != null) {
-            tooltipComponents.add(Component.translatable("tooltip.yagens_attributes.hold_shift")
+            } else tooltipComponents.add(Component.translatable("tooltip.yagens_attributes.hold_shift")
                     .withStyle(ChatFormatting.DARK_GRAY));
+        } else {
+            if (Screen.hasShiftDown() && player != null) { // boss list
+                List<EntityType<? extends Monster>> allBosses = MissionHandler.getBossTypes();
+                PlayerBossData bossData = player.getData(DataAttachmentRegistry.BOSSES_LIST.get());
+                List<EntityType<?>> bossList = bossData.getList();
+                for (EntityType<? extends Monster> boss : allBosses) {
+                    if (bossList.contains(boss)) tooltipComponents.add(boss.getDescription().copy()
+                            .withStyle(ChatFormatting.LIGHT_PURPLE, ChatFormatting.STRIKETHROUGH));
+                    else tooltipComponents.add(boss.getDescription().copy()
+                            .withStyle(ChatFormatting.DARK_RED));
+                }
+            } else if (player != null) {
+                tooltipComponents.add(Component.translatable("tooltip.yagens_attributes.hold_shift.rok.1")
+                        .withStyle(ChatFormatting.DARK_GRAY));
+            }
         }
 
         List<Component> tooltip = event.getToolTip();
@@ -236,5 +256,58 @@ public class TooltipsUtils {
                 break;
             }
         if (!isAdvancedTooltip) tooltip.addAll(tooltipComponents);
+    }
+
+    private static Component formatTimeDifference(long oldTime, long currentTime) {
+        long diffSeconds = currentTime - oldTime;
+        if (diffSeconds < 0) return Component.empty();
+
+        if (diffSeconds < 60) {
+            return Component.literal(String.format("%ds", diffSeconds));
+
+        } else if (diffSeconds < 3600) {
+            long minutes = diffSeconds / 60;
+            long seconds = diffSeconds % 60;
+            return Component.literal(String.format("%d:%02d", minutes, seconds));
+
+        } else if (diffSeconds < 86400) {
+            long hours = diffSeconds / 3600;
+            long minutes = (diffSeconds % 3600) / 60;
+            long seconds = diffSeconds % 60;
+            return Component.literal(String.format("%d:%02d:%02d", hours, minutes, seconds));
+
+        } else {
+            long days = diffSeconds / 86400;
+            long hours = (diffSeconds % 86400) / 3600;
+            long minutes = (diffSeconds % 3600) / 60;
+            long seconds = diffSeconds % 60;
+            return Component.literal(String.format("%dd-%02d:%02d:%02d", days, hours, minutes, seconds));
+        }
+    }
+
+    private static Component formatTimeDifference(long diff) {
+        if (diff < 0) return Component.empty();
+
+        if (diff < 60) {
+            return Component.literal(String.format("%ds", diff));
+
+        } else if (diff < 3600) {
+            long minutes = diff / 60;
+            long seconds = diff % 60;
+            return Component.literal(String.format("%d:%02d", minutes, seconds));
+
+        } else if (diff < 86400) {
+            long hours = diff / 3600;
+            long minutes = (diff % 3600) / 60;
+            long seconds = diff % 60;
+            return Component.literal(String.format("%d:%02d:%02d", hours, minutes, seconds));
+
+        } else {
+            long days = diff / 86400;
+            long hours = (diff % 86400) / 3600;
+            long minutes = (diff % 3600) / 60;
+            long seconds = diff % 60;
+            return Component.literal(String.format("%dd-%02d:%02d:%02d", days, hours, minutes, seconds));
+        }
     }
 }

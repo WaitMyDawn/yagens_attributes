@@ -1,5 +1,6 @@
 package yagen.waitmydawn.item;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
@@ -10,6 +11,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
+import top.theillusivec4.curios.api.type.capability.ICurio;
 import top.theillusivec4.curios.api.type.capability.ICurioItem;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.attribute.YAttributes;
 import yagen.waitmydawn.api.mission.MissionHandler;
@@ -49,7 +54,7 @@ public class RingOfKingItem extends Item implements ICurioItem {
     @Override
     public boolean canEquip(SlotContext slotContext, ItemStack stack) {
         LivingEntity entity = slotContext.entity();
-        if(findEquippedRing(entity).isPresent()) return false;
+        if (findEquippedRing(entity).isPresent()) return false;
         if (stack.has(ComponentRegistry.OWNER)) {
             UUID ownerUUID = stack.get(ComponentRegistry.OWNER);
 
@@ -84,16 +89,20 @@ public class RingOfKingItem extends Item implements ICurioItem {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = LinkedHashMultimap.create();
 
         if ("ring".equals(slotContext.identifier())) {
-            ItemAttributeModifiers stored = stack.get(ComponentRegistry.STORED_MODIFIERS);
-            if (stored != null) {
-                for (ItemAttributeModifiers.Entry entry : stored.modifiers()) {
-                    modifiers.put(entry.attribute(), entry.modifier());
+            ComponentRegistry.KuvaTime kuvaTime = stack.getOrDefault(ComponentRegistry.KUVA_TIME, ComponentRegistry.KuvaTime.EMPTY);
+            if (System.currentTimeMillis() / 1000 - kuvaTime.startTime() <= kuvaTime.continuity()) {
+                ItemAttributeModifiers stored = stack.get(ComponentRegistry.STORED_MODIFIERS);
+                if (stored != null) {
+                    for (ItemAttributeModifiers.Entry entry : stored.modifiers()) {
+                        modifiers.put(entry.attribute(), entry.modifier());
+                    }
                 }
             }
         }
 
         return modifiers;
     }
+
     public static List<RingAttribute> attributes = new ArrayList<>();
 
     public static void bindToPlayer(ItemStack stack, ServerPlayer player) {
@@ -205,7 +214,7 @@ public class RingOfKingItem extends Item implements ICurioItem {
         if (ownerUUID != null && context.level() != null) {
             ownerPlayer = Objects.requireNonNull(context.level()).getPlayerByUUID(ownerUUID);
         }
-        if (stack.has(ComponentRegistry.OWNER) && ownerUUID != null) {
+        if (ownerUUID != null) {
             String displayName = ownerUUID.toString();
             if (stack.get(ComponentRegistry.OWNER_STRING.get()) != null) {
                 displayName = stack.get(ComponentRegistry.OWNER_STRING.get());
@@ -214,7 +223,7 @@ public class RingOfKingItem extends Item implements ICurioItem {
                 stack.set(ComponentRegistry.OWNER_STRING.get(), displayName);
             }
             tooltipComponents.add(Component.translatable("item.yagens_attributes.ring_of_king.2"
-                            ,displayName)
+                            , displayName)
                     .withStyle(ChatFormatting.GOLD));
 
         } else {
@@ -231,5 +240,37 @@ public class RingOfKingItem extends Item implements ICurioItem {
         return CuriosApi.getCuriosInventory(entity)
                 .flatMap(handler -> handler.findFirstCurio(ItemRegistry.RING_OF_KING.get()))
                 .map(SlotResult::stack);
+    }
+
+    @Override
+    public ICurio.@NotNull DropRule getDropRule(SlotContext slotContext, DamageSource source, boolean recentlyHit,
+                                                ItemStack stack) {
+        return ICurio.DropRule.ALWAYS_KEEP;
+    }
+
+    @Override
+    public void curioTick(SlotContext context, ItemStack stack) {
+        if (context.entity().level().isClientSide) return;
+        LivingEntity entity = context.entity();
+        if (!(entity instanceof ServerPlayer player)) return;
+        if (player.tickCount % 20 != 0) return;
+
+        var attributeMap = player.getAttributes();
+
+        var modifiers = this.getAttributeModifiers(
+                context,
+                ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "refresh"),
+                stack
+        );
+        Multimap<Holder<Attribute>, AttributeModifier> storedModifiers = HashMultimap.create();
+        ItemAttributeModifiers stored = stack.get(ComponentRegistry.STORED_MODIFIERS);
+        if (stored != null) {
+            for (ItemAttributeModifiers.Entry entry : stored.modifiers()) {
+                storedModifiers.put(entry.attribute(), entry.modifier());
+            }
+        }
+
+        attributeMap.removeAttributeModifiers(storedModifiers);
+        attributeMap.addTransientAttributeModifiers(modifiers);
     }
 }

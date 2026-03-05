@@ -410,10 +410,28 @@ public class ComponentRegistry {
                     .build()
             );
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>>
+    public record KuvaTime(long startTime, long continuity) {
+
+        public static final KuvaTime EMPTY = new KuvaTime(0L, 0L);
+
+        public static final Codec<KuvaTime> CODEC =
+                RecordCodecBuilder.create(instance -> instance.group(
+                        Codec.LONG.fieldOf("start_time").forGetter(KuvaTime::startTime),
+                        Codec.LONG.fieldOf("continuity").forGetter(KuvaTime::continuity)
+                ).apply(instance, KuvaTime::new));
+
+        public static final StreamCodec<RegistryFriendlyByteBuf, KuvaTime> STREAM_CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.VAR_LONG, KuvaTime::startTime,
+                        ByteBufCodecs.VAR_LONG, KuvaTime::continuity,
+                        KuvaTime::new
+                );
+    }
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<KuvaTime>>
             KUVA_TIME = register("kuva_time", b -> b
-            .persistent(Codec.LONG)
-            .networkSynchronized(ByteBufCodecs.VAR_LONG)
+            .persistent(KuvaTime.CODEC)
+            .networkSynchronized(KuvaTime.STREAM_CODEC)
             .cacheEncoding()
     );
 }

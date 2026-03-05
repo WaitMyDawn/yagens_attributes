@@ -2,5 +2,25 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "yagens_attributes:item/ring_of_king"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "yagens_attributes:continuity": 0.0
+      },
+      "model": "yagens_attributes:item/ring_of_king_1"
+    },
+    {
+      "predicate": {
+        "yagens_attributes:continuity": 0.5
+      },
+      "model": "yagens_attributes:item/ring_of_king_2"
+    },
+    {
+      "predicate": {
+        "yagens_attributes:continuity": 1.0
+      },
+      "model": "yagens_attributes:item/ring_of_king_3"
+    }
+  ]
 }

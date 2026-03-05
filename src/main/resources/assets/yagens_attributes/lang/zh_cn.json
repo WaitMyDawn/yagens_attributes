@@ -63,7 +63,7 @@
   "item.yagens_attributes.kuva": "赤毒",
   "item.yagens_attributes.kuva.tooltip1": "可以用来循环裂罅",
   "item.yagens_attributes.kuva.tooltip2": "该物品不需要消除铁砧惩罚",
-  "item.yagens_attributes.kuva.tooltip3": "在副手使用可以消除主手物品的铁砧惩罚",
+  "item.yagens_attributes.kuva.tooltip3": "在副手使用可以消除主手物品的铁砧惩罚，也可以喂养一些奇怪的物品",
   "item.yagens_attributes.mod": "Mod",
   "item.yagens_attributes.ordis": "Ordis",
   "item.yagens_attributes.endo": "内源核心",
@@ -81,6 +81,8 @@
   "item.yagens_attributes.ring_of_king.2": "独属于：%s",
   "item.yagens_attributes.ring_of_king.3": "它仍然渴求众王的鲜血",
   "item.yagens_attributes.ring_of_king.4": "你需要在最高难度的刺杀任务刺杀它们",
+  "item.yagens_attributes.ring_of_king.5": "它仍然饥饿，",
+  "item.yagens_attributes.ring_of_king.6": "距离上次喂养赤毒：",
 
   "block.yagens_attributes.mod_essence_block": "Mod精华块",
   "block.yagens_attributes.mod_operation_table": "Mod操作台",
@@ -327,7 +329,8 @@
   "tooltip.yagens_attributes.reservoirs.1": "山丹: +%.1f%% 强度",
   "tooltip.yagens_attributes.reservoirs.2": "翠雀: +%.1f%% 持续时间",
   "tooltip.yagens_attributes.reservoirs.3": "绣球: +%.1f%% 范围",
-  "tooltip.yagens_attributes.hold_shift": "按住Shift显示Boss名录",
+  "tooltip.yagens_attributes.hold_shift": "按住Shift显示更多信息",
+  "tooltip.yagens_attributes.hold_shift.rok.1": "按住Shift显示Boss名录",
 
   "tooltip.yagens_attributes.damage_multiply": "+%.2f%%伤害",
   "tooltip.yagens_attributes.damage_multiplyneg": "-%.2f%%伤害",

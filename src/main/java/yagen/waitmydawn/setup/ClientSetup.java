@@ -2,6 +2,7 @@ package yagen.waitmydawn.setup;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.item.ItemProperties;
 import yagen.waitmydawn.YagensAttributes;
 import yagen.waitmydawn.api.mods.NoneMod;
 import yagen.waitmydawn.api.registry.ModRegistry;
@@ -58,6 +59,18 @@ public class ClientSetup {
             EntityRenderers.register(EntityRegistry.BLADE.get(), BladeEntityRenderer::new);
             EntityRenderers.register(EntityRegistry.RESERVOIR.get(), ReservoirRenderer::new);
             EntityRenderers.register(EntityRegistry.ENERGY_ORB.get(), EnergyOrbRenderer::new);
+            ItemProperties.register(
+                    ItemRegistry.RING_OF_KING.get(),
+                    ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "continuity"),
+                    (stack, level, entity, seed) -> {
+                        var kuvaTime = stack.get(ComponentRegistry.KUVA_TIME);
+                        if (kuvaTime == null) {
+                            return 0.0F;
+                        }
+                        long continuity = kuvaTime.continuity();
+                        return (float) continuity /1800;
+                    }
+            );
         });
         e.enqueueWork(ClientSetup::init);
     }

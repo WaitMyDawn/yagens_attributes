@@ -119,7 +119,9 @@ public class MissionData extends SavedData {
                     if (player.getData(DataAttachmentRegistry.BOSSES_LIST).getSize() >= bossTypeSize()) {
                         CriteriaRegistry.ASSASSINATION_ENDO.get().trigger(player);
                         // active RoK
-                        RingOfKingItem.findEquippedRing(player).ifPresent(stack -> RingOfKingItem.bindToPlayer(stack, player));
+                        RingOfKingItem.findEquippedRing(player).ifPresent(stack -> {
+                            RingOfKingItem.bindToPlayer(stack, player);
+                        });
                     }
                 }
             }
