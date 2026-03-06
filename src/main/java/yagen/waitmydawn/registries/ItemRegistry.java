@@ -75,7 +75,7 @@ public class ItemRegistry {
     }
 
     public static final DeferredHolder<Item, Item> RING_OF_KING = ITEMS.register("ring_of_king",
-            () -> new RingOfKingItem(new Item.Properties().stacksTo(1)));
+            () -> new RingOfKingItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     /**
      * Block Item

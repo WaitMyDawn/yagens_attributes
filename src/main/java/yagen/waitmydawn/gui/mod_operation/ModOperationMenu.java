@@ -490,6 +490,8 @@ public class ModOperationMenu extends AbstractContainerMenu {
         if (isWeapon) {
             baseTotalDamage = base.values().stream().reduce(0f, Float::sum) + addFirstMap.values().stream().reduce(0f, Float::sum);
 
+            ComponentRegistry.setBaseDamage(stack, damageMultiplier);
+
             float damageMultiplierCopy = damageMultiplier;
             base.forEach((type, dmg) -> {
                 float addFirst = addFirstMap.getOrDefault(type, 0F);

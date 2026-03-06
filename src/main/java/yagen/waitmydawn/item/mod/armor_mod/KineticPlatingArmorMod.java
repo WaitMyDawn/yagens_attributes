@@ -17,17 +17,17 @@ import java.util.List;
 import static yagen.waitmydawn.player.KeyMappings.ABILITY_1_KEYMAP;
 import static yagen.waitmydawn.player.KeyMappings.ABILITY_2_KEYMAP;
 
-public class ThermalSunderArmorMod extends AbstractMod {
-    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "thermal_sunder_armor_mod");
+public class KineticPlatingArmorMod extends AbstractMod {
+    private final ResourceLocation modId = ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "kinetic_plating_armor_mod");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int modLevel, Player player) {
         if (player == null) {
             return List.of(
                     Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.1"),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.2"),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.3")
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.1"),
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.2"),
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.3")
             );
         } else {
             double baseDamage = ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER.get() * player.getAttributeValue(YAttributes.ABILITY_STRENGTH);
@@ -39,18 +39,18 @@ public class ThermalSunderArmorMod extends AbstractMod {
 
             return List.of(
                     Component.translatable("warframe.yagens_attributes.active", ABILITY_1_KEYMAP.getTranslatedKeyMessage().getString(), ABILITY_2_KEYMAP.getTranslatedKeyMessage().getString()),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.1",
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.1",
                             String.format("%.1f", radius), String.format("%.1f", baseDamage)),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.2",
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.2",
                             String.format("%.1f", radius), String.format("%.1f", baseDamage * 2)),
-                    Component.translatable("warframe.yagens_attributes.thermal_sunder_armor_mod.3",
+                    Component.translatable("warframe.yagens_attributes.kinetic_plating_armor_mod.3",
                             String.format("%.1f", duration))
             );
         }
     }
 
-    public ThermalSunderArmorMod() {
-        super(1, FormaType.NYA.getValue(), ModRarity.WARFRAME);
+    public KineticPlatingArmorMod() {
+        super(1, FormaType.NOD.getValue(), ModRarity.WARFRAME);
         this.baseCapacityCost = 9;
     }
 

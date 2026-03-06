@@ -434,4 +434,19 @@ public class ComponentRegistry {
             .networkSynchronized(KuvaTime.STREAM_CODEC)
             .cacheEncoding()
     );
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Double>> // control
+            BASE_DAMAGE = register("base_damage", b -> b
+            .persistent(Codec.DOUBLE)
+            .networkSynchronized(ByteBufCodecs.DOUBLE)
+            .cacheEncoding()
+    );
+
+    public static double getBaseDamage(ItemStack itemStack) {
+        return itemStack.getOrDefault(BASE_DAMAGE, 1.0);
+    }
+
+    public static void setBaseDamage(ItemStack itemStack, double baseDamage) {
+        itemStack.set(BASE_DAMAGE, baseDamage);
+    }
 }

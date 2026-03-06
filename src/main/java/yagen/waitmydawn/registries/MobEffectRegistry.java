@@ -55,6 +55,8 @@ public class MobEffectRegistry {
             "thermal_sunder", () -> new ThermalSunderStatusEffect(MobEffectCategory.HARMFUL, 0xbea925));
     public static final DeferredHolder<MobEffect, MobEffect> REDLINE = MOB_EFFECT_DEFERRED_REGISTER.register(
             "redline", () -> new RedlineEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
+    public static final DeferredHolder<MobEffect, MobEffect> KINETIC_PLATING = MOB_EFFECT_DEFERRED_REGISTER.register(
+            "kinetic_plating", () -> new RedlineEffect(MobEffectCategory.BENEFICIAL, 0xbea925));
 
     public static final DeferredHolder<MobEffect, MobEffect> MULTISHOT_GALVANIZED = MOB_EFFECT_DEFERRED_REGISTER.register(
             "multishot_galvanized", () -> new MultishotGalvanizedEffect(MobEffectCategory.BENEFICIAL, 0xbea925));

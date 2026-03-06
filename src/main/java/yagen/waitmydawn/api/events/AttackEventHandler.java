@@ -31,8 +31,11 @@ import yagen.waitmydawn.api.util.ModCompat;
 import yagen.waitmydawn.config.ServerConfigs;
 import yagen.waitmydawn.entity.others.ModularGolemsEntity;
 import yagen.waitmydawn.item.weapon.LEndersCataclysmItem;
+import yagen.waitmydawn.network.BatteryPowerPacket;
 import yagen.waitmydawn.network.DamageNumberPacket;
+import yagen.waitmydawn.network.EnergyPacket;
 import yagen.waitmydawn.network.SyncComboPacket;
+import yagen.waitmydawn.registries.ComponentRegistry;
 import yagen.waitmydawn.registries.DamageTypeRegistry;
 import yagen.waitmydawn.registries.DataAttachmentRegistry;
 import yagen.waitmydawn.registries.MobEffectRegistry;
@@ -308,6 +311,20 @@ public class AttackEventHandler {
             if (attacker.isAlive())
                 attacker.setHealth(Math.min(attacker.getHealth() + healthHeal, attacker.getMaxHealth()));
 
+        // kinetic plating increase battery power by melee
+        if (isMelee && attacker instanceof Player player
+                && player.hasEffect(MobEffectRegistry.KINETIC_PLATING)
+                && !player.hasEffect(MobEffectRegistry.REDLINE)) {
+            DataAttachmentRegistry.setBatteryPower(player,
+                    DataAttachmentRegistry.getBatteryPower(player)
+                            + ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_MELEE_BONUS.get());
+
+            double newBP = DataAttachmentRegistry.getBatteryPower(player);
+            if (newBP >= 100.0) {
+                int duration = (int) (ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_DURATION.get() * 20 * player.getAttributeValue(YAttributes.ABILITY_DURATION));
+                player.addEffect(new MobEffectInstance(MobEffectRegistry.REDLINE, duration, 0));
+            }
+        }
 
         int color = 0xFFFFFF;
         Vec3 pos = target.position().add(0, target.getBbHeight() * 0.7, 0);
@@ -501,6 +518,58 @@ public class AttackEventHandler {
         if (player.hasEffect(MobEffectRegistry.BLADE_STORM)) return;
         if (BladeStormTargets.get((ServerPlayer) player).isEmpty()) return;
         BladeStormTargets.execute((ServerPlayer) player);
+    }
+
+    @SubscribeEvent
+    public static void kineticPlating(LivingIncomingDamageEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide()) return;
+        if (!player.hasEffect(MobEffectRegistry.KINETIC_PLATING)) return;
+        ItemStack mainHand = player.getMainHandItem();
+        if (mainHand.isEmpty()
+                || mainHand.getItem() instanceof ProjectileWeaponItem
+                || ModCompat.isSpecialBow(mainHand.getItem()))
+            return;
+        double batteryPower = DataAttachmentRegistry.getBatteryPower(player);
+        double abilityStrength = player.getAttributeValue(YAttributes.ABILITY_STRENGTH);
+        double min = Math.min(ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_DECLINE_MIN_MAX.get(),
+                ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_DECLINE_0.get() * abilityStrength);
+        double max = Math.min(ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_DECLINE_MAX_MAX.get(),
+                ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_DECLINE_100.get() * abilityStrength);
+        double declineFactor = Math.min(ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_DECLINE_MAX_MAX.get(),
+                min + (max - min) * batteryPower / 100);
+
+        double maxEnergy = player.getAttributeValue(YAttributes.MAX_ENERGY);
+        double energy = DataAttachmentRegistry.getEnergy(player);
+        energy = Math.min(maxEnergy,
+                energy + event.getAmount() * ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_TRANS.get() * abilityStrength);
+        DataAttachmentRegistry.setEnergy(player, energy);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new EnergyPacket(energy));
+
+        event.setAmount((float) (event.getAmount() * (1 - declineFactor)));
+
+        if (!player.hasEffect(MobEffectRegistry.REDLINE)) {
+            DataAttachmentRegistry.setBatteryPower(player,
+                    batteryPower - ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_REDUCTION.get());
+            PacketDistributor.sendToPlayer((ServerPlayer) player,
+                    new BatteryPowerPacket(DataAttachmentRegistry.getBatteryPower(player)));
+        }
+    }
+
+    @SubscribeEvent
+    public static void kpBonusWhenRedline(LivingIncomingDamageEvent event) {
+        if (!(event.getSource().getEntity() instanceof Player player)) return;
+        if (player.level().isClientSide()) return;
+        if (!player.hasEffect(MobEffectRegistry.KINETIC_PLATING) && !player.hasEffect(MobEffectRegistry.REDLINE))
+            return;
+        boolean isMelee = event.getSource().getDirectEntity() instanceof LivingEntity &&
+                !event.getSource().is(DamageTypeTags.IS_PROJECTILE);
+        if (!isMelee) return;
+        double baseDamageFactor = ComponentRegistry.getBaseDamage(player.getMainHandItem());
+        event.setAmount(
+                (float) (event.getAmount() / baseDamageFactor * (
+                        ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_MELEE_DAMAGE_BONUS.get() + baseDamageFactor))
+        );
     }
 
     public static void forceEffect(LivingEntity target, MobEffectInstance instance) {

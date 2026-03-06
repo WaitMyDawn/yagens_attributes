@@ -101,6 +101,16 @@ public class ServerConfigs {
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER;
     public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_THERMAL_SUNDER_RANGE;
     public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_THERMAL_SUNDER_DURATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_DECLINE_0;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_DECLINE_100;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_DECLINE_MIN_MAX;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_DECLINE_MAX_MAX;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_TRANS;
+    public static final ModConfigSpec.ConfigValue<Integer> MOD_WARFRAME_KINETIC_PLATING_DURATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_MELEE_BONUS;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_MELEE_DAMAGE_BONUS;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_ATTENUATION;
+    public static final ModConfigSpec.ConfigValue<Double> MOD_WARFRAME_KINETIC_PLATING_REDUCTION;
 
     public static final ModConfigSpec.ConfigValue<Double> MOD_SET_AUGUR;
     public static final ModConfigSpec.ConfigValue<Double> MOD_SET_VIGILANTE;
@@ -488,6 +498,29 @@ public class ServerConfigs {
         MOD_WARFRAME_THERMAL_SUNDER_DURATION = BUILDER.define("Duration", 30);
         BUILDER.comment("Range of Warframe Thermal Sunder Mod (default = 10.0)");
         MOD_WARFRAME_THERMAL_SUNDER_RANGE = BUILDER.define("Range", 10.0);
+        BUILDER.pop();
+
+        BUILDER.push("Warframe_Kinetic_Plating");
+        BUILDER.comment("The Basic Decline of Warframe Kinetic Plating Mod with 0 battery power (default = 0.2)");
+        MOD_WARFRAME_KINETIC_PLATING_DECLINE_0 = BUILDER.define("0_Decline", 0.2);
+        BUILDER.comment("The Basic Decline of Warframe Kinetic Plating Mod with 100 battery power (default = 0.4)");
+        MOD_WARFRAME_KINETIC_PLATING_DECLINE_100 = BUILDER.define("100_Decline", 0.4);
+        BUILDER.comment("The Max Decline of Warframe Kinetic Plating Mod with 0 battery power (default = 0.4)");
+        MOD_WARFRAME_KINETIC_PLATING_DECLINE_MIN_MAX = BUILDER.define("0_Max_Decline", 0.4);
+        BUILDER.comment("The Max Decline of Warframe Kinetic Plating Mod with 100 battery power (default = 0.8)");
+        MOD_WARFRAME_KINETIC_PLATING_DECLINE_MAX_MAX = BUILDER.define("100_Max_Decline", 0.8);
+        BUILDER.comment("Duration of Warframe Kinetic Plating Mod (default = 30, seconds)");
+        MOD_WARFRAME_KINETIC_PLATING_DURATION = BUILDER.define("Duration", 30);
+        BUILDER.comment("Trans Factor of Warframe Kinetic Plating Mod (default = 0.6, 60%)");
+        MOD_WARFRAME_KINETIC_PLATING_TRANS = BUILDER.define("Trans_Factor", 0.6);
+        BUILDER.comment("Melee bonus for battery power of Warframe Kinetic Plating Mod each enemy (default = 0.25)");
+        MOD_WARFRAME_KINETIC_PLATING_MELEE_BONUS = BUILDER.define("Melee_Bonus", 0.25);
+        BUILDER.comment("Melee bonus for base damage of Warframe Kinetic Plating Mod (default = 1.0)");
+        MOD_WARFRAME_KINETIC_PLATING_MELEE_DAMAGE_BONUS = BUILDER.define("Melee_Damage_Bonus", 1.0);
+        BUILDER.comment("Attenuation for battery power of Warframe Kinetic Plating Mod each second (default = 1.0)");
+        MOD_WARFRAME_KINETIC_PLATING_ATTENUATION = BUILDER.define("Attenuation", 1.0);
+        BUILDER.comment("Reduction for battery power of Warframe Kinetic Plating Mod when declined damage (default = 1.0)");
+        MOD_WARFRAME_KINETIC_PLATING_REDUCTION = BUILDER.define("Reduction", 1.0);
         BUILDER.pop();
 
         BUILDER.push("Set_Mod");

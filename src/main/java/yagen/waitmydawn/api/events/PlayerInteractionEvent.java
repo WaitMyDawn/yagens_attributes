@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -277,6 +278,38 @@ public class PlayerInteractionEvent {
                 event.getEntity().displayClientMessage(Component.translatable("ui.yagens_attributes.mod_stored"), true);
                 event.setCanceled(true);
             }
+        }
+    }
+
+    private static final Map<Player, Vec3> POS_FOR_KINETIC_PLATING = new WeakHashMap<>();
+
+    @SubscribeEvent
+    public static void kineticPlatingMovement(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide()) return;
+        if (!player.hasEffect(MobEffectRegistry.KINETIC_PLATING)) return;
+        if (player.hasEffect(MobEffectRegistry.REDLINE)) return;
+        if (player.tickCount % 5 != 0) return;
+
+        Vec3 oldPos = POS_FOR_KINETIC_PLATING.get(player);
+        if (oldPos == null) {
+            POS_FOR_KINETIC_PLATING.put(player, player.position());
+            return;
+        }
+
+        Vec3 newPos = player.position();
+        POS_FOR_KINETIC_PLATING.put(player, newPos);
+        double distance = oldPos.subtract(newPos).length();
+
+        double batteryPower = DataAttachmentRegistry.getBatteryPower(player);
+        double bpDelta = distance / 1.875 - ServerConfigs.MOD_WARFRAME_KINETIC_PLATING_ATTENUATION.get() / 4;
+        DataAttachmentRegistry.setBatteryPower(player, batteryPower + bpDelta);
+        double newBP = DataAttachmentRegistry.getBatteryPower(player);
+        PacketDistributor.sendToPlayer((ServerPlayer) player, new BatteryPowerPacket(newBP));
+
+        if (newBP >= 100.0) {
+            int duration = (int) (ServerConfigs.MOD_WARFRAME_THERMAL_SUNDER_DURATION.get() * 20 * player.getAttributeValue(YAttributes.ABILITY_DURATION));
+            player.addEffect(new MobEffectInstance(MobEffectRegistry.REDLINE, duration, 0));
         }
     }
 }
