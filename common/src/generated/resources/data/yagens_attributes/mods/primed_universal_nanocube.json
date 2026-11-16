@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.primed_universal_nanocube",
+  "rarity": "legendary",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 4,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 10,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "weapon"
+  ],
+  "texture": "yagens_attributes:item/mods/universal_nanocube",
+  "style": {
+    "visual": "orokin",
+    "exclusive_groups": [
+      "yagens_attributes:nanocube"
+    ]
+  },
+  "entries": [
+    {
+      "stat": "damage",
+      "operation": "addition",
+      "value": 0.15,
+      "basis": "flat",
+      "description": "Fractional additive bonus at level 0. A value of 1.0 means +100%; scales with (level + 1)."
+    }
+  ]
+}

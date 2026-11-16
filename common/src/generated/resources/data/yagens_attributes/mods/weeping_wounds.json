@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.weeping_wounds",
+  "rarity": "uncommon",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 4,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "melee"
+  ],
+  "texture": "yagens_attributes:item/mods/weeping_wounds",
+  "entries": [
+    {
+      "stat": "status_chance_per_combo",
+      "operation": "addition",
+      "value": 0.06666666666666667,
+      "basis": "flat",
+      "description": "Fractional additive chance bonus per combo tier above 1x at level 0. Multiplied by (level + 1) and (combo_multiplier - 1); contributes zero at 1x."
+    }
+  ]
+}

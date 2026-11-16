@@ -1,0 +1,22 @@
+{
+  "priority": 0,
+  "entities": [
+    "minecraft:mooshroom"
+  ],
+  "entity_tags": [],
+  "multipliers": {
+    "impact": 1.0,
+    "puncture": 1.0,
+    "slash": 1.5,
+    "cold": 1.25,
+    "heat": 1.5,
+    "electricity": 1.0,
+    "toxin": 0.75,
+    "blast": 1.0,
+    "radiation": 1.0,
+    "corrosive": 1.0,
+    "viral": 1.0,
+    "gas": 0.75,
+    "magnetic": 0.75
+  }
+}

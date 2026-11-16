@@ -1,0 +1,26 @@
+{
+  "critical_chance": 0.1,
+  "critical_damage": 2.0,
+  "status_chance": 0.1,
+  "status_duration": 6.0,
+  "base_damage": 7.0,
+  "category": "axe",
+  "fire_rate": 1.0,
+  "multishot": 1.0,
+  "riven_disposition": 1.55,
+  "damage_distribution": {
+    "impact": 0.2,
+    "puncture": 0.1,
+    "slash": 0.7
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

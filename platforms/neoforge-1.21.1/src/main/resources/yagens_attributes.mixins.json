@@ -1,0 +1,26 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "yagen.waitmydawn.yagens_attributes.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "RangedAttributeAccessor",
+    "AnvilExperienceMixin",
+    "EnchantmentExperienceMixin",
+    "ArmorFormulaMixin",
+    "ProjectileWeaponItemMixin",
+    "CrossbowItemMixin",
+    "TridentItemMixin",
+    "VirtualArrowMixin",
+    "VirtualTridentMixin",
+    "RangedCooldownMixin",
+    "ShieldAbsorptionMixin",
+    "AbsorptionEffectMixin",
+    "StatusArmorMixin",
+    "StatusControlMixin"
+  ],
+  "client": ["ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

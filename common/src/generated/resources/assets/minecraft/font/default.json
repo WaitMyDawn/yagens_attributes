@@ -1,0 +1,12 @@
+{
+  "providers": [
+    {
+      "type": "reference",
+      "id": "yagens_attributes:polarity_icons"
+    },
+    {
+      "type": "reference",
+      "id": "yagens_attributes:mod_symbols"
+    }
+  ]
+}

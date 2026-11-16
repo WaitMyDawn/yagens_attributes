@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.critical_delay",
+  "rarity": "rare",
+  "polarity": "naramon",
+  "capacity": {
+    "base": 4,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "ranged",
+    "trident"
+  ],
+  "texture": "yagens_attributes:item/mod",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:critical_choice"
+    ],
+    "scoped_exclusive_groups": {
+      "trident": [
+        "yagens_attributes:trident_combo_critical_choice"
+      ]
+    }
+  },
+  "entries": [
+    {
+      "stat": "critical_chance",
+      "operation": "addition",
+      "value": 0.3333333333333333,
+      "basis": "flat",
+      "description": "Fractional additive bonus at level 0. A value of 1.0 means +100%; scales with (level + 1)."
+    },
+    {
+      "stat": "fire_rate",
+      "operation": "addition",
+      "value": -0.03333333333333333,
+      "basis": "flat",
+      "description": "Fractional additive bonus at level 0. A value of 1.0 means +100%; scales with (level + 1)."
+    }
+  ]
+}

@@ -1,0 +1,2544 @@
+{
+  "schema_version": 3,
+  "source_export": "30bac491-c1af-40b4-8782-122327f7fa61.json",
+  "operations": [
+    {
+      "id": "1b4931cf-38c6-4d10-bb94-85e5928ad95e",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/wither_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:wither",
+        "table": "minecraft:entities/wither"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ],
+                "weight": 1,
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 4.0,
+                      "max": 24.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1.0,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "weight": 1,
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 8.0,
+                      "max": 16.0
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1.0,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 50,
+                  "method": "galvanized",
+                  "min_rank_percent": 0
+                },
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.05
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "57218c92-5e38-4dda-a86c-64a845aa92ac",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/witch_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:witch",
+        "table": "minecraft:entities/witch"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1.0,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "mod": "yagens_attributes:toxin_addition",
+                  "max_rank_percent": 80,
+                  "method": "specific",
+                  "min_rank_percent": 0
+                },
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.05
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "0d64f2c4-28cb-49fa-824f-a343bfdcdafe",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/sniffer_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:sniffer",
+        "table": "minecraft:entities/sniffer"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "minecraft:sniffer_egg"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "10e9afbc-faa5-47cb-9da7-f27763c18d01",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/breeze_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:breeze",
+        "table": "minecraft:entities/breeze"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  },
+                  {
+                    "condition": "minecraft:random_chance_with_enchanted_bonus",
+                    "enchantment": "minecraft:looting",
+                    "unenchanted_chance": 0.1,
+                    "enchanted_chance": {
+                      "type": "minecraft:linear",
+                      "base": 0.2,
+                      "per_level_above_first": 0.05
+                    }
+                  }
+                ],
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ],
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "9ad97a34-b39d-4b01-be59-52a9dd5bacae",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/ender_dragon_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:ender_dragon",
+        "table": "minecraft:entities/ender_dragon"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "min_rank_percent": 20,
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "uncommon": 30.0,
+                    "legendary": 1.0,
+                    "rare": 19.0,
+                    "common": 0.0
+                  }
+                },
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1.0,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "method": "veiled_riven"
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "5f055701-7b67-46e3-928f-d748f7eeb183",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/evoker_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:evoker",
+        "table": "minecraft:entities/evoker"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ],
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  },
+                  {
+                    "condition": "minecraft:random_chance_with_enchanted_bonus",
+                    "enchantment": "minecraft:looting",
+                    "unenchanted_chance": 0.1,
+                    "enchanted_chance": {
+                      "type": "minecraft:linear",
+                      "base": 0.2,
+                      "per_level_above_first": 0.05
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "4b699e51-84a9-4bbc-835b-531716be150b",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/bogged_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:bogged",
+        "table": "minecraft:entities/bogged"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  },
+                  {
+                    "condition": "minecraft:random_chance_with_enchanted_bonus",
+                    "enchantment": "minecraft:looting",
+                    "unenchanted_chance": 0.1,
+                    "enchanted_chance": {
+                      "type": "minecraft:linear",
+                      "base": 0.2,
+                      "per_level_above_first": 0.05
+                    }
+                  }
+                ],
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ],
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "47d228cc-5dff-47fa-b5e2-f54f8d8d31ff",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/blaze_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:blaze",
+        "table": "minecraft:entities/blaze"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "mod": "yagens_attributes:heat_addition",
+                  "max_rank_percent": 50,
+                  "method": "specific",
+                  "min_rank_percent": 0
+                },
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.05
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "953b569a-1962-4566-96f1-2a04838a5cd0",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/piglin_brute_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:piglin_brute",
+        "table": "minecraft:entities/piglin_brute"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  },
+                  {
+                    "condition": "minecraft:random_chance_with_enchanted_bonus",
+                    "enchantment": "minecraft:looting",
+                    "unenchanted_chance": 0.2,
+                    "enchanted_chance": {
+                      "type": "minecraft:linear",
+                      "base": 0.3,
+                      "per_level_above_first": 0.05
+                    }
+                  }
+                ],
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 2.0,
+                      "max": 6.0
+                    }
+                  },
+                  {
+                    "function": "minecraft:enchanted_count_increase",
+                    "enchantment": "minecraft:looting",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 0.0,
+                      "max": 1.0
+                    },
+                    "limit": 0
+                  }
+                ],
+                "weight": 1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "4b0d4302-fe36-4d8f-bb97-a9ae590bac14",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/warden_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:warden",
+        "table": "minecraft:entities/warden"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 9.0,
+                    "legendary": 1.0,
+                    "uncommon": 40.0,
+                    "common": 50.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "conditions": [
+                  {
+                    "condition": "minecraft:killed_by_player"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "f400a4d5-f1e4-4702-94ae-d6a8d5c550fa",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/entities/elder_guardian_append",
+      "target": {
+        "kind": "mob",
+        "id": "minecraft:elder_guardian",
+        "table": "minecraft:entities/elder_guardian"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 2.0,
+                      "max": 8.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "min_rank_percent": 50,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "max_rank_percent": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "a6a28398-187c-44bb-890d-f939dcb6da94",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/abandoned_mineshaft_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/abandoned_mineshaft",
+        "table": "minecraft:chests/abandoned_mineshaft"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "4bd50177-f167-4d0b-8a27-f2ef6afe5b46",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/bastion_bridge_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/bastion_bridge",
+        "table": "minecraft:chests/bastion_bridge"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "526e1344-fe14-455d-8363-c46637ac30e6",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/bastion_other_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/bastion_other",
+        "table": "minecraft:chests/bastion_other"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cfc1d265-1236-4b65-b234-07919cd134cd",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/bastion_hoglin_stable_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/bastion_hoglin_stable",
+        "table": "minecraft:chests/bastion_hoglin_stable"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "1215d751-f1e8-47df-90da-a200f31bb408",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/bastion_treasure_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/bastion_treasure",
+        "table": "minecraft:chests/bastion_treasure"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 12.0,
+                      "max": 48.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 3.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 8.0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "ee6b669e-01cc-48bd-b290-29daf001593a",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/buried_treasure_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/buried_treasure",
+        "table": "minecraft:chests/buried_treasure"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "min_rank_percent": 50,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 1.0,
+                    "common": 2.0
+                  },
+                  "max_rank_percent": 100
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 6.0,
+                      "max": 20.0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "4d3de604-07d0-4f88-8cc7-6d11e5e39260",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/desert_pyramid_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/desert_pyramid",
+        "table": "minecraft:chests/desert_pyramid"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 4.0,
+                      "max": 16.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "1e765a88-ce24-44ca-9c02-14b9f23556e8",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/end_city_treasure_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/end_city_treasure",
+        "table": "minecraft:chests/end_city_treasure"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 10.0,
+                      "max": 32.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 0.0,
+                    "common": 0.0
+                  },
+                  "min_rank_percent": 0,
+                  "max_rank_percent": 100
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "1cc62f6e-191a-4c08-8fc8-97caf5548600",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/ancient_city_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/ancient_city",
+        "table": "minecraft:chests/ancient_city"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": {
+              "type": "minecraft:uniform",
+              "min": 1.0,
+              "max": 2.0
+            },
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 4.0,
+                      "max": 24.0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": 1.0
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "method": "veiled_riven"
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "e4b92871-bf68-4ada-bd83-a36a0291ca73",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/ancient_city_ice_box_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/ancient_city_ice_box",
+        "table": "minecraft:chests/ancient_city_ice_box"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": {
+              "type": "minecraft:uniform",
+              "min": 1.0,
+              "max": 2.0
+            },
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 4.0,
+                      "max": 24.0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": 1.0
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "method": "veiled_riven"
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.1
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "aca3e01d-bcaf-4c88-86f2-6a25a3e20340",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/igloo_chest_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/igloo_chest",
+        "table": "minecraft:chests/igloo_chest"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "00395e62-7fd9-4f7e-a119-34b57c3dd3d9",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/jungle_temple_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/jungle_temple",
+        "table": "minecraft:chests/jungle_temple"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 40.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "646580f7-7556-4bc6-8ff0-045292c7b5d7",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/nether_bridge_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/nether_bridge",
+        "table": "minecraft:chests/nether_bridge"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d4434eae-fe29-430a-834d-c85a14ac6b74",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/ruined_portal_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/ruined_portal",
+        "table": "minecraft:chests/ruined_portal"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "da466d4f-1151-45cd-bb98-c30d51b37d79",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/shipwreck_treasure_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/shipwreck_treasure",
+        "table": "minecraft:chests/shipwreck_treasure"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 24.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "f6aa664d-c736-4519-836a-ded1957a713f",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/simple_dungeon_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/simple_dungeon",
+        "table": "minecraft:chests/simple_dungeon"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "1a98376a-1705-4790-9863-b1ad0ebb72a7",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/stronghold_corridor_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/stronghold_corridor",
+        "table": "minecraft:chests/stronghold_corridor"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "9d33d3da-c42d-402a-a4af-b7ea68df40d0",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/stronghold_crossing_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/stronghold_crossing",
+        "table": "minecraft:chests/stronghold_crossing"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "a3cccb38-eb3b-4cb8-af61-8237ee062e69",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/stronghold_library_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/stronghold_library",
+        "table": "minecraft:chests/stronghold_library"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 3.0,
+                      "max": 14.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 3.0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cf43348b-4c2a-4590-b31c-f343cb078d74",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/corridor_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/trial_chambers/corridor",
+        "table": "minecraft:chests/trial_chambers/corridor"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "3ab81408-9a37-4ae1-b5f6-9197d741aa76",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/entrance_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/trial_chambers/entrance",
+        "table": "minecraft:chests/trial_chambers/entrance"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "3e8b1fc5-d899-4830-addc-d05d1d8355b0",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/intersection_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/trial_chambers/intersection",
+        "table": "minecraft:chests/trial_chambers/intersection"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 10.0,
+                      "max": 46.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "68371ff0-0631-4d60-b1ef-1f1f008f8f6f",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/reward_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/trial_chambers/reward",
+        "table": "minecraft:chests/trial_chambers/reward"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": {
+              "type": "minecraft:uniform",
+              "min": 1.0,
+              "max": 2.0
+            },
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "cafa08ba-0afb-4525-b84e-929945d83011",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/reward_ominous_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/trial_chambers/reward_ominous",
+        "table": "minecraft:chests/trial_chambers/reward_ominous"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": {
+              "type": "minecraft:uniform",
+              "min": 2.0,
+              "max": 3.0
+            },
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 2.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 2.0,
+                      "max": 8.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.6
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "886f8c78-4a03-4367-837c-6efb0b1e0914",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/woodland_mansion_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/woodland_mansion",
+        "table": "minecraft:chests/woodland_mansion"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 2.0,
+                      "max": 8.0
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                },
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "c26ffc7a-3adf-4d57-87aa-5494c0d6f909",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/spawners/ominous/trial_chamber/consumables_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:spawners/ominous/trial_chamber/consumables",
+        "table": "minecraft:spawners/ominous/trial_chamber/consumables"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.05
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:kuva",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 2.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.5
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "d273b273-c062-4148-b204-973b889f9c8b",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/underwater_ruin_big_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/underwater_ruin_big",
+        "table": "minecraft:chests/underwater_ruin_big"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "0d19d1ec-b1d9-4d5f-b575-5ba6f31f09f7",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/chests/underwater_ruin_small_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:chests/underwater_ruin_small",
+        "table": "minecraft:chests/underwater_ruin_small"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          },
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "yagens_attributes:mod_reward",
+                "reward": {
+                  "max_rank_percent": 80,
+                  "method": "weighted",
+                  "quality_weights": {
+                    "rare": 1.0,
+                    "legendary": 0.0,
+                    "uncommon": 4.0,
+                    "common": 5.0
+                  },
+                  "min_rank_percent": 0
+                }
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.8
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "8464b09e-f6a3-4533-b371-e7350269a63f",
+      "mode": "append",
+      "table_id": "yagens_attributes:editor_tables/minecraft/spawners/trial_chamber/consumables_append",
+      "target": {
+        "kind": "chest",
+        "id": "minecraft:spawners/trial_chamber/consumables",
+        "table": "minecraft:spawners/trial_chamber/consumables"
+      },
+      "table": {
+        "type": "minecraft:generic",
+        "pools": [
+          {
+            "rolls": 1,
+            "entries": [
+              {
+                "type": "minecraft:item",
+                "name": "yagens_attributes:endo",
+                "functions": [
+                  {
+                    "function": "minecraft:set_count",
+                    "count": {
+                      "type": "minecraft:uniform",
+                      "min": 1.0,
+                      "max": 4.0
+                    }
+                  }
+                ]
+              }
+            ],
+            "conditions": [
+              {
+                "condition": "minecraft:random_chance",
+                "chance": 0.05
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:sniffer_egg"
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

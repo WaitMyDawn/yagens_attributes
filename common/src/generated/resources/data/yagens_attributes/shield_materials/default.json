@@ -1,0 +1,18 @@
+{
+  "multipliers": {
+    "impact": 1.5,
+    "puncture": 0.8,
+    "slash": 0.75,
+    "cold": 1.0,
+    "heat": 0.75,
+    "electricity": 1.25,
+    "toxin": 0.0,
+    "blast": 1.0,
+    "radiation": 1.0,
+    "corrosive": 0.75,
+    "viral": 1.0,
+    "gas": 1.0,
+    "magnetic": 2.0
+  },
+  "description": "Applies only to absorption/shield loss. Toxin bypasses shields; life material never modifies shield demand. Missing damage types default to 1."
+}

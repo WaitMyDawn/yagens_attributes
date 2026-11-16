@@ -1,0 +1,23 @@
+{
+  "priority": 0,
+  "entities": [
+    "minecraft:ghast",
+    "minecraft:vex"
+  ],
+  "entity_tags": [],
+  "multipliers": {
+    "impact": 0.5,
+    "puncture": 0.5,
+    "slash": 0.5,
+    "cold": 1.25,
+    "heat": 1.0,
+    "electricity": 1.25,
+    "toxin": 0.5,
+    "blast": 0.75,
+    "radiation": 1.5,
+    "corrosive": 0.75,
+    "viral": 0.5,
+    "gas": 0.5,
+    "magnetic": 1.25
+  }
+}

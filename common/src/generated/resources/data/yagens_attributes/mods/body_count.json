@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.body_count",
+  "rarity": "common",
+  "polarity": "naramon",
+  "capacity": {
+    "base": 4,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "melee"
+  ],
+  "texture": "yagens_attributes:item/mods/body_count",
+  "entries": [
+    {
+      "stat": "combo_duration",
+      "operation": "addin",
+      "value": 2.0,
+      "basis": "flat",
+      "description": "Flat initial addition at level 0, before multipliers. Seconds for combo duration, blocks for melee range; scales with (level + 1)."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "yagens_attributes:mod_reward",
+          "reward": {
+            "method": "veiled_riven"
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

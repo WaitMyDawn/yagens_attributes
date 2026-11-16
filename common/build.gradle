@@ -1,0 +1,25 @@
+plugins { id 'java-library' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(Integer.parseInt(rootProject.findProperty('platform_java') ?: '17'))
+layout.buildDirectory = rootProject.layout.buildDirectory.dir('shared/common')
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    // The compiler follows the platform JDK; release restricts common code to the oldest runtime and API.
+    options.release = 17
+}
+
+sourceSets {
+    main.resources.srcDir 'src/generated/resources'
+    contractTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+tasks.register('coreTest', JavaExec) {
+    dependsOn tasks.named('contractTestClasses')
+    classpath = sourceSets.contractTest.runtimeClasspath
+    mainClass = 'yagen.waitmydawn.yagens_attributes.core.CoreTests'
+    javaLauncher = javaToolchains.launcherFor(java.toolchain)
+}
+tasks.named('check') { dependsOn tasks.named('coreTest') }
+sourceSets.main.resources.exclude '**/.cache/**'

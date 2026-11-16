@@ -1,0 +1,11 @@
+{
+  "type": "yagens_attributes:table_result",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/nether_bridge"
+    }
+  ],
+  "replace": false,
+  "table": "yagens_attributes:editor_tables/minecraft/chests/nether_bridge_append"
+}

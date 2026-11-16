@@ -1,0 +1,120 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mod"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/blood_rush"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/body_count"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/bone_finger_box"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/charge_cage"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/cloudpiercing_flame"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/drifting_contact"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/primed_fury"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/primed_reach"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/primed_universal_nanocube"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/flame_feather"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/fury"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/gaze_of_pain"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/multishot"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/nameless_glove"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/reach"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/riven"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/shattered_venom_doll"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/torturous_entanglement"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/universal_nanocube"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/weeping_wounds"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/winter_talisman"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/cold_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/electricity_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/heat_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/impact_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/puncture_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/slash_status"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:status/toxin_status"
+    }
+  ]
+}

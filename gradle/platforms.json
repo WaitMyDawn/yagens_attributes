@@ -1,0 +1,7 @@
+{
+  "NeoForge1211": {
+    "directory": "neoforge-1.21.1",
+    "javaVersion": 21,
+    "loom": false
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "yagens_attributes:table_result",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/sniffer"
+    },
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type": "minecraft:sniffer"
+      }
+    }
+  ],
+  "replace": false,
+  "table": "yagens_attributes:editor_tables/minecraft/entities/sniffer_append"
+}

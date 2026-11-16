@@ -1,0 +1,45 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
+}
+
+ext.platformLoader = 'neoforge'
+apply from: '../../gradle/platform.gradle'
+apply from: '../../gradle/fml-common.gradle'
+
+repositories { mavenCentral() }
+dependencies { implementation "net.neoforged:neoforge:${loader_version}" }
+
+runs {
+    configureEach {
+        workingDirectory layout.projectDirectory.dir('run').dir(name)
+        modSource sourceSets.main
+    }
+    client {}
+    server { argument '--nogui' }
+    data {
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('../../common/src/generated/resources').absolutePath, '--existing', file('../../common/src/main/resources').absolutePath
+        systemProperty 'yagens_attributes.datagenInput', file('../../common/src/datagen/resources').absolutePath
+        systemProperty 'yagens_attributes.polarityInput', file('../../art/polarity').absolutePath
+    }
+}
+
+sourceSets {
+    adapterTest {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+tasks.register('adapterTest', JavaExec) {
+    dependsOn tasks.named('adapterTestClasses')
+    classpath = sourceSets.adapterTest.runtimeClasspath
+    mainClass = 'yagen.waitmydawn.yagens_attributes.data.AdapterTests'
+    javaLauncher = javaToolchains.launcherFor(java.toolchain)
+}
+tasks.named('check') { dependsOn tasks.named('adapterTest') }
+
+// These outputs contain absolute dependency paths and cannot be reused across Gradle cache roots.
+def minecraftClasspathCacheRoot = gradle.gradleUserHomeDir.absolutePath
+tasks.matching { it.name.startsWith('writeMinecraftClasspath') }.configureEach {
+    inputs.property('minecraftClasspathCacheRoot', minecraftClasspathCacheRoot)
+}

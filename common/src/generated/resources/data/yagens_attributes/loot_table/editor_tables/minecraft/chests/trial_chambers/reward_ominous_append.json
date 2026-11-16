@@ -1,0 +1,67 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 4,
+                "min": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "yagens_attributes:endo"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "count": {
+                "type": "minecraft:uniform",
+                "max": 8,
+                "min": 2
+              },
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "yagens_attributes:kuva"
+        }
+      ],
+      "rolls": {
+        "type": "minecraft:uniform",
+        "max": 3,
+        "min": 2
+      }
+    },
+    {
+      "conditions": [
+        {
+          "chance": 0.6,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "yagens_attributes:mod_reward",
+          "reward": {
+            "max_rank_percent": 80,
+            "method": "weighted",
+            "min_rank_percent": 0,
+            "quality_weights": {
+              "common": 5.0,
+              "legendary": 0.0,
+              "rare": 1.0,
+              "uncommon": 4.0
+            }
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "entries": [
+        {
+          "type": "yagens_attributes:mod_reward",
+          "reward": {
+            "max_rank_percent": 100,
+            "method": "specific",
+            "min_rank_percent": 0,
+            "mod": "yagens_attributes:universal_nanocube"
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}

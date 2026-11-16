@@ -1,0 +1,11 @@
+{
+  "type": "yagens_attributes:table_result",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/trial_chambers/corridor"
+    }
+  ],
+  "replace": false,
+  "table": "yagens_attributes:editor_tables/minecraft/chests/trial_chambers/corridor_append"
+}

@@ -1,0 +1,85 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/none.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/madurai.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/vazarin.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/naramon.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/zenurik.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/unairu.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/penjaga.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/umbra.png",
+      "chars": [
+        ""
+      ]
+    },
+    {
+      "type": "bitmap",
+      "ascent": 7,
+      "height": 8,
+      "file": "yagens_attributes:polarity/omni.png",
+      "chars": [
+        ""
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "priority": 0,
+  "entities": [
+    "minecraft:iron_golem"
+  ],
+  "entity_tags": [],
+  "multipliers": {
+    "impact": 0.75,
+    "puncture": 1.25,
+    "slash": 0.75,
+    "cold": 1.0,
+    "heat": 1.0,
+    "electricity": 1.25,
+    "toxin": 0.5,
+    "blast": 1.0,
+    "radiation": 1.5,
+    "corrosive": 1.5,
+    "viral": 0.5,
+    "gas": 0.5,
+    "magnetic": 1.5
+  }
+}

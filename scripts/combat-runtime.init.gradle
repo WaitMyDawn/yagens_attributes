@@ -1,0 +1,22 @@
+// Opt-in disposable NeoForge server checks; RuntimeCombatChecks requests a clean shutdown.
+gradle.projectsEvaluated {
+    def instance = rootProject.layout.buildDirectory.dir('combat-validation').get().asFile
+    instance.mkdirs()
+    def settings = new Properties()
+    def file = new File(instance, 'server.properties')
+    if (file.exists()) file.withInputStream { settings.load(it) }
+    settings.setProperty('server-ip', '127.0.0.1')
+    settings.setProperty('server-port', '0')
+    settings.setProperty('online-mode', 'true')
+    settings.setProperty('level-name', 'validation')
+    settings.setProperty('view-distance', '2')
+    settings.setProperty('simulation-distance', '2')
+    file.withOutputStream { settings.store(it, 'Disposable combat validation instance') }
+    rootProject.extensions.getByName('runs').named('server').configure {
+        workingDirectory = rootProject.layout.buildDirectory.dir('combat-validation')
+        arguments.addAll '--port', '0'
+        modSource rootProject.sourceSets.adapterTest
+        systemProperty 'yagens_attributes.validateCombat', 'true'
+    }
+    rootProject.tasks.named('runServer').configure { standardInput = System.in }
+}

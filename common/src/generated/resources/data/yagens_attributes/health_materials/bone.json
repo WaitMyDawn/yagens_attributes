@@ -1,0 +1,27 @@
+{
+  "priority": 0,
+  "entities": [
+    "minecraft:skeleton",
+    "minecraft:stray",
+    "minecraft:bogged",
+    "minecraft:wither_skeleton",
+    "minecraft:skeleton_horse",
+    "minecraft:wither"
+  ],
+  "entity_tags": [],
+  "multipliers": {
+    "impact": 1.5,
+    "puncture": 0.75,
+    "slash": 0.75,
+    "cold": 1.0,
+    "heat": 1.0,
+    "electricity": 0.75,
+    "toxin": 0.5,
+    "blast": 1.25,
+    "radiation": 1.0,
+    "corrosive": 1.25,
+    "viral": 0.5,
+    "gas": 0.5,
+    "magnetic": 1.0
+  }
+}

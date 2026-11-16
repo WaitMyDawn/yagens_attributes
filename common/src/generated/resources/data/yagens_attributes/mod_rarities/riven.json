@@ -1,0 +1,8 @@
+{
+  "id": "riven",
+  "name": "rarity.yagens_attributes.riven",
+  "color": "#8A2BE2",
+  "base_endo": 5,
+  "order": 50,
+  "description": "Base Endo cost for upgrading level 0 to 1. An upgrade from level L to L+1 costs base_endo * 2^L. Recycling grants floor(2^(base_endo-1) + base_endo*(2^level-1)/2) Endo per card. Color is an RGB hex value; order controls ascending Creative-tab sorting."
+}

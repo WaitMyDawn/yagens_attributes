@@ -1,0 +1,22 @@
+{
+  "priority": 0,
+  "entities": [
+    "minecraft:slime"
+  ],
+  "entity_tags": [],
+  "multipliers": {
+    "impact": 0.75,
+    "puncture": 0.75,
+    "slash": 0.75,
+    "cold": 1.5,
+    "heat": 1.25,
+    "electricity": 1.0,
+    "toxin": 0.75,
+    "blast": 1.25,
+    "radiation": 1.0,
+    "corrosive": 1.0,
+    "viral": 1.25,
+    "gas": 1.25,
+    "magnetic": 0.75
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.condition_overload",
+  "rarity": "rare",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 10,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "melee"
+  ],
+  "texture": "yagens_attributes:item/mod",
+  "entries": [
+    {
+      "stat": "damage",
+      "operation": "addition",
+      "value": 0.13333333333333333,
+      "basis": "flat",
+      "description": "Fractional Addition per qualifying target status type or active qualifying-kill stack at level 0. Scales with (level + 1); duration_seconds and max_stacks do not scale with rank.",
+      "condition": {
+        "trigger": "target_status_types",
+        "duration_seconds": 0.0,
+        "max_stacks": 0,
+        "description": "Qualifying kills selected by trigger refresh all active stacks for duration_seconds, capped at max_stacks. Target status conditions count distinct independent proc types before this hit and ignore vanilla potion effects. Duration and stack cap are rank-independent."
+      }
+    }
+  ]
+}

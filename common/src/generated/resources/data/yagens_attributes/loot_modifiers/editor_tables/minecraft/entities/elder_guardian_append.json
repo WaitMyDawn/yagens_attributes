@@ -1,0 +1,18 @@
+{
+  "type": "yagens_attributes:table_result",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:entities/elder_guardian"
+    },
+    {
+      "condition": "minecraft:entity_properties",
+      "entity": "this",
+      "predicate": {
+        "type": "minecraft:elder_guardian"
+      }
+    }
+  ],
+  "replace": false,
+  "table": "yagens_attributes:editor_tables/minecraft/entities/elder_guardian_append"
+}

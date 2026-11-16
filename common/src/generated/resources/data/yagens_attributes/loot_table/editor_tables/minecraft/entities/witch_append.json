@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "conditions": [
+        {
+          "chance": 0.05,
+          "condition": "minecraft:random_chance"
+        }
+      ],
+      "entries": [
+        {
+          "type": "yagens_attributes:mod_reward",
+          "conditions": [
+            {
+              "condition": "minecraft:killed_by_player"
+            }
+          ],
+          "reward": {
+            "max_rank_percent": 80,
+            "method": "specific",
+            "min_rank_percent": 0,
+            "mod": "yagens_attributes:toxin_addition"
+          }
+        }
+      ],
+      "rolls": 1
+    }
+  ]
+}
