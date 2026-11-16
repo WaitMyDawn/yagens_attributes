@@ -10,6 +10,11 @@
 
 See `DEVELOPMENT.md` for the logging command convention and `Spec.md` for verification status.
 
+## Reproducible builds
+
+- Normal build, check and CI tasks must use versioned source, test fixtures and packaged resources. Local art drafts, sibling checkouts and instance output directories must not be mandatory test inputs.
+- Keep historical-art comparison or other local inspection tasks opt-in with explicit input paths. Missing or corrupt published resources must still fail resource checks; do not hide those failures by skipping validation.
+
 ## In-game development editors
 
 - Root exported drafts and other editor session outputs under `.editor/<tool>/` in the active game instance directory. Resolve that directory from the running Minecraft instance, not the repository, shell working directory or a guessed `run/client` path.

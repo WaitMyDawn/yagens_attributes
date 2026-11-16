@@ -38,6 +38,17 @@ tasks.register('adapterTest', JavaExec) {
 }
 tasks.named('check') { dependsOn tasks.named('adapterTest') }
 
+def statusIconSources = providers.gradleProperty('statusIconSources').getOrElse('')
+tasks.register('compareStatusIcons', JavaExec) {
+    dependsOn tasks.named('adapterTestClasses')
+    classpath = sourceSets.adapterTest.runtimeClasspath
+    mainClass = 'yagen.waitmydawn.yagens_attributes.data.StatusIconPreview'
+    javaLauncher = javaToolchains.launcherFor(java.toolchain)
+    args(statusIconSources.isEmpty() ? '' : file(statusIconSources).absolutePath,
+            layout.buildDirectory.file('ui-preview/status-icons-comparison.png').get().asFile.absolutePath)
+    doFirst { if (statusIconSources.isEmpty()) throw new GradleException('Pass -PstatusIconSources=<directory with original 16px icons>') }
+}
+
 // These outputs contain absolute dependency paths and cannot be reused across Gradle cache roots.
 def minecraftClasspathCacheRoot = gradle.gradleUserHomeDir.absolutePath
 tasks.matching { it.name.startsWith('writeMinecraftClasspath') }.configureEach {
