@@ -7,7 +7,7 @@ public final class ModEffects {
     private ModEffects() {}
     public static Effect conditional(String stat, double value, ConditionalModifier.Condition condition) {
         return new Effect(stat, Operation.ADDITION, value, Basis.FLAT,
-                "Fractional Addition per qualifying target status type or active qualifying-kill stack at level 0. Scales with (level + 1); duration_seconds and max_stacks do not scale with rank.", condition);
+                "Fractional Addition per qualifying target status type or active qualifying-kill stack at level 0. With per_target_status, multiply kill stacks by target status types. The direct_damage stat shares the damage Addition bucket for direct hits and does not increase explosion or status damage. Scales with (level + 1); duration_seconds and max_stacks do not scale with rank.", condition);
     }
     public static Effect bonus(String stat, double value) {
         return new Effect(stat, Operation.ADDITION, value, Basis.FLAT,
@@ -16,6 +16,10 @@ public final class ModEffects {
     public static Effect flat(String stat, double value) {
         return new Effect(stat, Operation.ADDIN, value, Basis.FLAT,
                 "Flat initial addition at level 0, before multipliers. Seconds for combo duration, blocks for melee range; scales with (level + 1).");
+    }
+    public static Effect procChance(String stat, double value) {
+        return new Effect(stat, Operation.ADDITION, value, Basis.UNIT,
+                "Additional proc probability at level 0, relative to a unit probability of 1. Scales with (level + 1), sums with other unit-basis additions, and clamps to [0, 1] per qualifying hit. Critical-triggered procs roll once per hit, regardless of critical tier; they do not require matching damage or a status-chance roll.");
     }
     public static Effect element(DamageType type, double value) {
         return new Effect("damage." + type.key(), Operation.ADDITION, value, Basis.ATTACK_DAMAGE,

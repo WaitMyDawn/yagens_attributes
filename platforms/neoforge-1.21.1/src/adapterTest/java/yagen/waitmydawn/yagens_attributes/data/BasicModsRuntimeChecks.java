@@ -126,7 +126,7 @@ final class BasicModsRuntimeChecks {
         state.bonus(player.getUUID(), Stats.CRITICAL_CHANCE, new Bonus(0, .4, List.of(1.2), 0));
         state.progress(id, new WeaponProgress(10, 3));
         var inspection = WeaponInspectionService.describe(player, weapon, profile);
-        close(profile.criticalChance() * 2.3 * 1.2, inspection.resolved().get(Stats.CRITICAL_CHANCE));
+        close(profile.criticalChance() * 2.6 * 1.2, inspection.resolved().get(Stats.CRITICAL_CHANCE));
         close(1.55, inspection.resolved().get(Stats.ATTACK_SPEED));
         close(profile.baseDamage() * .9 * 1.9, inspection.resolved().get("damage.cold"));
         close(profile.baseDamage() * 1.9 * 1.9, inspection.resolved().entrySet().stream().filter(entry -> Stats.DAMAGE_COMPONENTS.contains(entry.getKey())).mapToDouble(Map.Entry::getValue).sum());

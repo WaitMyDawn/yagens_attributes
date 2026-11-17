@@ -28,18 +28,19 @@ def main():
         require(mod["entries"] and mod["applicability"], f"Missing effects/scope: {name}")
         for effect in mod["entries"]:
             require(isinstance(effect["description"], str) and effect["description"].isascii() and effect["description"].strip(), f"Expected English editing guidance: {name}")
-            require(effect["operation"] == ("addin" if effect["stat"] in {"combo_duration", "melee_range"} else "addition"), f"Invalid bundled Mod operation: {name}")
+            operations = {"addition", "addin"} if effect["stat"] in {"combo_duration", "melee_range"} else {"addition"}
+            require(effect["operation"] in operations, f"Invalid bundled Mod operation: {name}")
         model = read(assets / f"models/item/mods/{name}.json")
         visual = mod.get("style", {}).get("visual", "none")
-        require(visual in {"none", "orokin"}, f"Unsupported visual style: {name}")
-        rendered = f"yagens_attributes:item/mods/effects/{name}" if visual == "orokin" else mod["texture"]
+        require(visual in {"none", "orokin", "galvanized"}, f"Unsupported visual style: {name}")
+        rendered = f"yagens_attributes:item/mods/effects/{name}" if visual != "none" else mod["texture"]
         rendered_textures.add(rendered)
         require(model == {"parent": "minecraft:item/generated", "textures": {"layer0": rendered}}, f"Invalid physical model: {name}")
         loot = read(data / f"loot_table/mods/{name}.json")
         entry = loot["pools"][0]["entries"][0]
         require(entry["name"] == "yagens_attributes:mod" and entry["functions"] == [{"function": "minecraft:set_components", "components": {"yagens_attributes:mod_data": {"type": f"yagens_attributes:{name}", "level": 0}}}], f"Invalid loot component: {name}")
         variants += mod["max_level"] + 1
-    textures = {mod["texture"] for mod in mods.values()} | rendered_textures | {"yagens_attributes:item/mod"}
+    textures = {mod["texture"] for mod in mods.values()} | rendered_textures | {"yagens_attributes:item/mod", "yagens_attributes:item/unknown_riven"}
     riven_rules = read(RESOURCES / "data/yagens_attributes/riven_rules/default.json")
     require(riven_rules["baseCapacity"] == 10 and riven_rules["maxLevel"] == 8, "Invalid Riven capacity/rank")
     textures.add(riven_rules["texture"])
@@ -58,9 +59,10 @@ def main():
             metadata = read(animation)["animation"]
             valid_size = width == 32 and height >= 32 and height % 32 == 0
             require(type(metadata.get("frametime", 1)) is int and metadata.get("frametime", 1) > 0, f"Invalid frame time: {path}")
+        depths = {0: {1, 2, 4, 8, 16}, 2: {8, 16}, 3: {1, 2, 4, 8}, 4: {8, 16}, 6: {8, 16}}
         require(len(png) >= 33 and png[:8] == b"\x89PNG\r\n\x1a\n" and png[12:16] == b"IHDR"
-                and valid_size and png[24:26] == b"\x08\x06",
-                f"Expected 32px 8-bit RGBA sprite or animation strip: {path}")
+                and valid_size and png[24] in depths.get(png[25], set()),
+                f"Expected a supported 32px PNG sprite or animation strip: {path}")
     font = read(assets / "font/polarity_icons.json")
     require(len(font["providers"]) == len(polarities), "Expected a glyph provider for each polarity")
     for provider in font["providers"]:

@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "yagens_attributes:item/mods/multishot"
+    "layer0": "yagens_attributes:item/mods/effects/galvanized_chamber"
   }
 }

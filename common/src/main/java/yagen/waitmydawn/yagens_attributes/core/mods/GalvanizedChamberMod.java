@@ -9,7 +9,8 @@ public final class GalvanizedChamberMod extends BuiltinMod {
     @Override public ModDefinition definition() {
         return define(Rarity.GALVANIZED, Polarity.MADURAI, 6, 10, Set.of(Category.RANGED, Category.TRIDENT), "yagens_attributes:item/mods/multishot",
                 ModEffects.bonus(Stats.MULTISHOT, .8 / 11),
-                ModEffects.conditional(Stats.MULTISHOT, .3 / 11, new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 20, 5)))
-                .withStyle(ModStyle.family("yagens_attributes:split_chamber"));
+                ModEffects.conditional(Stats.MULTISHOT, .3 / 11, new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 20, 5,
+                        false, ConditionalModifier.Decay.ONE_AT_A_TIME)))
+                .withStyle(new ModStyle(ModStyle.Visual.GALVANIZED, Set.of("yagens_attributes:split_chamber")));
     }
 }

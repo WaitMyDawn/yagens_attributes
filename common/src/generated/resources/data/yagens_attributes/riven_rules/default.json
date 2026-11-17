@@ -30,20 +30,6 @@
     }
   ],
   "traits": {
-    "damage.puncture": {
-      "stat": "damage.puncture",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 1.19997,
-      "rangedBase": 1.19997,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.25,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
     "damage": {
       "stat": "damage",
       "operation": "ADDITION",
@@ -254,6 +240,20 @@
       "positive": true,
       "negative": true,
       "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "damage.puncture": {
+      "stat": "damage.puncture",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 1.19997,
+      "rangedBase": 1.19997,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.25,
       "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
     }
   },

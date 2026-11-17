@@ -46,7 +46,9 @@ public final class RuntimeCombatChecks {
         var report = new JsonObject();
         report.addProperty("pid", ProcessHandle.current().pid());
         try {
-            run(event.getServer().overworld(), report);
+            var suite = System.getProperty("yagens_attributes.validationSuite", "all");
+            if (!suite.equals("galvanized")) run(event.getServer().overworld(), report);
+            checks += GalvanizedRuntimeChecks.run(event.getServer().overworld(), report);
             report.addProperty("passed", true);
             YagensAttributes.LOGGER.info("Passed {} runtime combat checks", checks);
         } catch (Throwable failure) {
@@ -74,6 +76,7 @@ public final class RuntimeCombatChecks {
         }
     }
     private static void run(ServerLevel level, JsonObject report) {
+        criticalHitProcs(level, report);
         var player = FakePlayerFactory.get(level, new GameProfile(UUID.fromString("cb511ef5-5161-4d06-91bd-361d18dde733"), "[CombatChecks]"));
         player.setPos(0, 100, 0); player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, new ItemStack(Items.DIAMOND_SWORD));
         var state = WorldState.get(level.getServer()); var profile = CombatData.WEAPONS.weapon(player.getMainHandItem());
@@ -439,6 +442,36 @@ public final class RuntimeCombatChecks {
         catch (IllegalArgumentException expected) { rejected = true; }
         check(rejected); check(StatusApi.layers(immune).isEmpty());
         report.addProperty("independent_status_checks", checks - before);
+    }
+    private static void criticalHitProcs(ServerLevel level, JsonObject report) {
+        int start = checks;
+        var player = FakePlayerFactory.get(level, new GameProfile(UUID.fromString("1bd609d8-3c2b-4a65-8aa4-664e95a4f81d"), "[HitProcChecks]"));
+        var bow = new ItemStack(Items.BOW); player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, bow);
+        var profile = CombatData.WEAPONS.weapon(bow); var world = WorldState.get(level.getServer()); UUID weapon = Components.identify(bow);
+        var hunter = ModDefinitions.INSTANCE.catalog().card("yagens_attributes:hunter_munitions", 5);
+        UUID hunterId = UUID.randomUUID(), obsoleteId = UUID.randomUUID();
+        world.ledger.add(new ModLedger.Entry(hunterId, player.getUUID(), null, false, hunter.bonuses(), hunter.info(), -1));
+        world.ledger.install(player.getUUID(), hunterId, weapon, ModInfo.Category.BOW, 8, 0, 30, true);
+        var bone = ModDefinitions.INSTANCE.catalog().card("yagens_attributes:bone_finger_box", 5);
+        world.ledger.add(new ModLedger.Entry(obsoleteId, player.getUUID(), weapon, false, bone.bonuses(), bone.info(), 1));
+        var scoped = Objects.requireNonNull(RangedShooting.snapshot(player, bow));
+        close(profile.criticalChance(), Stats.resolve(profile.criticalChance(), Stats.CRITICAL_CHANCE, scoped.sources()));
+        world.bonus(player.getUUID(), Stats.CRITICAL_CHANCE, new Bonus(-profile.criticalChance(), 0, List.of(), 1));
+        world.bonus(player.getUUID(), Stats.STATUS_CHANCE, new Bonus(-profile.statusChance(), 0, List.of(), 0));
+        world.bonus(player.getUUID(), Stats.CRITICAL_SLASH_CHANCE, new Bonus(0, 0, List.of(), .7));
+        var shot = Objects.requireNonNull(RangedShooting.snapshot(player, bow));
+        shot = ShotData.decode(shot.encode());
+        var target = target(level); potionBlockedTarget = target; target.setAbsorptionAmount(4);
+        hitArrow(level, player, bow, shot, target, .75);
+        check(StatusApi.count(target, DamageType.SLASH) == 1); check(target.getActiveEffects().isEmpty());
+        var layer = StatusEffects.state(target).layers.get(0);
+        close(15, layer.base()); check(layer.weapon().equals(weapon)); check(layer.criticalTier() == 1);
+        StatusDamage.hurt(target, DamageType.SLASH, player.getUUID(), 1);
+        check(StatusApi.count(target, DamageType.SLASH) == 1);
+        potionBlockedTarget = null;
+        for (var id : List.of(hunterId, obsoleteId)) { world.ledger.uninstall(player.getUUID(), id, weapon, false); world.ledger.withdraw(player.getUUID(), id); }
+        for (var stat : List.of(Stats.CRITICAL_CHANCE, Stats.STATUS_CHANCE, Stats.CRITICAL_SLASH_CHANCE)) world.bonus(player.getUUID(), stat, Bonus.NONE);
+        report.addProperty("critical_hit_proc_checks", checks - start);
     }
     private static void hitArrow(ServerLevel level, ServerPlayer player, ItemStack bow, ShotData shot, Cow target, double share) {
         var arrow = new Arrow(level, player, new ItemStack(Items.ARROW), bow);

@@ -11,7 +11,7 @@
   "max_level": 5,
   "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
   "applicability": [
-    "weapon"
+    "melee"
   ],
   "texture": "yagens_attributes:item/mods/nameless_glove",
   "entries": [

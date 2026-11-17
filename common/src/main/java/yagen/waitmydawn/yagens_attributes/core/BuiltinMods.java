@@ -39,7 +39,10 @@ public final class BuiltinMods {
             new BerserkerFuryMod(),
             new PrimedUniversalNanocubeMod(),
             new PrimedReachMod(),
-            new PrimedFuryMod(), new LethalTorrentMod(), new GalvanizedChamberMod(), new QuickeningMod());
+            new PrimedFuryMod(), new LethalTorrentMod(), new GalvanizedChamberMod(), new QuickeningMod(),
+            new PointStrikeMod(), new VitalSenseMod(), new HunterMunitionsMod(), new TruePunishmentMod(),
+            new PrimedShatteredVenomDollMod(), new PrimedColdAdditionMod(),
+            new GalvanizedBoneFingerBoxMod(), new GalvanizedGazeOfPainMod());
     private BuiltinMods() {}
 
     public static ModCatalog catalog() {

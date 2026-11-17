@@ -24,7 +24,7 @@ public final class WeaponTooltip {
         var progress = preview ? WeaponProgress.ZERO : inspection.progress();
         result.add(Component.translatable("gui.yagens_attributes.weapon_level", progress.level()).withStyle(ChatFormatting.GRAY));
         if (progress.level() < WeaponProgress.MAX_LEVEL) result.add(Component.translatable("gui.yagens_attributes.weapon_experience", progress.experience(), progress.nextLevelExperience()).withStyle(ChatFormatting.DARK_GRAY));
-        for (String key : StatText.keys(profile)) {
+        for (String key : StatText.visibleKeys(profile, values)) {
             double value = preview ? Stats.base(profile, key) : values.get(key);
             result.add(StatText.label(key).copy().append(": " + StatText.value(key, value)).withStyle(ChatFormatting.GRAY));
         }

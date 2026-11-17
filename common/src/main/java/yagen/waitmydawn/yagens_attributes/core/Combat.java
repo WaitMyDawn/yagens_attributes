@@ -46,6 +46,7 @@ public final class Combat {
                     }
                 }
             }
+            HitProcs.append(procs, tier, bonuses, random);
         }
         double result = adjusted * (1 + tier * (criticalDamage - 1));
         if (!Double.isFinite(result)) throw new IllegalArgumentException("Damage overflow");
@@ -59,7 +60,13 @@ public final class Combat {
     public static Map<DamageType, Double> components(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses) {
         if (!Double.isFinite(input) || input < 0) throw new IllegalArgumentException("Invalid incoming damage");
         var amounts = new EnumMap<DamageType, Double>(DamageType.class);
-        double global = Stats.resolve(1, Stats.DAMAGE, bonuses);
+        var damageBonuses = new ArrayList<Bonus>();
+        for (var source : bonuses) {
+            if (source.containsKey(Stats.DAMAGE)) damageBonuses.add(source.get(Stats.DAMAGE));
+            if (source.containsKey(Stats.DIRECT_DAMAGE)) damageBonuses.add(source.get(Stats.DIRECT_DAMAGE));
+        }
+        // Direct-hit Addition shares the base-damage bucket, while status snapshots only read DAMAGE.
+        double global = Math.max(0, Bonus.evaluate(1, damageBonuses));
         for (DamageType type : DamageType.values()) {
             double amount = Stats.resolve(input * weapon.distribution().getOrDefault(type, 0D), "damage." + type.key(), bonuses, input) * global;
             if (!Double.isFinite(amount)) throw new IllegalArgumentException("Component damage overflow");

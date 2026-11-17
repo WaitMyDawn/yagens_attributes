@@ -11,20 +11,14 @@
   "max_level": 5,
   "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
   "applicability": [
-    "ranged",
-    "trident"
+    "ranged"
   ],
-  "texture": "yagens_attributes:item/mod",
+  "texture": "yagens_attributes:item/mods/critical_delay",
   "style": {
     "visual": "none",
     "exclusive_groups": [
       "yagens_attributes:critical_choice"
-    ],
-    "scoped_exclusive_groups": {
-      "trident": [
-        "yagens_attributes:trident_combo_critical_choice"
-      ]
-    }
+    ]
   },
   "entries": [
     {

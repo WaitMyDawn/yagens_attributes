@@ -27,7 +27,8 @@ public final class ComboService {
     public static List<Map<String, Bonus>> baseSources(ServerPlayer player, ItemStack weapon) {
         var world = WorldState.get(player.server); var result = new ArrayList<Map<String, Bonus>>();
         UUID id = weapon.get(Components.WEAPON_ID.get());
-        if (id != null) result.addAll(world.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString()));
+        var profile = CombatData.WEAPONS.weapon(weapon);
+        if (id != null && profile != null) result.addAll(world.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString(), profile.category()));
         result.add(world.bonuses(player.getUUID())); return List.copyOf(result);
     }
     public static int duration(List<Map<String, Bonus>> sources) { return Combo.duration(ServerConfigs.COMBO_DURATION.get(), sources); }

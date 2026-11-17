@@ -11,7 +11,7 @@
   "max_level": 5,
   "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
   "applicability": [
-    "weapon"
+    "melee"
   ],
   "texture": "yagens_attributes:item/mods/bone_finger_box",
   "style": {
@@ -24,7 +24,7 @@
     {
       "stat": "critical_chance",
       "operation": "addition",
-      "value": 0.15,
+      "value": 0.2,
       "basis": "flat",
       "description": "Fractional additive bonus at level 0. A value of 1.0 means +100%; scales with (level + 1)."
     }

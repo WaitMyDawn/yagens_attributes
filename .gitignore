@@ -72,6 +72,8 @@ repo/
 /artwork/
 /art/*
 Spec.md
+AGENTS.md
+DEVELOPMENT.md
 
 ### Build Verification Logs ###
 /*.log

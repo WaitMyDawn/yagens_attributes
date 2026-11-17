@@ -8,7 +8,7 @@ public final class OrganShatterMod extends BuiltinMod {
     public OrganShatterMod() { super("nameless_glove"); }
 
     @Override public ModDefinition definition() {
-        return define(Rarity.RARE, Polarity.MADURAI, 4, 5, Set.of(Category.WEAPON),
+        return define(Rarity.RARE, Polarity.MADURAI, 4, 5, Set.of(Category.MELEE),
                 "yagens_attributes:item/mods/nameless_glove",
                 ModEffects.bonus(Stats.CRITICAL_DAMAGE, 0.15));
     }

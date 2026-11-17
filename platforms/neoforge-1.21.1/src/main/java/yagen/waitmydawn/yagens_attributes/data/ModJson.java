@@ -114,14 +114,29 @@ public final class ModJson {
         object.addProperty("trigger", value.trigger().name().toLowerCase(Locale.ROOT));
         object.addProperty("duration_seconds", value.durationSeconds());
         object.addProperty("max_stacks", value.maxStacks());
-        object.addProperty("description", "Qualifying kills selected by trigger refresh all active stacks for duration_seconds, capped at max_stacks. Target status conditions count distinct independent proc types before this hit and ignore vanilla potion effects. Duration and stack cap are rank-independent.");
+        if (value.perTargetStatus()) object.addProperty("per_target_status", true);
+        if (value.decay() != ConditionalModifier.Decay.ALL_AT_ONCE) object.addProperty("decay", value.decay().name().toLowerCase(Locale.ROOT));
+        object.addProperty("description", "Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. Duration and stack cap do not scale with rank.");
         return object;
     }
     private static ConditionalModifier.Condition condition(JsonObject object) {
-        JsonData.fields(object, "trigger", "duration_seconds", "max_stacks", "description");
+        JsonData.fields(object, "trigger", "duration_seconds", "max_stacks", "description", "per_target_status", "decay");
         if (string(object, "description").isBlank()) throw new IllegalArgumentException("Missing condition description");
         return new ConditionalModifier.Condition(enumeration(ConditionalModifier.Trigger.class, string(object, "trigger")),
-                JsonData.number(object, "duration_seconds", Double.NaN), integer(object, "max_stacks"));
+                JsonData.number(object, "duration_seconds", Double.NaN), integer(object, "max_stacks"),
+                object.has("per_target_status") && object.get("per_target_status").getAsBoolean(),
+                object.has("decay") ? enumeration(ConditionalModifier.Decay.class, string(object, "decay")) : ConditionalModifier.Decay.ALL_AT_ONCE);
+    }
+
+    public static JsonObject conditional(ConditionalModifier value) {
+        var object = new JsonObject();
+        object.addProperty("stat", value.stat()); object.addProperty("addition", value.addition());
+        object.add("condition", condition(value.condition()));
+        return object;
+    }
+    public static ConditionalModifier conditional(JsonObject object) {
+        JsonData.fields(object, "stat", "addition", "condition");
+        return new ConditionalModifier(string(object, "stat"), JsonData.number(object, "addition", Double.NaN), condition(object.getAsJsonObject("condition")));
     }
 
     public static JsonObject quality(ModCatalog.Quality value) {

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.hunter_munitions",
+  "rarity": "uncommon",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 4,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "ranged"
+  ],
+  "texture": "yagens_attributes:item/mods/hunter_munitions",
+  "entries": [
+    {
+      "stat": "critical_slash_chance",
+      "operation": "addition",
+      "value": 0.05,
+      "basis": "unit",
+      "description": "Additional proc probability at level 0, relative to a unit probability of 1. Scales with (level + 1), sums with other unit-basis additions, and clamps to [0, 1] per qualifying hit. Critical-triggered procs roll once per hit, regardless of critical tier; they do not require matching damage or a status-chance roll."
+    }
+  ]
+}

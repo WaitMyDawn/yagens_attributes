@@ -18,31 +18,39 @@ import java.util.function.IntSupplier;
 
 public final class RangedShooting {
     private RangedShooting() {}
-    public static boolean supported(ItemStack weapon) { return weapon.getItem() instanceof ProjectileWeaponItem || weapon.getItem() instanceof TridentItem; }
+    public static boolean supported(ItemStack weapon) { return weapon.getItem() instanceof ProjectileWeaponItem || weapon.getItem() instanceof TridentItem
+            || yagen.waitmydawn.yagens_attributes.compat.NativeWeapons.ranged(weapon); }
     public static boolean handles(LivingEntity shooter, ItemStack weapon) {
         return shooter instanceof ServerPlayer && ServerConfigs.ENABLE_COMBAT.get() && supported(weapon) && CombatData.WEAPONS.weapon(weapon) != null;
     }
     public static ShotData snapshot(LivingEntity shooter, ItemStack weapon) {
         if (!(shooter instanceof ServerPlayer player) || !handles(shooter, weapon)) return null;
+        return snapshot(player, weapon, AttackKind.RANGED);
+    }
+    public static ShotData snapshot(ServerPlayer player, ItemStack weapon, AttackKind kind) {
+        if (!ServerConfigs.ENABLE_COMBAT.get()) return null;
         var profile = CombatData.WEAPONS.weapon(weapon); if (profile == null) return null;
         var state = WorldState.get(player.server);
         List<Map<String, Bonus>> sources = new ArrayList<>();
         UUID id = WeaponEligibility.operable(weapon, profile) ? Components.identify(weapon) : null;
-        if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString())); sources.add(state.bonuses(player.getUUID()));
+        if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString(), profile.category())); sources.add(state.bonuses(player.getUUID()));
         try {
+            if (kind == AttackKind.MELEE && id != null) sources = new ArrayList<>(ComboService.sources(player, id, sources));
             sources = new ArrayList<>(ConditionalModService.sources(player, weapon, sources, null));
-            var result = new ShotData(profile, sources, 1, false, id); result.multishot(); result.fireRate(); return result;
+            var result = new ShotData(profile, sources, 1, false, id, ConditionalModService.targetModifiers(player, weapon),
+                    player.getUUID(), id == null ? AttackKind.UNKNOWN : kind); result.multishot(); result.fireRate(); return result;
         } catch (IllegalArgumentException exception) {
             YagensAttributes.LOGGER.warn("Invalid ranged stats for {}: {}", player.getUUID(), exception.getMessage()); return null;
         }
     }
     public static ShotData shot(Entity entity) {
-        return entity instanceof Projectile && entity.hasData(RangedAttachments.SHOT.get()) ? entity.getData(RangedAttachments.SHOT.get()) : null;
+        return entity != null && entity.hasData(RangedAttachments.SHOT.get()) ? entity.getData(RangedAttachments.SHOT.get()) : null;
     }
     public static boolean rangedDamage(DamageSource source) {
         if (!ServerConfigs.ENABLE_COMBAT.get() || !(source.getEntity() instanceof ServerPlayer)) return false;
         var shot = shot(source.getDirectEntity());
-        if (shot != null && shot.profile() != null) return true;
+        if (shot == null) shot = yagen.waitmydawn.yagens_attributes.compat.NativeAttacks.source(source);
+        if (shot != null && shot.profile() != null) return shot.attackKind() == AttackKind.RANGED;
         ItemStack weapon = source.getWeaponItem();
         return source.is(DamageTypeTags.IS_PROJECTILE) && weapon != null && !weapon.isEmpty() && supported(weapon) && CombatData.WEAPONS.weapon(weapon) != null;
     }
@@ -69,6 +77,7 @@ public final class RangedShooting {
                     Entity created = original.getType().create(level);
                     if (!(created instanceof Projectile copy)) break;
                     copy.load(template.copy()); copy.setDeltaMovement(original.getDeltaMovement());
+                    copySyncedState(original, copy);
                     if (copy instanceof AbstractArrow arrow) arrow.pickup = AbstractArrow.Pickup.DISALLOWED;
                     candidates.add(copy);
                 } catch (RuntimeException exception) {
@@ -92,4 +101,15 @@ public final class RangedShooting {
         return !spawned.isEmpty();
     }
     public static CompoundTag cloneTemplate(CompoundTag tag) { tag.remove("UUID"); tag.remove("Passengers"); return tag; }
+    public static void copySyncedState(Entity original, Entity copy) {
+        if (original.getType() != copy.getType()) throw new IllegalArgumentException("Projectile copy type mismatch");
+        var values = original.getEntityData().getNonDefaultValues();
+        if (values == null) return;
+        var copied = new ArrayList<net.minecraft.network.syncher.SynchedEntityData.DataValue<?>>();
+        for (var value : values) copied.add(copyValue(value));
+        copy.getEntityData().assignValues(copied);
+    }
+    private static <T> net.minecraft.network.syncher.SynchedEntityData.DataValue<T> copyValue(net.minecraft.network.syncher.SynchedEntityData.DataValue<T> value) {
+        return new net.minecraft.network.syncher.SynchedEntityData.DataValue<>(value.id(), value.serializer(), value.serializer().copy(value.value()));
+    }
 }

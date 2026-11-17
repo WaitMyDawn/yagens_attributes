@@ -15,7 +15,8 @@ import java.util.*;
 /** Resolves shield-only and health-only multipliers without amplifying shield overflow twice. */
 @EventBusSubscriber(modid = YagensAttributes.MODID)
 public final class DefenseEvents {
-    private record Pending(double before, boolean gated, int magnetic, double maximum) {}
+    private record Pending(double before, boolean gated, int magnetic, double maximum,
+                           yagen.waitmydawn.yagens_attributes.data.StatusState.Layer magneticOrigin) {}
     private static final Map<DamageSource, Map<LivingEntity, Deque<Pending>>> PENDING = new IdentityHashMap<>();
     private DefenseEvents() {}
     public static void absorptionChanging(LivingEntity target, DamageSource source, float amount) {
@@ -61,7 +62,8 @@ public final class DefenseEvents {
         event.setNewDamage((float) Math.min(Float.MAX_VALUE, hit.shieldSpent() + hit.healthDamage()));
         event.getContainer().addModifier(Reduction.ABSORPTION, (container, reduction) -> Math.min(reduction, (float) resolvedHit.shieldSpent()));
         PENDING.computeIfAbsent(event.getSource(), key -> new IdentityHashMap<>()).computeIfAbsent(target, key -> new ArrayDeque<>())
-                .push(new Pending(shield, hit.gated(), magnetic, ShieldService.enabled(target) ? ShieldService.natural(target) : target.getMaxAbsorption()));
+                .push(new Pending(shield, hit.gated(), magnetic, ShieldService.enabled(target) ? ShieldService.natural(target) : target.getMaxAbsorption(),
+                        StatusEffects.latestLayer(target, DamageType.MAGNETIC)));
     }
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void after(LivingDamageEvent.Post event) {
@@ -73,10 +75,11 @@ public final class DefenseEvents {
         if (event.getNewDamage() > 0 || spent > 0) ShieldService.damaged(event.getEntity());
         if (pending != null && pending.before > 0 && spent > 0 && event.getEntity().getAbsorptionAmount() <= 0) {
             if (pending.gated) ShieldService.broken(event.getEntity(), pending.before);
-            if (pending.magnetic > 0) {
-                UUID owner = StatusEffects.latestOwner(event.getEntity(), DamageType.MAGNETIC);
+            if (pending.magnetic > 0 && pending.magneticOrigin != null) {
+                var origin = pending.magneticOrigin;
                 double damage = .03 * pending.maximum * pending.magnetic;
-                if (event.getEntity().isAlive()) StatusEffects.apply(event.getEntity(), DamageType.ELECTRICITY, owner, damage / .5, 120);
+                if (event.getEntity().isAlive()) StatusEffects.tryApply(event.getEntity(), DamageType.ELECTRICITY, origin.owner(), 120,
+                        origin.childContext(DamageType.ELECTRICITY, damage / .5));
                 StatusEffects.visual(event.getEntity(), DamageType.MAGNETIC, 1.2, true);
             }
         }

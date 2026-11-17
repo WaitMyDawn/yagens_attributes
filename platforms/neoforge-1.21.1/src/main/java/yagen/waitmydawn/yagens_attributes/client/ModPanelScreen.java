@@ -48,6 +48,7 @@ public final class ModPanelScreen extends Screen {
     private List<Component> hoveredTooltip;
     private PanelPayload.ModView detailSource;
     private boolean detailExpanded;
+    private long detailBuffRevision = -1;
     private List<FormattedCharSequence> detailLines = List.of();
     private List<Integer> hotbarSlots = List.of();
     private List<PanelGeometry.Rect> hotbarRectangles = List.of();
@@ -407,7 +408,7 @@ public final class ModPanelScreen extends Screen {
         canvas.fill(32, 130, 184, 5, 0xFF263943); canvas.fill(32, 130, Math.round(184 * progress.fraction()), 5, PanelPainter.TEAL);
         canvas.text(text(progress.level() == WeaponProgress.MAX_LEVEL ? "max_level" : "weapon_experience", progress.experience(), progress.nextLevelExperience()).getString(), 32, 140, 8, PanelPainter.MUTED, 184);
         if (experienceToggle != null && experienceToggle.visible && mx >= 146 && mx < 216 && my >= 110 && my < 127) hoveredTooltip = List.of(text("experience_absorption_help"));
-        var keys = StatText.keys(snapshot.profile());
+        var keys = StatText.visibleKeys(snapshot.profile(), snapshot.resolved());
         if (snapshot.hasWeaponRiven()) {
             canvas.text(text("riven_disposition_label").getString(), 32, 152, 9, 0xFFB169F5, 118);
             PanelPainter.disposition(canvas, RivenRules.stars(snapshot.profile().rivenDisposition()));
@@ -440,14 +441,16 @@ public final class ModPanelScreen extends Screen {
             canvas.text(text("select_mod_details").getString(), r.x() + 12, r.y() + 40, 10, PanelPainter.MUTED, r.width() - 24);
         } else {
             float size = 10F / 9F;
-            if (!mod.equals(detailSource) || detailExpanded != hasShiftDown()) {
+            if (!mod.equals(detailSource) || detailExpanded != hasShiftDown() || detailBuffRevision != WeaponBuffHud.revision()) {
                 var information = new ArrayList<>(tooltip(mod));
+                information.addAll(WeaponBuffHud.details(weaponId(), mod.id()));
                 if (hasShiftDown()) information.add(text(mod.owner().equals(minecraft.player.getUUID()) ? "owner_self" : "owner_other"));
                 int singleLines = 1 + ModText.properties(mod.info(), mod.bonuses()).size();
                 detailLines = java.util.stream.IntStream.range(0, information.size()).boxed().flatMap(index -> index < singleLines
                         ? Stream.of(information.get(index).getVisualOrderText())
                         : font.split(information.get(index), (int) ((r.width() - 24) / size)).stream()).toList();
                 detailSource = mod; detailExpanded = hasShiftDown();
+                detailBuffRevision = WeaponBuffHud.revision();
             }
             var lines = detailLines;
             detailLineCount = lines.size(); detailsScroll = Math.min(detailsScroll, Math.max(0, detailLineCount - 14));

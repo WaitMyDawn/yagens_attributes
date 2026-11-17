@@ -8,6 +8,6 @@ public final class HammerShotMod extends BuiltinMod {
     public HammerShotMod() { super("hammer_shot"); }
     @Override public ModDefinition definition() {
         return define(Rarity.RARE, Polarity.VAZARIN, 6, 3, Set.of(Category.RANGED, Category.TRIDENT),
-                "yagens_attributes:item/mod", ModEffects.bonus(Stats.CRITICAL_DAMAGE, .15), ModEffects.bonus(Stats.STATUS_CHANCE, .2));
+                "yagens_attributes:item/mods/hammer_shot", ModEffects.bonus(Stats.CRITICAL_DAMAGE, .15), ModEffects.bonus(Stats.STATUS_CHANCE, .2));
     }
 }

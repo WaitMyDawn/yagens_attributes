@@ -5,7 +5,7 @@ import java.util.*;
 /** Explicit presentation and installation families; neither is inferred from a registry name. */
 public record ModStyle(Visual visual, Set<String> exclusiveGroups, Map<ModInfo.Category, Set<String>> scopedExclusiveGroups) {
     public ModStyle(Visual visual, Set<String> exclusiveGroups) { this(visual, exclusiveGroups, Map.of()); }
-    public enum Visual { NONE, OROKIN }
+    public enum Visual { NONE, OROKIN, GALVANIZED }
     public static final ModStyle DEFAULT = new ModStyle(Visual.NONE, Set.of());
     public ModStyle {
         Objects.requireNonNull(visual);

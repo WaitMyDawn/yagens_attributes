@@ -63,16 +63,28 @@ public final class ModTextContracts {
                 var resolved = PanelService.resolve(profile, List.of(catalog.card("yagens_attributes:universal_nanocube", 5).bonuses(), catalog.card("yagens_attributes:bone_finger_box", 5).bonuses()));
                 var inspection = new WeaponInspectionData(resolved, new WeaponProgress(10, 3), 16, false);
                 var weaponLines = WeaponTooltip.lines(profile, inspection, false).stream().map(line -> line.getString()).toList();
-                equal(true, weaponLines.contains(data.get("stat.yagens_attributes.critical_chance") + ": 28.5%"));
+                equal(true, weaponLines.contains(data.get("stat.yagens_attributes.critical_chance") + ": 33%"));
                 equal(true, weaponLines.contains(data.get("gui.yagens_attributes.total_damage") + ": 13.3"));
                 equal(false, weaponLines.contains(data.get("stat.yagens_attributes.critical_chance") + ": 15%"));
                 equal(true, weaponLines.stream().anyMatch(line -> line.endsWith(": 13.3") && line.contains(data.get("stat.yagens_attributes.damage.slash"))));
+                equal(false, weaponLines.stream().anyMatch(line -> line.startsWith(data.get("stat.yagens_attributes.attack_speed") + ":")));
+                equal(true, WeaponTooltip.lines(profile, new WeaponInspectionData(PanelService.resolve(profile,
+                        List.of(Map.of(Stats.ATTACK_SPEED, new Bonus(0, .3, List.of(), 0)))), WeaponProgress.ZERO, 0, false), false)
+                        .stream().anyMatch(line -> line.getString().equals(data.get("stat.yagens_attributes.attack_speed") + ": 1.3x")));
+                equal(language.equals("zh_cn") ? "冰冻附加 Prime" : "Cold Addition Prime",
+                        data.get("mod.yagens_attributes.primed_cold_addition"));
                 equal(2, WeaponTooltip.lines(profile, null, false).size());
                 equal(data.get("tooltip.yagens_attributes.syncing"), WeaponTooltip.lines(profile, null, false).get(1).getString());
                 equal(2, WeaponTooltip.lines(profile, new WeaponInspectionData(Map.of(), WeaponProgress.ZERO, 0, false), false).size());
                 equal(data.get("tooltip.yagens_attributes.preview"), WeaponTooltip.lines(profile, null, true).get(0).getString());
                 equal(language.equals("zh_cn") ? "关键延迟" : "Critical Delay", ModText.localizedName(catalog.card("yagens_attributes:critical_delay", 0).info()).getString());
                 equal(language.equals("zh_cn") ? "狂暴 Prime" : "Fury Prime", ModText.localizedName(catalog.card("yagens_attributes:primed_fury", 10).info()).getString());
+                var galvanized = catalog.card("yagens_attributes:galvanized_gaze_of_pain", 10);
+                var conditionalLines = ModText.bonuses(galvanized.info(), Map.of()).stream().map(line -> line.getString()).toList();
+                equal(1, conditionalLines.size());
+                equal(false, conditionalLines.get(0).contains("gui.yagens_attributes"));
+                equal(true, conditionalLines.get(0).contains("+40%"));
+                equal(true, conditionalLines.get(0).contains(data.get("stat.yagens_attributes.direct_damage")));
             }
         } finally { Language.inject(original); }
         System.out.println("Passed " + checks + " concise Chinese/English Mod entry presentation checks");

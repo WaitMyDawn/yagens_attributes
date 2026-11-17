@@ -14,7 +14,7 @@
     "ranged",
     "trident"
   ],
-  "texture": "yagens_attributes:item/mod",
+  "texture": "yagens_attributes:item/mods/hammer_shot",
   "entries": [
     {
       "stat": "critical_damage",

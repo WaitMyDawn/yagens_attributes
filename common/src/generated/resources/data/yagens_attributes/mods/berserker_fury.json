@@ -13,7 +13,7 @@
   "applicability": [
     "melee"
   ],
-  "texture": "yagens_attributes:item/mod",
+  "texture": "yagens_attributes:item/mods/berserker_fury",
   "style": {
     "visual": "none",
     "exclusive_groups": [
@@ -26,12 +26,13 @@
       "operation": "addition",
       "value": 0.05833333333333333,
       "basis": "flat",
-      "description": "Fractional Addition per qualifying target status type or active qualifying-kill stack at level 0. Scales with (level + 1); duration_seconds and max_stacks do not scale with rank.",
+      "description": "Fractional Addition per qualifying target status type or active qualifying-kill stack at level 0. With per_target_status, multiply kill stacks by target status types. The direct_damage stat shares the damage Addition bucket for direct hits and does not increase explosion or status damage. Scales with (level + 1); duration_seconds and max_stacks do not scale with rank.",
       "condition": {
         "trigger": "melee_kills",
         "duration_seconds": 10.0,
         "max_stacks": 2,
-        "description": "Qualifying kills selected by trigger refresh all active stacks for duration_seconds, capped at max_stacks. Target status conditions count distinct independent proc types before this hit and ignore vanilla potion effects. Duration and stack cap are rank-independent."
+        "decay": "independent",
+        "description": "Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. Duration and stack cap do not scale with rank."
       }
     }
   ]

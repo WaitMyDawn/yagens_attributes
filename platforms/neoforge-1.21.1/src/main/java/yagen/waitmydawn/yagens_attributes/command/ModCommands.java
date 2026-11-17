@@ -188,7 +188,8 @@ public final class ModCommands {
         List<Map<String, Bonus>> sources = new ArrayList<>();
         WorldState state = WorldState.get(player.server);
         UUID weapon = player.getMainHandItem().get(Components.WEAPON_ID.get());
-        if (weapon != null) sources.addAll(state.ledger.bonuses(weapon, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(player.getMainHandItem().getItem()).toString()));
+        var profile = CombatData.WEAPONS.weapon(player.getMainHandItem());
+        if (weapon != null && profile != null) sources.addAll(state.ledger.bonuses(weapon, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(player.getMainHandItem().getItem()).toString(), profile.category()));
         sources.add(state.bonuses(player.getUUID()));
         return sources;
     }

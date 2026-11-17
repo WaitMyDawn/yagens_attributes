@@ -13,7 +13,7 @@
   "applicability": [
     "melee"
   ],
-  "texture": "yagens_attributes:item/mod",
+  "texture": "yagens_attributes:item/mods/spoiled_strike",
   "entries": [
     {
       "stat": "damage",

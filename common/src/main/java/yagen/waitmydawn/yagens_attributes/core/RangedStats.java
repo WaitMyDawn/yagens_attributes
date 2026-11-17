@@ -27,6 +27,18 @@ public final class RangedStats {
         return new Volley(count, multishot / count);
     }
 
+    /** Fractional emissions belong to one continuous use action, independently of its remaining-use counter. */
+    public static final class IntervalClock {
+        private double carry;
+        public int advance(double rate, int period) {
+            if (!Double.isFinite(rate) || rate < 0 || rate > LIMIT || period < 1) throw new IllegalArgumentException("Invalid firing cadence");
+            double accumulated = carry + rate / period;
+            int count = (int) Math.floor(Math.nextUp(accumulated));
+            carry = Math.max(0, accumulated - count);
+            return count;
+        }
+    }
+
     /**
      * A clock belongs to one use action; fractional progress never carries into another shot.
      */

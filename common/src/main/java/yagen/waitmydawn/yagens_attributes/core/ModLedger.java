@@ -38,7 +38,8 @@ public final class ModLedger {
     private final Map<UUID, Set<UUID>> byWeapon = new HashMap<>();
     private final Map<UUID, Set<UUID>> byOwner = new HashMap<>();
     private final Map<UUID, List<Map<String, Bonus>>> weaponCache = new HashMap<>();
-    private final Map<UUID, Map<String, List<Map<String, Bonus>>>> itemCache = new HashMap<>();
+    private record WeaponKey(String item, ModInfo.Category category) {}
+    private final Map<UUID, Map<WeaponKey, List<Map<String, Bonus>>>> itemCache = new HashMap<>();
 
     public void add(Entry entry) {
         if (entries.containsKey(entry.id())) throw new IllegalArgumentException("Duplicate Mod UUID");
@@ -74,10 +75,17 @@ public final class ModLedger {
         return weaponCache.computeIfAbsent(weapon, id -> installed(id).stream().map(Entry::bonuses).toList());
     }
     public List<Map<String, Bonus>> bonuses(UUID weapon, String item) {
+        return bonuses(weapon, item, null);
+    }
+    /** Rechecks current applicability so catalog changes cannot keep obsolete installed bonuses active. */
+    public List<Map<String, Bonus>> bonuses(UUID weapon, String item, ModInfo.Category category) {
         if (!byWeapon.containsKey(weapon)) return List.of();
         var cache = itemCache.computeIfAbsent(weapon, ignored -> new HashMap<>());
-        if (!cache.containsKey(item) && cache.size() >= 8) cache.clear();
-        return cache.computeIfAbsent(item, ignored -> installed(weapon).stream().filter(entry -> entry.info().compatibleItem(item)).map(Entry::bonuses).toList());
+        var key = new WeaponKey(item, category);
+        if (!cache.containsKey(key) && cache.size() >= 8) cache.clear();
+        return cache.computeIfAbsent(key, ignored -> installed(weapon).stream()
+                .filter(entry -> entry.info().compatibleItem(item) && (category == null || entry.info().compatible(category)))
+                .map(Entry::bonuses).toList());
     }
 
     public void install(UUID actor, UUID mod, UUID weapon) {

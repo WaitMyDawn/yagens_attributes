@@ -30,7 +30,7 @@ public final class ComboTests {
         var cc = catalog.card("yagens_attributes:bone_finger_box", 5).bonuses();
         close(.15, Stats.resolve(.15, Stats.CRITICAL_CHANCE, Combo.sources(List.of(rush), 1)));
         close(.21, Stats.resolve(.15, Stats.CRITICAL_CHANCE, Combo.sources(List.of(rush), 2)));
-        close(.945, Stats.resolve(.15, Stats.CRITICAL_CHANCE, Combo.sources(List.of(rush, cc), 12)));
+        close(.99, Stats.resolve(.15, Stats.CRITICAL_CHANCE, Combo.sources(List.of(rush, cc), 12)));
         close(.81, Stats.resolve(.15, Stats.STATUS_CHANCE, Combo.sources(List.of(wounds), 12)));
         var profile = new WeaponProfile(0, 2, 0, 6, Map.of(DamageType.IMPACT, 1D));
         close(10, Combat.calculate(10, profile, Combo.sources(List.of(), 12), Map.of(), () -> .99).damage());

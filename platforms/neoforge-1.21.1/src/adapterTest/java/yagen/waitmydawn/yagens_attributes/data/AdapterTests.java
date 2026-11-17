@@ -61,6 +61,8 @@ public final class AdapterTests {
         PanelContracts.run();
         LootContracts.run();
         ComboContracts.run();
+        WeaponBuffContracts.run();
+        StatusEffectContracts.run();
         ClientUiContracts.run();
         ExperienceContracts.run();
         RivenContracts.run();
@@ -123,6 +125,19 @@ public final class AdapterTests {
         equal(ModInfo.Category.SWORD, rules.get(WeaponFamilies.Family.SWORD).profile().category());
         equal(false, rules.get(WeaponFamilies.Family.BOW).deriveDamage());
         equal(8D, rules.get(WeaponFamilies.Family.BOW).profile().baseDamage());
+        var exactNative = JsonData.weaponJson(rules.get(WeaponFamilies.Family.SWORD).profile().withDisposition(1.1));
+        exactNative.remove("base_damage");
+        var nativeRule = WeaponProfiles.rule(exactNative);
+        equal(true, nativeRule.deriveDamage());
+        var resolved = nativeRule.resolve(37);
+        equal(37D, resolved.baseDamage());
+        equal(nativeRule.profile().distribution(), resolved.distribution());
+        equal(nativeRule.profile().category(), resolved.category());
+        equal(nativeRule.profile().slots(), resolved.slots());
+        equal(1.1D, resolved.rivenDisposition());
+        for (double invalid : new double[]{0, -1, Double.NaN, Double.POSITIVE_INFINITY}) rejects(() -> nativeRule.resolve(invalid));
+        var fixedRule = WeaponProfiles.rule(JsonData.weaponJson(rules.get(WeaponFamilies.Family.BOW).profile()));
+        equal(false, fixedRule.deriveDamage()); equal(8D, fixedRule.resolve(Double.NaN).baseDamage());
         rejects(() -> WeaponProfiles.defaults(Map.of(id, document, net.minecraft.resources.ResourceLocation.parse("other:defaults"), document)));
         rejects(() -> WeaponProfiles.defaults(Map.of(id, JsonParser.parseString("{\"schema_version\":2,\"classes\":{}}"))));
         rejects(() -> WeaponProfiles.defaults(Map.of(id, JsonParser.parseString("{\"schema_version\":1,\"classes\":{\"unknown\":{}}}"))));

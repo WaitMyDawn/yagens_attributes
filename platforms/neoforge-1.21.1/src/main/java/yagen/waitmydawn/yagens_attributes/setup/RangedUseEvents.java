@@ -30,11 +30,12 @@ public final class RangedUseEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST) public static void tick(LivingEntityUseItemEvent.Tick event) {
         if (event.getEntity().level().isClientSide()) { ClientPackets.useTick(event); return; }
         var use = USES.get().get(event.getEntity());
-        if (use != null && use.item() == event.getItem()) event.setDuration(use.clock().beforeTick(event.getDuration()));
+        if (use != null && use.item() == event.getItem() && !yagen.waitmydawn.yagens_attributes.compat.NativeWeapons.continuous(event.getItem())) event.setDuration(use.clock().beforeTick(event.getDuration()));
     }
     @SubscribeEvent public static void stop(LivingEntityUseItemEvent.Stop event) { clear(event.getEntity()); }
     @SubscribeEvent public static void finish(LivingEntityUseItemEvent.Finish event) { clear(event.getEntity()); }
     private static void clear(LivingEntity entity) {
+        yagen.waitmydawn.yagens_attributes.compat.NativeAttacks.clear(entity);
         if (entity.level().isClientSide()) ClientPackets.useStop(entity); else USES.get().remove(entity);
     }
     public static double activeRate(LivingEntity entity, ItemStack item, double fallback) {

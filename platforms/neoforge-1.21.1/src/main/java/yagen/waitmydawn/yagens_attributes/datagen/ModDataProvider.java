@@ -8,6 +8,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import yagen.waitmydawn.yagens_attributes.core.*;
+import yagen.waitmydawn.yagens_attributes.core.ui.ModAnimations;
 import yagen.waitmydawn.yagens_attributes.data.*;
 
 import java.awt.image.BufferedImage;
@@ -70,28 +71,30 @@ public final class ModDataProvider implements DataProvider {
     }
 
     private void animatedArt(CachedOutput output, String id, ModDefinition definition) throws IOException {
-        if (definition.style().visual() != ModStyle.Visual.OROKIN) return;
+        var visual = definition.style().visual();
+        if (visual == ModStyle.Visual.NONE) return;
         var source = ResourceLocation.parse(definition.texture());
         var location = ResourceLocation.fromNamespaceAndPath(source.getNamespace(), "textures/" + source.getPath() + ".png");
-        var resource = existingClientResources.getResource(location).orElseThrow(() -> new IOException("Missing Prime subject: " + location));
+        var resource = existingClientResources.getResource(location).orElseThrow(() -> new IOException("Missing animated Mod subject: " + location));
         BufferedImage original;
         try (var input = resource.open()) { original = ImageIO.read(input); }
-        if (original == null || original.getWidth() != 32 || original.getHeight() != 32) throw new IOException("Prime subject must be 32x32: " + location);
+        if (original == null || original.getWidth() != 32 || original.getHeight() != 32) throw new IOException("Animated Mod subject must be 32x32: " + location);
         int[] pixels = original.getRGB(0, 0, 32, 32, null, 0, 32);
-        var animation = new BufferedImage(32, 32 * yagen.waitmydawn.yagens_attributes.core.ui.OrokinPixels.FRAMES, BufferedImage.TYPE_INT_ARGB);
-        for (int frame = 0; frame < yagen.waitmydawn.yagens_attributes.core.ui.OrokinPixels.FRAMES; frame++)
-            animation.setRGB(0, frame * 32, 32, 32, yagen.waitmydawn.yagens_attributes.core.ui.OrokinPixels.frame(pixels, 32, 32, frame), 0, 32);
+        var animation = new BufferedImage(32, 32 * ModAnimations.frames(visual), BufferedImage.TYPE_INT_ARGB);
+        for (int frame = 0; frame < ModAnimations.frames(visual); frame++)
+            animation.setRGB(0, frame * 32, 32, 32, ModAnimations.frame(visual, pixels, 32, 32, frame), 0, 32);
         var png = new ByteArrayOutputStream(); ImageIO.write(animation, "PNG", png);
         var texture = ResourceLocation.parse(definition.style().texture(id, definition.texture()));
         String path = "assets/" + texture.getNamespace() + "/textures/" + texture.getPath() + ".png";
         bytes(output, path, png.toByteArray());
-        json(output, path + ".mcmeta", object("{\"animation\":{\"frametime\":" + yagen.waitmydawn.yagens_attributes.core.ui.OrokinPixels.FRAME_TICKS + ",\"interpolate\":false}}"));
+        json(output, path + ".mcmeta", object("{\"animation\":{\"frametime\":" + ModAnimations.frameTicks(visual) + ",\"interpolate\":false}}"));
     }
 
     @Override
     public CompletableFuture<?> run(CachedOutput output) {
         try {
             var catalog = BuiltinMods.catalog();
+            json(output, "assets/yagens_attributes/particles/status_blood.json", object("{\"textures\":[\"yagens_attributes:status/blood_drop\"]}"));
             for (var entry : BuiltinMaterials.life().entrySet()) {
                 var material = new JsonObject(); material.addProperty("priority", 0);
                 var entities = new JsonArray(); entry.getValue().entities().forEach(entities::add); material.add("entities", entities);
@@ -119,6 +122,7 @@ public final class ModDataProvider implements DataProvider {
             var sources = new JsonArray();
             var textures = new TreeSet<String>();
             textures.add("yagens_attributes:item/mod");
+            textures.add("yagens_attributes:item/unknown_riven");
             textures.add(catalog.rivenRules().texture());
             catalog.definitions().values().forEach(definition -> textures.add(definition.texture()));
             catalog.definitions().forEach((id, definition) -> textures.add(definition.style().texture(id, definition.texture())));
@@ -161,8 +165,11 @@ public final class ModDataProvider implements DataProvider {
                 json(output, "data/yagens_attributes/mod_rarities/" + value.type().key() + ".json", ModJson.quality(value));
             for (var value : catalog.polarities().values())
                 json(output, "data/yagens_attributes/mod_polarities/" + value.type().key() + ".json", ModJson.polarity(value));
-            for (var entry : BuiltinCombat.weapons().entrySet())
-                json(output, resource(entry.getKey(), "weapon_stats"), JsonData.weaponJson(entry.getValue()));
+            for (var entry : BuiltinCombat.weaponDefinitions().entrySet()) {
+                var profile = JsonData.weaponJson(entry.getValue().profile());
+                if (entry.getValue().derived()) profile.remove("base_damage");
+                json(output, resource(entry.getKey(), "weapon_stats"), profile);
+            }
             var defaults = new JsonObject();
             defaults.addProperty("schema_version", 1);
             var classes = new JsonObject();

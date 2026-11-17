@@ -5,6 +5,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
+import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.core.ui.*;
 import yagen.waitmydawn.yagens_attributes.network.ClientPackets;
@@ -63,7 +64,11 @@ public final class RivenRulesScreen extends Screen {
         try {
             result = analyses.computeIfAbsent(layout(), selected -> RivenAnalysis.analyze(rules, profile, selected, info.level()));
             if (!result.possible()) error = "rules_impossible";
-        } catch (IllegalArgumentException exception) { error = "rules_invalid"; }
+        } catch (IllegalArgumentException exception) {
+            error = "rules_invalid";
+            YagensAttributes.LOGGER.warn("Cannot evaluate Riven traits for {} at rank {} with layout {}",
+                    info.riven().weapon(), info.level(), layout(), exception);
+        }
         firstRow = Math.min(firstRow, maximumScroll());
     }
 

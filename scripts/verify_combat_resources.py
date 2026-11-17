@@ -35,6 +35,25 @@ def resource(relative):
     return generated if generated.is_file() else STATIC_RESOURCES / relative
 
 
+def png_supports_alpha(png):
+    if len(png) < 33 or png[:8] != b"\x89PNG\r\n\x1a\n":
+        return False
+    color_type = png[25]
+    if color_type in (4, 6):
+        return True
+    if color_type not in (0, 2, 3):
+        return False
+    # Lossless optimizers may replace RGBA with a palette and tRNS without changing decoded pixels.
+    kinds, offset = set(), 8
+    while offset + 12 <= len(png):
+        length = struct.unpack_from(">I", png, offset)[0]
+        if offset + 12 + length > len(png):
+            return False
+        kinds.add(png[offset + 4:offset + 8])
+        offset += 12 + length
+    return offset == len(png) and b"tRNS" in kinds and (color_type != 3 or b"PLTE" in kinds)
+
+
 def profile(data, path, derive=False):
     fields = {"critical_chance", "critical_damage", "status_chance", "status_duration", "damage_distribution", "base_damage", "category", "mod_slots"}
     require(data.keys() <= fields | {"fire_rate", "multishot", "riven_disposition"} and fields - ({"base_damage"} if derive else set()) <= data.keys(), f"Invalid weapon fields: {path}")
@@ -47,8 +66,8 @@ def profile(data, path, derive=False):
     require(disposition == 0 or .5 <= disposition <= 1.55, f"Invalid Riven disposition: {path}")
     for key in ("fire_rate", "multishot"):
         require(0 <= data.get(key, 1) <= 64, f"Ranged stat limit: {path}")
-        if data['category'] in ('bow', 'crossbow', 'trident'):
-            require(data.get(key) == 1.0, f"Expected explicit ranged baseline 1.0: {path}")
+        if data['category'] in ('ranged', 'bow', 'crossbow', 'trident'):
+            require(key in data, f"Missing explicit ranged baseline: {path}")
     distribution = data["damage_distribution"]
     require(distribution.keys() <= set(TYPES), f"Unknown damage type: {path}")
     require(all(type(x) in (int, float) and math.isfinite(x) and x >= 0 for x in distribution.values()), f"Invalid weights: {path}")
@@ -68,7 +87,8 @@ def main():
     weapons = list((RESOURCES / "data").glob("*/weapon_stats/**/*.json"))
     require(bool(weapons), "No weapon definitions")
     for path in weapons:
-        profile(read(path), path)
+        document = read(path)
+        profile(document, path, derive="base_damage" not in document)
     defaults = list((RESOURCES / "data").glob("*/weapon_defaults/**/*.json"))
     families = set()
     for path in defaults:
@@ -89,11 +109,11 @@ def main():
         png = path.read_bytes()
         require(png[:8] == b"\x89PNG\r\n\x1a\n", f"Invalid PNG: {path}")
         width, height = struct.unpack(">II", png[16:24])
-        require(width == height == 32 and height >= provider["height"] and png[25] == 6, f"Expected 32x32 RGBA icon: {path}")
+        require(width == height == 32 and height >= provider["height"] and png_supports_alpha(png), f"Expected 32x32 icon with alpha support: {path}")
     languages = {name: read(RESOURCES / f"assets/yagens_attributes/lang/{name}.json") for name in ("en_us", "zh_cn")}
     endo = resource("assets/yagens_attributes/textures/item/endo.png")
     image = endo.read_bytes()
-    require(image[:8] == b"\x89PNG\r\n\x1a\n" and struct.unpack(">II", image[16:24]) == (32, 32) and image[25] == 6, "Invalid 32x32 Endo texture")
+    require(image[:8] == b"\x89PNG\r\n\x1a\n" and struct.unpack(">II", image[16:24]) == (32, 32) and png_supports_alpha(image), "Invalid 32x32 Endo texture")
     require(read(RESOURCES / "assets/yagens_attributes/models/item/endo.json") == {"parent": "minecraft:item/generated", "textures": {"layer0": "yagens_attributes:item/endo"}}, "Invalid Endo item model")
     for item in ("forma", "kuva"):
         png = resource(f"assets/yagens_attributes/textures/item/{item}.png").read_bytes()
@@ -112,9 +132,12 @@ def main():
         required.update((f"death.attack.yagens_attributes.{name}", f"death.attack.yagens_attributes.{name}.player"))
     armor = read(RESOURCES / "data/minecraft/tags/damage_type/bypasses_armor.json")
     require(armor == {"replace": False, "values": ["yagens_attributes:slash_status"]}, "Only bleeding bypasses armor by default")
-    for tag, names in {"no_knockback": TYPES, "is_fire": ["heat"], "is_explosion": ["blast"]}.items():
-        definition = read(RESOURCES / f"data/minecraft/tags/damage_type/{tag}.json")
-        require(definition == {"replace": False, "values": [f"yagens_attributes:{name}_status" for name in names]}, f"Invalid status compatibility tag: {tag}")
+    knockback = read(RESOURCES / "data/minecraft/tags/damage_type/no_knockback.json")
+    require(knockback == {"replace": False, "values": [f"yagens_attributes:{name}_status" for name in TYPES]}, "Status damage must not cause native knockback")
+    for tag in ("is_fire", "is_explosion"):
+        for root in (RESOURCES, STATIC_RESOURCES):
+            path = root / f"data/minecraft/tags/damage_type/{tag}.json"
+            require(not path.exists(), f"Status damage must not inherit native elemental classifications: {path}")
     required.update(("key.categories.yagens_attributes", "key.yagens_attributes.mod_space", "key.yagens_attributes.weapon_panel"))
     required.update(("item.yagens_attributes.endo", "item.yagens_attributes.endo.tooltip"))
     required.update('category.yagens_attributes.' + name for name in ('all', 'warframe', 'weapon', 'melee', 'ranged', 'sword', 'axe', 'trident', 'mace', 'bow', 'crossbow'))

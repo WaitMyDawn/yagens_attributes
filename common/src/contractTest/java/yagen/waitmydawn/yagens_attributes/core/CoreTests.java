@@ -11,7 +11,10 @@ public final class CoreTests {
         RangedTests.run();
         StatusTests.run();
         ModTests.run();
+        HitProcTests.run();
+        GalvanizedTests.run();
         ConditionalModTests.run();
+        GalvanizedExpansionTests.run();
         ArsenalExpansionTests.run();
         RemoteReleaseTests.run();
         ModFilterTests.run();

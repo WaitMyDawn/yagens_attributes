@@ -29,7 +29,7 @@ public final class ClientRangedUse {
         if (event.getEntity() == Minecraft.getInstance().player && clock != null && active != null) {
             // Send after the vanilla use packet so the reply can reflect the server's active charge session.
             if (!requested && Minecraft.getInstance().getConnection() != null) { requested = true; PacketDistributor.sendToServer(active); }
-            event.setDuration(clock.beforeTick(event.getDuration()));
+            if (!yagen.waitmydawn.yagens_attributes.compat.NativeWeapons.continuous(event.getItem())) event.setDuration(clock.beforeTick(event.getDuration()));
         }
     }
     public static void accept(ChargePayload payload) { if (payload.request().equals(active) && clock != null) clock.rate(payload.rate()); }

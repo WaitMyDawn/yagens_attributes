@@ -6,6 +6,10 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/berserker_fury"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/blood_rush"
     },
     {
@@ -26,7 +30,31 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/condition_overload"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/critical_delay"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/drifting_contact"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/galvanized_bone_finger_box"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/galvanized_chamber"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/galvanized_gaze_of_pain"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/primed_cold_addition"
     },
     {
       "type": "minecraft:single",
@@ -35,6 +63,10 @@
     {
       "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/effects/primed_reach"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/primed_shattered_venom_doll"
     },
     {
       "type": "minecraft:single",
@@ -54,11 +86,31 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/hammer_shot"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/hunter_munitions"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/lethal_torrent"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/multishot"
     },
     {
       "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/nameless_glove"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/point_strike"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/quickening"
     },
     {
       "type": "minecraft:single",
@@ -74,11 +126,27 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/speed_trigger"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/spoiled_strike"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/torturous_entanglement"
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/true_punishment"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/universal_nanocube"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/vital_sense"
     },
     {
       "type": "minecraft:single",
@@ -87,6 +155,10 @@
     {
       "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/winter_talisman"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/unknown_riven"
     },
     {
       "type": "minecraft:single",

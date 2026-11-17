@@ -25,6 +25,8 @@ public final class ClientUiContracts {
         try { dispatcher.execute("ya client unknown", null); throw new AssertionError("Unknown HUD accepted"); }
         catch (CommandSyntaxException expected) { checks++; }
         check(opened.size() == 2);
+        check(client.getChild("buffs").canUse(null));
+        check(dispatcher.execute("ya client buffs", null) == 1 && opened.get(2) == HudElement.BUFFS);
         for (boolean clientFirst : new boolean[] {false, true}) {
             var merged = new CommandDispatcher<CommandSourceStack>();
             if (clientFirst) ClientUiCommands.register(merged, opened::add);

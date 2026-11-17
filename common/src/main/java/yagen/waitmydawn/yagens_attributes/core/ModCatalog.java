@@ -6,6 +6,7 @@ import java.util.*;
  * Immutable reload snapshot; each type/rank is compiled once rather than during attacks.
  */
 public final class ModCatalog {
+    private static final Map<String, String> RENAMED_IDS = Map.of("yagens_attributes:primed_winter_talisman", "yagens_attributes:primed_cold_addition");
     public record Quality(ModInfo.Rarity type, String name, int color, int baseEndo, int order, String description) {
         public Quality {
             Objects.requireNonNull(type);
@@ -121,10 +122,13 @@ public final class ModCatalog {
     }
 
     public Card card(String id, int level) {
-        var variants = cards.get(id);
+        var variants = cards.get(canonicalId(id));
         if (variants == null || level < 0 || level >= variants.size())
             throw new IllegalArgumentException("Unknown Mod type or level: " + id + " / " + level);
         return variants.get(level);
+    }
+    public static String canonicalId(String id) {
+        return RENAMED_IDS.getOrDefault(id, id);
     }
 
     public ModInfo legacyInfo(ModInfo old) {

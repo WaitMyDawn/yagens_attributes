@@ -1,0 +1,26 @@
+{
+  "critical_chance": 0.16,
+  "critical_damage": 2.0,
+  "status_chance": 0.24,
+  "status_duration": 6.0,
+  "category": "melee",
+  "fire_rate": 1.0,
+  "multishot": 1.0,
+  "riven_disposition": 0.75,
+  "damage_distribution": {
+    "impact": 0.05,
+    "puncture": 0.05,
+    "slash": 0.3,
+    "radiation": 0.6
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

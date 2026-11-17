@@ -1,0 +1,10 @@
+// Opt-in native item rendering in a disposable client; WeaponCatalogExport closes it after export.
+gradle.projectsEvaluated {
+    def instance = rootProject.layout.buildDirectory.dir('weapon-catalog-client').get().asFile
+    rootProject.extensions.getByName('runs').named('client').configure {
+        workingDirectory = instance
+        modSource rootProject.sourceSets.adapterTest
+        systemProperty 'yagens_attributes.weaponCatalog', rootProject.layout.buildDirectory.dir('weapon-catalog').get().asFile.absolutePath
+        arguments.addAll '--width', '640', '--height', '480'
+    }
+}

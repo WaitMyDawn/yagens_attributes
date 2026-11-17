@@ -1,0 +1,25 @@
+{
+  "critical_chance": 0.24,
+  "critical_damage": 2.5,
+  "status_chance": 0.2,
+  "status_duration": 6.0,
+  "category": "mace",
+  "fire_rate": 1.0,
+  "multishot": 1.0,
+  "riven_disposition": 0.7,
+  "damage_distribution": {
+    "impact": 0.35,
+    "slash": 0.05,
+    "heat": 0.6
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

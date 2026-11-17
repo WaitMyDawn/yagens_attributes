@@ -14,6 +14,12 @@
     "weapon"
   ],
   "texture": "yagens_attributes:item/mods/gaze_of_pain",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:status_chance_choice"
+    ]
+  },
   "entries": [
     {
       "stat": "status_chance",

@@ -37,7 +37,7 @@ public final class WeaponInspectionService {
         UUID id = stack.get(Components.WEAPON_ID.get());
         WorldState state = WorldState.get(player.server);
         List<Map<String, Bonus>> sources = new ArrayList<>();
-        if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()));
+        if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), profile.category()));
         sources.add(state.bonuses(player.getUUID()));
         if (ModInfo.Category.MELEE.contains(profile.category())) sources = new ArrayList<>(ComboService.sources(player, id, sources));
         sources = new ArrayList<>(ConditionalModService.sources(player, stack, sources, null));

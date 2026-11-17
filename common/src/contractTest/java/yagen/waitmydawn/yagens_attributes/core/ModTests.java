@@ -7,7 +7,7 @@ public final class ModTests {
     private static int checks;
     private ModTests() {}
     public static void run() {
-        var catalog = BuiltinMods.catalog(); check(catalog.definitions().size() == 36); check(catalog.creative().size() == 236);
+        var catalog = BuiltinMods.catalog(); check(catalog.definitions().size() == 44); check(catalog.creative().size() == 302);
         for (int side : List.of(96, 124, 128)) {
             var rectangle = new yagen.waitmydawn.yagens_attributes.core.ui.PanelGeometry.Rect(17, 31, side, side);
             var art = yagen.waitmydawn.yagens_attributes.core.ui.PanelGeometry.artwork(rectangle);
@@ -50,9 +50,11 @@ public final class ModTests {
         var longerDefinition = new ModDefinition("Long", Rarity.COMMON, Polarity.NONE, 1, 1, 2, Set.of(Category.WEAPON), "test:item/square", shortDefinition.entries());
         var grouped = new ModCatalog(Map.of("odd:zebra", shortDefinition, "another:irregular", longerDefinition), catalog.qualities(), catalog.polarities());
         check(grouped.creative().stream().map(card -> card.id() + "/" + card.level()).toList().equals(List.of("another:irregular/0", "another:irregular/1", "another:irregular/2", "odd:zebra/0", "odd:zebra/1")));
-        for (var definition : catalog.definitions().values()) for (var entry : definition.entries()) check(entry.operation() == (Set.of(Stats.COMBO_DURATION, Stats.MELEE_RANGE).contains(entry.stat()) ? ModDefinition.Operation.ADDIN : ModDefinition.Operation.ADDITION));
-        close(.15, catalog.card("yagens_attributes:bone_finger_box", 0).bonuses().get(Stats.CRITICAL_CHANCE).addition());
-        close(.9, catalog.card("yagens_attributes:bone_finger_box", 5).bonuses().get(Stats.CRITICAL_CHANCE).addition());
+        for (var definition : catalog.definitions().values()) for (var entry : definition.entries()) {
+            check(entry.operation() == ModDefinition.Operation.ADDITION || Set.of(Stats.COMBO_DURATION, Stats.MELEE_RANGE).contains(entry.stat()) && entry.operation() == ModDefinition.Operation.ADDIN);
+        }
+        close(.2, catalog.card("yagens_attributes:bone_finger_box", 0).bonuses().get(Stats.CRITICAL_CHANCE).addition());
+        close(1.2, catalog.card("yagens_attributes:bone_finger_box", 5).bonuses().get(Stats.CRITICAL_CHANCE).addition());
         close(1.1, catalog.card("yagens_attributes:torturous_entanglement", 10).bonuses().get(Stats.STATUS_DURATION).addition());
         close(-.15, catalog.card("yagens_attributes:flame_feather", 5).bonuses().get(Stats.DAMAGE).addition());
         close(1.75, Stats.resolve(1, Stats.DAMAGE, List.of(catalog.card("yagens_attributes:flame_feather", 5).bonuses(), catalog.card("yagens_attributes:universal_nanocube", 5).bonuses())));

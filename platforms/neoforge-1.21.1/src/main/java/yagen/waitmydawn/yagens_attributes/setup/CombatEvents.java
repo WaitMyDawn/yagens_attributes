@@ -45,9 +45,11 @@ public final class CombatEvents {
         if (!ServerConfigs.ENABLE_COMBAT.get() || StatusDamage.isSecondary(event.getSource()) || !(event.getSource().getEntity() instanceof ServerPlayer player) || event.getAmount() <= 0) return;
         DamageSource source = event.getSource();
         var shot = RangedShooting.shot(source.getDirectEntity());
+        if (shot == null) shot = yagen.waitmydawn.yagens_attributes.compat.NativeAttacks.source(source);
         WeaponProfile profile;
         var bonuses = new ArrayList<Map<String, Bonus>>();
         UUID meleeWeapon = null; int comboDuration = 0;
+        ItemStack liveWeapon = null;
         UUID rangedWeapon = shot == null ? null : shot.weapon();
         if (shot != null && shot.profile() != null) { profile = shot.profile(); bonuses.addAll(shot.sources()); }
         else {
@@ -56,11 +58,12 @@ public final class CombatEvents {
             else if (source.is(DamageTypeTags.IS_PROJECTILE)) weapon = source.getWeaponItem();
             else return;
             if (weapon == null || weapon.isEmpty()) return;
+            liveWeapon = weapon;
             profile = CombatData.WEAPONS.weapon(weapon); if (profile == null) return;
             WorldState state = WorldState.get(player.server);
             UUID id = weapon.get(Components.WEAPON_ID.get());
             if (source.is(DamageTypeTags.IS_PROJECTILE)) rangedWeapon = id;
-            if (id != null) bonuses.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString()));
+            if (id != null) bonuses.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString(), profile.category()));
             bonuses.add(state.bonuses(player.getUUID()));
             if (source.getDirectEntity() == player && source.is(DamageTypes.PLAYER_ATTACK) && ModInfo.Category.MELEE.contains(profile.category()) && WeaponEligibility.operable(weapon, profile)) {
                 meleeWeapon = Components.identify(weapon);
@@ -71,7 +74,15 @@ public final class CombatEvents {
                 comboDuration = ComboService.duration(bonuses);
                 bonuses = new ArrayList<>(ComboService.sources(player, meleeWeapon, bonuses));
                 bonuses = new ArrayList<>(ConditionalModService.sources(player, player.getMainHandItem(), bonuses, event.getEntity()));
+            } else if (shot != null && shot.profile() != null) {
+                bonuses.addAll(ConditionalModService.targetSources(shot.targetModifiers(), event.getEntity()));
+            } else if (liveWeapon != null) {
+                bonuses = new ArrayList<>(ConditionalModService.sources(player, liveWeapon, bonuses, event.getEntity()));
             }
+            if (source.is(DamageTypeTags.IS_EXPLOSION)) bonuses.replaceAll(bonus -> {
+                if (!bonus.containsKey(Stats.DIRECT_DAMAGE)) return bonus;
+                var copy = new LinkedHashMap<>(bonus); copy.remove(Stats.DIRECT_DAMAGE); return copy;
+            });
             double input = event.getAmount();
             Map<DamageType, Double> material = Map.of();
             double chance = source.is(DamageTypeTags.IS_EXPLOSION) ? 0 : StatusEffects.criticalChance(event.getEntity());
@@ -85,7 +96,13 @@ public final class CombatEvents {
             var bases = Combat.statusBases(input, profile, bonuses, result.criticalTier(), extraCritical, share);
             if (shot != null && shot.profile() != null) result = new Combat.Result(Math.min(Float.MAX_VALUE, result.damage() * shot.scale()), result.criticalTier(), result.procs(), result.durationSeconds());
             event.setAmount((float) result.damage());
-            INCOMING.put(event.getContainer(), new Hit(result, new StatusContext(bases, result.criticalTier(), rangedWeapon), toxin, meleeWeapon, comboDuration,
+            var context = shot != null && shot.profile() != null ? new StatusContext(bases, result.criticalTier(), shot.weapon(), shot.attackKind())
+                    : meleeWeapon == null ? new StatusContext(bases, result.criticalTier(), rangedWeapon)
+                    : new StatusContext(bases, result.criticalTier(), meleeWeapon, AttackKind.MELEE);
+            if (shot != null && shot.attackKind() == AttackKind.MELEE && shot.weapon() != null) {
+                meleeWeapon = shot.weapon(); comboDuration = ComboService.duration(bonuses);
+            }
+            INCOMING.put(event.getContainer(), new Hit(result, context, toxin, meleeWeapon, comboDuration,
                     Math.min(64, Stats.resolve(1, Stats.COMBO_COUNT_CHANCE, bonuses)), amounts));
         } catch (IllegalArgumentException exception) {
             if (shot != null && shot.profile() != null) event.setAmount((float) Math.min(Float.MAX_VALUE, event.getAmount() * shot.scale()));

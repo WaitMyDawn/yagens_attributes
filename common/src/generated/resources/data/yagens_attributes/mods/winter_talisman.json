@@ -14,6 +14,12 @@
     "weapon"
   ],
   "texture": "yagens_attributes:item/mods/winter_talisman",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:winter_talisman"
+    ]
+  },
   "entries": [
     {
       "stat": "damage.cold",

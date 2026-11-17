@@ -11,6 +11,6 @@ public final class WinterTalismanMod extends BuiltinMod {
         return define(Rarity.RARE, Polarity.MADURAI, 4, 5, Set.of(Category.WEAPON),
                 "yagens_attributes:item/mods/winter_talisman",
                 ModEffects.element(DamageType.COLD, 0.1),
-                ModEffects.bonus(Stats.STATUS_CHANCE, 0.1));
+                ModEffects.bonus(Stats.STATUS_CHANCE, 0.1)).withStyle(ModStyle.family("yagens_attributes:winter_talisman"));
     }
 }

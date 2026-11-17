@@ -30,6 +30,27 @@ public final class RangedContracts {
         equal(modifier, shot.sources().get(0).get(Stats.MULTISHOT)); equal(shot, ShotData.decode(shot.encode()));
         equal(shot, ShotData.CODEC.parse(JsonOps.INSTANCE, ShotData.CODEC.encodeStart(JsonOps.INSTANCE, shot).getOrThrow()).getOrThrow());
         equal(ShotData.EMPTY, ShotData.decode(ShotData.EMPTY.encode()));
+        var targetRule = new ConditionalModifier(Stats.DIRECT_DAMAGE, .8, ConditionalModifier.Condition.STATUS_TYPES);
+        var deferred = new ShotData(profile, shot.sources(), .75, true, UUID.randomUUID(), List.of(targetRule));
+        equal(deferred, ShotData.decode(deferred.encode()));
+        equal(deferred.targetModifiers(), deferred.projectile(.5, false).targetModifiers());
+        equal(deferred, ShotData.CODEC.parse(JsonOps.INSTANCE, ShotData.CODEC.encodeStart(JsonOps.INSTANCE, deferred).getOrThrow()).getOrThrow());
+        var nativeSource = new ShotData(profile, shot.sources(), .75, true, UUID.randomUUID(), List.of(targetRule), UUID.randomUUID(), AttackKind.MELEE);
+        equal(nativeSource, ShotData.decode(nativeSource.encode()));
+        equal(nativeSource.owner(), nativeSource.projectile(.25, true).owner());
+        equal(AttackKind.MELEE, nativeSource.projectile(.25, true).attackKind());
+        equal(nativeSource.weapon(), nativeSource.baseMultishot(3).weapon());
+        equal(3D, nativeSource.baseMultishot(3).profile().multishot());
+        equal(nativeSource.owner(), nativeSource.baseMultishot(3).owner());
+        var schema3 = JsonParser.parseString(nativeSource.encode()).getAsJsonObject(); schema3.addProperty("schema", 3);
+        equal(AttackKind.RANGED, ShotData.decode(schema3.toString()).attackKind()); equal(null, ShotData.decode(schema3.toString()).owner());
+        var legacyShot = JsonParser.parseString(deferred.encode()).getAsJsonObject();
+        legacyShot.addProperty("schema", 2); legacyShot.remove("target_modifiers");
+        equal(List.of(), ShotData.decode(legacyShot.toString()).targetModifiers());
+        legacyShot.addProperty("schema", 1); legacyShot.remove("weapon");
+        equal(null, ShotData.decode(legacyShot.toString()).weapon());
+        rejects(() -> new ShotData(profile, List.of(), 1, false, null,
+                BuiltinMods.catalog().card("yagens_attributes:galvanized_gaze_of_pain", 10).info().details().conditional()));
         rejects(() -> new ShotData(profile, List.of(), Double.NaN, false));
         equal(true, ShotData.CODEC.parse(JsonOps.INSTANCE, new com.google.gson.JsonPrimitive("{\"schema\":2}")).isError());
         var tag = new CompoundTag(); tag.putUUID("UUID", UUID.randomUUID()); tag.put("Passengers", new ListTag()); tag.putString("CustomName", "unchanged"); tag.putDouble("damage", 7);
@@ -45,6 +66,19 @@ public final class RangedContracts {
         equal(6D, resolved.get(Stats.FIRE_RATE)); equal(1.5, resolved.get(Stats.MULTISHOT));
         equal(6, yagen.waitmydawn.yagens_attributes.client.StatText.base(profile).size());
         equal(4, yagen.waitmydawn.yagens_attributes.client.StatText.base(defaults).size());
+        var bow = BuiltinCombat.weapons().get("minecraft:bow");
+        var sword = BuiltinCombat.weapons().get("minecraft:diamond_sword");
+        var core = List.of(Stats.CRITICAL_CHANCE, Stats.CRITICAL_DAMAGE, Stats.STATUS_CHANCE, Stats.STATUS_DURATION);
+        equal(core, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(bow, Map.of()));
+        equal(core, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(sword, Map.of()));
+        equal(4, yagen.waitmydawn.yagens_attributes.client.StatText.base(bow).size());
+        equal(true, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(bow, Map.of(Stats.MULTISHOT, 3D)).contains(Stats.MULTISHOT));
+        equal(true, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(bow, Map.of(Stats.FIRE_RATE, .8)).contains(Stats.FIRE_RATE));
+        equal(true, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(sword, Map.of(Stats.ATTACK_SPEED, 1.3, Stats.MELEE_RANGE, 1D,
+                Stats.COMBO_DURATION, 7D, Stats.COMBO_COUNT_CHANCE, 2D)).containsAll(List.of(Stats.ATTACK_SPEED, Stats.MELEE_RANGE, Stats.COMBO_DURATION, Stats.COMBO_COUNT_CHANCE)));
+        var triple = BuiltinCombat.weaponDefinitions().get("twilightforest:triple_bow").profile();
+        equal(true, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(triple, Map.of()).contains(Stats.MULTISHOT));
+        equal(false, yagen.waitmydawn.yagens_attributes.client.StatText.visibleKeys(triple, Map.of(Stats.MULTISHOT, 1D)).contains(Stats.MULTISHOT));
         bytecode();
         System.out.println("Passed " + checks + " ranged snapshot/wire/bytecode contract checks");
     }
@@ -77,6 +111,20 @@ public final class RangedContracts {
         equal(true, read("world/item/CrossbowItem").methods.stream().anyMatch(method -> method.name.equals("performShooting") && method.desc.equals("(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/item/ItemStack;FFLnet/minecraft/world/entity/LivingEntity;)V")));
         for (String name : List.of("AbstractArrow", "ThrownTrident")) equal(true, read("world/entity/projectile/" + name).methods.stream().anyMatch(method -> method.name.equals("tryPickup") && method.desc.equals("(Lnet/minecraft/world/entity/player/Player;)Z")));
         equal(true, read("world/entity/projectile/AbstractArrow").methods.stream().anyMatch(method -> method.name.equals("getPickupItem") && method.desc.equals("()Lnet/minecraft/world/item/ItemStack;")));
+        var stack = read("world/item/ItemStack");
+        for (String signature : List.of(
+                "use(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/InteractionHand;)Lnet/minecraft/world/InteractionResultHolder;",
+                "useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;",
+                "releaseUsing(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V",
+                "onUseTick(Lnet/minecraft/world/level/Level;Lnet/minecraft/world/entity/LivingEntity;I)V",
+                "hurtEnemy(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/player/Player;)Z"))
+            equal(true, stack.methods.stream().anyMatch(method -> (method.name + method.desc).equals(signature)));
+        var server = read("server/level/ServerLevel"); int ticks = 0;
+        for (var method : server.methods) if (method.name.equals("tickNonPassenger")) for (var instruction : method.instructions)
+            if (instruction instanceof MethodInsnNode invoke && invoke.owner.equals("net/minecraft/world/entity/Entity") && invoke.name.equals("tick") && invoke.desc.equals("()V")) ticks++;
+        equal(1, ticks);
+        equal(true, server.methods.stream().anyMatch(method -> method.name.equals("addFreshEntity") && method.desc.equals("(Lnet/minecraft/world/entity/Entity;)Z")));
+        equal(true, read("world/item/ItemCooldowns").methods.stream().anyMatch(method -> method.name.equals("addCooldown") && method.desc.equals("(Lnet/minecraft/world/item/Item;I)V")));
     }
     private static void equal(Object a, Object b) { if (!Objects.equals(a, b)) throw new AssertionError(a + " != " + b); checks++; }
     private static void rejects(Runnable action) { try { action.run(); } catch (RuntimeException expected) { checks++; return; } throw new AssertionError("Expected rejection"); }

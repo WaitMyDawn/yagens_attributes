@@ -12,7 +12,7 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
     public ModDefinition withStyle(ModStyle value) { return new ModDefinition(name, rarity, polarity, baseCapacity, capacityPerLevel, maxLevel, applicability, texture, entries, value); }
     public enum Operation {ADDIN, ADDITION, MULTIPLY, ADDOUT}
 
-    public enum Basis {FLAT, ATTACK_DAMAGE}
+    public enum Basis {FLAT, ATTACK_DAMAGE, UNIT}
 
     public record Effect(String stat, Operation operation, double value, Basis basis, String description, ConditionalModifier.Condition condition) {
         public Effect(String stat, Operation operation, double value, Basis basis, String description) {
@@ -27,6 +27,8 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
                 throw new IllegalArgumentException("Invalid Mod effect");
             if (basis == Basis.ATTACK_DAMAGE && ((operation != Operation.ADDIN && operation != Operation.ADDITION) || !Stats.DAMAGE_COMPONENTS.contains(stat)))
                 throw new IllegalArgumentException("Attack-damage basis requires a component addin or addition");
+            if (basis == Basis.UNIT && (operation != Operation.ADDITION || !HitProcs.STATS.contains(stat)))
+                throw new IllegalArgumentException("Unit-basis Addition requires an on-hit proc chance");
             if (condition.trigger() != ConditionalModifier.Trigger.ALWAYS && (operation != Operation.ADDITION || basis != Basis.FLAT))
                 throw new IllegalArgumentException("Conditional effects require flat-basis Addition");
         }
@@ -67,7 +69,7 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
                     else in += value;
                 }
                 case ADDITION -> {
-                    if (entry.basis == Basis.ATTACK_DAMAGE) relativeAddition += value;
+                    if (entry.basis == Basis.ATTACK_DAMAGE || entry.basis == Basis.UNIT) relativeAddition += value;
                     else addition += value;
                 }
                 case MULTIPLY -> {

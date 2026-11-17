@@ -8,18 +8,24 @@ import java.util.*;
 
 public final class StatText {
     public static final ResourceLocation DAMAGE_FONT = ResourceLocation.fromNamespaceAndPath("yagens_attributes", "damage_icons");
+    private static final Map<String, Double> OPTIONAL_DEFAULTS = Map.of(Stats.FIRE_RATE, 1D, Stats.MULTISHOT, 1D,
+            Stats.ATTACK_SPEED, 1D, Stats.MELEE_RANGE, 0D, Stats.COMBO_DURATION, 5D, Stats.COMBO_COUNT_CHANCE, 1D);
     private StatText() {}
     public static Component label(String stat) { return Component.translatable("stat.yagens_attributes." + stat); }
     public static String number(double value) { return String.format(Locale.ROOT, "%.2f", value).replaceAll("\\.?0+$", ""); }
     public static String value(String stat, double value) {
-        if (stat.equals(Stats.CRITICAL_CHANCE) || stat.equals(Stats.STATUS_CHANCE) || stat.equals(Stats.COMBO_COUNT_CHANCE)) return number(value * 100) + "%";
+        if (stat.equals(Stats.CRITICAL_CHANCE) || stat.equals(Stats.STATUS_CHANCE) || stat.equals(Stats.COMBO_COUNT_CHANCE) || HitProcs.STATS.contains(stat)) return number(value * 100) + "%";
         if (stat.equals(Stats.CRITICAL_DAMAGE) || stat.equals(Stats.DAMAGE) || stat.equals(Stats.FIRE_RATE) || stat.equals(Stats.ATTACK_SPEED)) return number(value) + "x";
         if (stat.equals(Stats.STATUS_DURATION) || stat.equals(Stats.COMBO_DURATION)) return number(value) + " s";
         if (stat.equals(Stats.MELEE_RANGE)) return number(value) + " m";
         return number(value);
     }
     public static List<Component> base(WeaponProfile profile) {
-        return keys(profile).stream().map(key -> line(key, Stats.base(profile, key))).toList();
+        return visibleKeys(profile, Map.of()).stream().map(key -> line(key, Stats.base(profile, key))).toList();
+    }
+    public static List<String> visibleKeys(WeaponProfile profile, Map<String, Double> resolved) {
+        return keys(profile).stream().filter(key -> !OPTIONAL_DEFAULTS.containsKey(key)
+                || Math.abs(resolved.getOrDefault(key, Stats.base(profile, key)) - OPTIONAL_DEFAULTS.get(key)) > 1e-6).toList();
     }
     public static List<String> keys(WeaponProfile profile) {
         var result = new ArrayList<>(List.of(Stats.CRITICAL_CHANCE, Stats.CRITICAL_DAMAGE, Stats.STATUS_CHANCE, Stats.STATUS_DURATION));
@@ -61,7 +67,7 @@ public final class StatText {
     }
     private static String signed(double value) { return (value >= 0 ? "+" : "") + number(value); }
     private static String flat(String stat, double value) {
-        if (stat.equals(Stats.CRITICAL_CHANCE) || stat.equals(Stats.STATUS_CHANCE) || stat.equals(Stats.COMBO_COUNT_CHANCE)) return signed(value * 100) + "%";
+        if (stat.equals(Stats.CRITICAL_CHANCE) || stat.equals(Stats.STATUS_CHANCE) || stat.equals(Stats.COMBO_COUNT_CHANCE) || HitProcs.STATS.contains(stat)) return signed(value * 100) + "%";
         return signed(value) + (stat.equals(Stats.STATUS_DURATION) || stat.equals(Stats.COMBO_DURATION) ? " s" : stat.equals(Stats.MELEE_RANGE) ? " m" : "");
     }
     private static Component modifier(String value, String stat) {

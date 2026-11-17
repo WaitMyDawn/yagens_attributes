@@ -1,0 +1,23 @@
+{
+  "critical_chance": 0.2,
+  "critical_damage": 1.8,
+  "status_chance": 0.28,
+  "status_duration": 6.0,
+  "category": "sword",
+  "fire_rate": 1.0,
+  "multishot": 1.0,
+  "riven_disposition": 1.25,
+  "damage_distribution": {
+    "slash": 1.0
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

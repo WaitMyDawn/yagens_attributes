@@ -76,10 +76,14 @@ public final class StatusEffects {
     }
 
     public static UUID latestOwner(LivingEntity target, DamageType type) {
-        if (!target.hasData(RangedAttachments.STATUS)) return target.getUUID();
+        var layer = latestLayer(target, type);
+        return layer == null ? target.getUUID() : layer.owner();
+    }
+    public static StatusState.Layer latestLayer(LivingEntity target, DamageType type) {
+        if (!target.hasData(RangedAttachments.STATUS)) return null;
         var layers = state(target).layers;
-        for (int i = layers.size() - 1; i >= 0; i--) if (layers.get(i).type() == type) return layers.get(i).owner();
-        return target.getUUID();
+        for (int i = layers.size() - 1; i >= 0; i--) if (layers.get(i).type() == type) return layers.get(i);
+        return null;
     }
 
     public static boolean confusedAttack(LivingEntity attacker, LivingEntity victim) {
@@ -91,9 +95,9 @@ public final class StatusEffects {
         if (event.durationTicks() <= 0) return;
         var immediate = new ArrayList<StatusState.Layer>();
         for (var type : event.procs()) {
-            boolean applied = apply(event.target(), type, event.attacker().getUUID(), event.context().base(type), event.durationTicks(), false, event.context().criticalTier(), event.context().rangedWeapon());
+            boolean applied = apply(event.target(), type, event.attacker().getUUID(), event.context().base(type), event.durationTicks(), false, event.context().criticalTier(), event.context().weapon(), event.context().attackKind());
             if (applied && (type == DamageType.ELECTRICITY || type == DamageType.GAS))
-                immediate.add(new StatusState.Layer(type, event.attacker().getUUID(), event.context().base(type), 1, 20, 0, event.context().criticalTier(), event.context().rangedWeapon()));
+                immediate.add(new StatusState.Layer(type, event.attacker().getUUID(), event.context().base(type), 1, 20, 0, event.context().criticalTier(), event.context().weapon(), event.context().attackKind()));
         }
         pulses(event.target(), immediate);
     }
@@ -104,6 +108,10 @@ public final class StatusEffects {
 
     public static boolean tryApply(LivingEntity target, DamageType type, UUID owner, double base, int weaponTicks, int criticalTier) {
         return apply(target, type, owner, base, weaponTicks, true, criticalTier);
+    }
+
+    public static boolean tryApply(LivingEntity target, DamageType type, UUID owner, int weaponTicks, yagen.waitmydawn.yagens_attributes.api.StatusContext context) {
+        return apply(target, type, owner, context.base(type), weaponTicks, true, context.criticalTier(), context.weapon(), context.attackKind());
     }
 
     public static boolean clear(LivingEntity target, DamageType type) {
@@ -140,10 +148,11 @@ public final class StatusEffects {
     }
 
     private static boolean apply(LivingEntity target, DamageType type, UUID owner, double base, int weaponTicks, boolean immediate, int criticalTier) {
-        return apply(target, type, owner, base, weaponTicks, immediate, criticalTier, null);
+        return apply(target, type, owner, base, weaponTicks, immediate, criticalTier, null, AttackKind.UNKNOWN);
     }
-    private static boolean apply(LivingEntity target, DamageType type, UUID owner, double base, int weaponTicks, boolean immediate, int criticalTier, UUID weapon) {
+    private static boolean apply(LivingEntity target, DamageType type, UUID owner, double base, int weaponTicks, boolean immediate, int criticalTier, UUID weapon, AttackKind attackKind) {
         Objects.requireNonNull(target); Objects.requireNonNull(type); Objects.requireNonNull(owner);
+        Objects.requireNonNull(attackKind).validateWeapon(weapon);
         if (!Double.isFinite(base) || base < 0 || base > Float.MAX_VALUE || weaponTicks < 1 || weaponTicks > 72000 || criticalTier < 0 || criticalTier > 100)
             throw new IllegalArgumentException("Invalid status proc context");
         if ((!target.isAlive() && type != DamageType.GAS && type != DamageType.BLAST) || target.level().isClientSide || target.getType().is(STATUS_IMMUNE) || target.getType().is(IMMUNITIES.get(type)))
@@ -157,7 +166,7 @@ public final class StatusEffects {
             for (int i = 0; i < value.layers.size(); i++) {
                 var layer = value.layers.get(i);
                 if (layer.type() == type)
-                    value.layers.set(i, new StatusState.Layer(type, layer.owner(), layer.base(), duration, layer.pulse(), layer.age(), layer.criticalTier(), layer.weapon()));
+                    value.layers.set(i, new StatusState.Layer(type, layer.owner(), layer.base(), duration, layer.pulse(), layer.age(), layer.criticalTier(), layer.weapon(), layer.attackKind()));
             }
         }
         if (value.count(type) >= maximum) {
@@ -176,7 +185,7 @@ public final class StatusEffects {
                 pulse = layer.pulse();
                 break;
             }
-        value.layers.add(new StatusState.Layer(type, owner, Math.min(Float.MAX_VALUE, base), duration, pulse, 0, criticalTier, weapon));
+        value.layers.add(new StatusState.Layer(type, owner, Math.min(Float.MAX_VALUE, base), duration, pulse, 0, criticalTier, weapon, attackKind));
         if (!target.getType().is(CONTROL_IMMUNE)) {
             if (type == DamageType.IMPACT)
                 value.impactStun = Math.max(value.impactStun, Math.min(20, Math.max(1, weaponTicks / 6)));
@@ -190,8 +199,9 @@ public final class StatusEffects {
         }
         if (type == DamageType.BLAST && value.count(type) == 10) detonate(target, true);
         update(target);
+        if (type == DamageType.SLASH) StatusEffectService.emit(target, type, (weaponTicks + 1) / 2, true, List.of());
         if (immediate && (type == DamageType.ELECTRICITY || type == DamageType.GAS))
-            pulses(target, List.of(new StatusState.Layer(type, owner, base, duration, pulse, 0, criticalTier, weapon)));
+            pulses(target, List.of(new StatusState.Layer(type, owner, base, duration, pulse, 0, criticalTier, weapon, attackKind)));
         return true;
     }
 
@@ -233,9 +243,9 @@ public final class StatusEffects {
         }
     }
 
-    private record Origin(UUID owner, UUID weapon) {}
+    private record Origin(UUID owner, UUID weapon, AttackKind attackKind) {}
 
-    private record Pulse(DamageType type, UUID owner, UUID weapon) {
+    private record Pulse(DamageType type, UUID owner, UUID weapon, AttackKind attackKind) {
     }
 
     private static void pulses(LivingEntity target, List<StatusState.Layer> due) {
@@ -246,24 +256,29 @@ public final class StatusEffects {
         var groups = new LinkedHashMap<Pulse, List<Double>>();
         var tiers = new HashMap<Pulse, Integer>();
         for (var layer : due) {
-            var key = new Pulse(layer.type(), layer.owner(), layer.weapon());
+            var key = new Pulse(layer.type(), layer.owner(), layer.weapon(), layer.attackKind());
             groups.computeIfAbsent(key, unused -> new ArrayList<>()).add(layer.base() * StatusRules.coefficient(layer.type()));
             tiers.merge(key, layer.criticalTier(), Math::max);
         }
         List<LivingEntity> electric = due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY) ? area(target, 3) : List.of();
         List<LivingEntity> gas = due.stream().anyMatch(layer -> layer.type() == DamageType.GAS) ? area(target, gasRadius(Math.max(1, gasStacks))) : List.of();
+        var struck = new LinkedHashSet<LivingEntity>();
         for (var entry : groups.entrySet()) {
             var key = entry.getKey();
             if (key.type == DamageType.ELECTRICITY) {
                 for (var victim : electric)
-                    if (allowed(target, victim, key.owner))
-                        StatusDamage.hurtBatch(victim, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon);
+                    if (allowed(target, victim, key.owner) && StatusDamage.tryHurtBatch(victim, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind))
+                        struck.add(victim);
             } else if (key.type == DamageType.GAS) {
                 for (var victim : gas)
                     if (allowed(target, victim, key.owner))
-                        StatusDamage.hurtBatch(victim, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon);
-            } else StatusDamage.hurtBatch(target, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon);
+                        StatusDamage.hurtBatch(victim, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind);
+            } else StatusDamage.hurtBatch(target, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind);
         }
+        if (due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY)) StatusEffectService.emit(target, DamageType.ELECTRICITY, 10, false, struck);
+        due.stream().filter(layer -> layer.type() == DamageType.SLASH).mapToInt(layer -> (layer.remaining() + layer.age() + 1) / 2).max()
+                .ifPresent(lifetime -> StatusEffectService.emit(target, DamageType.SLASH, lifetime, false, List.of()));
+        if (due.stream().anyMatch(layer -> layer.type() == DamageType.BLAST)) StatusEffectService.emit(target, DamageType.BLAST, 12, false, List.of());
     }
 
     private static double gasRadius(int stacks) {
@@ -362,15 +377,15 @@ public final class StatusEffects {
         var groups = new LinkedHashMap<Origin, List<Double>>();
         var tiers = new HashMap<Origin, Integer>();
         for (var layer : due) {
-            groups.computeIfAbsent(new Origin(layer.owner(), layer.weapon()), key -> new ArrayList<>()).add(layer.base() * .5);
-            tiers.merge(new Origin(layer.owner(), layer.weapon()), layer.criticalTier(), Math::max);
+            groups.computeIfAbsent(new Origin(layer.owner(), layer.weapon(), layer.attackKind()), key -> new ArrayList<>()).add(layer.base() * .5);
+            tiers.merge(new Origin(layer.owner(), layer.weapon(), layer.attackKind()), layer.criticalTier(), Math::max);
         }
         if (!groups.isEmpty()) {
             var victims = area(cloud, gasRadius(Math.max(1, stacks)));
             for (var entry : groups.entrySet())
                 for (var victim : victims)
                     if (allowed(cloud, victim, entry.getKey().owner()))
-                        StatusDamage.hurtBatch(victim, DamageType.GAS, entry.getKey().owner(), entry.getValue(), tiers.get(entry.getKey()), entry.getKey().weapon());
+                        StatusDamage.hurtBatch(victim, DamageType.GAS, entry.getKey().owner(), entry.getValue(), tiers.get(entry.getKey()), entry.getKey().weapon(), entry.getKey().attackKind());
         }
         if (cloud.tickCount % 8 == 0)
             visual(cloud, DamageType.GAS, gasRadius(Math.max(1, value.count(DamageType.GAS))), false);
@@ -398,16 +413,16 @@ public final class StatusEffects {
             var grouped = new LinkedHashMap<Origin, List<Double>>();
             var tiers = new HashMap<Origin, Integer>();
             for (var layer : blast.layers) {
-                grouped.computeIfAbsent(new Origin(layer.owner(), layer.weapon()), key -> new ArrayList<>()).add(layer.base());
-                tiers.merge(new Origin(layer.owner(), layer.weapon()), layer.criticalTier(), Math::max);
+                grouped.computeIfAbsent(new Origin(layer.owner(), layer.weapon(), layer.attackKind()), key -> new ArrayList<>()).add(layer.base());
+                tiers.merge(new Origin(layer.owner(), layer.weapon(), layer.attackKind()), layer.criticalTier(), Math::max);
             }
             var victims = blast.level.getEntitiesOfClass(LivingEntity.class, new net.minecraft.world.phys.AABB(blast.position, blast.position).inflate(5), entity -> entity.isAlive() && entity.position().distanceToSqr(blast.position) <= 25);
             for (var entry : grouped.entrySet()) {
-                StatusDamage.hurtBatch(blast.host, DamageType.BLAST, entry.getKey().owner(), entry.getValue().stream().map(value -> value * .3).toList(), tiers.get(entry.getKey()), entry.getKey().weapon());
+                StatusDamage.hurtBatch(blast.host, DamageType.BLAST, entry.getKey().owner(), entry.getValue().stream().map(value -> value * .3).toList(), tiers.get(entry.getKey()), entry.getKey().weapon(), entry.getKey().attackKind());
                 double areaDamage = entry.getValue().stream().mapToDouble(Double::doubleValue).sum() * 3;
                 for (var victim : victims)
                     if (victim != blast.host && allowed(blast.host, victim, entry.getKey().owner()))
-                        StatusDamage.hurtBatch(victim, DamageType.BLAST, entry.getKey().owner(), List.of(areaDamage), tiers.get(entry.getKey()), entry.getKey().weapon());
+                        StatusDamage.hurtBatch(victim, DamageType.BLAST, entry.getKey().owner(), List.of(areaDamage), tiers.get(entry.getKey()), entry.getKey().weapon(), entry.getKey().attackKind());
             }
             visual(blast.host, DamageType.BLAST, 5, true);
         }
@@ -419,6 +434,11 @@ public final class StatusEffects {
     }
 
     public static void visual(Entity target, DamageType type, double radius, boolean burst) {
+        if (type == DamageType.SLASH || type == DamageType.ELECTRICITY) return;
+        if (type == DamageType.MAGNETIC || type == DamageType.BLAST) {
+            if (burst) StatusEffectService.emit(target, type, 12, true, List.of());
+            return;
+        }
         if (target.level() instanceof ServerLevel) PacketDistributor.sendToPlayersTrackingEntityAndSelf(target,
                 new StatusVisualPayload(target.position().add(0, target.getBbHeight() * .55, 0), type, Math.max(0, Math.min(8, radius)), burst));
     }

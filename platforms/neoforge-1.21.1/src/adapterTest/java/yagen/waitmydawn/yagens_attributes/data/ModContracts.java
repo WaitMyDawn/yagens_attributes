@@ -22,6 +22,12 @@ public final class ModContracts {
         var conditionalJson = ModJson.definition(expected.definitions().get("yagens_attributes:berserker_fury"));
         conditionalJson.getAsJsonArray("entries").get(0).getAsJsonObject().getAsJsonObject("condition").addProperty("duration_seconds", 3);
         check(ModJson.definition(conditionalJson).conditional(5).get(0).condition().durationTicks() == 60);
+        var legacyRule = conditionalJson.getAsJsonArray("entries").get(0).getAsJsonObject().getAsJsonObject("condition");
+        legacyRule.remove("decay"); legacyRule.remove("per_target_status");
+        check(ModJson.definition(conditionalJson).conditional(5).get(0).condition().decay() == ConditionalModifier.Decay.ALL_AT_ONCE);
+        var targeted = ModJson.definition(expected.definitions().get("yagens_attributes:galvanized_gaze_of_pain"));
+        check(ModJson.definition(targeted).conditional(10).get(0).condition().perTargetStatus());
+        check(ModJson.definition(targeted).conditional(10).get(0).condition().decay() == ConditionalModifier.Decay.ONE_AT_A_TIME);
         var disk = new JsonObject(); var definitions = new JsonObject(); var qualities = new JsonArray(); var polarities = new JsonArray();
         expected.definitions().forEach((id, value) -> definitions.add(id, resource("/data/yagens_attributes/mods/" + id.substring(id.indexOf(':') + 1) + ".json")));
         for (var type : ModInfo.Rarity.values()) qualities.add(resource("/data/yagens_attributes/mod_rarities/" + type.key() + ".json"));
@@ -76,6 +82,18 @@ public final class ModContracts {
             check(atlasTextures.contains(rendered));
             check(resource("/assets/yagens_attributes/models/item/mods/" + path + ".json").getAsJsonObject("textures").get("layer0").getAsString().equals(rendered));
             texture("/assets/" + texture.getNamespace() + "/textures/" + texture.getPath() + ".png", false);
+            if (definition.getValue().style().visual() != ModStyle.Visual.NONE) {
+                var animated = ResourceLocation.parse(rendered);
+                String location = "/assets/" + animated.getNamespace() + "/textures/" + animated.getPath() + ".png";
+                try (var stream = ModContracts.class.getResourceAsStream(location)) {
+                    var image = ImageIO.read(Objects.requireNonNull(stream));
+                    var visual = definition.getValue().style().visual();
+                    check(image.getWidth() == 32 && image.getHeight() == 32 * yagen.waitmydawn.yagens_attributes.core.ui.ModAnimations.frames(visual));
+                    var metadata = resource(location + ".mcmeta").getAsJsonObject("animation");
+                    check(metadata.get("frametime").getAsInt() == yagen.waitmydawn.yagens_attributes.core.ui.ModAnimations.frameTicks(visual));
+                    check(!metadata.get("interpolate").getAsBoolean());
+                } catch (java.io.IOException failure) { throw new IllegalStateException("Cannot inspect animated Mod resource " + location, failure); }
+            }
             var loot = resource("/data/yagens_attributes/loot_table/mods/" + path + ".json");
             var item = loot.getAsJsonArray("pools").get(0).getAsJsonObject().getAsJsonArray("entries").get(0).getAsJsonObject();
             check(item.get("name").getAsString().equals("yagens_attributes:mod"));

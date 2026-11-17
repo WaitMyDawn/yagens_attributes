@@ -44,7 +44,10 @@ public final class ModText {
             String amount = (entry.addition() >= 0 ? "+" : "") + StatText.number(entry.addition() * 100) + "%";
             var line = entry.condition().trigger() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Trigger.TARGET_STATUS_TYPES
                     ? Component.translatable("gui.yagens_attributes.per_status_type", amount, StatText.label(entry.stat()))
-                    : Component.translatable(entry.condition().trigger() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Trigger.RANGED_KILLS ? "gui.yagens_attributes.per_ranged_kill" : "gui.yagens_attributes.per_melee_kill", amount, StatText.label(entry.stat()), StatText.number(entry.condition().durationSeconds()), entry.condition().maxStacks());
+                    : Component.translatable("gui.yagens_attributes." + (entry.condition().trigger() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Trigger.RANGED_KILLS ? "per_ranged_kill" : "per_melee_kill")
+                            + (entry.condition().perTargetStatus() ? "_per_status_type" : ""), amount, StatText.label(entry.stat()), StatText.number(entry.condition().durationSeconds()), entry.condition().maxStacks());
+            if (entry.condition().decay() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Decay.INDEPENDENT)
+                line = line.copy().append(Component.translatable("gui.yagens_attributes.independent_stacks"));
             (entry.addition() < 0 ? negative : positive).add(line);
         }
         return StatText.bonuses(bonuses, positive, negative).stream().map(line -> (Component) line.copy().withColor(info.color())).toList();

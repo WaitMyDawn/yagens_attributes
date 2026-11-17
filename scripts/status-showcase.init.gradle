@@ -1,0 +1,10 @@
+// Opt-in integrated-world capture in a disposable development instance.
+gradle.projectsEvaluated {
+    def instance = rootProject.layout.buildDirectory.dir('status-showcase-client').get().asFile
+    rootProject.extensions.getByName('runs').named('client').configure {
+        workingDirectory = instance
+        modSource rootProject.sourceSets.adapterTest
+        systemProperty 'yagens_attributes.statusShowcase', rootProject.layout.buildDirectory.dir('status-capture').get().asFile.absolutePath
+        arguments.addAll '--width', '960', '--height', '540'
+    }
+}

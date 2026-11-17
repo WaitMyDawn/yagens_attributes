@@ -1,0 +1,26 @@
+{
+  "critical_chance": 0.32,
+  "critical_damage": 2.2,
+  "status_chance": 0.24,
+  "status_duration": 6.0,
+  "category": "bow",
+  "fire_rate": 1.0,
+  "multishot": 3.0,
+  "riven_disposition": 0.8,
+  "damage_distribution": {
+    "impact": 0.05,
+    "puncture": 0.45,
+    "slash": 0.1,
+    "radiation": 0.4
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

@@ -14,7 +14,7 @@
     "ranged",
     "trident"
   ],
-  "texture": "yagens_attributes:item/mod",
+  "texture": "yagens_attributes:item/mods/speed_trigger",
   "entries": [
     {
       "stat": "fire_rate",

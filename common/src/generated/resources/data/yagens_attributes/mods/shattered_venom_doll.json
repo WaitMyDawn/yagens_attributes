@@ -14,6 +14,12 @@
     "weapon"
   ],
   "texture": "yagens_attributes:item/mods/shattered_venom_doll",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:shattered_venom_doll"
+    ]
+  },
   "entries": [
     {
       "stat": "damage.toxin",

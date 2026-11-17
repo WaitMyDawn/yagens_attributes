@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceLocation;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.network.CombatCodecs;
 import java.util.*;
+import javax.imageio.ImageIO;
+import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 
 public final class RivenContracts {
     private static int checks;
@@ -49,7 +51,51 @@ public final class RivenContracts {
         var corrupt = JsonParser.parseString(RivenJson.roll(roll)).getAsJsonObject(); corrupt.getAsJsonArray("lines").get(0).getAsJsonObject().addProperty("quality", 2);
         rejects(() -> RivenJson.roll(corrupt));
         var old = state.save(new CompoundTag(), null); old.putInt("schema", 5); check(WorldState.load(old, null).isDirty());
-        System.out.println("Passed " + checks + " Riven resource, component, persistence and reload checks");
+        animations();
+        System.out.println("Passed " + checks + " Riven resource, animation, component, persistence and reload checks");
+    }
+    private static void animations() throws Exception {
+        var images = new ArrayList<java.awt.image.BufferedImage>();
+        var paths = List.of("item/unknown_riven", "item/mods/riven");
+        for (var path : paths) {
+            String resource = "/assets/yagens_attributes/textures/" + path + ".png";
+            try (var input = RivenContracts.class.getResourceAsStream(resource);
+                 var sidecar = RivenContracts.class.getResourceAsStream(resource + ".mcmeta")) {
+                var image = ImageIO.read(Objects.requireNonNull(input)); images.add(image);
+                check(image.getWidth() == 32 && image.getHeight() == 32 * 60);
+                var json = JsonParser.parseReader(new java.io.InputStreamReader(Objects.requireNonNull(sidecar), java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+                var metadata = AnimationMetadataSection.SERIALIZER.fromJson(json.getAsJsonObject("animation"));
+                var frame = metadata.calculateFrameSize(image.getWidth(), image.getHeight());
+                check(frame.width() == 32 && frame.height() == 32);
+                check(metadata.getDefaultFrameTime() == 2 && !metadata.isInterpolatedFrames());
+                for (int index = 0; index < 60; index++) {
+                    boolean visible = false;
+                    for (int y = 0; y < 32; y++) for (int x = 0; x < 32; x++) visible |= image.getRGB(x, index * 32 + y) >>> 24 > 0;
+                    check(visible && image.getRGB(0, index * 32) >>> 24 == 0);
+                }
+            }
+        }
+        double graySaturation = 0, purpleSaturation = 0; int visible = 0; boolean matchingAlpha = true;
+        for (int y = 0; y < images.get(0).getHeight(); y++) for (int x = 0; x < 32; x++) {
+            int gray = images.get(0).getRGB(x, y), purple = images.get(1).getRGB(x, y);
+            matchingAlpha &= gray >>> 24 == purple >>> 24;
+            if (gray >>> 24 > 0) {
+                graySaturation += java.awt.Color.RGBtoHSB(gray >> 16 & 255, gray >> 8 & 255, gray & 255, null)[1];
+                purpleSaturation += java.awt.Color.RGBtoHSB(purple >> 16 & 255, purple >> 8 & 255, purple & 255, null)[1];
+                visible++;
+            }
+        }
+        check(matchingAlpha && visible > 0 && purpleSaturation > graySaturation * 2);
+        var atlas = resource("/assets/minecraft/atlases/blocks.json").getAsJsonArray("sources");
+        for (var path : paths) check(atlas.asList().stream().anyMatch(entry -> entry.getAsJsonObject().get("resource").getAsString().equals("yagens_attributes:" + path)));
+        for (var name : List.of("unknown_melee_riven", "unknown_ranged_riven"))
+            check(resource("/assets/yagens_attributes/models/item/" + name + ".json").getAsJsonObject("textures").get("layer0").getAsString().equals("yagens_attributes:item/unknown_riven"));
+        check(resource("/assets/yagens_attributes/models/item/mods/riven.json").getAsJsonObject("textures").get("layer0").getAsString().equals(BuiltinMods.catalog().rivenRules().texture()));
+    }
+    private static com.google.gson.JsonObject resource(String path) throws Exception {
+        try (var input = RivenContracts.class.getResourceAsStream(path)) {
+            return JsonParser.parseReader(new java.io.InputStreamReader(Objects.requireNonNull(input), java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+        }
     }
     private static void check(boolean value) { checks++; if (!value) throw new AssertionError("Riven adapter mismatch"); }
     private static void close(double expected, double actual) { check(Math.abs(expected - actual) < 1e-9); }

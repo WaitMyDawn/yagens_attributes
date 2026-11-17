@@ -3,6 +3,7 @@ package yagen.waitmydawn.yagens_attributes.api;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import yagen.waitmydawn.yagens_attributes.core.DamageType;
+import yagen.waitmydawn.yagens_attributes.core.AttackKind;
 import yagen.waitmydawn.yagens_attributes.registries.RangedAttachments;
 import yagen.waitmydawn.yagens_attributes.setup.StatusEffects;
 
@@ -16,7 +17,12 @@ public final class StatusApi {
 
     /** Immutable layer data; damageBase already includes the originating hit's offensive scaling. */
     public record Layer(DamageType type, UUID owner, double damageBase, int remainingTicks,
-                        int nextPulseTicks, int ageTicks, int criticalTier) {}
+                        int nextPulseTicks, int ageTicks, int criticalTier, UUID weapon, AttackKind attackKind) {
+        public Layer(DamageType type, UUID owner, double damageBase, int remainingTicks, int nextPulseTicks, int ageTicks, int criticalTier) {
+            this(type, owner, damageBase, remainingTicks, nextPulseTicks, ageTicks, criticalTier, null, AttackKind.UNKNOWN);
+        }
+        public Layer { Objects.requireNonNull(attackKind).validateWeapon(weapon); }
+    }
 
     public static int count(LivingEntity target, DamageType type) {
         requireServerThread(target); Objects.requireNonNull(type);
@@ -53,7 +59,7 @@ public final class StatusApi {
         requireServerThread(target);
         if (!target.hasData(RangedAttachments.STATUS)) return List.of();
         return StatusEffects.state(target).layers.stream().map(layer -> new Layer(layer.type(), layer.owner(),
-                layer.base(), layer.remaining(), layer.pulse(), layer.age(), layer.criticalTier())).toList();
+                layer.base(), layer.remaining(), layer.pulse(), layer.age(), layer.criticalTier(), layer.weapon(), layer.attackKind())).toList();
     }
 
     public static boolean apply(LivingEntity target, DamageType type, UUID owner, double damageBase, int weaponDurationTicks) {
@@ -69,6 +75,12 @@ public final class StatusApi {
     public static boolean apply(LivingEntity target, DamageType type, UUID owner, double damageBase, int weaponDurationTicks, int criticalTier) {
         requireServerThread(target);
         return StatusEffects.tryApply(target, type, owner, damageBase, weaponDurationTicks, criticalTier);
+    }
+
+    /** Applies a proc with explicit weapon attribution for delayed kills and secondary area damage. */
+    public static boolean apply(LivingEntity target, DamageType type, UUID owner, StatusContext context, int weaponDurationTicks) {
+        requireServerThread(target);
+        return StatusEffects.tryApply(target, type, owner, weaponDurationTicks, Objects.requireNonNull(context));
     }
 
     /** Clears a type and its residual modifiers/control state, scheduling a head-marker update. */

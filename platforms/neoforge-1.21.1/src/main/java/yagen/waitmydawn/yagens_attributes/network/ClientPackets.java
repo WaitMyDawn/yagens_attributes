@@ -9,6 +9,12 @@ import net.minecraft.world.entity.LivingEntity;
 
 /** Physical-client setup installs handlers without linking client classes during server loading. */
 public final class ClientPackets {
+    private static Consumer<StatusEffectPayload> effects = payload -> {};
+    public static void effects(Consumer<StatusEffectPayload> handler) { effects = handler; }
+    public static void receive(StatusEffectPayload payload) { effects.accept(payload); }
+    private static Consumer<WeaponBuffsPayload> weaponBuffs = payload -> {};
+    public static void weaponBuffs(Consumer<WeaponBuffsPayload> handler) { weaponBuffs = handler; }
+    public static void receive(WeaponBuffsPayload payload) { weaponBuffs.accept(payload); }
     private static Consumer<ProfilePayload> profiles = payload -> {};
     private static Consumer<PanelPayload> panel = payload -> {};
     private static Consumer<TooltipPayload> tooltip = payload -> {};

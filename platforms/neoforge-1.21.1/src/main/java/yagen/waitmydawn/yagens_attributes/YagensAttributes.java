@@ -39,6 +39,7 @@ public final class YagensAttributes {
         yagen.waitmydawn.yagens_attributes.registries.LootTypes.MODIFIERS.register(bus);
         yagen.waitmydawn.yagens_attributes.registries.ModCreativeTabs.REGISTER.register(bus);
         RangedAttachments.REGISTER.register(bus);
+        yagen.waitmydawn.yagens_attributes.registries.StatusParticles.REGISTER.register(bus);
         ShieldAttributes.REGISTER.register(bus);
         bus.addListener(ShieldAttributes::attributes);
         bus.addListener(yagen.waitmydawn.yagens_attributes.datagen.ModDataProvider::gather);
@@ -50,7 +51,9 @@ public final class YagensAttributes {
     }
 
     private static void network(RegisterPayloadHandlersEvent event) {
-        event.registrar("22")
+        event.registrar("27")
+                .playToClient(StatusEffectPayload.TYPE, StatusEffectPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
+                .playToClient(WeaponBuffsPayload.TYPE, WeaponBuffsPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ComboPayload.TYPE, ComboPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(StatusMarkersPayload.TYPE, StatusMarkersPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ModCatalogPayload.TYPE, ModCatalogPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
@@ -75,6 +78,7 @@ public final class YagensAttributes {
 
     public static void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
+            yagen.waitmydawn.yagens_attributes.compat.CompatSetup.register();
             Map<ResourceLocation, Double> map = Map.of(
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.max_health"), 2_147_483_647D,
                     ResourceLocation.fromNamespaceAndPath("minecraft", "generic.max_absorption"), 2_147_483_647D,

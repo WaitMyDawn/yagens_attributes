@@ -14,7 +14,13 @@ import java.util.*;
 
 public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponProfiles.Prepared> {
     public record Prepared(Map<ResourceLocation, JsonElement> exact, Map<ResourceLocation, JsonElement> defaults) {}
-    public record Rule(WeaponProfile profile, boolean deriveDamage) {}
+    public record Rule(WeaponProfile profile, boolean deriveDamage) {
+        public WeaponProfile resolve(double nativeDamage) {
+            return deriveDamage ? new WeaponProfile(profile.criticalChance(), profile.criticalDamage(), profile.statusChance(),
+                    profile.statusDuration(), profile.distribution(), nativeDamage, profile.category(), profile.slots(),
+                    profile.fireRate(), profile.multishot(), profile.rivenDisposition()) : profile;
+        }
+    }
     private record Snapshot(Map<Item, WeaponProfile> byItem, Map<ResourceLocation, WeaponProfile> byId) {}
     private volatile Snapshot snapshot = new Snapshot(Map.of(), Map.of());
 
@@ -37,42 +43,37 @@ public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponP
                     var family = WeaponFamilies.Family.valueOf(object.getKey().toUpperCase(Locale.ROOT));
                     JsonObject definition = object.getValue().getAsJsonObject().deepCopy();
                     if (!definition.has("category")) definition.addProperty("category", family.category().key());
-                    var rule = new Rule(JsonData.weapon(definition), !definition.has("base_damage"));
-                    if (result.put(family, rule) != null) throw new IllegalArgumentException("Duplicate family default: " + family);
+                    if (result.put(family, rule(definition)) != null) throw new IllegalArgumentException("Duplicate family default: " + family);
                 }
             } catch (RuntimeException exception) { throw new IllegalArgumentException("Invalid weapon defaults " + entry.getKey(), exception); }
         }
         return Map.copyOf(result);
     }
 
+    public static Rule rule(JsonObject definition) {
+        return new Rule(JsonData.weapon(definition), !definition.has("base_damage"));
+    }
+
     @Override protected void apply(Prepared prepared, ResourceManager manager, ProfilerFiller profiler) {
-        Map<ResourceLocation, WeaponProfile> exact = new HashMap<>();
+        Map<ResourceLocation, Rule> exact = new HashMap<>();
         prepared.exact().forEach((id, json) -> {
-            try { exact.put(id, JsonData.weapon(json.getAsJsonObject())); }
+            try { exact.put(id, rule(json.getAsJsonObject())); }
             catch (RuntimeException exception) { throw new IllegalArgumentException("Invalid weapon profile " + id, exception); }
         });
         var defaults = defaults(prepared.defaults());
         Map<Item, WeaponProfile> byItem = new IdentityHashMap<>();
-        Map<ResourceLocation, WeaponProfile> byId = new HashMap<>(exact);
+        Map<ResourceLocation, WeaponProfile> byId = new HashMap<>();
+        exact.forEach((id, rule) -> { if (!rule.deriveDamage()) byId.put(id, rule.profile()); });
         for (Item item : BuiltInRegistries.ITEM) {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
-            WeaponProfile profile = exact.get(id);
-            if (profile == null) {
-                var rule = WeaponFamilies.match(item.getClass()).map(defaults::get).orElse(null);
-                if (rule == null) continue;
-                profile = rule.profile();
-                if (rule.deriveDamage()) {
-                    double damage;
-                    try { damage = nativeDamage(item.getDefaultInstance()); }
-                    catch (RuntimeException exception) {
-                        YagensAttributes.LOGGER.warn("Cannot inspect native weapon attributes for {}; an explicit profile is required", id, exception);
-                        continue;
-                    }
-                    if (!Double.isFinite(damage) || damage <= 0) {
-                        YagensAttributes.LOGGER.warn("Cannot derive a positive weapon baseline for {}; an explicit profile is required", id); continue;
-                    }
-                    profile = new WeaponProfile(profile.criticalChance(), profile.criticalDamage(), profile.statusChance(), profile.statusDuration(), profile.distribution(), damage, profile.category(), profile.slots(), profile.fireRate(), profile.multishot(), profile.rivenDisposition());
-                }
+            var rule = exact.get(id);
+            if (rule == null) rule = WeaponFamilies.match(item.getClass()).map(defaults::get).orElse(null);
+            if (rule == null) continue;
+            WeaponProfile profile;
+            try { profile = rule.resolve(rule.deriveDamage() ? nativeDamage(item.getDefaultInstance()) : 0); }
+            catch (RuntimeException exception) {
+                YagensAttributes.LOGGER.warn("Cannot resolve weapon baseline for {}; set an explicit positive base_damage", id, exception);
+                continue;
             }
             byItem.put(item, profile); byId.put(id, profile);
         }
@@ -81,6 +82,8 @@ public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponP
     }
 
     private static double nativeDamage(ItemStack stack) {
+        var supplied = yagen.waitmydawn.yagens_attributes.compat.NativeWeapons.baseline(stack);
+        if (supplied.isPresent()) return supplied.getAsDouble();
         double[] sums = {0, 0}; List<Double> factors = new ArrayList<>();
         stack.getAttributeModifiers().forEach(EquipmentSlot.MAINHAND, (attribute, modifier) -> {
             if (!attribute.equals(Attributes.ATTACK_DAMAGE)) return;

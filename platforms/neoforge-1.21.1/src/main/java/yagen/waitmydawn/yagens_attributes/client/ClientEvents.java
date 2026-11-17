@@ -38,8 +38,10 @@ public final class ClientEvents {
             ClientPackets.mods(ClientMods::accept, ClientMods::catalog);
             ClientPackets.shield(ShieldHud::accept);
             ClientPackets.combo(ComboHud::accept);
+            ClientPackets.weaponBuffs(WeaponBuffHud::accept);
             ClientPackets.visual(StatusVisuals::accept);
-            ClientPackets.markers(yagen.waitmydawn.yagens_attributes.render.StatusMarkers::accept);
+            ClientPackets.effects(StatusEffectsRenderer::accept);
+            ClientPackets.markers(payload -> { yagen.waitmydawn.yagens_attributes.render.StatusMarkers.accept(payload); StatusEffectsRenderer.markers(payload); });
             ClientPackets.ranged(ClientRangedUse::accept, ClientRangedUse::start, ClientRangedUse::tick, ClientRangedUse::stop);
             ClientPackets.install(payload -> { ClientProfiles.accept(payload); if (payload.last()) WeaponInspectionCache.clear(); }, payload -> {
                 WeaponInspectionCache.accept(payload);
@@ -54,12 +56,14 @@ public final class ClientEvents {
     @SubscribeEvent public static void tick(ClientTickEvent.Post event) {
         ShieldHud.tick();
         ComboHud.tick();
+        WeaponBuffHud.tick();
+        StatusEffectsRenderer.tick();
         yagen.waitmydawn.yagens_attributes.render.StatusMarkers.tick();
         Minecraft minecraft = Minecraft.getInstance();
         while (MOD_SPACE.consumeClick()) if (minecraft.player != null && minecraft.screen == null) minecraft.setScreen(new ModPanelScreen(PanelRequest.STORAGE));
         while (WEAPON_PANEL.consumeClick()) if (minecraft.player != null && minecraft.screen == null) minecraft.setScreen(new ModPanelScreen(PanelRequest.WEAPON));
     }
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { ClientProfiles.clear(); WeaponInspectionCache.clear(); ClientRangedUse.clear(); ShieldHud.clear(); ComboHud.clear(); ClientMods.clear(); yagen.waitmydawn.yagens_attributes.render.StatusMarkers.clear(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { ClientProfiles.clear(); WeaponInspectionCache.clear(); ClientRangedUse.clear(); ShieldHud.clear(); ComboHud.clear(); WeaponBuffHud.clear(); StatusEffectsRenderer.clear(); ClientMods.clear(); yagen.waitmydawn.yagens_attributes.render.StatusMarkers.clear(); }
 
     @SubscribeEvent public static void tooltip(ItemTooltipEvent event) {
         if (event.getEntity() == null || !event.getEntity().level().isClientSide()) return;

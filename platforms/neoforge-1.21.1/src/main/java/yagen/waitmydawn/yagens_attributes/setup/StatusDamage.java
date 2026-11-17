@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.core.DamageType;
+import yagen.waitmydawn.yagens_attributes.core.AttackKind;
 import java.util.*;
 
 /** Typed secondary damage cannot re-enter weapon resolution or generate random status procs. */
@@ -22,11 +23,13 @@ public final class StatusDamage extends DamageSource {
     public final DamageType type;
     public final int criticalTier;
     public final UUID weapon;
+    public final AttackKind attackKind;
     private final double[] armorPortions;
-    private StatusDamage(ServerLevel level, DamageType type, UUID owner, double[] armorPortions, int criticalTier, UUID weapon) {
+    private StatusDamage(ServerLevel level, DamageType type, UUID owner, double[] armorPortions, int criticalTier, UUID weapon, AttackKind attackKind) {
         super(level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(KEYS.get(type)), null, owner(level, owner));
         this.type = type; this.armorPortions = armorPortions; this.criticalTier = criticalTier;
         this.weapon = weapon;
+        this.attackKind = attackKind;
     }
     @Override public ItemStack getWeaponItem() { return null; }
     public int portionCount() { return armorPortions.length; }
@@ -43,7 +46,7 @@ public final class StatusDamage extends DamageSource {
     }
     public static boolean bypassesShields(DamageSource source) { return damageType(source) == DamageType.TOXIN; }
     public static void hurt(LivingEntity target, DamageType type, UUID owner, double amount) {
-        hurt(target, type, owner, amount, new double[0], 0, null);
+        hurt(target, type, owner, amount, new double[0], 0, null, AttackKind.UNKNOWN);
     }
     public static void hurtBatch(LivingEntity target, DamageType type, UUID owner, List<Double> amounts) {
         hurtBatch(target, type, owner, amounts, 0);
@@ -52,20 +55,27 @@ public final class StatusDamage extends DamageSource {
         hurtBatch(target, type, owner, amounts, criticalTier, null);
     }
     public static void hurtBatch(LivingEntity target, DamageType type, UUID owner, List<Double> amounts, int criticalTier, UUID weapon) {
+        hurtBatch(target, type, owner, amounts, criticalTier, weapon, weapon == null ? AttackKind.UNKNOWN : AttackKind.RANGED);
+    }
+    public static void hurtBatch(LivingEntity target, DamageType type, UUID owner, List<Double> amounts, int criticalTier, UUID weapon, AttackKind attackKind) {
+        tryHurtBatch(target, type, owner, amounts, criticalTier, weapon, attackKind);
+    }
+    public static boolean tryHurtBatch(LivingEntity target, DamageType type, UUID owner, List<Double> amounts, int criticalTier, UUID weapon, AttackKind attackKind) {
         for (double amount : amounts) if (!Double.isFinite(amount) || amount < 0) throw new IllegalArgumentException("Invalid status damage portion");
         double total = amounts.stream().mapToDouble(Double::doubleValue).sum();
         double[] portions = type == DamageType.HEAT || amounts.size() < 2 ? new double[0] : amounts.stream().mapToDouble(Double::doubleValue).toArray();
-        hurt(target, type, owner, total, portions, criticalTier, weapon);
+        return hurt(target, type, owner, total, portions, criticalTier, weapon, attackKind);
     }
-    private static void hurt(LivingEntity target, DamageType type, UUID owner, double amount, double[] portions, int criticalTier, UUID weapon) {
+    private static boolean hurt(LivingEntity target, DamageType type, UUID owner, double amount, double[] portions, int criticalTier, UUID weapon, AttackKind attackKind) {
+        java.util.Objects.requireNonNull(attackKind).validateWeapon(weapon);
         if (!Double.isFinite(amount) || amount < 0 || criticalTier < 0 || criticalTier > 100) throw new IllegalArgumentException("Invalid status damage");
-        if (!target.isAlive() || amount <= 0 || !(target.level() instanceof ServerLevel level)) return;
+        if (!target.isAlive() || amount <= 0 || !(target.level() instanceof ServerLevel level)) return false;
         var attacker = owner(level, owner);
         if (target instanceof net.minecraft.world.entity.player.Player player && !target.getUUID().equals(owner)) {
-            if (attacker == null) return;
+            if (attacker == null) return false;
             if (attacker instanceof net.minecraft.world.entity.player.Player source
-                    && (!level.getServer().isPvpAllowed() || !source.canHarmPlayer(player))) return;
+                    && (!level.getServer().isPvpAllowed() || !source.canHarmPlayer(player))) return false;
         }
-        target.hurt(new StatusDamage(level, type, owner, portions, criticalTier, weapon), (float) Math.min(Float.MAX_VALUE, amount));
+        return target.hurt(new StatusDamage(level, type, owner, portions, criticalTier, weapon, attackKind), (float) Math.min(Float.MAX_VALUE, amount));
     }
 }

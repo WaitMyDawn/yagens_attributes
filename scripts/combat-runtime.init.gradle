@@ -17,6 +17,7 @@ gradle.projectsEvaluated {
         arguments.addAll '--port', '0'
         modSource rootProject.sourceSets.adapterTest
         systemProperty 'yagens_attributes.validateCombat', 'true'
+        systemProperty 'yagens_attributes.validationSuite', rootProject.providers.gradleProperty('combatValidationSuite').getOrElse('all')
     }
     rootProject.tasks.named('runServer').configure { standardInput = System.in }
 }

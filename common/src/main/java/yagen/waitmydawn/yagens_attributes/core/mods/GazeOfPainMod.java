@@ -10,6 +10,6 @@ public final class GazeOfPainMod extends BuiltinMod {
     @Override public ModDefinition definition() {
         return define(Rarity.COMMON, Polarity.VAZARIN, 4, 5, Set.of(Category.WEAPON),
                 "yagens_attributes:item/mods/gaze_of_pain",
-                ModEffects.bonus(Stats.STATUS_CHANCE, 0.15));
+                ModEffects.bonus(Stats.STATUS_CHANCE, 0.15)).withStyle(ModStyle.family("yagens_attributes:status_chance_choice"));
     }
 }

@@ -1,0 +1,25 @@
+{
+  "critical_chance": 0.18,
+  "critical_damage": 2.0,
+  "status_chance": 0.24,
+  "status_duration": 6.0,
+  "category": "trident",
+  "fire_rate": 1.0,
+  "multishot": 1.0,
+  "riven_disposition": 1.2,
+  "damage_distribution": {
+    "impact": 0.20000000000000004,
+    "puncture": 0.7000000000000001,
+    "slash": 0.10000000000000002
+  },
+  "mod_slots": [
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none",
+    "none"
+  ]
+}

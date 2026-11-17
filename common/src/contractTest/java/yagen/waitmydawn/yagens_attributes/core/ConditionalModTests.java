@@ -20,9 +20,22 @@ final class ConditionalModTests {
         var counter = ConditionalModifier.Counter.EMPTY.hit(100, kill.condition());
         close(1.35, Stats.resolve(1, Stats.ATTACK_SPEED, List.of(kill.source(counter.count(100)))));
         counter = counter.hit(150, kill.condition()).hit(160, kill.condition());
-        check(counter.count(359) == 2); check(counter.count(360) == 0);
+        check(counter.count(349) == 2); check(counter.count(350) == 1); check(counter.count(359) == 1); check(counter.count(360) == 0);
         close(1.7, Stats.resolve(1, Stats.ATTACK_SPEED, List.of(kill.source(counter.count(160)))));
         check(counter.hit(400, kill.condition()).count(400) == 1);
+        var separate = new ConditionalModifier.Counter(2, 60, List.of(60L, 100L)).hit(0, kill.condition());
+        check(separate.deadlines().equals(List.of(100L, 200L)));
+        check(separate.count(99, kill.condition()) == 2 && separate.count(100, kill.condition()) == 1);
+        separate = separate.hit(120, kill.condition());
+        check(separate.deadlines().equals(List.of(200L, 320L)));
+        for (int i = 121; i < 500; i++) {
+            separate = separate.hit(i, kill.condition()); check(separate.deadlines().size() == 2);
+        }
+        check(separate.count(700, kill.condition()) == 0);
+        var irregularClock = new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 3.5, 3, false, ConditionalModifier.Decay.INDEPENDENT);
+        var unrelated = ConditionalModifier.Counter.EMPTY.hit(7, irregularClock).hit(20, irregularClock).hit(30, irregularClock).hit(40, irregularClock);
+        check(unrelated.deadlines().equals(List.of(90L, 100L, 110L)));
+        check(unrelated.expirations(100, irregularClock).equals(List.of(110L)));
         var prime = catalog.card("yagens_attributes:primed_universal_nanocube", 10);
         close(1.65, prime.bonuses().get(Stats.DAMAGE).addition());
         close(3, catalog.card("yagens_attributes:primed_reach", 10).bonuses().get(Stats.MELEE_RANGE).addin());
@@ -56,8 +69,8 @@ final class ConditionalModTests {
         var rush = catalog.card("yagens_attributes:blood_rush", 10).info();
         for (var category : ModInfo.Category.values()) {
             check(delay.conflicts(bone, category)); check(bone.conflicts(delay, category));
-            check(delay.conflicts(rush, category) == (category == ModInfo.Category.TRIDENT));
-            check(rush.conflicts(delay, category) == (category == ModInfo.Category.TRIDENT));
+            check(!delay.conflicts(rush, category));
+            check(!rush.conflicts(delay, category));
             check(!bone.conflicts(rush, category));
         }
         var fury = List.of(catalog.card("yagens_attributes:fury", 5).info(), catalog.card("yagens_attributes:berserker_fury", 5).info(), catalog.card("yagens_attributes:primed_fury", 10).info());
@@ -79,9 +92,9 @@ final class ConditionalModTests {
         var firstCard = catalog.card("yagens_attributes:critical_delay", 0); var secondCard = catalog.card("yagens_attributes:blood_rush", 0);
         ledger.add(new ModLedger.Entry(first, owner, null, false, firstCard.bonuses(), firstCard.info(), -1));
         ledger.add(new ModLedger.Entry(second, owner, null, false, secondCard.bonuses(), secondCard.info(), -1));
-        ledger.install(owner, first, weapon, ModInfo.Category.TRIDENT, 8, 0, 30, true);
-        rejects(() -> ledger.install(owner, second, weapon, ModInfo.Category.TRIDENT, 8, 1, 30, true));
-        check(ledger.entry(second).weapon() == null && ledger.installed(weapon).size() == 1);
+        rejects(() -> ledger.install(owner, first, weapon, ModInfo.Category.TRIDENT, 8, 0, 30, true));
+        ledger.install(owner, second, weapon, ModInfo.Category.TRIDENT, 8, 1, 30, true);
+        check(ledger.entry(first).weapon() == null && ledger.installed(weapon).size() == 1);
     }
     private static void check(boolean value) { checks++; if (!value) throw new AssertionError("Conditional Mod check " + checks); }
     private static void close(double a, double b) { check(Math.abs(a - b) < 1e-9); }

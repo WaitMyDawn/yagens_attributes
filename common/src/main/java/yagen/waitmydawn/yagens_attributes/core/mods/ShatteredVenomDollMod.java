@@ -11,6 +11,6 @@ public final class ShatteredVenomDollMod extends BuiltinMod {
         return define(Rarity.RARE, Polarity.MADURAI, 4, 5, Set.of(Category.WEAPON),
                 "yagens_attributes:item/mods/shattered_venom_doll",
                 ModEffects.element(DamageType.TOXIN, 0.1),
-                ModEffects.bonus(Stats.STATUS_CHANCE, 0.1));
+                ModEffects.bonus(Stats.STATUS_CHANCE, 0.1)).withStyle(ModStyle.family("yagens_attributes:shattered_venom_doll"));
     }
 }

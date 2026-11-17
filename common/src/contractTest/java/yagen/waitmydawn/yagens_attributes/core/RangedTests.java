@@ -40,6 +40,18 @@ public final class RangedTests {
         var sources = List.of(Map.of(Stats.MULTISHOT, new Bonus(0, .2, List.of(1.5), 0)), Map.of(Stats.MULTISHOT, new Bonus(0, .4, List.of(1.2), 0)));
         close(2.88, RangedStats.value(1, Stats.MULTISHOT, sources));
         close(64, RangedStats.value(1, Stats.FIRE_RATE, List.of(Map.of(Stats.FIRE_RATE, new Bonus(1000, 0, List.of(), 0)))));
+        for (double rate : List.of(0D, .1, .5, 1D, 1.5, 2D, 64D)) {
+            var cadence = new RangedStats.IntervalClock(); int emitted = 0;
+            for (int tick = 1; tick <= 1000; tick++) {
+                emitted += cadence.advance(rate, 2);
+                equal((int) Math.floor(Math.nextUp(tick * rate / 2)), emitted);
+            }
+        }
+        var cadence = new RangedStats.IntervalClock();
+        equal(0, cadence.advance(.5, 2)); equal(0, cadence.advance(0, 2));
+        equal(1, cadence.advance(1.5, 2)); equal(0, cadence.advance(1, 2)); equal(1, cadence.advance(1, 2));
+        rejects(() -> cadence.advance(Double.NaN, 2)); rejects(() -> cadence.advance(-1, 2));
+        rejects(() -> cadence.advance(65, 2)); rejects(() -> cadence.advance(1, 0));
         System.out.println("Passed " + checks + " ranged math/charge contract checks");
     }
     private static void equal(Object a, Object b) { if (!Objects.equals(a, b)) throw new AssertionError(a + " != " + b); checks++; }

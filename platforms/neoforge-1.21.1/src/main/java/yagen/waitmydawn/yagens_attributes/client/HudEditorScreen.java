@@ -15,6 +15,7 @@ public final class HudEditorScreen extends Screen {
     private double grabX, grabY;
     private Component error;
     private Button visibility;
+    private Button countdown;
 
     public HudEditorScreen(HudElement element) {
         super(text("hud_editor", element.title()));
@@ -27,19 +28,25 @@ public final class HudEditorScreen extends Screen {
         moving = false;
         int left = (width - 298) / 2, y = height - 28;
         visibility = addRenderableWidget(Button.builder(visibilityLabel(), button -> {
-            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), draft.scale(), !draft.visible());
+            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), draft.scale(), !draft.visible(), draft.countdown());
             visibility.setMessage(visibilityLabel()); error = null;
         }).bounds(left, y, 70, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("controls.reset"), button -> {
             draft = element.defaults(); moving = false; error = null; visibility.setMessage(visibilityLabel());
+            if (countdown != null) countdown.setMessage(countdownLabel());
         }).bounds(left + 76, y, 70, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), button -> onClose()).bounds(left + 152, y, 70, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> save()).bounds(left + 228, y, 70, 20).build());
+        if (element == HudElement.BUFFS) countdown = addRenderableWidget(Button.builder(countdownLabel(), button -> {
+            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), draft.scale(), draft.visible(), !draft.countdown());
+            countdown.setMessage(countdownLabel()); error = null;
+        }).bounds(width / 2 - 58, 48, 116, 20).build());
     }
+    private Component countdownLabel() { return text("hud_countdown", Component.translatable(draft.countdown() ? "options.on" : "options.off")); }
     private Component visibilityLabel() { return text("hud_visibility", Component.translatable(draft.visible() ? "options.on" : "options.off")); }
     private void move(double left, double top) {
         var offsets = placement().move(width, height, left, top);
-        draft = new HudElement.Settings(offsets.x(), offsets.y(), draft.scale(), draft.visible()); error = null;
+        draft = new HudElement.Settings(offsets.x(), offsets.y(), draft.scale(), draft.visible(), draft.countdown()); error = null;
     }
     private void save() {
         try { element.save(draft); minecraft.setScreen(null); }
@@ -52,7 +59,7 @@ public final class HudEditorScreen extends Screen {
     @Override public boolean isPauseScreen() { return false; }
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         var box = placement();
-        graphics.fill(0, 0, width, 64, 0xB0101B23);
+        graphics.fill(0, 0, width, element == HudElement.BUFFS ? 76 : 64, 0xB0101B23);
         graphics.fill(0, height - 40, width, height, 0xB0101B23);
         graphics.drawCenteredString(font, title, width / 2, 9, 0xFFE1CE90);
         graphics.drawWordWrap(font, text("hud_drag_hint"), 12, 26, Math.max(1, width - 24), 0xFFCBD6DA);
@@ -63,7 +70,7 @@ public final class HudEditorScreen extends Screen {
         graphics.fill(box.x(), box.y(), box.x() + box.width(), box.y() + box.height(), 0x5013212A);
         graphics.renderOutline(box.x(), box.y(), box.width(), box.height(), moving || box.contains(mouseX, mouseY) ? 0xFFE1CE90 : 0xFF70BECC);
         graphics.pose().pushPose(); graphics.pose().translate(box.x(), box.y(), 0); graphics.pose().scale(box.scale(), box.scale(), 1);
-        element.preview(graphics); graphics.pose().popPose();
+        element.preview(graphics, draft); graphics.pose().popPose();
         if (error != null) graphics.drawCenteredString(font, error, width / 2, height - 52, 0xFFFF7777);
         super.render(graphics, mouseX, mouseY, partialTick);
     }
@@ -87,7 +94,7 @@ public final class HudEditorScreen extends Screen {
         var box = placement();
         if (box.contains(mouseX, mouseY) && scrollY != 0) {
             double scale = Math.max(HudLayout.MIN_SCALE, Math.min(HudLayout.MAX_SCALE, Math.round((draft.scale() + Math.signum(scrollY) * .1) * 10) / 10D));
-            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), scale, draft.visible());
+            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), scale, draft.visible(), draft.countdown());
             var resized = placement();
             move(mouseX - (mouseX - box.x()) * resized.width() / box.width(), mouseY - (mouseY - box.y()) * resized.height() / box.height());
             if (moving) { var moved = placement(); grabX = mouseX - moved.x(); grabY = mouseY - moved.y(); }
