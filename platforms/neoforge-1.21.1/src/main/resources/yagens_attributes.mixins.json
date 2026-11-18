@@ -9,6 +9,8 @@
     "EnchantmentExperienceMixin",
     "ArmorFormulaMixin",
     "ProjectileWeaponItemMixin",
+    "ArrowWeakPointMixin",
+    "GoatWeakPointStateMixin",
     "NativeItemStackMixin",
     "NativeSpawnMixin",
     "NativeCooldownMixin",
@@ -29,7 +31,7 @@
     "VanishingWeaponMixin",
     "CreativeWeaponCloneMixin"
   ],
-  "client": ["ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin", "CreativeHotbarWeaponMixin"],
+  "client": ["ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin", "CreativeHotbarWeaponMixin", "WeakPointDebugMixin"],
   "injectors": {
     "defaultRequire": 1
   }

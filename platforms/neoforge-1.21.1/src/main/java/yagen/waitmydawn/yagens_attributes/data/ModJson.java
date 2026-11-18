@@ -116,16 +116,27 @@ public final class ModJson {
         object.addProperty("max_stacks", value.maxStacks());
         if (value.perTargetStatus()) object.addProperty("per_target_status", true);
         if (value.decay() != ConditionalModifier.Decay.ALL_AT_ONCE) object.addProperty("decay", value.decay().name().toLowerCase(Locale.ROOT));
-        object.addProperty("description", "Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. Duration and stack cap do not scale with rank.");
+        if (value.scaleDurationWithRank()) object.addProperty("scale_duration_with_rank", true);
+        String description = value.trigger() == ConditionalModifier.Trigger.RANGED_WEAK_POINT_HITS
+                ? "Confirmed ranged weak point hits build or refresh the weapon buff. The bonus applies at launch. scale_duration_with_rank multiplies the rank 0 duration by (rank + 1)."
+                : (value.trigger() == ConditionalModifier.Trigger.RANGED_WEAK_POINT_KILLS
+                    ? "Direct ranged weak point kills build the weapon buff. The bonus applies at launch. " : "")
+                    + "Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. "
+                    + (value.scaleDurationWithRank() ? "Duration scales with (rank + 1). The stack cap does not scale." : "Duration and stack cap do not scale with rank.");
+        object.addProperty("description", description);
         return object;
     }
     private static ConditionalModifier.Condition condition(JsonObject object) {
-        JsonData.fields(object, "trigger", "duration_seconds", "max_stacks", "description", "per_target_status", "decay");
+        JsonData.fields(object, "trigger", "duration_seconds", "max_stacks", "description", "per_target_status", "decay", "scale_duration_with_rank");
         if (string(object, "description").isBlank()) throw new IllegalArgumentException("Missing condition description");
+        var scale = object.get("scale_duration_with_rank");
+        if (scale != null && (!scale.isJsonPrimitive() || !scale.getAsJsonPrimitive().isBoolean()))
+            throw new IllegalArgumentException("Expected boolean scale_duration_with_rank");
         return new ConditionalModifier.Condition(enumeration(ConditionalModifier.Trigger.class, string(object, "trigger")),
                 JsonData.number(object, "duration_seconds", Double.NaN), integer(object, "max_stacks"),
                 object.has("per_target_status") && object.get("per_target_status").getAsBoolean(),
-                object.has("decay") ? enumeration(ConditionalModifier.Decay.class, string(object, "decay")) : ConditionalModifier.Decay.ALL_AT_ONCE);
+                object.has("decay") ? enumeration(ConditionalModifier.Decay.class, string(object, "decay")) : ConditionalModifier.Decay.ALL_AT_ONCE,
+                scale != null && scale.getAsBoolean());
     }
 
     public static JsonObject conditional(ConditionalModifier value) {

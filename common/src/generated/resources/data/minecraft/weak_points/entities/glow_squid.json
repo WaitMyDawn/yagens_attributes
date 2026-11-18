@@ -1,0 +1,34 @@
+{
+  "regions": {
+    "left_eye": {
+      "anchor": "feet",
+      "rotation": "none",
+      "state": "squid_model",
+      "min": [
+        -0.41,
+        0.3,
+        0.43
+      ],
+      "max": [
+        -0.15,
+        0.55,
+        0.7
+      ]
+    },
+    "right_eye": {
+      "anchor": "feet",
+      "rotation": "none",
+      "state": "squid_model",
+      "min": [
+        0.15,
+        0.3,
+        0.43
+      ],
+      "max": [
+        0.41,
+        0.55,
+        0.7
+      ]
+    }
+  }
+}

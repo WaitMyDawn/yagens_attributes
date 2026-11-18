@@ -1,0 +1,22 @@
+{
+  "regions": {
+    "head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "min": [
+        -0.19,
+        0.85,
+        0.35
+      ],
+      "max": [
+        0.19,
+        1.17,
+        0.84
+      ]
+    }
+  },
+  "entity_types": [
+    "minecraft:donkey",
+    "minecraft:mule"
+  ]
+}

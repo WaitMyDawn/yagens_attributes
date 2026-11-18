@@ -54,7 +54,8 @@ public final class YagensAttributes {
     }
 
     private static void network(RegisterPayloadHandlersEvent event) {
-        event.registrar("29")
+        event.registrar("33")
+                .playToClient(WeakPointProfilesPayload.TYPE, WeakPointProfilesPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(StatusEffectPayload.TYPE, StatusEffectPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(WeaponBuffsPayload.TYPE, WeaponBuffsPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ComboPayload.TYPE, ComboPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))

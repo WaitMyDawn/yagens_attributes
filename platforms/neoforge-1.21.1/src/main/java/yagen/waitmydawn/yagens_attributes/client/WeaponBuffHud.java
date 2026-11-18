@@ -106,11 +106,11 @@ public final class WeaponBuffHud {
     }
     public static void preview(GuiGraphics graphics, boolean seconds) {
         var choices = ClientPackets.modCatalog().creative().stream().filter(card -> card.level() == card.info().details().maxLevel()
-                && card.info().details().conditional().stream().anyMatch(modifier -> modifier.condition().onKill())).limit(4).toList();
+                && card.info().details().conditional().stream().anyMatch(modifier -> modifier.condition().trigger().timed())).limit(4).toList();
         int columns = ClientConfigs.BUFF_HUD_COLUMNS.get();
         for (int i = 0; i < 4; i++) {
             var card = choices.isEmpty() ? null : choices.get(i % choices.size());
-            var modifier = card == null ? null : card.info().details().conditional().stream().filter(value -> value.condition().onKill()).findFirst().orElseThrow();
+            var modifier = card == null ? null : card.info().details().conditional().stream().filter(value -> value.condition().trigger().timed()).findFirst().orElseThrow();
             int duration = modifier == null ? 200 : modifier.condition().durationTicks(), maximum = modifier == null ? 2 : modifier.condition().maxStacks();
             var buff = new WeaponBuff(new UUID(0, i), 0, card == null ? "yagens_attributes:mod" : card.id(), card == null ? 0 : card.level(),
                     modifier == null ? Stats.DAMAGE : modifier.stat(), modifier == null ? 0 : modifier.addition(), false, duration, maximum,

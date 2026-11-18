@@ -46,6 +46,7 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
                 || (long) baseCapacity + (long) capacityPerLevel * maxLevel > 1_000_000 || applicability.isEmpty()
                 || applicability.contains(ModInfo.Category.ALL) || entries.isEmpty() || entries.size() > 64)
             throw new IllegalArgumentException("Invalid Mod definition");
+        for (var entry : entries) entry.condition().atRank(maxLevel);
     }
 
     public static String id(String value) {
@@ -86,6 +87,6 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
     public List<ConditionalModifier> conditional(int level) {
         if (level < 0 || level > maxLevel) throw new IllegalArgumentException("Invalid Mod level");
         return entries.stream().filter(entry -> entry.condition().trigger() != ConditionalModifier.Trigger.ALWAYS)
-                .map(entry -> new ConditionalModifier(entry.stat(), entry.value() * (level + 1), entry.condition())).toList();
+                .map(entry -> new ConditionalModifier(entry.stat(), entry.value() * (level + 1), entry.condition().atRank(level))).toList();
     }
 }

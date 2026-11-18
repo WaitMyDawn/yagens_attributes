@@ -41,6 +41,7 @@ public final class ClientEvents {
             ClientPackets.shield(ShieldHud::accept);
             ClientPackets.combo(ComboHud::accept);
             ClientPackets.weaponBuffs(WeaponBuffHud::accept);
+            ClientPackets.weakPoints(WeakPointDebugRenderer::accept);
             ClientPackets.effects(payload -> {
                 switch (payload.effect()) {
                     case HEAT, TOXIN -> ElementStatusVisuals.pulse(payload);
@@ -75,7 +76,7 @@ public final class ClientEvents {
         while (MOD_SPACE.consumeClick()) if (minecraft.player != null && minecraft.screen == null) minecraft.setScreen(new ModPanelScreen(PanelRequest.STORAGE));
         while (WEAPON_PANEL.consumeClick()) if (minecraft.player != null && minecraft.screen == null) minecraft.setScreen(new ModPanelScreen(PanelRequest.WEAPON));
     }
-    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { ClientProfiles.clear(); WeaponInspectionCache.clear(); ClientRangedUse.clear(); ShieldHud.clear(); ComboHud.clear(); WeaponBuffHud.clear(); StatusEffectsRenderer.clear(); ClientMods.clear(); yagen.waitmydawn.yagens_attributes.render.StatusMarkers.clear(); }
+    @SubscribeEvent public static void logout(ClientPlayerNetworkEvent.LoggingOut event) { ClientProfiles.clear(); WeaponInspectionCache.clear(); ClientRangedUse.clear(); ShieldHud.clear(); ComboHud.clear(); WeaponBuffHud.clear(); StatusEffectsRenderer.clear(); ClientMods.clear(); WeakPointDebugRenderer.clear(); yagen.waitmydawn.yagens_attributes.render.StatusMarkers.clear(); }
 
     @SubscribeEvent public static void tooltip(ItemTooltipEvent event) {
         if (event.getEntity() == null || !event.getEntity().level().isClientSide()) return;

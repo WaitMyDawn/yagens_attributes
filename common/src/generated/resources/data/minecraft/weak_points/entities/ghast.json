@@ -1,0 +1,32 @@
+{
+  "regions": {
+    "left_eye": {
+      "anchor": "eyes",
+      "rotation": "body",
+      "min": [
+        -0.36,
+        -0.055,
+        0.44
+      ],
+      "max": [
+        -0.065,
+        0.055,
+        0.68
+      ]
+    },
+    "right_eye": {
+      "anchor": "eyes",
+      "rotation": "body",
+      "min": [
+        0.065,
+        -0.055,
+        0.44
+      ],
+      "max": [
+        0.36,
+        0.055,
+        0.68
+      ]
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "regions": {
+    "face_small": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "pufferfish_small",
+      "min": [
+        -0.29,
+        0.19,
+        0.18
+      ],
+      "max": [
+        0.29,
+        0.77,
+        0.72
+      ]
+    },
+    "face_medium": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "pufferfish_medium",
+      "min": [
+        -0.34,
+        0.4,
+        0.22
+      ],
+      "max": [
+        0.34,
+        0.9,
+        0.72
+      ]
+    },
+    "face_full": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "pufferfish_full",
+      "min": [
+        -0.38,
+        0.43,
+        0.23
+      ],
+      "max": [
+        0.38,
+        0.89,
+        0.72
+      ]
+    }
+  }
+}

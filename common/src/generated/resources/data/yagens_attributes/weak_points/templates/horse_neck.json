@@ -1,0 +1,23 @@
+{
+  "regions": {
+    "head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "min": [
+        -0.21,
+        0.86,
+        0.32
+      ],
+      "max": [
+        0.21,
+        1.0,
+        0.81
+      ]
+    }
+  },
+  "entity_types": [
+    "minecraft:horse",
+    "minecraft:skeleton_horse",
+    "minecraft:zombie_horse"
+  ]
+}

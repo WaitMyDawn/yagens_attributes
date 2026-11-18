@@ -8,7 +8,8 @@ public final class GalvanizedExpansionTests {
     private GalvanizedExpansionTests() {}
     public static void run() {
         var catalog = BuiltinMods.catalog();
-        for (var id : List.of("primed_shattered_venom_doll", "primed_cold_addition", "galvanized_bone_finger_box", "galvanized_gaze_of_pain")) {
+        for (var id : List.of("primed_shattered_venom_doll", "primed_cold_addition", "galvanized_bone_finger_box",
+                "galvanized_gaze_of_pain", "galvanized_argon_scope")) {
             var definition = catalog.definitions().get("yagens_attributes:" + id);
             check(definition.maxLevel() == 10);
             for (int rank = 0; rank <= 10; rank++) {
@@ -44,6 +45,22 @@ public final class GalvanizedExpansionTests {
         close(.8, aptitude.bonuses().get(Stats.STATUS_CHANCE).addition());
         check(aptitude.info().compatible(Category.BOW) && !aptitude.info().compatible(Category.TRIDENT));
         check(aptitude.info().conflicts(catalog.card("yagens_attributes:gaze_of_pain", 5).info()));
+        var scope = catalog.card("yagens_attributes:galvanized_argon_scope", 10);
+        check(scope.bonuses().isEmpty());
+        check(scope.info().compatible(Category.BOW) && scope.info().compatible(Category.CROSSBOW) && !scope.info().compatible(Category.TRIDENT));
+        check(scope.info().conflicts(catalog.card("yagens_attributes:argon_scope", 5).info()));
+        var scopeEffects = scope.info().details().conditional();
+        var scopeHit = scopeEffects.get(0);
+        var scopeKill = scopeEffects.get(1);
+        check(scopeHit.condition().trigger() == ConditionalModifier.Trigger.RANGED_WEAK_POINT_HITS && scopeHit.condition().maxStacks() == 1);
+        check(scopeKill.condition().trigger() == ConditionalModifier.Trigger.RANGED_WEAK_POINT_KILLS && scopeKill.condition().maxStacks() == 5);
+        check(scopeHit.condition().durationTicks() == 240 && scopeKill.condition().durationTicks() == 240);
+        close(4.2, Stats.resolve(1, Stats.CRITICAL_CHANCE, List.of(scopeHit.source(1), scopeKill.source(5))));
+        var weakPointDecay = scopeKill.condition();
+        check(weakPointDecay.decay() == ConditionalModifier.Decay.INDEPENDENT);
+        var weakPointStacks = ConditionalModifier.Counter.EMPTY.hit(100, weakPointDecay).hit(120, weakPointDecay);
+        check(weakPointStacks.count(339, weakPointDecay) == 2 && weakPointStacks.count(340, weakPointDecay) == 1
+                && weakPointStacks.count(360, weakPointDecay) == 0);
         var direct = aptitude.info().details().conditional().get(0);
         check(direct.source(0, 3).isEmpty() && direct.source(2, 0).isEmpty());
         close(2.4, direct.source(2, 3).get(Stats.DIRECT_DAMAGE).addition());
@@ -61,7 +78,8 @@ public final class GalvanizedExpansionTests {
         var legacy = new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 20, 4);
         check(new ConditionalModifier.Counter(4, 500).count(500, legacy) == 0);
         for (var definition : catalog.definitions().values()) if (definition.rarity() == Rarity.GALVANIZED) {
-            for (var effect : definition.entries()) if (effect.condition().onKill()) {
+            for (var effect : definition.entries()) if (AttackKind.MELEE.credits(effect.condition().trigger())
+                    || AttackKind.RANGED.credits(effect.condition().trigger())) {
                 var decay = effect.condition(); check(decay.decay() == ConditionalModifier.Decay.ONE_AT_A_TIME);
                 var full = new ConditionalModifier.Counter(decay.maxStacks(), 100);
                 check(full.count(99, decay) == decay.maxStacks());

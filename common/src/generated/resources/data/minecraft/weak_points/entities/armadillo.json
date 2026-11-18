@@ -1,0 +1,19 @@
+{
+  "regions": {
+    "exposed_head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "armadillo_exposed",
+      "min": [
+        -0.18,
+        0.08,
+        0.36
+      ],
+      "max": [
+        0.18,
+        0.65,
+        0.9
+      ]
+    }
+  }
+}

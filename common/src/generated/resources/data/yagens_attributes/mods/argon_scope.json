@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.argon_scope",
+  "rarity": "rare",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 2,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 5,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "ranged"
+  ],
+  "texture": "yagens_attributes:item/mods/argon_scope",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:argon_scope"
+    ]
+  },
+  "entries": [
+    {
+      "stat": "critical_chance",
+      "operation": "addition",
+      "value": 0.225,
+      "basis": "flat",
+      "description": "Fractional critical chance Addition at rank 0. The bonus applies to shots fired during the buff and scales with (rank + 1).",
+      "condition": {
+        "trigger": "ranged_weak_point_hits",
+        "duration_seconds": 1.5,
+        "max_stacks": 1,
+        "scale_duration_with_rank": true,
+        "description": "Confirmed ranged weak point hits build or refresh the weapon buff. The bonus applies at launch. scale_duration_with_rank multiplies the rank 0 duration by (rank + 1)."
+      }
+    }
+  ]
+}

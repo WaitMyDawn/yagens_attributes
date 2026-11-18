@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.projectile.Arrow;
 import net.minecraft.world.item.*;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.*;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -125,13 +126,17 @@ public final class GalvanizedRuntimeChecks {
         install(player, state, held, "galvanized_bone_finger_box", 10, 0);
         install(player, state, held, "berserker_fury", 5, 1);
         player.setItemInHand(InteractionHand.MAIN_HAND, held);
-        int position = 200;
+        var spawn = level.getSharedSpawnPos();
+        var position = new Vec3(spawn.getX() + .5, level.getMaxBuildHeight() - 24, spawn.getZ() + .5);
+        var cloudPosition = position.add(9, 0, 0);
         for (var type : List.of(yagen.waitmydawn.yagens_attributes.core.DamageType.SLASH,
                 yagen.waitmydawn.yagens_attributes.core.DamageType.TOXIN, yagen.waitmydawn.yagens_attributes.core.DamageType.HEAT,
                 yagen.waitmydawn.yagens_attributes.core.DamageType.ELECTRICITY, yagen.waitmydawn.yagens_attributes.core.DamageType.GAS,
                 yagen.waitmydawn.yagens_attributes.core.DamageType.BLAST)) {
             player.getData(RangedAttachments.KILL_BUFFS).counters.clear();
-            var victim = target(level); victim.setPos(position, 100, 200); position += 16;
+            var victim = target(level, position);
+            if (!level.getEntitiesOfClass(Cow.class, victim.getBoundingBox()).contains(victim))
+                throw new AssertionError("Area status fixture is outside a tracked chunk for " + type);
             var context = new StatusContext(Map.of(type, 10000D), 0, originalWeapon, AttackKind.MELEE);
             check(StatusApi.apply(victim, type, player.getUUID(), context, 120));
             if (victim.isAlive()) {
@@ -145,13 +150,13 @@ public final class GalvanizedRuntimeChecks {
             close(1, value(player, held, Stats.ATTACK_SPEED, 1));
         }
         player.getData(RangedAttachments.KILL_BUFFS).counters.clear();
-        var host = target(level); host.setPos(320, 100, 200);
+        var host = target(level, cloudPosition);
         var gas = yagen.waitmydawn.yagens_attributes.core.DamageType.GAS;
         check(StatusApi.apply(host, gas, player.getUUID(), new StatusContext(Map.of(gas, 100D), 0, originalWeapon, AttackKind.MELEE), 120));
         check(host.hurt(level.damageSources().generic(), 10000));
         var cloud = level.getEntitiesOfClass(AreaEffectCloud.class, host.getBoundingBox().inflate(3)).stream().findFirst().orElseThrow();
         try {
-            var victim = target(level); victim.setPos(320, 100, 200); victim.setHealth(1);
+            var victim = target(level, cloudPosition); victim.setHealth(1);
             for (int tick = 0; tick < 40 && victim.isAlive(); tick++) StatusEffects.tick(new EntityTickEvent.Post(cloud));
             check(!victim.isAlive());
             close(2.6, value(player, original, Stats.CRITICAL_DAMAGE, 2));
@@ -163,19 +168,19 @@ public final class GalvanizedRuntimeChecks {
         var slash = yagen.waitmydawn.yagens_attributes.core.DamageType.SLASH;
         for (var kind : List.of(AttackKind.MELEE, AttackKind.RANGED)) {
             player.getData(RangedAttachments.KILL_BUFFS).counters.clear();
-            var victim = target(level); victim.setPos(352, 100, 200);
+            var victim = target(level, position);
             check(StatusApi.apply(victim, slash, player.getUUID(), new StatusContext(Map.of(slash, 10000D), 0, tridentId, kind), 120));
             finishStatus(level, victim);
             close(kind == AttackKind.MELEE ? 2.6 : 2, value(player, trident, Stats.CRITICAL_DAMAGE, 2));
             close(kind == AttackKind.RANGED ? 2.1 : 1.8, value(player, trident, Stats.MULTISHOT, 1));
         }
         player.getData(RangedAttachments.KILL_BUFFS).counters.clear();
-        var removed = target(level); removed.setPos(384, 100, 200);
+        var removed = target(level, position);
         check(StatusApi.apply(removed, slash, player.getUUID(), new StatusContext(Map.of(slash, 10000D), 0, originalWeapon, AttackKind.MELEE), 120));
         state.ledger.uninstall(player.getUUID(), steel, originalWeapon, false);
         state.ledger.uninstall(player.getUUID(), fury, originalWeapon, false);
         finishStatus(level, removed); check(player.getData(RangedAttachments.KILL_BUFFS).counters.isEmpty());
-        var unknown = target(level); unknown.setPos(416, 100, 200);
+        var unknown = target(level, position);
         check(StatusApi.apply(unknown, slash, player.getUUID(), 10000, 120));
         finishStatus(level, unknown); check(player.getData(RangedAttachments.KILL_BUFFS).counters.isEmpty());
     }
@@ -196,7 +201,10 @@ public final class GalvanizedRuntimeChecks {
         return id;
     }
     private static Cow target(ServerLevel level) {
-        var target = new Cow(EntityType.COW, level); target.setPos(162, 100, 160); target.setNoAi(true);
+        return target(level, new Vec3(162, 100, 160));
+    }
+    private static Cow target(ServerLevel level, Vec3 position) {
+        var target = new Cow(EntityType.COW, level); target.setPos(position); target.setNoAi(true);
         Objects.requireNonNull(target.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(1000); target.setHealth(1000);
         level.addFreshEntity(target); TARGETS.add(target); return target;
     }

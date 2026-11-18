@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "name": "mod.yagens_attributes.galvanized_argon_scope",
+  "rarity": "galvanized",
+  "polarity": "madurai",
+  "capacity": {
+    "base": 2,
+    "per_level": 1,
+    "description": "Mod capacity used at level 0 and additional capacity per level. Total capacity cost is base + per_level * level."
+  },
+  "max_level": 10,
+  "max_level_description": "Maximum inclusive Mod level. Level 0 is a usable Mod and every entry scales with (level + 1).",
+  "applicability": [
+    "ranged"
+  ],
+  "texture": "yagens_attributes:item/mods/argon_scope",
+  "style": {
+    "visual": "galvanized",
+    "exclusive_groups": [
+      "yagens_attributes:argon_scope"
+    ]
+  },
+  "entries": [
+    {
+      "stat": "critical_chance",
+      "operation": "addition",
+      "value": 0.10909090909090909,
+      "basis": "flat",
+      "description": "Fractional critical chance Addition at rank 0 while the weak point hit buff is active. Scales with (rank + 1).",
+      "condition": {
+        "trigger": "ranged_weak_point_hits",
+        "duration_seconds": 12.0,
+        "max_stacks": 1,
+        "description": "Confirmed ranged weak point hits build or refresh the weapon buff. The bonus applies at launch. scale_duration_with_rank multiplies the rank 0 duration by (rank + 1)."
+      }
+    },
+    {
+      "stat": "critical_chance",
+      "operation": "addition",
+      "value": 0.03636363636363637,
+      "basis": "flat",
+      "description": "Fractional critical chance Addition at rank 0 per active weak point kill stack. Scales with (rank + 1).",
+      "condition": {
+        "trigger": "ranged_weak_point_kills",
+        "duration_seconds": 12.0,
+        "max_stacks": 5,
+        "decay": "independent",
+        "description": "Direct ranged weak point kills build the weapon buff. The bonus applies at launch. Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. Duration and stack cap do not scale with rank."
+      }
+    }
+  ]
+}

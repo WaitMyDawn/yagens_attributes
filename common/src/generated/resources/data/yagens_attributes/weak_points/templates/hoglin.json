@@ -1,0 +1,22 @@
+{
+  "regions": {
+    "head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "min": [
+        -0.33,
+        0.25,
+        0.38
+      ],
+      "max": [
+        0.33,
+        1.08,
+        1.2
+      ]
+    }
+  },
+  "entity_types": [
+    "minecraft:hoglin",
+    "minecraft:zoglin"
+  ]
+}

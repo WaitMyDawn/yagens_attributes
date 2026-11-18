@@ -18,6 +18,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.api.StatusProcEvent;
 import yagen.waitmydawn.yagens_attributes.api.StatusContext;
+import yagen.waitmydawn.yagens_attributes.api.WeakPointApi;
+import yagen.waitmydawn.yagens_attributes.api.WeakPointHitEvent;
 import net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import yagen.waitmydawn.yagens_attributes.command.ModCommands;
@@ -30,7 +32,8 @@ import java.util.*;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID)
 public final class CombatEvents {
-    private record Hit(Combat.Result result, StatusContext context, double toxinFraction, UUID meleeWeapon, int comboDuration, double comboChance, Map<DamageType, Double> components) {}
+    private record Hit(Combat.Result result, StatusContext context, double toxinFraction, UUID meleeWeapon, int comboDuration, double comboChance,
+                       Map<DamageType, Double> components, WeakPointGeometry.Match weakPoint) {}
     private static final Map<DamageContainer, Hit> INCOMING = new IdentityHashMap<>();
     private static final Map<DamageSource, Map<LivingEntity, Deque<Hit>>> PENDING = new IdentityHashMap<>();
     private CombatEvents() {}
@@ -102,8 +105,9 @@ public final class CombatEvents {
             if (shot != null && shot.attackKind() == AttackKind.MELEE && shot.weapon() != null) {
                 meleeWeapon = shot.weapon(); comboDuration = ComboService.duration(bonuses);
             }
+            var weakPoint = source.is(DamageTypeTags.IS_EXPLOSION) ? null : WeakPointApi.current(source, event.getEntity());
             INCOMING.put(event.getContainer(), new Hit(result, context, toxin, meleeWeapon, comboDuration,
-                    Math.min(64, Stats.resolve(1, Stats.COMBO_COUNT_CHANCE, bonuses)), amounts));
+                    Math.min(64, Stats.resolve(1, Stats.COMBO_COUNT_CHANCE, bonuses)), amounts, weakPoint));
         } catch (IllegalArgumentException exception) {
             if (shot != null && shot.profile() != null) event.setAmount((float) Math.min(Float.MAX_VALUE, event.getAmount() * shot.scale()));
             YagensAttributes.LOGGER.error("Rejected combat modifiers for player {}: {}", player.getUUID(), exception.getMessage());
@@ -140,6 +144,11 @@ public final class CombatEvents {
         float dealt = event.getNewDamage() + event.getReduction(Reduction.ABSORPTION);
         if (dealt <= 0) return;
         if (hit != null && hit.meleeWeapon != null) ComboService.hit(attacker, hit.meleeWeapon, hit.comboDuration, hit.comboChance);
+        if (hit != null && hit.weakPoint() != null) {
+            var point = hit.weakPoint();
+            NeoForge.EVENT_BUS.post(new WeakPointHitEvent(attacker, event.getEntity(), event.getSource(), point.region(), point.location(),
+                    dealt, hit.context().weapon(), hit.context().attackKind()));
+        }
         var secondaryType = StatusDamage.damageType(event.getSource());
         int mask = secondaryType == null ? 0 : 1 << secondaryType.ordinal();
         if (result.durationSeconds() > 0) {

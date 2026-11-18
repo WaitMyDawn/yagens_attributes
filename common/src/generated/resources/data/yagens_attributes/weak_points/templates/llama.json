@@ -1,0 +1,22 @@
+{
+  "regions": {
+    "head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "min": [
+        -0.3,
+        0.86,
+        0.28
+      ],
+      "max": [
+        0.3,
+        1.12,
+        1.17
+      ]
+    }
+  },
+  "entity_types": [
+    "minecraft:llama",
+    "minecraft:trader_llama"
+  ]
+}

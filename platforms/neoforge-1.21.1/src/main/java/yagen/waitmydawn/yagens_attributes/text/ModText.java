@@ -1,6 +1,7 @@
 package yagen.waitmydawn.yagens_attributes.text;
 
 import net.minecraft.network.chat.*;
+import yagen.waitmydawn.yagens_attributes.core.ConditionalModifier;
 import yagen.waitmydawn.yagens_attributes.core.ModInfo;
 import yagen.waitmydawn.yagens_attributes.client.StatText;
 import yagen.waitmydawn.yagens_attributes.network.PanelPayload;
@@ -42,11 +43,21 @@ public final class ModText {
         var positive = new ArrayList<Component>(); var negative = new ArrayList<Component>();
         if (info.details() != null) for (var entry : info.details().conditional()) {
             String amount = (entry.addition() >= 0 ? "+" : "") + StatText.number(entry.addition() * 100) + "%";
-            var line = entry.condition().trigger() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Trigger.TARGET_STATUS_TYPES
-                    ? Component.translatable("gui.yagens_attributes.per_status_type", amount, StatText.label(entry.stat()))
-                    : Component.translatable("gui.yagens_attributes." + (entry.condition().trigger() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Trigger.RANGED_KILLS ? "per_ranged_kill" : "per_melee_kill")
-                            + (entry.condition().perTargetStatus() ? "_per_status_type" : ""), amount, StatText.label(entry.stat()), StatText.number(entry.condition().durationSeconds()), entry.condition().maxStacks());
-            if (entry.condition().decay() == yagen.waitmydawn.yagens_attributes.core.ConditionalModifier.Decay.INDEPENDENT)
+            var rule = entry.condition();
+            var stat = StatText.label(entry.stat());
+            var time = StatText.number(rule.durationSeconds());
+            var line = switch (rule.trigger()) {
+                case TARGET_STATUS_TYPES -> Component.translatable("gui.yagens_attributes.per_status_type", amount, stat);
+                case RANGED_WEAK_POINT_HITS -> Component.translatable("gui.yagens_attributes."
+                        + (rule.maxStacks() == 1 ? "on_weak_point_hit" : "on_weak_point_hit_stacks"), amount, stat, time, rule.maxStacks());
+                case RANGED_WEAK_POINT_KILLS -> Component.translatable("gui.yagens_attributes.on_weak_point_kill",
+                        amount, stat, time, rule.maxStacks());
+                case MELEE_KILLS, RANGED_KILLS -> Component.translatable("gui.yagens_attributes."
+                        + (rule.trigger() == ConditionalModifier.Trigger.RANGED_KILLS ? "per_ranged_kill" : "per_melee_kill")
+                        + (rule.perTargetStatus() ? "_per_status_type" : ""), amount, stat, time, rule.maxStacks());
+                case ALWAYS -> throw new IllegalStateException("Unconditional effect in conditional tooltip");
+            };
+            if (rule.decay() == ConditionalModifier.Decay.INDEPENDENT)
                 line = line.copy().append(Component.translatable("gui.yagens_attributes.independent_stacks"));
             (entry.addition() < 0 ? negative : positive).add(line);
         }

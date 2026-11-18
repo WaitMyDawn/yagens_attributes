@@ -4,27 +4,41 @@ import java.util.*;
 
 /** Compiled rank-specific addition; conditions never modify the underlying item or permanent attributes. */
 public record ConditionalModifier(String stat, double addition, Condition condition) {
-    public enum Trigger { ALWAYS, TARGET_STATUS_TYPES, MELEE_KILLS, RANGED_KILLS }
+    public enum Trigger {
+        ALWAYS, TARGET_STATUS_TYPES, MELEE_KILLS, RANGED_KILLS, RANGED_WEAK_POINT_HITS, RANGED_WEAK_POINT_KILLS;
+
+        public boolean onKill() { return this == MELEE_KILLS || this == RANGED_KILLS || this == RANGED_WEAK_POINT_KILLS; }
+        public boolean timed() { return onKill() || this == RANGED_WEAK_POINT_HITS; }
+        public boolean requiresRangedLaunch() { return this == RANGED_WEAK_POINT_HITS || this == RANGED_WEAK_POINT_KILLS; }
+    }
     public enum Decay { ALL_AT_ONCE, ONE_AT_A_TIME, INDEPENDENT }
-    public record Condition(Trigger trigger, double durationSeconds, int maxStacks, boolean perTargetStatus, Decay decay) {
+    public record Condition(Trigger trigger, double durationSeconds, int maxStacks, boolean perTargetStatus, Decay decay,
+                            boolean scaleDurationWithRank) {
         public Condition(Trigger trigger, double durationSeconds, int maxStacks) {
             this(trigger, durationSeconds, maxStacks, false, Decay.ALL_AT_ONCE);
+        }
+        public Condition(Trigger trigger, double durationSeconds, int maxStacks, boolean perTargetStatus, Decay decay) {
+            this(trigger, durationSeconds, maxStacks, perTargetStatus, decay, false);
         }
         public static final Condition ALWAYS = new Condition(Trigger.ALWAYS, 0, 0);
         public static final Condition STATUS_TYPES = new Condition(Trigger.TARGET_STATUS_TYPES, 0, 0);
         public Condition {
             Objects.requireNonNull(trigger);
             Objects.requireNonNull(decay);
-            if (!Double.isFinite(durationSeconds) || (trigger == Trigger.MELEE_KILLS || trigger == Trigger.RANGED_KILLS
+            if (!Double.isFinite(durationSeconds) || (trigger.timed()
                     ? durationSeconds <= 0 || durationSeconds > 3600 || maxStacks < 1 || maxStacks > 64
                     : durationSeconds != 0 || maxStacks != 0)) throw new IllegalArgumentException("Invalid Mod condition");
-            boolean kill = trigger == Trigger.MELEE_KILLS || trigger == Trigger.RANGED_KILLS;
-            if (!kill && (perTargetStatus || decay != Decay.ALL_AT_ONCE))
-                throw new IllegalArgumentException("Only kill conditions support target factors and timed decay");
+            if (perTargetStatus && !trigger.onKill() || !trigger.timed() && (decay != Decay.ALL_AT_ONCE || scaleDurationWithRank))
+                throw new IllegalArgumentException("Invalid target factor or timed condition option");
         }
-        public boolean onKill() { return trigger == Trigger.MELEE_KILLS || trigger == Trigger.RANGED_KILLS; }
+        public boolean onKill() { return trigger.onKill(); }
         public boolean needsTarget() { return trigger == Trigger.TARGET_STATUS_TYPES || perTargetStatus; }
         public int durationTicks() { return (int) Math.ceil(durationSeconds * 20); }
+        public Condition atRank(int rank) {
+            return scaleDurationWithRank
+                    ? new Condition(trigger, durationSeconds * (rank + 1), maxStacks, perTargetStatus, decay)
+                    : this;
+        }
     }
     public ConditionalModifier {
         Objects.requireNonNull(condition);
@@ -46,7 +60,7 @@ public record ConditionalModifier(String stat, double addition, Condition condit
         public Counter {
             deadlines = List.copyOf(deadlines);
             if (stacks < 0 || stacks > 64 || !deadlines.isEmpty() && (deadlines.size() != stacks
-                    || deadlines.stream().anyMatch(value -> value < 0))) throw new IllegalArgumentException("Invalid kill counter");
+                    || deadlines.stream().anyMatch(value -> value < 0))) throw new IllegalArgumentException("Invalid buff counter");
         }
         public static final Counter EMPTY = new Counter(0, 0);
         public int count(long now) { return deadlines.isEmpty() ? expires <= now ? 0 : stacks : (int) deadlines.stream().filter(value -> value > now).count(); }
@@ -57,7 +71,7 @@ public record ConditionalModifier(String stat, double addition, Condition condit
             return (int) Math.max(0, stacks - 1L - (now - expires) / rule.durationTicks());
         }
         public Counter hit(long now, Condition rule) {
-            if (!rule.onKill()) throw new IllegalArgumentException("Counter requires a kill condition");
+            if (!rule.trigger().timed()) throw new IllegalArgumentException("Counter requires a timed condition");
             if (rule.decay() == Decay.INDEPENDENT) {
                 var active = new ArrayList<>(expirations(now, rule));
                 while (active.size() >= rule.maxStacks()) active.remove(Collections.min(active));

@@ -1,0 +1,26 @@
+{
+  "regions": {
+    "head": {
+      "anchor": "eyes",
+      "rotation": "none",
+      "min": [
+        -0.5,
+        -0.13,
+        -0.5
+      ],
+      "max": [
+        0.5,
+        0.2,
+        0.5
+      ]
+    }
+  },
+  "entity_types": [
+    "minecraft:evoker",
+    "minecraft:illusioner",
+    "minecraft:pillager",
+    "minecraft:vindicator",
+    "minecraft:wandering_trader",
+    "minecraft:witch"
+  ]
+}

@@ -102,7 +102,7 @@ def verify_jar(project, target, jar):
                 require(archive.read("yagens_attributes.mixins.json") == mixin_path.read_bytes(), "Mixin config differs")
                 mixins = json.loads(archive.read("yagens_attributes.mixins.json"))
                 required_mixins = {
-                    "ArmorFormulaMixin", "RangedAttributeAccessor", "ProjectileWeaponItemMixin", "NativeItemStackMixin",
+                    "ArmorFormulaMixin", "RangedAttributeAccessor", "ProjectileWeaponItemMixin", "ArrowWeakPointMixin", "GoatWeakPointStateMixin", "NativeItemStackMixin",
                     "NativeSpawnMixin", "NativeCooldownMixin", "CataclysmLeftClickMixin", "CrossbowItemMixin",
                     "TridentItemMixin", "VirtualArrowMixin", "VirtualTridentMixin", "RangedCooldownMixin",
                     "ShieldAbsorptionMixin", "AbsorptionEffectMixin", "StatusArmorMixin", "StatusControlMixin",
@@ -111,7 +111,7 @@ def verify_jar(project, target, jar):
                 }
                 required_client_mixins = {
                     "ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin",
-                    "CreativeHotbarWeaponMixin",
+                    "CreativeHotbarWeaponMixin", "WeakPointDebugMixin",
                 }
                 require(mixins["required"] is True and set(mixins["mixins"]) == required_mixins, "Unexpected common mixins")
                 require(set(mixins["client"]) == required_client_mixins, "Unexpected client mixins")

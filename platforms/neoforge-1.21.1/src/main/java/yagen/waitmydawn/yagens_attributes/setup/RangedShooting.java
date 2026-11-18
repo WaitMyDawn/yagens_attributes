@@ -36,7 +36,7 @@ public final class RangedShooting {
         if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(weapon.getItem()).toString(), profile.category())); sources.add(state.bonuses(player.getUUID()));
         try {
             if (kind == AttackKind.MELEE && id != null) sources = new ArrayList<>(ComboService.sources(player, id, sources));
-            sources = new ArrayList<>(ConditionalModService.sources(player, weapon, sources, null));
+            sources = new ArrayList<>(ConditionalModService.sources(player, weapon, sources, null, kind == AttackKind.RANGED));
             var result = new ShotData(profile, sources, 1, false, id, ConditionalModService.targetModifiers(player, weapon),
                     player.getUUID(), id == null ? AttackKind.UNKNOWN : kind); result.multishot(); result.fireRate(); return result;
         } catch (IllegalArgumentException exception) {

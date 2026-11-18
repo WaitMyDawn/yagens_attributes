@@ -7,7 +7,14 @@ public final class ModTests {
     private static int checks;
     private ModTests() {}
     public static void run() {
-        var catalog = BuiltinMods.catalog(); check(catalog.definitions().size() == 44); check(catalog.creative().size() == 302);
+        var catalog = BuiltinMods.catalog(); check(catalog.definitions().size() == 46); check(catalog.creative().size() == 319);
+        var argon = catalog.definitions().get("yagens_attributes:argon_scope");
+        check(argon.bonuses(5).isEmpty());
+        for (int rank = 0; rank <= argon.maxLevel(); rank++) {
+            var modifier = argon.conditional(rank).get(0);
+            check(Math.abs(modifier.addition() - .225 * (rank + 1)) < 1e-9);
+            check(modifier.condition().durationTicks() == 30 * (rank + 1));
+        }
         for (int side : List.of(96, 124, 128)) {
             var rectangle = new yagen.waitmydawn.yagens_attributes.core.ui.PanelGeometry.Rect(17, 31, side, side);
             var art = yagen.waitmydawn.yagens_attributes.core.ui.PanelGeometry.artwork(rectangle);

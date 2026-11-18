@@ -42,7 +42,7 @@ public final class BuiltinMods {
             new PrimedFuryMod(), new LethalTorrentMod(), new GalvanizedChamberMod(), new QuickeningMod(),
             new PointStrikeMod(), new VitalSenseMod(), new HunterMunitionsMod(), new TruePunishmentMod(),
             new PrimedShatteredVenomDollMod(), new PrimedColdAdditionMod(),
-            new GalvanizedBoneFingerBoxMod(), new GalvanizedGazeOfPainMod());
+            new GalvanizedBoneFingerBoxMod(), new GalvanizedGazeOfPainMod(), new ArgonScopeMod(), new GalvanizedArgonScopeMod());
     private BuiltinMods() {}
 
     public static ModCatalog catalog() {

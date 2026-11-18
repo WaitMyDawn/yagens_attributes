@@ -1,0 +1,19 @@
+{
+  "regions": {
+    "exposed_head": {
+      "anchor": "feet",
+      "rotation": "none",
+      "state": "shulker_exposed",
+      "min": [
+        -0.2,
+        0.5,
+        -0.2
+      ],
+      "max": [
+        0.2,
+        0.76,
+        0.2
+      ]
+    }
+  }
+}

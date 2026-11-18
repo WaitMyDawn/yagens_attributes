@@ -6,6 +6,10 @@
     },
     {
       "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/argon_scope"
+    },
+    {
+      "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/berserker_fury"
     },
     {
@@ -39,6 +43,10 @@
     {
       "type": "minecraft:single",
       "resource": "yagens_attributes:item/mods/drifting_contact"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "yagens_attributes:item/mods/effects/galvanized_argon_scope"
     },
     {
       "type": "minecraft:single",

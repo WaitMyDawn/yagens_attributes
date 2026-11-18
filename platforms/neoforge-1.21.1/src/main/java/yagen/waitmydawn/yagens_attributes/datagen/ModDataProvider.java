@@ -194,6 +194,8 @@ public final class ModDataProvider implements DataProvider {
                 tag.add("values", values);
                 json(output, resource(entry.getKey(), "tags"), tag);
             }
+            for (var entry : VanillaWeakPoints.files().entrySet())
+                json(output, entry.getKey(), entry.getValue());
             for (String item : List.of("endo", "forma", "kuva", "orokin_catalyst"))
                 json(output, "assets/yagens_attributes/models/item/" + item + ".json", model("yagens_attributes:item/" + item));
             var font = new JsonObject();

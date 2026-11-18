@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:generic",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "yagens_attributes:mod",
+          "functions": [
+            {
+              "function": "minecraft:set_components",
+              "components": {
+                "yagens_attributes:mod_data": {
+                  "type": "yagens_attributes:galvanized_argon_scope",
+                  "level": 0
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

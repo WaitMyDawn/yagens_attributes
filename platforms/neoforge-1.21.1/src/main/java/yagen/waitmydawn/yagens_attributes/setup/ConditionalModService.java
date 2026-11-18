@@ -2,6 +2,7 @@ package yagen.waitmydawn.yagens_attributes.setup;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -11,11 +12,14 @@ import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.api.StatusApi;
+import yagen.waitmydawn.yagens_attributes.api.WeakPointApi;
+import yagen.waitmydawn.yagens_attributes.api.WeakPointHitEvent;
 import yagen.waitmydawn.yagens_attributes.config.ServerConfigs;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.data.*;
 import yagen.waitmydawn.yagens_attributes.registries.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID)
 public final class ConditionalModService {
@@ -38,19 +42,23 @@ public final class ConditionalModService {
         }
         return result;
     }
-    private static List<KillBuffState.Key> weaponModifiers(ServerPlayer player, UUID weapon, AttackKind kind) {
+    private static List<KillBuffState.Key> weaponModifiers(ServerPlayer player, UUID weapon) {
         if (weapon == null) return List.of();
         var result = new ArrayList<KillBuffState.Key>();
         for (var entry : WorldState.get(player.server).ledger.installed(weapon)) if (entry.info().defined()) {
             try {
                 var modifiers = ModDefinitions.INSTANCE.catalog().card(entry.info(), entry.info().level()).info().details().conditional();
-                for (int i = 0; i < modifiers.size(); i++) if (kind.credits(modifiers.get(i).condition().trigger()))
+                for (int i = 0; i < modifiers.size(); i++) if (modifiers.get(i).condition().trigger().timed())
                     result.add(new KillBuffState.Key(weapon, entry.id(), i, modifiers.get(i)));
             } catch (IllegalArgumentException ignored) { }
         }
         return result;
     }
     public static List<Map<String, Bonus>> sources(ServerPlayer player, ItemStack weapon, List<Map<String, Bonus>> base, LivingEntity target) {
+        return sources(player, weapon, base, target, false);
+    }
+    static List<Map<String, Bonus>> sources(ServerPlayer player, ItemStack weapon, List<Map<String, Bonus>> base,
+                                            LivingEntity target, boolean includeRangedLaunchBuffs) {
         if (!ServerConfigs.ENABLE_COMBAT.get()) return base;
         var keys = modifiers(player, weapon);
         if (keys.isEmpty()) return base;
@@ -58,12 +66,14 @@ public final class ConditionalModService {
         int types = -1; long now = now(player);
         for (var key : keys) {
             var modifier = key.modifier();
+            var trigger = modifier.condition().trigger();
             if (modifier.condition().needsTarget() && target == null) continue;
+            if (trigger.requiresRangedLaunch() && !includeRangedLaunchBuffs) continue;
             int count = 0;
-            if (modifier.condition().trigger() == ConditionalModifier.Trigger.TARGET_STATUS_TYPES && target != null) {
+            if (trigger == ConditionalModifier.Trigger.TARGET_STATUS_TYPES && target != null) {
                 if (types < 0) types = StatusApi.distinctTypes(target);
                 count = types;
-            } else if ((modifier.condition().trigger() == ConditionalModifier.Trigger.MELEE_KILLS || modifier.condition().trigger() == ConditionalModifier.Trigger.RANGED_KILLS) && player.hasData(RangedAttachments.KILL_BUFFS)) {
+            } else if (trigger.timed() && player.hasData(RangedAttachments.KILL_BUFFS)) {
                 count = player.getData(RangedAttachments.KILL_BUFFS).counters.getOrDefault(key, ConditionalModifier.Counter.EMPTY).count(now, modifier.condition());
             }
             if (modifier.condition().perTargetStatus() && types < 0) types = StatusApi.distinctTypes(target);
@@ -71,7 +81,7 @@ public final class ConditionalModService {
         }
         return List.copyOf(result);
     }
-    /** Freeze weapon identity and kill stacks at launch; target statuses are evaluated separately on impact. */
+    /** Freeze the relevant buff stacks at launch; target statuses are evaluated separately on impact. */
     public static List<ConditionalModifier> targetModifiers(ServerPlayer player, ItemStack weapon) {
         if (!ServerConfigs.ENABLE_COMBAT.get()) return List.of();
         var result = new ArrayList<ConditionalModifier>();
@@ -104,13 +114,29 @@ public final class ConditionalModService {
         if (shot != null) melee = false;
         if (source instanceof StatusDamage status) { weapon = status.weapon; kind = status.attackKind; }
         else if (shot != null) { weapon = shot.weapon(); kind = shot.attackKind(); }
-        else if (source.is(net.minecraft.tags.DamageTypeTags.IS_PROJECTILE) && source.getWeaponItem() != null) {
+        else if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getWeaponItem() != null) {
             weapon = source.getWeaponItem().get(Components.WEAPON_ID.get()); kind = AttackKind.RANGED;
         }
-        var keys = melee ? modifiers(player, player.getMainHandItem()) : weaponModifiers(player, weapon, kind);
-        for (var key : keys) if (kind.credits(key.modifier().condition().trigger())) {
+        var keys = melee ? modifiers(player, player.getMainHandItem()) : weaponModifiers(player, weapon);
+        AttackKind creditedKind = kind;
+        boolean weakPointKill = kind == AttackKind.RANGED && !keys.isEmpty()
+                && !StatusDamage.isSecondary(source) && !source.is(DamageTypeTags.IS_EXPLOSION)
+                && WeakPointApi.current(source, event.getEntity()) != null;
+        award(player, keys, trigger -> creditedKind.credits(trigger)
+                || weakPointKill && trigger == ConditionalModifier.Trigger.RANGED_WEAK_POINT_KILLS);
+    }
+
+    @SubscribeEvent public static void weakPointHit(WeakPointHitEvent event) {
+        var player = event.attacker();
+        if (!ServerConfigs.ENABLE_COMBAT.get() || event.attackKind() != AttackKind.RANGED || event.damage() <= 0
+                || player == event.target() || !player.isAlive()) return;
+        award(player, weaponModifiers(player, event.weapon()), trigger -> trigger == ConditionalModifier.Trigger.RANGED_WEAK_POINT_HITS);
+    }
+
+    private static void award(ServerPlayer player, List<KillBuffState.Key> keys, Predicate<ConditionalModifier.Trigger> qualifies) {
+        long now = now(player);
+        for (var key : keys) if (qualifies.test(key.modifier().condition().trigger())) {
             var counters = player.getData(RangedAttachments.KILL_BUFFS).counters;
-            long now = now(player);
             counters.entrySet().removeIf(entry -> entry.getValue().count(now, entry.getKey().modifier().condition()) == 0);
             if (!counters.containsKey(key) && counters.size() >= 256) continue;
             counters.put(key, counters.getOrDefault(key, ConditionalModifier.Counter.EMPTY).hit(now, key.modifier().condition()));
@@ -141,7 +167,7 @@ public final class ConditionalModService {
             var ledger = WorldState.get(player.server).ledger;
             for (var key : modifiers(player, held)) {
                 var rule = key.modifier().condition();
-                if (!rule.onKill()) continue;
+                if (!rule.trigger().timed()) continue;
                 var deadlines = state.counters.getOrDefault(key, ConditionalModifier.Counter.EMPTY).expirations(now, rule);
                 if (deadlines.isEmpty()) continue;
                 var info = ledger.entry(key.mod()).info();

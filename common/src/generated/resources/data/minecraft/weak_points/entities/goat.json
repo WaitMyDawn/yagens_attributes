@@ -1,0 +1,34 @@
+{
+  "regions": {
+    "head_up": {
+      "anchor": "feet",
+      "rotation": "head",
+      "state": "goat_head_up",
+      "min": [
+        -0.34,
+        0.47,
+        0.2
+      ],
+      "max": [
+        0.34,
+        1.07,
+        0.98
+      ]
+    },
+    "head_down": {
+      "anchor": "feet",
+      "rotation": "head",
+      "state": "goat_head_down",
+      "min": [
+        -0.34,
+        0.22,
+        0.3
+      ],
+      "max": [
+        0.34,
+        0.75,
+        1.08
+      ]
+    }
+  }
+}

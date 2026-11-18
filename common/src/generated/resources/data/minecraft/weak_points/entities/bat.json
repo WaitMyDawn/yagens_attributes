@@ -1,0 +1,34 @@
+{
+  "regions": {
+    "flying_head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "bat_flying",
+      "min": [
+        -0.27,
+        0.47,
+        -0.13
+      ],
+      "max": [
+        0.27,
+        0.74,
+        0.72
+      ]
+    },
+    "hanging_head": {
+      "anchor": "feet",
+      "rotation": "body",
+      "state": "bat_hanging",
+      "min": [
+        -0.27,
+        0.3,
+        -0.13
+      ],
+      "max": [
+        0.27,
+        0.55,
+        0.72
+      ]
+    }
+  }
+}

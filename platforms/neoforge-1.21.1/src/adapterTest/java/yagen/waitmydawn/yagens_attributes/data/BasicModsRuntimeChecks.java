@@ -139,17 +139,22 @@ final class BasicModsRuntimeChecks {
         var trident = new ItemStack(Items.TRIDENT); player.setItemInHand(InteractionHand.MAIN_HAND, trident); UUID tridentId = Components.identify(trident);
         state.progress(tridentId, new WeaponProgress(30, 0));
         var catalog = ModDefinitions.INSTANCE.catalog();
-        var delay = catalog.card("yagens_attributes:critical_delay", 0); var rush = catalog.card("yagens_attributes:blood_rush", 0);
-        UUID delayId = UUID.randomUUID(), rushId = UUID.randomUUID();
+        var delay = catalog.card("yagens_attributes:critical_delay", 0); var strike = catalog.card("yagens_attributes:point_strike", 0);
+        UUID delayId = UUID.randomUUID(), strikeId = UUID.randomUUID();
         state.ledger.add(new ModLedger.Entry(delayId, player.getUUID(), null, false, delay.bonuses(), delay.info(), -1));
-        state.ledger.add(new ModLedger.Entry(rushId, player.getUUID(), null, false, rush.bonuses(), rush.info(), -1));
-        state.ledger.install(player.getUUID(), delayId, tridentId, ModInfo.Category.TRIDENT, 8, 0, 30, true);
-        PanelService.handle(player, new PanelRequest(990, PanelRequest.WEAPON, 0, PanelRequest.INSTALL, tridentId, rushId, 1, ModInventory.Query.DEFAULT, "zh_cn"));
-        check(state.ledger.entry(rushId).weapon() == null && state.ledger.installed(tridentId).size() == 1);
-        state.ledger.uninstall(player.getUUID(), delayId, tridentId, false);
-        state.ledger.install(player.getUUID(), rushId, tridentId, ModInfo.Category.TRIDENT, 8, 0, 30, true);
-        PanelService.handle(player, new PanelRequest(991, PanelRequest.WEAPON, 0, PanelRequest.INSTALL, tridentId, delayId, 1, ModInventory.Query.DEFAULT, "zh_cn"));
-        check(state.ledger.entry(delayId).weapon() == null && state.ledger.installed(tridentId).size() == 1);
+        state.ledger.add(new ModLedger.Entry(strikeId, player.getUUID(), null, false, strike.bonuses(), strike.info(), -1));
+        PanelService.handle(player, new PanelRequest(990, PanelRequest.WEAPON, 0, PanelRequest.INSTALL, tridentId, delayId, 0, ModInventory.Query.DEFAULT, "zh_cn"));
+        check(state.ledger.entry(delayId).weapon() == null && state.ledger.installed(tridentId).isEmpty());
+
+        var bow = new ItemStack(Items.BOW); player.setItemInHand(InteractionHand.MAIN_HAND, bow); UUID bowId = Components.identify(bow);
+        state.progress(bowId, new WeaponProgress(30, 0));
+        state.ledger.install(player.getUUID(), delayId, bowId, ModInfo.Category.BOW, 8, 0, 30, true);
+        PanelService.handle(player, new PanelRequest(991, PanelRequest.WEAPON, 0, PanelRequest.INSTALL, bowId, strikeId, 1, ModInventory.Query.DEFAULT, "zh_cn"));
+        check(state.ledger.entry(strikeId).weapon() == null && state.ledger.installed(bowId).size() == 1);
+        state.ledger.uninstall(player.getUUID(), delayId, bowId, false);
+        state.ledger.install(player.getUUID(), strikeId, bowId, ModInfo.Category.BOW, 8, 0, 30, true);
+        PanelService.handle(player, new PanelRequest(992, PanelRequest.WEAPON, 0, PanelRequest.INSTALL, bowId, delayId, 1, ModInventory.Query.DEFAULT, "zh_cn"));
+        check(state.ledger.entry(delayId).weapon() == null && state.ledger.installed(bowId).size() == 1);
     }
     private static void close(double a, double b) { check(Math.abs(a - b) < 1e-4); }
 }

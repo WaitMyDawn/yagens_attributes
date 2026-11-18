@@ -40,7 +40,7 @@ public final class WeaponInspectionService {
         if (id != null) sources.addAll(state.ledger.bonuses(id, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), profile.category()));
         sources.add(state.bonuses(player.getUUID()));
         if (ModInfo.Category.MELEE.contains(profile.category())) sources = new ArrayList<>(ComboService.sources(player, id, sources));
-        sources = new ArrayList<>(ConditionalModService.sources(player, stack, sources, null));
+        sources = new ArrayList<>(ConditionalModService.sources(player, stack, sources, null, true));
         return new WeaponInspectionData(PanelService.resolve(profile, sources, yagen.waitmydawn.yagens_attributes.config.ServerConfigs.COMBO_DURATION.get()), state.progress(id), state.ledger.usedCapacity(id, WeaponPolarityData.profile(stack, profile, state.ledger).slots()), player.isCreative());
     }
 }
