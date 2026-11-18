@@ -22,5 +22,6 @@ public final class StatusRules {
     }
     public static double coldCritical(int stacks, boolean frozen) { return frozen ? 1 : stacks <= 0 ? 0 : .1 + .05 * (Math.min(9, stacks) - 1); }
     public static double radiation(int stacks) { return stacks <= 0 ? 1 : 2 + .5 * (Math.min(10, stacks) - 1); }
+    public static double gasRadius(int stacks) { return stacks <= 0 ? 0 : 3 + (Math.min(10, stacks) - 1) / 3D; }
     public static double coefficient(DamageType type) { return type == DamageType.SLASH ? .35 : type == DamageType.BLAST ? .3 : .5; }
 }

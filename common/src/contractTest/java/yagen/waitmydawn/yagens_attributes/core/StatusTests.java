@@ -40,6 +40,8 @@ public final class StatusTests {
         close(.5, StatusRules.coldSlow(1, false)); close(.9, StatusRules.coldSlow(9, false)); close(.4, StatusRules.coldSlow(10, true));
         close(.5, StatusRules.coldCritical(9, false)); close(1, StatusRules.coldCritical(10, true));
         close(6.5, StatusRules.radiation(10)); close(.35, StatusRules.coefficient(DamageType.SLASH));
+        close(0, StatusRules.gasRadius(0)); close(3, StatusRules.gasRadius(1));
+        close(4, StatusRules.gasRadius(4)); close(6, StatusRules.gasRadius(10)); close(6, StatusRules.gasRadius(12));
         close(.5, StatusRules.coefficient(DamageType.TOXIN)); close(.3, StatusRules.coefficient(DamageType.BLAST));
         check(StatusRules.duration(DamageType.BLAST, 120) == 30); check(StatusRules.duration(DamageType.CORROSIVE, 120) == 160);
         check(StatusRules.duration(DamageType.RADIATION, 120) == 240); check(StatusRules.duration(DamageType.SLASH, 240) == 240);

@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import yagen.waitmydawn.yagens_attributes.config.ClientConfigs;
 
 @EventBusSubscriber(modid = "yagens_attributes", value = Dist.CLIENT)
 public final class MagneticLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
@@ -25,15 +26,20 @@ public final class MagneticLayer<T extends LivingEntity, M extends EntityModel<T
     }
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static void add(EntityRenderer<?> renderer, java.util.Set<EntityRenderer<?>> seen) {
-        if (renderer instanceof LivingEntityRenderer living && seen.add(renderer)) living.addLayer(new MagneticLayer(living));
+        if (renderer instanceof LivingEntityRenderer living && seen.add(renderer)) {
+            living.addLayer(new MagneticLayer(living));
+            living.addLayer(new FrostLayer(living));
+        }
     }
     @Override public void render(PoseStack pose, MultiBufferSource buffers, int light, T entity, float swing, float amount,
                                  float partial, float age, float yaw, float pitch) {
         if (!StatusEffectsRenderer.magnetic(entity)) return;
+        int alpha = (int)Math.round(ClientConfigs.STATUS.magneticOpacity.get() * 255);
+        if (alpha == 0) return;
         float time = entity.tickCount + partial;
         pose.pushPose(); pose.scale(1.055F, 1.012F, 1.055F);
         getParentModel().renderToBuffer(pose, buffers.getBuffer(RenderType.energySwirl(TEXTURE, time * .008F % 1, time * .004F % 1)),
-                0xF000F0, OverlayTexture.NO_OVERLAY, 0x8FFFFFFF);
+                0xF000F0, OverlayTexture.NO_OVERLAY, (alpha << 24) | 0xFFFFFF);
         pose.popPose();
     }
 }

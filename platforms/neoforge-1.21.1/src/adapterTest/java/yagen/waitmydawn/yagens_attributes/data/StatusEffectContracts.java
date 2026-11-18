@@ -17,14 +17,15 @@ public final class StatusEffectContracts {
         var owner = UUID.randomUUID(); var victim = new StatusEffectPayload.Target(17, UUID.randomUUID());
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY);
         try {
-            for (var type : List.of(DamageType.SLASH, DamageType.ELECTRICITY, DamageType.MAGNETIC, DamageType.BLAST)) {
+            for (var type : List.of(DamageType.IMPACT, DamageType.PUNCTURE, DamageType.SLASH, DamageType.ELECTRICITY,
+                    DamageType.MAGNETIC, DamageType.BLAST, DamageType.HEAT, DamageType.TOXIN)) {
                 var packet = new StatusEffectPayload(1, owner, new Vec3(-2, 71.5, 4), type, type == DamageType.SLASH ? 60 : 10, 42, true,
                         type == DamageType.ELECTRICITY ? List.of(victim) : List.of());
                 StatusEffectPayload.CODEC.encode(buffer, packet); equal(packet, StatusEffectPayload.CODEC.decode(buffer));
             }
         } finally { buffer.release(); }
         rejects(() -> new StatusEffectPayload(1, owner, Vec3.ZERO, DamageType.SLASH, 0, 0, false, List.of()));
-        rejects(() -> new StatusEffectPayload(1, owner, Vec3.ZERO, DamageType.HEAT, 60, 0, false, List.of()));
+        rejects(() -> new StatusEffectPayload(1, owner, Vec3.ZERO, DamageType.COLD, 60, 0, false, List.of()));
         rejects(() -> new StatusEffectPayload(1, owner, new Vec3(Double.NaN, 0, 0), DamageType.BLAST, 10, 0, true, List.of()));
         rejects(() -> new StatusEffectPayload(1, owner, Vec3.ZERO, DamageType.ELECTRICITY, 10, 0, true, List.of(victim, victim)));
         rejects(() -> new StatusEffectPayload(1, owner, Vec3.ZERO, DamageType.SLASH, 60, 0, false, List.of(victim)));
@@ -41,11 +42,11 @@ public final class StatusEffectContracts {
         var anchorsBySeed = new HashSet<ArcShape.Anchors>();
         for (double length : List.of(.05, .8, 15D, 40D)) {
             for (int seed : List.of(0, -37, 1903)) {
-                var plain = ArcShape.build(seed, length, 4, 0);
+                var plain = ArcShape.build(seed, length, 4, 0, .22);
                 equal(8, plain.size()); equal(true, plain.stream().allMatch(segment -> segment.depth() == 0));
-                equal(plain, ArcShape.build(seed, length, 0, 1));
-                var branches = ArcShape.build(seed, length, 4, 1);
-                equal(branches, ArcShape.build(seed, length, 4, 1));
+                equal(plain, ArcShape.build(seed, length, 0, 1, .22));
+                var branches = ArcShape.build(seed, length, 4, 1, .22);
+                equal(branches, ArcShape.build(seed, length, 4, 1, .22));
                 equal(true, branches.size() <= ArcShape.MAX_SEGMENTS && branches.size() > plain.size());
                 equal(true, branches.stream().anyMatch(segment -> segment.depth() == 4));
                 for (var segment : branches) {
@@ -54,6 +55,14 @@ public final class StatusEffectContracts {
                     equal(true, Double.isFinite(segment.from().lengthSqr()) && Double.isFinite(segment.to().lengthSqr()));
                 }
                 equal(Vec3.ZERO, branches.get(0).from()); equal(new Vec3(1, 0, 0), branches.get(7).to());
+                var firstLevel = ArcShape.build(seed, length, 1, 1, .22);
+                equal(20, firstLevel.size());
+                for (int fork = 8; fork < firstLevel.size(); fork += 4) {
+                    var start = firstLevel.get(fork).from();
+                    var end = firstLevel.get(fork + 3).to();
+                    equal(true, plain.subList(4, 7).stream().anyMatch(segment -> segment.to().equals(start)));
+                    equal(true, start.distanceTo(end) >= .22 * .65 - 1e-12 && start.distanceTo(end) <= .22 + 1e-12);
+                }
                 var anchors = ArcShape.anchors(seed); anchorsBySeed.add(anchors);
                 equal(anchors, ArcShape.anchors(seed));
                 equal(true, anchors.fromHeight() >= .32 && anchors.fromHeight() < .68);
@@ -62,10 +71,11 @@ public final class StatusEffectContracts {
             }
         }
         equal(3, anchorsBySeed.size());
-        rejects(() -> ArcShape.build(1, Double.NaN, 2, .35));
-        rejects(() -> ArcShape.build(1, 0, 2, .35));
-        rejects(() -> ArcShape.build(1, 1, 5, .35));
-        rejects(() -> ArcShape.build(1, 1, 2, 1.1));
+        rejects(() -> ArcShape.build(1, Double.NaN, 2, .35, .22));
+        rejects(() -> ArcShape.build(1, 0, 2, .35, .22));
+        rejects(() -> ArcShape.build(1, 1, 5, .35, .22));
+        rejects(() -> ArcShape.build(1, 1, 2, 1.1, .22));
+        rejects(() -> ArcShape.build(1, 1, 2, .35, .41));
     }
     private static void equal(Object expected, Object actual) { checks++; if (!Objects.equals(expected, actual)) throw new AssertionError(expected + " != " + actual); }
     private static void rejects(Runnable action) { try { action.run(); } catch (RuntimeException expected) { checks++; return; } throw new AssertionError("Expected rejection"); }

@@ -60,7 +60,7 @@ public final class BuiltinCombat {
         // Elemental status damage uses material rules, without native fire/explosion immunities or specialized protection.
         result.put("minecraft:damage_type/bypasses_armor", List.of("yagens_attributes:slash_status"));
         result.put("minecraft:damage_type/no_knockback", List.of("yagens_attributes:impact_status", "yagens_attributes:puncture_status", "yagens_attributes:slash_status", "yagens_attributes:cold_status", "yagens_attributes:heat_status", "yagens_attributes:electricity_status", "yagens_attributes:toxin_status", "yagens_attributes:blast_status", "yagens_attributes:radiation_status", "yagens_attributes:corrosive_status", "yagens_attributes:viral_status", "yagens_attributes:gas_status", "yagens_attributes:magnetic_status"));
-        result.put("yagens_attributes:entity_type/control_immune", List.of("minecraft:ender_dragon", "minecraft:wither"));
+        result.put("yagens_attributes:entity_type/control_immune", List.of("#c:bosses", "minecraft:warden"));
         result.put("yagens_attributes:entity_type/immune_to/blast", List.of());
         result.put("yagens_attributes:entity_type/immune_to/cold", List.of());
         result.put("yagens_attributes:entity_type/immune_to/corrosive", List.of());

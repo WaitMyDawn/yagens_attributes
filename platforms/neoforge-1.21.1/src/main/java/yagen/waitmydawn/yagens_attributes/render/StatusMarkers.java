@@ -1,5 +1,6 @@
 package yagen.waitmydawn.yagens_attributes.render;
 
+import yagen.waitmydawn.yagens_attributes.core.DamageType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.*;
@@ -21,12 +22,16 @@ public final class StatusMarkers {
     private static final class Marker {
         final StatusMarkersPayload snapshot;
         final long received;
-        int columns;
+        int columns, visibleTypes;
         List<Component> rows = List.of();
         Marker(StatusMarkersPayload snapshot, long received) { this.snapshot = snapshot; this.received = received; }
-        List<Component> rows(int perRow) {
-            if (columns != perRow) {
-                rows = StatusMarkerLayout.rows(snapshot.counts(), perRow).stream().map(entries -> {
+        List<Component> rows(int perRow, int mask) {
+            if (columns != perRow || visibleTypes != mask) {
+                var counts = new EnumMap<DamageType, Integer>(DamageType.class);
+                snapshot.counts().forEach((type, count) -> {
+                    if ((mask & (1 << type.ordinal())) != 0) counts.put(type, count);
+                });
+                rows = StatusMarkerLayout.rows(counts, perRow).stream().map(entries -> {
                     MutableComponent line = Component.empty();
                     for (var entry : entries) {
                         if (!line.getSiblings().isEmpty()) line.append("  ");
@@ -34,7 +39,7 @@ public final class StatusMarkers {
                         line.append(" " + entry.count());
                     }
                     return (Component) line;
-                }).toList(); columns = perRow;
+                }).toList(); columns = perRow; visibleTypes = mask;
             }
             return rows;
         }
@@ -66,18 +71,21 @@ public final class StatusMarkers {
     @SubscribeEvent public static void render(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
         var minecraft = Minecraft.getInstance();
-        if (minecraft.level == null || minecraft.player == null || minecraft.options.hideGui || !ClientConfigs.STATUS_MARKERS.get()) return;
+        var settings = ClientConfigs.STATUS;
+        if (minecraft.level == null || minecraft.player == null || minecraft.options.hideGui || !settings.markers.get()) return;
         world(); if (MARKERS.isEmpty()) return;
         var camera = event.getCamera(); var buffers = minecraft.renderBuffers().bufferSource();
         float partial = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-        int range = ClientConfigs.STATUS_MARKER_RANGE.get();
+        int range = settings.markerDistance.get(), columns = settings.markerColumns.get(), mask = settings.markerMask();
+        if (mask == 0) return;
+        double gap = settings.markerGap.get();
         for (var marker : MARKERS.values()) {
             var entity = minecraft.level.getEntity(marker.snapshot.entityId());
             if (!(entity instanceof LivingEntity target) || !entity.getUUID().equals(marker.snapshot.entityUuid()) || !target.isAlive() || target.isInvisibleTo(minecraft.player)
                     || target.distanceToSqr(camera.getPosition()) > range * range || target == camera.getEntity() && minecraft.options.getCameraType().isFirstPerson()) continue;
-            var anchor = target.getPosition(partial).add(0, StatusMarkerLayout.anchorHeight(target.getBbHeight(), ClientConfigs.STATUS_MARKER_HEIGHT_GAP.get()), 0);
+            var anchor = target.getPosition(partial).add(0, StatusMarkerLayout.anchorHeight(target.getBbHeight(), gap), 0);
             var pose = DamageNumberTransform.billboard(anchor, camera.getPosition(), camera.rotation(), 0, 0);
-            var rows = marker.rows(ClientConfigs.STATUS_MARKERS_PER_ROW.get());
+            var rows = marker.rows(columns, mask);
             for (int row = 0; row < rows.size(); row++) minecraft.font.drawInBatch(rows.get(row), -minecraft.font.width(rows.get(row)) / 2F,
                     StatusMarkerLayout.rowY(row, rows.size()), 0xFFFFFFFF, false, pose, buffers, Font.DisplayMode.NORMAL, 0, 0xF000F0);
         }

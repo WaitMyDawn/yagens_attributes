@@ -16,7 +16,7 @@ public final class MarkerContracts {
     public static void run() throws Exception {
         var counts = new EnumMap<DamageType, Integer>(DamageType.class);
         for (var type : DamageType.values()) counts.put(type, type.ordinal() + 1);
-        var payload = new StatusMarkersPayload(42, UUID.randomUUID(), counts);
+        var payload = new StatusMarkersPayload(42, UUID.randomUUID(), counts, true);
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY);
         try { StatusMarkersPayload.CODEC.encode(buffer, payload); check(payload.equals(StatusMarkersPayload.CODEC.decode(buffer))); }
         finally { buffer.release(); }
@@ -25,9 +25,10 @@ public final class MarkerContracts {
         rejects(() -> new StatusMarkersPayload(-1, UUID.randomUUID(), Map.of()));
         rejects(() -> new StatusMarkersPayload(1, UUID.randomUUID(), Map.of(DamageType.GAS, 0)));
         rejects(() -> new StatusMarkersPayload(1, UUID.randomUUID(), Map.of(DamageType.GAS, 8193)));
+        rejects(() -> new StatusMarkersPayload(1, UUID.randomUUID(), Map.of(DamageType.GAS, 3), true));
         buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY);
         try {
-            buffer.writeVarInt(1).writeUUID(UUID.randomUUID()).writeVarInt(2);
+            buffer.writeVarInt(1).writeUUID(UUID.randomUUID()).writeBoolean(false).writeVarInt(2);
             buffer.writeEnum(DamageType.COLD).writeVarInt(1).writeEnum(DamageType.COLD).writeVarInt(2);
             var malformed = buffer; rejects(() -> StatusMarkersPayload.CODEC.decode(malformed));
         } finally { buffer.release(); }

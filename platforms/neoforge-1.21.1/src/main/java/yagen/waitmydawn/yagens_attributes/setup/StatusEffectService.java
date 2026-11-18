@@ -26,7 +26,7 @@ public final class StatusEffectService {
     private static final Map<Key, Pending> QUEUED = new LinkedHashMap<>();
     private StatusEffectService() {}
     public static void emit(Entity host, DamageType type, int lifetime, boolean burst, Collection<? extends LivingEntity> targets) {
-        if (!Set.of(DamageType.SLASH, DamageType.ELECTRICITY, DamageType.MAGNETIC, DamageType.BLAST).contains(type)
+        if (!StatusEffectPayload.supports(type)
                 || type != DamageType.ELECTRICITY && !targets.isEmpty()) throw new IllegalArgumentException("Unsupported status effect emission");
         if (!(host.level() instanceof ServerLevel level)) return;
         var key = new Key(level, host.getUUID(), type);

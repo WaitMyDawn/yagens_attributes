@@ -1,10 +1,15 @@
 // Opt-in integrated-world capture in a disposable development instance.
 gradle.projectsEvaluated {
-    def instance = rootProject.layout.buildDirectory.dir('status-showcase-client').get().asFile
+    def elemental = rootProject.providers.gradleProperty('elementalStatusShowcase').isPresent()
+    def remaining = rootProject.providers.gradleProperty('remainingStatusShowcase').isPresent()
+    def group = remaining ? 'remaining' : elemental ? 'elemental' : 'status'
+    def instance = rootProject.layout.buildDirectory.dir(group + '-showcase-client').get().asFile
     rootProject.extensions.getByName('runs').named('client').configure {
         workingDirectory = instance
         modSource rootProject.sourceSets.adapterTest
-        systemProperty 'yagens_attributes.statusShowcase', rootProject.layout.buildDirectory.dir('status-capture').get().asFile.absolutePath
+        systemProperty 'yagens_attributes.statusShowcase', rootProject.layout.buildDirectory.dir(group + '-capture').get().asFile.absolutePath
+        if (elemental) systemProperty 'yagens_attributes.elementalShowcase', 'true'
+        if (remaining) systemProperty 'yagens_attributes.remainingStatusShowcase', 'true'
         arguments.addAll '--width', '960', '--height', '540'
     }
 }

@@ -4,7 +4,6 @@ import com.mojang.serialization.JsonOps;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.phys.Vec3;
 import org.objectweb.asm.*;
 import org.objectweb.asm.tree.*;
 import yagen.waitmydawn.yagens_attributes.core.*;
@@ -73,8 +72,6 @@ public final class StatusContracts {
         var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), RegistryAccess.EMPTY);
         try {
             var packet = new ShieldPayload(8); ShieldPayload.CODEC.encode(buffer, packet); check(packet.equals(ShieldPayload.CODEC.decode(buffer)));
-            var visual = new StatusVisualPayload(new Vec3(1, 2, 3), DamageType.COLD, 1.5, true);
-            StatusVisualPayload.CODEC.encode(buffer, visual); check(visual.equals(StatusVisualPayload.CODEC.decode(buffer)));
         } finally { buffer.release(); }
         var living = read("world/entity/LivingEntity");
         try (var stream = StatusContracts.class.getResourceAsStream("/yagen/waitmydawn/yagens_attributes/mixin/ArmorFormulaMixin.class")) {

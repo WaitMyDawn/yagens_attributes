@@ -20,7 +20,6 @@ import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.api.StatusProcEvent;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.data.StatusState;
-import yagen.waitmydawn.yagens_attributes.network.StatusVisualPayload;
 import yagen.waitmydawn.yagens_attributes.registries.RangedAttachments;
 
 import java.util.*;
@@ -187,19 +186,21 @@ public final class StatusEffects {
             }
         value.layers.add(new StatusState.Layer(type, owner, Math.min(Float.MAX_VALUE, base), duration, pulse, 0, criticalTier, weapon, attackKind));
         if (!target.getType().is(CONTROL_IMMUNE)) {
-            if (type == DamageType.IMPACT)
+            if (type == DamageType.IMPACT) {
                 value.impactStun = Math.max(value.impactStun, Math.min(20, Math.max(1, weaponTicks / 6)));
+                StatusEffectService.emit(target, type, 6, true, List.of());
+            }
             if (type == DamageType.ELECTRICITY)
                 value.electricStun = Math.max(value.electricStun, Math.min(60, Math.max(1, weaponTicks / 2)));
             if (type == DamageType.HEAT && target instanceof Mob && value.count(type) == 1) value.heatPanic = 80;
             if (type == DamageType.COLD && !(target instanceof Player) && value.count(type) == 10) {
                 value.frozen = Math.max(1, weaponTicks / 2);
-                visual(target, type, Math.max(.45, target.getBbWidth() * .7), true);
             }
         }
         if (type == DamageType.BLAST && value.count(type) == 10) detonate(target, true);
         update(target);
         if (type == DamageType.SLASH) StatusEffectService.emit(target, type, (weaponTicks + 1) / 2, true, List.of());
+        if (type == DamageType.PUNCTURE) StatusEffectService.emit(target, type, 9, true, List.of());
         if (immediate && (type == DamageType.ELECTRICITY || type == DamageType.GAS))
             pulses(target, List.of(new StatusState.Layer(type, owner, base, duration, pulse, 0, criticalTier, weapon, attackKind)));
         return true;
@@ -234,13 +235,6 @@ public final class StatusEffects {
         else value.heatStrip = Math.max(0, value.heatStrip - .5 / 30);
         update(target);
         pulses(target, due, gasStacks);
-        if (target.isAlive() && target.tickCount % 8 == 0) {
-            var types = value.layers.stream().map(StatusState.Layer::type).distinct().toList();
-            if (!types.isEmpty()) {
-                var type = types.get(Math.floorMod(target.tickCount / 8, types.size()));
-                visual(target, type, type == DamageType.GAS ? gasRadius(value.count(type)) : Math.min(1.5, target.getBbWidth() * .65), false);
-            }
-        }
     }
 
     private record Origin(UUID owner, UUID weapon, AttackKind attackKind) {}
@@ -261,8 +255,9 @@ public final class StatusEffects {
             tiers.merge(key, layer.criticalTier(), Math::max);
         }
         List<LivingEntity> electric = due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY) ? area(target, 3) : List.of();
-        List<LivingEntity> gas = due.stream().anyMatch(layer -> layer.type() == DamageType.GAS) ? area(target, gasRadius(Math.max(1, gasStacks))) : List.of();
+        List<LivingEntity> gas = due.stream().anyMatch(layer -> layer.type() == DamageType.GAS) ? area(target, StatusRules.gasRadius(Math.max(1, gasStacks))) : List.of();
         var struck = new LinkedHashSet<LivingEntity>();
+        boolean heatHit = false, toxinHit = false;
         for (var entry : groups.entrySet()) {
             var key = entry.getKey();
             if (key.type == DamageType.ELECTRICITY) {
@@ -273,16 +268,19 @@ public final class StatusEffects {
                 for (var victim : gas)
                     if (allowed(target, victim, key.owner))
                         StatusDamage.hurtBatch(victim, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind);
+            } else if (key.type == DamageType.HEAT || key.type == DamageType.TOXIN) {
+                if (StatusDamage.tryHurtBatch(target, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind)) {
+                    if (key.type == DamageType.HEAT) heatHit = true;
+                    else toxinHit = true;
+                }
             } else StatusDamage.hurtBatch(target, key.type, key.owner, entry.getValue(), tiers.get(key), key.weapon, key.attackKind);
         }
+        if (heatHit) StatusEffectService.emit(target, DamageType.HEAT, 8, false, List.of());
+        if (toxinHit) StatusEffectService.emit(target, DamageType.TOXIN, 16, false, List.of());
         if (due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY)) StatusEffectService.emit(target, DamageType.ELECTRICITY, 10, false, struck);
         due.stream().filter(layer -> layer.type() == DamageType.SLASH).mapToInt(layer -> (layer.remaining() + layer.age() + 1) / 2).max()
                 .ifPresent(lifetime -> StatusEffectService.emit(target, DamageType.SLASH, lifetime, false, List.of()));
         if (due.stream().anyMatch(layer -> layer.type() == DamageType.BLAST)) StatusEffectService.emit(target, DamageType.BLAST, 12, false, List.of());
-    }
-
-    private static double gasRadius(int stacks) {
-        return 3 + (Math.min(10, stacks) - 1) / 3D;
     }
 
     private static List<LivingEntity> area(Entity source, double radius) {
@@ -336,14 +334,16 @@ public final class StatusEffects {
 
     @SubscribeEvent
     public static void tracking(PlayerEvent.StartTracking event) {
-        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player && event.getTarget() instanceof LivingEntity target) {
-            StatusMarkerSync.tracking(player, target);
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player
+                && (event.getTarget() instanceof LivingEntity || event.getTarget() instanceof AreaEffectCloud)) {
+            StatusMarkerSync.tracking(player, event.getTarget());
         }
     }
 
     @SubscribeEvent
     public static void stoppedTracking(PlayerEvent.StopTracking event) {
-        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player && event.getTarget() instanceof LivingEntity target && target.hasData(RangedAttachments.STATUS))
+        var target = event.getTarget();
+        if (event.getEntity() instanceof net.minecraft.server.level.ServerPlayer player && target.hasData(RangedAttachments.STATUS))
             PacketDistributor.sendToPlayer(player, new yagen.waitmydawn.yagens_attributes.network.StatusMarkersPayload(target.getId(), target.getUUID(), Map.of()));
     }
 
@@ -381,15 +381,14 @@ public final class StatusEffects {
             tiers.merge(new Origin(layer.owner(), layer.weapon(), layer.attackKind()), layer.criticalTier(), Math::max);
         }
         if (!groups.isEmpty()) {
-            var victims = area(cloud, gasRadius(Math.max(1, stacks)));
+            var victims = area(cloud, StatusRules.gasRadius(Math.max(1, stacks)));
             for (var entry : groups.entrySet())
                 for (var victim : victims)
                     if (allowed(cloud, victim, entry.getKey().owner()))
                         StatusDamage.hurtBatch(victim, DamageType.GAS, entry.getKey().owner(), entry.getValue(), tiers.get(entry.getKey()), entry.getKey().weapon(), entry.getKey().attackKind());
         }
-        if (cloud.tickCount % 8 == 0)
-            visual(cloud, DamageType.GAS, gasRadius(Math.max(1, value.count(DamageType.GAS))), false);
         if (value.layers.isEmpty()) cloud.discard();
+        else if (stacks != value.count(DamageType.GAS) || value.markerCounts[DamageType.GAS.ordinal()] == 0) StatusMarkerSync.changed(cloud);
     }
 
     private record Detonation(ServerLevel level, Vec3 position, LivingEntity host, List<StatusState.Layer> layers,
@@ -424,23 +423,13 @@ public final class StatusEffects {
                     if (victim != blast.host && allowed(blast.host, victim, entry.getKey().owner()))
                         StatusDamage.hurtBatch(victim, DamageType.BLAST, entry.getKey().owner(), List.of(areaDamage), tiers.get(entry.getKey()), entry.getKey().weapon(), entry.getKey().attackKind());
             }
-            visual(blast.host, DamageType.BLAST, 5, true);
+            StatusEffectService.emit(blast.host, DamageType.BLAST, 12, true, List.of());
         }
     }
 
     @SubscribeEvent
     public static void stopped(net.neoforged.neoforge.event.server.ServerStoppedEvent event) {
         BLASTS.clear();
-    }
-
-    public static void visual(Entity target, DamageType type, double radius, boolean burst) {
-        if (type == DamageType.SLASH || type == DamageType.ELECTRICITY) return;
-        if (type == DamageType.MAGNETIC || type == DamageType.BLAST) {
-            if (burst) StatusEffectService.emit(target, type, 12, true, List.of());
-            return;
-        }
-        if (target.level() instanceof ServerLevel) PacketDistributor.sendToPlayersTrackingEntityAndSelf(target,
-                new StatusVisualPayload(target.position().add(0, target.getBbHeight() * .55, 0), type, Math.max(0, Math.min(8, radius)), burst));
     }
 
     @SubscribeEvent

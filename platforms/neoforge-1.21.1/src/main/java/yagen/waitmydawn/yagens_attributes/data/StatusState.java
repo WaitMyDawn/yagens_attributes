@@ -68,6 +68,7 @@ public final class StatusState {
     public boolean dirty;
     // Transient network baseline; persistence contains only authoritative gameplay state.
     public int[] markerCounts = new int[DamageType.values().length];
+    public boolean markerFrozen;
     public StatusState() { this(List.of(), 0, 0, 0, 0, 0); }
     private StatusState(List<Layer> layers, int frozen, int impactStun, int electricStun, int heatPanic, double heatStrip) {
         this.layers = new ArrayList<>(layers); this.frozen = frozen; this.impactStun = impactStun; this.electricStun = electricStun; this.heatPanic = heatPanic; this.heatStrip = heatStrip;

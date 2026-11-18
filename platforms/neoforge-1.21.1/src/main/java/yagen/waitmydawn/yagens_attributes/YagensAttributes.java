@@ -51,13 +51,12 @@ public final class YagensAttributes {
     }
 
     private static void network(RegisterPayloadHandlersEvent event) {
-        event.registrar("27")
+        event.registrar("29")
                 .playToClient(StatusEffectPayload.TYPE, StatusEffectPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(WeaponBuffsPayload.TYPE, WeaponBuffsPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ComboPayload.TYPE, ComboPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(StatusMarkersPayload.TYPE, StatusMarkersPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ModCatalogPayload.TYPE, ModCatalogPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
-                .playToClient(StatusVisualPayload.TYPE, StatusVisualPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ShieldPayload.TYPE, ShieldPayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToClient(ChargePayload.TYPE, ChargePayload.CODEC, (payload, context) -> context.enqueueWork(() -> ClientPackets.receive(payload)))
                 .playToServer(ChargeRequest.TYPE, ChargeRequest.CODEC, (payload, context) -> context.enqueueWork(() -> {

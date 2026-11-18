@@ -10,12 +10,18 @@ import java.util.*;
 
 public record StatusEffectPayload(int entityId, UUID entityUuid, Vec3 position, DamageType effect,
                                   int lifetime, int seed, boolean burst, List<Target> targets) implements CustomPacketPayload {
+    public static boolean supports(DamageType type) {
+        return switch (type) {
+            case IMPACT, PUNCTURE, SLASH, ELECTRICITY, MAGNETIC, BLAST, HEAT, TOXIN -> true;
+            default -> false;
+        };
+    }
     public record Target(int id, UUID uuid) { public Target { Objects.requireNonNull(uuid); if (id < 0) throw new IllegalArgumentException("Invalid effect target"); } }
     public StatusEffectPayload {
         Objects.requireNonNull(entityUuid); Objects.requireNonNull(position); Objects.requireNonNull(effect); targets = List.copyOf(targets);
         if (entityId < 0 || !Double.isFinite(position.x) || !Double.isFinite(position.y) || !Double.isFinite(position.z)
                 || lifetime < 1 || lifetime > 72000 || targets.size() > 32
-                || !Set.of(DamageType.SLASH, DamageType.ELECTRICITY, DamageType.MAGNETIC, DamageType.BLAST).contains(effect)
+                || !supports(effect)
                 || effect != DamageType.ELECTRICITY && !targets.isEmpty() || targets.stream().map(Target::uuid).distinct().count() != targets.size()
                 || targets.stream().map(Target::id).distinct().count() != targets.size())
             throw new IllegalArgumentException("Invalid status effect snapshot");

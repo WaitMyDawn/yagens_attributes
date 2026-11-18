@@ -22,7 +22,6 @@ public final class ClientPackets {
     private static Consumer<ChargePayload> charge = payload -> {};
     private static Consumer<ComboPayload> combo = payload -> {};
     private static Consumer<ShieldPayload> shield = payload -> {};
-    private static Consumer<StatusVisualPayload> visual = payload -> {};
     private static Consumer<StatusMarkersPayload> markers = payload -> {};
     private static Consumer<ModCatalogPayload> modCatalog = payload -> {};
     private static Supplier<ModCatalog> displayCatalog = () -> ModDefinitions.INSTANCE.catalog();
@@ -44,8 +43,6 @@ public final class ClientPackets {
     public static void receive(ComboPayload payload) { combo.accept(payload); }
     public static void shield(Consumer<ShieldPayload> handler) { shield = handler; }
     public static void receive(ShieldPayload payload) { shield.accept(payload); }
-    public static void visual(Consumer<StatusVisualPayload> handler) { visual = handler; }
-    public static void receive(StatusVisualPayload payload) { visual.accept(payload); }
     public static void markers(Consumer<StatusMarkersPayload> handler) { markers = handler; }
     public static void receive(StatusMarkersPayload payload) { markers.accept(payload); }
     public static void mods(Consumer<ModCatalogPayload> handler, Supplier<ModCatalog> catalog) { modCatalog = handler; displayCatalog = catalog; }

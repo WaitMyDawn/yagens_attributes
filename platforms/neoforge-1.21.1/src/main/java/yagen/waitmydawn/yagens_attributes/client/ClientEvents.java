@@ -31,7 +31,9 @@ public final class ClientEvents {
 
     @SubscribeEvent public static void keys(RegisterKeyMappingsEvent event) { event.register(MOD_SPACE); event.register(WEAPON_PANEL); }
     @SubscribeEvent public static void commands(RegisterClientCommandsEvent event) {
-        ClientUiCommands.register(event.getDispatcher(), element -> Minecraft.getInstance().setScreen(new HudEditorScreen(element)));
+        ClientUiCommands.register(event.getDispatcher(), element -> Minecraft.getInstance().setScreen(new HudEditorScreen(element)),
+                () -> Minecraft.getInstance().setScreen(new StatusSettingsScreen(false)),
+                () -> Minecraft.getInstance().setScreen(new StatusSettingsScreen(true)));
     }
     @SubscribeEvent public static void setup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
@@ -39,9 +41,18 @@ public final class ClientEvents {
             ClientPackets.shield(ShieldHud::accept);
             ClientPackets.combo(ComboHud::accept);
             ClientPackets.weaponBuffs(WeaponBuffHud::accept);
-            ClientPackets.visual(StatusVisuals::accept);
-            ClientPackets.effects(StatusEffectsRenderer::accept);
-            ClientPackets.markers(payload -> { yagen.waitmydawn.yagens_attributes.render.StatusMarkers.accept(payload); StatusEffectsRenderer.markers(payload); });
+            ClientPackets.effects(payload -> {
+                switch (payload.effect()) {
+                    case HEAT, TOXIN -> ElementStatusVisuals.pulse(payload);
+                    case IMPACT, PUNCTURE -> ElementStatusVisuals.physicalPulse(payload);
+                    default -> StatusEffectsRenderer.accept(payload);
+                }
+            });
+            ClientPackets.markers(payload -> {
+                yagen.waitmydawn.yagens_attributes.render.StatusMarkers.accept(payload);
+                StatusEffectsRenderer.markers(payload);
+                ElementStatusVisuals.markers(payload);
+            });
             ClientPackets.ranged(ClientRangedUse::accept, ClientRangedUse::start, ClientRangedUse::tick, ClientRangedUse::stop);
             ClientPackets.install(payload -> { ClientProfiles.accept(payload); if (payload.last()) WeaponInspectionCache.clear(); }, payload -> {
                 WeaponInspectionCache.accept(payload);
@@ -58,6 +69,7 @@ public final class ClientEvents {
         ComboHud.tick();
         WeaponBuffHud.tick();
         StatusEffectsRenderer.tick();
+        ElementStatusVisuals.tick();
         yagen.waitmydawn.yagens_attributes.render.StatusMarkers.tick();
         Minecraft minecraft = Minecraft.getInstance();
         while (MOD_SPACE.consumeClick()) if (minecraft.player != null && minecraft.screen == null) minecraft.setScreen(new ModPanelScreen(PanelRequest.STORAGE));

@@ -130,6 +130,9 @@ def main():
         immunity = read(RESOURCES / f"data/yagens_attributes/tags/entity_type/immune_to/{name}.json")
         require(immunity == {"replace": False, "values": []}, f"Invalid default immunity: {name}")
         required.update((f"death.attack.yagens_attributes.{name}", f"death.attack.yagens_attributes.{name}.player"))
+    control = read(RESOURCES / "data/yagens_attributes/tags/entity_type/control_immune.json")
+    require(control == {"replace": False, "values": ["#c:bosses", "minecraft:warden"]},
+            "Control immunity must inherit the common Boss tag and include the Warden")
     armor = read(RESOURCES / "data/minecraft/tags/damage_type/bypasses_armor.json")
     require(armor == {"replace": False, "values": ["yagens_attributes:slash_status"]}, "Only bleeding bypasses armor by default")
     knockback = read(RESOURCES / "data/minecraft/tags/damage_type/no_knockback.json")

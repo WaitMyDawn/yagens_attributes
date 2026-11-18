@@ -94,7 +94,8 @@ public final class ModDataProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput output) {
         try {
             var catalog = BuiltinMods.catalog();
-            json(output, "assets/yagens_attributes/particles/status_blood.json", object("{\"textures\":[\"yagens_attributes:status/blood_drop\"]}"));
+            json(output, "assets/yagens_attributes/particles/status_blood.json",
+                    object("{\"textures\":[\"yagens_attributes:status/blood_splat\"]}"));
             for (var entry : BuiltinMaterials.life().entrySet()) {
                 var material = new JsonObject(); material.addProperty("priority", 0);
                 var entities = new JsonArray(); entry.getValue().entities().forEach(entities::add); material.add("entities", entities);

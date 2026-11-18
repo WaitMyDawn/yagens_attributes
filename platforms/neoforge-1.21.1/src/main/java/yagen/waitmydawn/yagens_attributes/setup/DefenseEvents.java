@@ -80,7 +80,7 @@ public final class DefenseEvents {
                 double damage = .03 * pending.maximum * pending.magnetic;
                 if (event.getEntity().isAlive()) StatusEffects.tryApply(event.getEntity(), DamageType.ELECTRICITY, origin.owner(), 120,
                         origin.childContext(DamageType.ELECTRICITY, damage / .5));
-                StatusEffects.visual(event.getEntity(), DamageType.MAGNETIC, 1.2, true);
+                StatusEffectService.emit(event.getEntity(), DamageType.MAGNETIC, 12, true, List.of());
             }
         }
     }

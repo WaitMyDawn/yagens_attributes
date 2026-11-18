@@ -20,6 +20,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import yagen.waitmydawn.yagens_attributes.api.*;
+import yagen.waitmydawn.yagens_attributes.config.ClientConfigs;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import java.nio.file.*;
@@ -29,7 +30,9 @@ import java.util.*;
 @EventBusSubscriber(modid = "yagens_attributes", value = Dist.CLIENT)
 public final class StatusShowcase {
     private static final String[] NAMES = {"slash", "electricity", "magnetic", "blast"};
-    private static final double[] X = {-9, -3, 3, 9};
+    private static final String[] ELEMENTS = {"cold", "heat", "toxin", "gas"};
+    private static final String[] REMAINING = {"impact", "puncture", "radiation", "corrosive", "viral"};
+    private static final double[] X = {-9, -3, 3, 9, 15};
     private static final List<Mob> ACTORS = new ArrayList<>();
     private static final JsonArray FRAMES = new JsonArray();
     private static Path output;
@@ -38,6 +41,10 @@ public final class StatusShowcase {
     private static int active = -1, waited, frame, phase;
     private static long lastFrame;
     private StatusShowcase() {}
+    private static boolean elemental() { return Boolean.getBoolean("yagens_attributes.elementalShowcase"); }
+    private static boolean remaining() { return Boolean.getBoolean("yagens_attributes.remainingStatusShowcase"); }
+    private static String[] scenes() { return remaining() ? REMAINING : elemental() ? ELEMENTS : NAMES; }
+    private static String sceneName(int index) { return scenes()[index]; }
     @SubscribeEvent public static void client(ClientTickEvent.Post event) throws Exception {
         String destination = System.getProperty("yagens_attributes.statusShowcase");
         if (destination == null || finished) return;
@@ -47,6 +54,7 @@ public final class StatusShowcase {
             Files.writeString(output.resolve("client.pid"), Long.toString(ProcessHandle.current().pid()));
             client.options.framerateLimit().set(20); client.options.renderDistance().set(4); client.options.simulationDistance().set(5);
             client.options.fov().set(55); client.options.setCameraType(CameraType.FIRST_PERSON);
+            if (elemental()) ClientConfigs.STATUS.gasOpacity.config().set(ClientConfigs.STATUS.gasOpacity.defaultValue());
             client.createWorldOpenFlows().createFreshLevel("status-showcase-" + System.currentTimeMillis(),
                     new LevelSettings("Status showcase", GameType.SPECTATOR, false, Difficulty.NORMAL, true, new GameRules(), WorldDataConfiguration.DEFAULT),
                     new WorldOptions(77, false, false), registries -> registries.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(), client.screen);
@@ -54,27 +62,42 @@ public final class StatusShowcase {
         if (client.level == null || client.player == null || client.getSingleplayerServer() == null) return;
         if (requested < 0) requested = 0;
         if (active != requested && serverScene == requested) {
-            if (++waited >= 30) { active = requested; frame = 0; waited = 0; lastFrame = 0; Files.createDirectories(output.resolve(NAMES[active])); }
+            if (++waited >= 30) { active = requested; frame = 0; waited = 0; lastFrame = 0; Files.createDirectories(output.resolve(sceneName(active))); }
         }
     }
     @SubscribeEvent public static void server(ServerTickEvent.Post event) {
-        if (System.getProperty("yagens_attributes.statusShowcase") == null || requested < 0 || requested >= 4 || event.getServer().getPlayerList().getPlayers().isEmpty()) return;
+        if (System.getProperty("yagens_attributes.statusShowcase") == null || requested < 0
+                || requested >= scenes().length || event.getServer().getPlayerList().getPlayers().isEmpty()) return;
         var level = event.getServer().overworld(); var player = event.getServer().getPlayerList().getPlayers().get(0);
         if (!prepared) {
             prepared = true;
             level.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, event.getServer());
             level.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, event.getServer());
             level.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, event.getServer()); level.setDayTime(6000);
-            for (int x = -14; x <= 14; x++) for (int z = -4; z <= 8; z++) level.setBlock(new BlockPos(x, 70, z), Blocks.SMOOTH_STONE.defaultBlockState(), 3);
-            for (double x : X) ACTORS.add(actor(level, x, 0));
-            ACTORS.add(actor(level, -4.3, -.4)); ACTORS.add(actor(level, -1.7, -.4));
+            for (int x = -17; x <= 21; x++) for (int z = -8; z <= 12; z++) level.setBlock(new BlockPos(x, 70, z), Blocks.SMOOTH_STONE.defaultBlockState(), 3);
+            for (int i = 0; i < scenes().length; i++) ACTORS.add(actor(level, X[i], 0));
+            if (!elemental() && !remaining()) {
+                ACTORS.add(actor(level, -4.3, -.4));
+                ACTORS.add(actor(level, -1.7, -.4));
+            }
         }
         if (serverScene != requested) {
             serverScene = requested; phase = 0;
             ACTORS.forEach(StatusApi::clearAll); player.setGameMode(GameType.SPECTATOR);
-            player.connection.teleport(X[serverScene], 72.3, 6.5, 180, 16);
+            boolean gas = elemental() && serverScene == 3;
+            player.connection.teleport(X[serverScene], gas ? 74 : 72.3, gas ? 8.5 : 6.5, 180, gas ? 28 : 16);
         }
         var target = ACTORS.get(serverScene);
+        if (remaining()) {
+            remainingEffects(player, target);
+            phase++;
+            return;
+        }
+        if (elemental()) {
+            elements(level, player, target);
+            phase++;
+            return;
+        }
         switch (serverScene) {
             case 0 -> { if (phase % 40 == 0) apply(target, player, yagen.waitmydawn.yagens_attributes.core.DamageType.SLASH); }
             case 1 -> { if (phase % 100 == 20) apply(target, player, yagen.waitmydawn.yagens_attributes.core.DamageType.ELECTRICITY); }
@@ -88,6 +111,26 @@ public final class StatusShowcase {
             }
         }
         phase++;
+    }
+    private static void remainingEffects(ServerPlayer player, Mob target) {
+        var type = yagen.waitmydawn.yagens_attributes.core.DamageType.parse(sceneName(serverScene));
+        if (type == yagen.waitmydawn.yagens_attributes.core.DamageType.IMPACT
+                || type == yagen.waitmydawn.yagens_attributes.core.DamageType.PUNCTURE) {
+            if (phase >= 35 && phase % 16 == 7) apply(target, player, type);
+        } else if (phase == 0) {
+            for (int i = 0; i < 7; i++) apply(target, player, type);
+        }
+    }
+    private static void elements(ServerLevel level, ServerPlayer player, Mob target) {
+        if (phase == 0) {
+            var type = yagen.waitmydawn.yagens_attributes.core.DamageType.parse(sceneName(serverScene));
+            int stacks = switch (type) { case COLD, GAS -> 10; default -> 1; };
+            for (int i = 0; i < stacks; i++) apply(target, player, type);
+        }
+        if (serverScene == 3 && phase == 50) {
+            target.setHealth(1);
+            target.hurt(level.damageSources().playerAttack(player), 100);
+        }
     }
     private static Mob actor(ServerLevel level, double x, double z) {
         var mob = EntityType.HUSK.create(level); mob.setNoAi(true); mob.setPersistenceRequired();
@@ -103,13 +146,13 @@ public final class StatusShowcase {
         if (client.screen != null || client.getOverlay() != null) return;
         long stamp = System.nanoTime();
         if (lastFrame != 0 && stamp - lastFrame < 40_000_000) return;
-        String name = NAMES[active] + "/frame-" + String.format(Locale.ROOT, "%04d", frame) + ".png";
+        String name = sceneName(active) + "/frame-" + String.format(Locale.ROOT, "%04d", frame) + ".png";
         try (var image = Screenshot.takeScreenshot(client.getMainRenderTarget())) { image.writeToFile(output.resolve(name)); }
         var metadata = new JsonObject(); metadata.addProperty("file", name); metadata.addProperty("duration_ms", lastFrame == 0 ? 50 : Math.max(10, Math.round((stamp - lastFrame) / 1_000_000D)));
         FRAMES.add(metadata); lastFrame = stamp;
-        if (++frame >= 100) {
-            YagensAttributes.LOGGER.info("Captured native status scene {}", NAMES[active]);
-            if (active < 3) { requested++; active = -1; waited = 0; }
+        if (++frame >= (remaining() ? 32 : elemental() ? 52 : 100)) {
+            YagensAttributes.LOGGER.info("Captured native status scene {}", sceneName(active));
+            if (active + 1 < scenes().length) { requested++; active = -1; waited = 0; }
             else {
                 finished = true;
                 var report = new JsonObject(); report.addProperty("passed", true); report.add("frames", FRAMES);
