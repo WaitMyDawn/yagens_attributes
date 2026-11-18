@@ -21,6 +21,7 @@ import yagen.waitmydawn.yagens_attributes.setup.PanelService;
 import yagen.waitmydawn.yagens_attributes.setup.WeaponInspectionService;
 import net.minecraft.server.level.ServerPlayer;
 import yagen.waitmydawn.yagens_attributes.registries.Components;
+import yagen.waitmydawn.yagens_attributes.registries.ModBlocks;
 import yagen.waitmydawn.yagens_attributes.registries.ModItems;
 import yagen.waitmydawn.yagens_attributes.registries.RangedAttachments;
 import yagen.waitmydawn.yagens_attributes.registries.ShieldAttributes;
@@ -34,6 +35,7 @@ public final class YagensAttributes {
 
     public YagensAttributes(IEventBus bus, ModContainer container) {
         Components.REGISTER.register(bus);
+        ModBlocks.REGISTER.register(bus);
         ModItems.REGISTER.register(bus);
         yagen.waitmydawn.yagens_attributes.registries.LootTypes.ENTRIES.register(bus);
         yagen.waitmydawn.yagens_attributes.registries.LootTypes.MODIFIERS.register(bus);
@@ -44,6 +46,7 @@ public final class YagensAttributes {
         bus.addListener(ShieldAttributes::attributes);
         bus.addListener(yagen.waitmydawn.yagens_attributes.datagen.ModDataProvider::gather);
         bus.addListener(yagen.waitmydawn.yagens_attributes.datagen.LootDataProvider::gather);
+        bus.addListener(yagen.waitmydawn.yagens_attributes.datagen.GalliumData::gather);
         bus.addListener(YagensAttributes::commonSetup);
         bus.addListener(YagensAttributes::network);
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfigs.SPEC, ModIdentity.CLIENT_CONFIG);

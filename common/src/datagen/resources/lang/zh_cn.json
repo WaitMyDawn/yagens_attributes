@@ -1,4 +1,8 @@
 {
+  "block.yagens_attributes.gallium_ore": "镓矿石",
+  "block.yagens_attributes.deepslate_gallium_ore": "深层镓矿石",
+  "item.yagens_attributes.raw_gallium": "粗镓",
+  "item.yagens_attributes.gallium": "镓",
   "key.categories.yagens_attributes": "Yagen's Attributes",
   "key.yagens_attributes.mod_space": "打开 Mod 空间",
   "key.yagens_attributes.weapon_panel": "打开武器面板",

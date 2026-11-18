@@ -73,7 +73,7 @@ Status layers are independent of MobEffects, milk and `/effect`. The status API 
 
 Weapons carry their UUID and intrinsic components for polarity, XP absorption and catalyst use. Mod instances, owners, weapon reservations, sharing permissions, player bonuses and visibility preferences live in world-level saved data. A Mod remains in its owner's independent storage while installed, and can reserve only one weapon. Taking a shared Mod changes ownership centrally, including when its previous owner is offline.
 
-Cloned stacks retaining the same UUID refer to the same logical weapon. External item duplication must assign a new identity if a separate logical weapon is intended. No automatic migration of legacy item components, configs or saves is provided.
+When a weapon breaks or a dropped weapon is destroyed or expires, its installed Mods return to their owners' storage, including offline owners. Dropping, picking up, and trading a weapon preserve its setup. Creative middle-click copies and saved hotbar templates start as independent rank-zero weapons with their default slots. Lost reservations can also be released from the owner's Mod storage.
 
 ## Endo
 

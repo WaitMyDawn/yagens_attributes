@@ -39,7 +39,7 @@ public final class ArcShape {
             result.add(new Segment(points.get(i - 1), next, depth)); points.add(next);
         }
         if (depth >= maxDepth || probability == 0) return;
-        int firstFork = depth == 0 ? pieces / 2 + 1 : 1;
+        int firstFork = depth == 0 ? pieces / 4 + 1 : 1;
         for (int i = firstFork; i < pieces && result.size() + 4 <= MAX_SEGMENTS; i++) {
             if (random.nextDouble() >= probability) continue;
             double sign = random.nextBoolean() ? 1 : -1;

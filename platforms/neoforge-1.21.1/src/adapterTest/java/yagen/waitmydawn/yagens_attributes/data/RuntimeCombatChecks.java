@@ -47,8 +47,15 @@ public final class RuntimeCombatChecks {
         report.addProperty("pid", ProcessHandle.current().pid());
         try {
             var suite = System.getProperty("yagens_attributes.validationSuite", "all");
-            if (!suite.equals("galvanized")) run(event.getServer().overworld(), report);
-            checks += GalvanizedRuntimeChecks.run(event.getServer().overworld(), report);
+            if (suite.equals("weapon-lifecycle")) {
+                checks += WeaponLifecycleRuntimeChecks.run(event.getServer().overworld());
+            } else {
+                if (!suite.equals("galvanized")) {
+                    run(event.getServer().overworld(), report);
+                    checks += WeaponLifecycleRuntimeChecks.run(event.getServer().overworld());
+                }
+                checks += GalvanizedRuntimeChecks.run(event.getServer().overworld(), report);
+            }
             report.addProperty("passed", true);
             YagensAttributes.LOGGER.info("Passed {} runtime combat checks", checks);
         } catch (Throwable failure) {

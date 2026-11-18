@@ -56,11 +56,13 @@ public final class StatusEffectContracts {
                 }
                 equal(Vec3.ZERO, branches.get(0).from()); equal(new Vec3(1, 0, 0), branches.get(7).to());
                 var firstLevel = ArcShape.build(seed, length, 1, 1, .22);
-                equal(20, firstLevel.size());
-                for (int fork = 8; fork < firstLevel.size(); fork += 4) {
+                equal(28, firstLevel.size());
+                var forkPoints = plain.subList(2, 7);
+                for (int point = 0; point < forkPoints.size(); point++) {
+                    int fork = plain.size() + point * 4;
                     var start = firstLevel.get(fork).from();
                     var end = firstLevel.get(fork + 3).to();
-                    equal(true, plain.subList(4, 7).stream().anyMatch(segment -> segment.to().equals(start)));
+                    equal(forkPoints.get(point).to(), start);
                     equal(true, start.distanceTo(end) >= .22 * .65 - 1e-12 && start.distanceTo(end) <= .22 + 1e-12);
                 }
                 var anchors = ArcShape.anchors(seed); anchorsBySeed.add(anchors);

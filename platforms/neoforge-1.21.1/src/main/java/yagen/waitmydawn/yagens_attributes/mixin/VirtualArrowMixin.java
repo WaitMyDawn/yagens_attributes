@@ -8,9 +8,16 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import yagen.waitmydawn.yagens_attributes.setup.RangedShooting;
+import yagen.waitmydawn.yagens_attributes.setup.WeaponLifecycle;
 
 @Mixin(AbstractArrow.class)
 public abstract class VirtualArrowMixin {
+    @Inject(method = "tickDespawn", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/entity/projectile/AbstractArrow;discard()V", shift = At.Shift.AFTER))
+    private void yagens$retireExpiredTrident(CallbackInfo callback) {
+        WeaponLifecycle.retireCarrier((AbstractArrow) (Object) this);
+    }
+
     @Inject(method = "playerTouch", at = @At("HEAD"), cancellable = true)
     private void yagens$touch(Player player, CallbackInfo callback) {
         var arrow = (AbstractArrow) (Object) this;

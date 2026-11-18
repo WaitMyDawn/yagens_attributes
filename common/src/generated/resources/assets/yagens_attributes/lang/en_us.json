@@ -1,4 +1,8 @@
 {
+  "block.yagens_attributes.gallium_ore": "Gallium Ore",
+  "block.yagens_attributes.deepslate_gallium_ore": "Deepslate Gallium Ore",
+  "item.yagens_attributes.raw_gallium": "Raw Gallium",
+  "item.yagens_attributes.gallium": "Gallium",
   "key.categories.yagens_attributes": "Yagen's Attributes",
   "key.yagens_attributes.mod_space": "Open Mod Storage",
   "key.yagens_attributes.weapon_panel": "Open Weapon Panel",

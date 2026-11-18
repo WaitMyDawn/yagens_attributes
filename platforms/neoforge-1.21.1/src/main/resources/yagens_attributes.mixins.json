@@ -21,9 +21,15 @@
     "ShieldAbsorptionMixin",
     "AbsorptionEffectMixin",
     "StatusArmorMixin",
-    "StatusControlMixin"
+    "StatusControlMixin",
+    "WeaponDurabilityMixin",
+    "DroppedWeaponMixin",
+    "WeaponCarrierMixin",
+    "WeaponInventoryMixin",
+    "VanishingWeaponMixin",
+    "CreativeWeaponCloneMixin"
   ],
-  "client": ["ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin"],
+  "client": ["ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin", "CreativeHotbarWeaponMixin"],
   "injectors": {
     "defaultRequire": 1
   }

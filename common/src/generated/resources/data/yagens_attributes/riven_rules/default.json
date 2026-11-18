@@ -30,105 +30,6 @@
     }
   ],
   "traits": {
-    "damage.electricity": {
-      "stat": "damage.electricity",
-      "operation": "ADDITION",
-      "basis": "ATTACK_DAMAGE",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 0.9,
-      "rangedBase": 0.9,
-      "positive": true,
-      "negative": false,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "critical_chance": {
-      "stat": "critical_chance",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 1.8,
-      "rangedBase": 1.4999,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "multishot": {
-      "stat": "multishot",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "RANGED",
-        "TRIDENT"
-      ],
-      "meleeBase": 0.9,
-      "rangedBase": 0.9,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "damage.heat": {
-      "stat": "damage.heat",
-      "operation": "ADDITION",
-      "basis": "ATTACK_DAMAGE",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 0.9,
-      "rangedBase": 0.9,
-      "positive": true,
-      "negative": false,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "attack_speed": {
-      "stat": "attack_speed",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "MELEE"
-      ],
-      "meleeBase": 0.549,
-      "rangedBase": 0.0,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "critical_damage": {
-      "stat": "critical_damage",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 0.9,
-      "rangedBase": 1.19997,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
-    "damage": {
-      "stat": "damage",
-      "operation": "ADDITION",
-      "basis": "FLAT",
-      "applicability": [
-        "WEAPON"
-      ],
-      "meleeBase": 1.647,
-      "rangedBase": 1.65,
-      "positive": true,
-      "negative": true,
-      "physicalMinimum": 0.0,
-      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
-    },
     "damage.puncture": {
       "stat": "damage.puncture",
       "operation": "ADDITION",
@@ -254,6 +155,105 @@
       "positive": true,
       "negative": true,
       "physicalMinimum": 0.25,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "damage.electricity": {
+      "stat": "damage.electricity",
+      "operation": "ADDITION",
+      "basis": "ATTACK_DAMAGE",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 0.9,
+      "rangedBase": 0.9,
+      "positive": true,
+      "negative": false,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "critical_chance": {
+      "stat": "critical_chance",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 1.8,
+      "rangedBase": 1.4999,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "multishot": {
+      "stat": "multishot",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "RANGED",
+        "TRIDENT"
+      ],
+      "meleeBase": 0.9,
+      "rangedBase": 0.9,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "damage.heat": {
+      "stat": "damage.heat",
+      "operation": "ADDITION",
+      "basis": "ATTACK_DAMAGE",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 0.9,
+      "rangedBase": 0.9,
+      "positive": true,
+      "negative": false,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "attack_speed": {
+      "stat": "attack_speed",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "MELEE"
+      ],
+      "meleeBase": 0.549,
+      "rangedBase": 0.0,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "critical_damage": {
+      "stat": "critical_damage",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 0.9,
+      "rangedBase": 1.19997,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.0,
+      "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
+    },
+    "damage": {
+      "stat": "damage",
+      "operation": "ADDITION",
+      "basis": "FLAT",
+      "applicability": [
+        "WEAPON"
+      ],
+      "meleeBase": 1.647,
+      "rangedBase": 1.65,
+      "positive": true,
+      "negative": true,
+      "physicalMinimum": 0.0,
       "description": "Full-rank reference before disposition, layout and independent 0.9-1.1 variation. Percentage values are fractions; combo duration is seconds. Scale by (rank + 1) / 9."
     }
   },

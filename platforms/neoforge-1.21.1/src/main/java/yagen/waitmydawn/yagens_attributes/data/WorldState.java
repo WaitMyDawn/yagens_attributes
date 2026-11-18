@@ -57,6 +57,11 @@ public final class WorldState extends SavedData {
     public void visibility(UUID player, Visibility value) { visibility.put(player, value); setDirty(); }
     public WeaponProgress progress(UUID weapon) { return weaponProgress.getOrDefault(weapon, WeaponProgress.ZERO); }
     public void progress(UUID weapon, WeaponProgress progress) { weaponProgress.put(Objects.requireNonNull(weapon), Objects.requireNonNull(progress)); setDirty(); }
+    public void retireWeapon(UUID weapon) {
+        if (weaponProgress.remove(weapon) != null) setDirty();
+        ledger.detachWeapon(weapon);
+    }
+
     public long endo(UUID player) { return endo.getOrDefault(player, 0L); }
     public void endo(UUID player, long value) {
         Objects.requireNonNull(player);

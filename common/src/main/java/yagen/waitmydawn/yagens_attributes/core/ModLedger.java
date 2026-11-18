@@ -226,7 +226,20 @@ public final class ModLedger {
 
     public void clearForPolarization(UUID actor, UUID weapon) {
         validatePolarization(actor, weapon);
-        for (var entry : installed(weapon)) uninstall(actor, entry.id(), weapon, false);
+        detachWeapon(weapon);
+    }
+
+    /** Clears reservations while preserving each card's owner and inventory identity. */
+    public void detachWeapon(UUID weapon) {
+        var reserved = byWeapon.remove(Objects.requireNonNull(weapon));
+        if (reserved == null) return;
+        for (UUID id : reserved) {
+            Entry entry = require(id);
+            entries.put(id, new Entry(id, entry.owner(), null, entry.shared(), entry.bonuses(), entry.info(), -1));
+        }
+        weaponCache.remove(weapon);
+        itemCache.remove(weapon);
+        onChange.run();
     }
 
     public int slotCount(UUID weapon, int configured) {

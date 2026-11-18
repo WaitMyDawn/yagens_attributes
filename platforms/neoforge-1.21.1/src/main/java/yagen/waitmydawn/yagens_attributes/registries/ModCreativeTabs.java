@@ -19,7 +19,13 @@ public final class ModCreativeTabs {
             }).build());
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = REGISTER.register("items", () -> CreativeModeTab.builder()
             .title(Component.translatable("creativetab.yagens_attributes.items")).icon(() -> new ItemStack(ModItems.FORMA.get()))
-            .displayItems((parameters, output) -> { output.accept(ModItems.ENDO); output.accept(ModItems.FORMA); output.accept(ModItems.KUVA); output.accept(ModItems.OROKIN_CATALYST); }).build());
+            .displayItems((parameters, output) -> {
+                output.accept(ModItems.ENDO); output.accept(ModItems.FORMA); output.accept(ModItems.KUVA); output.accept(ModItems.OROKIN_CATALYST);
+                output.accept(ModItems.GALLIUM_ORE);
+                output.accept(ModItems.DEEPSLATE_GALLIUM_ORE);
+                output.accept(ModItems.RAW_GALLIUM);
+                output.accept(ModItems.GALLIUM);
+            }).build());
 
     private ModCreativeTabs() {
     }

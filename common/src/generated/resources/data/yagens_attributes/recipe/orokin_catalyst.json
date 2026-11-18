@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "J": {
+      "item": "yagens_attributes:gallium"
+    },
+    "Z": {
+      "item": "minecraft:amethyst_shard"
+    }
+  },
+  "pattern": [
+    "JJ ",
+    "JZI",
+    " IJ"
+  ],
+  "result": {
+    "count": 1,
+    "id": "yagens_attributes:orokin_catalyst"
+  }
+}

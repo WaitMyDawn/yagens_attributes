@@ -101,11 +101,22 @@ def verify_jar(project, target, jar):
                 mixin_path = root / "resources/yagens_attributes.mixins.json"
                 require(archive.read("yagens_attributes.mixins.json") == mixin_path.read_bytes(), "Mixin config differs")
                 mixins = json.loads(archive.read("yagens_attributes.mixins.json"))
-                required_mixins = {"ArmorFormulaMixin", "RangedAttributeAccessor", "ProjectileWeaponItemMixin", "NativeItemStackMixin", "NativeSpawnMixin", "NativeCooldownMixin", "CataclysmLeftClickMixin", "CrossbowItemMixin", "TridentItemMixin", "VirtualArrowMixin", "VirtualTridentMixin", "RangedCooldownMixin", "ShieldAbsorptionMixin", "AbsorptionEffectMixin", "StatusArmorMixin", "StatusControlMixin", "AnvilExperienceMixin", "EnchantmentExperienceMixin"}
-                require(mixins["required"] is True and set(mixins["mixins"]) == required_mixins, "Unexpected combat mixins")
-                require(set(mixins["client"]) == {"ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin"}, "Unexpected client mixins")
-                for name in required_mixins | set(mixins["client"]):
-                    require(mixins["package"].replace(".", "/") + "/" + name + ".class" in entries, f"Missing combat mixin: {name}")
+                required_mixins = {
+                    "ArmorFormulaMixin", "RangedAttributeAccessor", "ProjectileWeaponItemMixin", "NativeItemStackMixin",
+                    "NativeSpawnMixin", "NativeCooldownMixin", "CataclysmLeftClickMixin", "CrossbowItemMixin",
+                    "TridentItemMixin", "VirtualArrowMixin", "VirtualTridentMixin", "RangedCooldownMixin",
+                    "ShieldAbsorptionMixin", "AbsorptionEffectMixin", "StatusArmorMixin", "StatusControlMixin",
+                    "AnvilExperienceMixin", "EnchantmentExperienceMixin", "WeaponDurabilityMixin", "DroppedWeaponMixin",
+                    "WeaponCarrierMixin", "WeaponInventoryMixin", "VanishingWeaponMixin", "CreativeWeaponCloneMixin",
+                }
+                required_client_mixins = {
+                    "ShieldHeartMixin", "ModTabIconMixin", "AnvilExperienceScreenMixin", "EnchantmentExperienceScreenMixin",
+                    "CreativeHotbarWeaponMixin",
+                }
+                require(mixins["required"] is True and set(mixins["mixins"]) == required_mixins, "Unexpected common mixins")
+                require(set(mixins["client"]) == required_client_mixins, "Unexpected client mixins")
+                for name in required_mixins | required_client_mixins:
+                    require(mixins["package"].replace(".", "/") + "/" + name + ".class" in entries, f"Missing mixin: {name}")
                 accessor = mixins["package"].replace(".", "/") + "/RangedAttributeAccessor.class"
                 require(accessor in entries, "Missing attribute accessor class")
         for test_root in (project / "common/src/contractTest/java", project / f"platforms/{target}/src/adapterTest/java"):

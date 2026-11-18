@@ -35,6 +35,15 @@ public final class Components {
     public static boolean absorbsExperience(ItemStack stack) { return stack.getOrDefault(ABSORB_EXPERIENCE.get(), false); }
     public static int capacity(ItemStack stack, yagen.waitmydawn.yagens_attributes.core.WeaponProgress progress) { return progress.level() * (stack.getOrDefault(CATALYZED.get(), false) ? 2 : 1); }
 
+    public static ItemStack clearWeaponState(ItemStack copy) {
+        if (copy.isEmpty()) return copy;
+        copy.remove(WEAPON_ID.get());
+        copy.remove(ABSORB_EXPERIENCE.get());
+        copy.remove(CATALYZED.get());
+        copy.remove(WEAPON_POLARITIES.get());
+        return copy;
+    }
+
     public static UUID identify(ItemStack stack) {
         if (stack.getCount() != 1 || stack.getMaxStackSize() != 1)
             throw new IllegalArgumentException("Weapon must be non-stackable");
