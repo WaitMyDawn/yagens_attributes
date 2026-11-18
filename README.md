@@ -143,7 +143,7 @@ Mod capacity equals weapon level. Defined Mods use `base + per_level × level` c
 All operations are checked by the server against ownership, sharing permissions and the currently held weapon UUID. An outdated panel cannot operate on a different weapon after a hand change. Panels do not pause the game.
 
 Damage numbers scatter in a randomized annulus around the target and drift outward/upward. Successive labels use a golden-angle sequence to spread dense bursts instead of repeatedly covering the entity's center. Text renders through the model, follows the interpolated target position and retains its last anchor if the target disappears.
-Client and server must use matching protocol version 22; both sides need the updated JAR.
+Client and server must use matching protocol version 34.
 
 All subject/status artwork uses 32×32 textures. The first 14 Mod images and fallback Mod image are opaque white placeholders. The 13 existing status icons retain their original designs, transparent backgrounds and minor pixel/shading refinements. Upgrade slots are 128×128 logical units, warehouse cards 124×124 and compatible cards 96×96 on a 1100×600 canvas. Subject-art areas use 64×64, 64×64 and 32×32 respectively; UI scale adapts the complete canvas to the screen. Frames, text and symbols remain separate from subject artwork.
 

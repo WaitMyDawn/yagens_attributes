@@ -149,18 +149,22 @@ final class ArgonScopeRuntimeChecks {
             afterKills.discard();
             ConditionalModService.tick(new PlayerTickEvent.Post(player));
             require(buffs.displayed.size() == 2, "Hit and kill bonuses appear as separate buff entries");
-            require(buffs.displayed.get(1).deadlines().equals(List.of(start + 260, start + 280)),
-                    "Each kill keeps its own expiry instead of refreshing previous kills");
+            require(buffs.displayed.get(1).deadlines().equals(List.of(start + 280, start + 520)),
+                    "The last kill refreshes the next expiry, with one interval between later expirations");
 
             clock.setGameTime(start + 260);
             var afterExpiry = single(fire(level, player, bow, target, target.getEyeY()));
-            equal(base * 2.6, chance(RangedShooting.shot(afterExpiry)), "The first kill stack drops independently");
+            equal(base * 3, chance(RangedShooting.shot(afterExpiry)), "Both kill stacks remain before the refreshed expiry");
             afterExpiry.discard();
             clock.setGameTime(start + 280);
+            var remaining = single(fire(level, player, bow, target, target.getEyeY()));
+            equal(base * 1.4, chance(RangedShooting.shot(remaining)), "The hit bonus and one kill stack expire at the refreshed deadline");
+            remaining.discard();
+            clock.setGameTime(start + 520);
             var expired = single(fire(level, player, bow, target, target.getEyeY()));
-            equal(base, chance(RangedShooting.shot(expired)), "Both bonuses expire after their final deadlines");
+            equal(base, chance(RangedShooting.shot(expired)), "The remaining kill stack expires after its full interval");
             expired.discard();
-            return 8;
+            return 9;
         } finally {
             buffs.counters.clear();
             world.ledger.uninstall(player.getUUID(), mod, bowId, false);

@@ -41,7 +41,7 @@ public final class BuiltinMods {
             new PrimedReachMod(),
             new PrimedFuryMod(), new LethalTorrentMod(), new GalvanizedChamberMod(), new QuickeningMod(),
             new PointStrikeMod(), new VitalSenseMod(), new HunterMunitionsMod(), new TruePunishmentMod(),
-            new PrimedShatteredVenomDollMod(), new PrimedColdAdditionMod(),
+            new PrimedToxinAdditionMod(), new PrimedColdAdditionMod(),
             new GalvanizedBoneFingerBoxMod(), new GalvanizedGazeOfPainMod(), new ArgonScopeMod(), new GalvanizedArgonScopeMod());
     private BuiltinMods() {}
 

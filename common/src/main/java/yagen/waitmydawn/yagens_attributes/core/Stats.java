@@ -21,7 +21,7 @@ public final class Stats {
         var keys = new LinkedHashSet<>(List.of(CRITICAL_CHANCE, CRITICAL_DAMAGE, STATUS_CHANCE, STATUS_DURATION, DAMAGE, DIRECT_DAMAGE, FIRE_RATE, MULTISHOT,
                 COMBO_DURATION, COMBO_CRITICAL_CHANCE, COMBO_STATUS_CHANCE, ATTACK_SPEED, MELEE_RANGE, COMBO_COUNT_CHANCE, CRITICAL_SLASH_CHANCE));
         var components = new LinkedHashSet<String>();
-        for (DamageType type : DamageType.values()) components.add("damage." + type.key());
+        for (DamageType type : DamageType.values()) components.add(type.statKey());
         DAMAGE_COMPONENTS = Collections.unmodifiableSet(components); keys.addAll(components);
         KEYS = Collections.unmodifiableSet(keys);
     }
@@ -43,6 +43,23 @@ public final class Stats {
             case MELEE_RANGE -> 0;
             default -> throw new IllegalArgumentException("No profile base for " + key);
         };
+    }
+
+    static void validateCondition(String stat, ConditionalModifier.Condition condition) {
+        var trigger = condition.trigger();
+        if (trigger == ConditionalModifier.Trigger.ALWAYS) return;
+        // Conditional sources join the calculation after the unconditional combo conversion.
+        boolean compatible = switch (stat) {
+            case FIRE_RATE, MULTISHOT -> !condition.needsTarget();
+            case ATTACK_SPEED, MELEE_RANGE -> !condition.needsTarget() && !trigger.requiresRangedLaunch();
+            case COMBO_COUNT_CHANCE -> !trigger.requiresRangedLaunch();
+            case CRITICAL_CHANCE, CRITICAL_DAMAGE, STATUS_CHANCE, STATUS_DURATION, DAMAGE, DIRECT_DAMAGE, CRITICAL_SLASH_CHANCE -> true;
+            default -> DAMAGE_COMPONENTS.contains(stat);
+        };
+        if (!compatible) {
+            throw new IllegalArgumentException("Stat " + stat + " cannot use condition " + trigger
+                    + (condition.perTargetStatus() ? " with per_target_status" : "") + " at its evaluation stage");
+        }
     }
 
     public static double resolve(double base, String key, List<Map<String, Bonus>> sources) {

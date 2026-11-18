@@ -44,6 +44,11 @@ public final class StatusContracts {
         var copied = new StatusState(); copied.layers.add(melee);
         var copy = StatusState.CODEC.parse(JsonOps.INSTANCE, StatusState.CODEC.encodeStart(JsonOps.INSTANCE, copied).getOrThrow()).getOrThrow();
         check(copy.layers.get(0).weapon().equals(weapon) && copy.layers.get(0).attackKind() == AttackKind.MELEE);
+        check(copy.dirty);
+        var expiring = new StatusState();
+        expiring.layers.add(new StatusState.Layer(DamageType.CORROSIVE, first, 0, 2, 20, 0));
+        check(expiring.advance(false).isEmpty() && !expiring.dirty);
+        check(expiring.advance(false).isEmpty() && expiring.dirty && expiring.empty());
         state.layers.add(new StatusState.Layer(DamageType.SLASH, first, 10, 120, 20, 0));
         state.layers.add(new StatusState.Layer(DamageType.SLASH, second, 20, 40, 20, 0));
         state.layers.add(new StatusState.Layer(DamageType.COLD, first, 0, 120, 20, 0));

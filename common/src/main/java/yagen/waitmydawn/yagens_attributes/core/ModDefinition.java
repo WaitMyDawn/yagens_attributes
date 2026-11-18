@@ -5,6 +5,9 @@ import java.util.*;
 public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity polarity, int baseCapacity,
                             int capacityPerLevel, int maxLevel, Set<ModInfo.Category> applicability,
                             String texture, List<Effect> entries, ModStyle style) {
+    public static final int MAX_EFFECTS = 64;
+    public static final int MAX_ID_LENGTH = 256;
+
     public ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity polarity, int baseCapacity,
                          int capacityPerLevel, int maxLevel, Set<ModInfo.Category> applicability, String texture, List<Effect> entries) {
         this(name, rarity, polarity, baseCapacity, capacityPerLevel, maxLevel, applicability, texture, entries, ModStyle.DEFAULT);
@@ -31,6 +34,7 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
                 throw new IllegalArgumentException("Unit-basis Addition requires an on-hit proc chance");
             if (condition.trigger() != ConditionalModifier.Trigger.ALWAYS && (operation != Operation.ADDITION || basis != Basis.FLAT))
                 throw new IllegalArgumentException("Conditional effects require flat-basis Addition");
+            Stats.validateCondition(stat, condition);
         }
     }
 
@@ -44,13 +48,13 @@ public record ModDefinition(String name, ModInfo.Rarity rarity, ModInfo.Polarity
         id(texture);
         if (name.isBlank() || name.length() > 80 || baseCapacity < 0 || capacityPerLevel < 0 || maxLevel < 0 || maxLevel > 60
                 || (long) baseCapacity + (long) capacityPerLevel * maxLevel > 1_000_000 || applicability.isEmpty()
-                || applicability.contains(ModInfo.Category.ALL) || entries.isEmpty() || entries.size() > 64)
+                || applicability.contains(ModInfo.Category.ALL) || entries.isEmpty() || entries.size() > MAX_EFFECTS)
             throw new IllegalArgumentException("Invalid Mod definition");
         for (var entry : entries) entry.condition().atRank(maxLevel);
     }
 
     public static String id(String value) {
-        if (value == null || value.length() > 256 || !value.matches("[a-z0-9_.-]+:[a-z0-9_./-]+"))
+        if (value == null || value.length() > MAX_ID_LENGTH || !value.matches("[a-z0-9_.-]+:[a-z0-9_./-]+"))
             throw new IllegalArgumentException("Invalid resource ID");
         return value;
     }

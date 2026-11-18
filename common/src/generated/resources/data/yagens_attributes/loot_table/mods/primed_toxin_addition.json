@@ -12,7 +12,7 @@
               "function": "minecraft:set_components",
               "components": {
                 "yagens_attributes:mod_data": {
-                  "type": "yagens_attributes:primed_shattered_venom_doll",
+                  "type": "yagens_attributes:primed_toxin_addition",
                   "level": 0
                 }
               }

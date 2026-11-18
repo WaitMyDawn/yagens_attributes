@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "name": "mod.yagens_attributes.primed_shattered_venom_doll",
+  "name": "mod.yagens_attributes.primed_toxin_addition",
   "rarity": "legendary",
   "polarity": "naramon",
   "capacity": {
@@ -17,7 +17,7 @@
   "style": {
     "visual": "orokin",
     "exclusive_groups": [
-      "yagens_attributes:shattered_venom_doll"
+      "yagens_attributes:toxin_addition"
     ]
   },
   "entries": [

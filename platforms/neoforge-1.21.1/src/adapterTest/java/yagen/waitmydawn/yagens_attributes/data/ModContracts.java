@@ -28,6 +28,7 @@ public final class ModContracts {
         var targeted = ModJson.definition(expected.definitions().get("yagens_attributes:galvanized_gaze_of_pain"));
         check(ModJson.definition(targeted).conditional(10).get(0).condition().perTargetStatus());
         check(ModJson.definition(targeted).conditional(10).get(0).condition().decay() == ConditionalModifier.Decay.ONE_AT_A_TIME);
+        phaseValidation(encoded);
         var disk = new JsonObject(); var definitions = new JsonObject(); var qualities = new JsonArray(); var polarities = new JsonArray();
         expected.definitions().forEach((id, value) -> definitions.add(id, resource("/data/yagens_attributes/mods/" + id.substring(id.indexOf(':') + 1) + ".json")));
         for (var type : ModInfo.Rarity.values()) qualities.add(resource("/data/yagens_attributes/mod_rarities/" + type.key() + ".json"));
@@ -45,6 +46,7 @@ public final class ModContracts {
             var info = expected.card("yagens_attributes:heat_addition", 5).info();
             var entry = new ModLedger.Entry(UUID.randomUUID(), UUID.randomUUID(), null, false, expected.card("yagens_attributes:heat_addition", 5).bonuses(), info, -1);
             var view = PanelPayload.ModView.of(entry); PanelPayload.writeMods(buffer, List.of(view)); check(PanelPayload.readMods(buffer, 18).equals(List.of(view)));
+            largePanelCard(expected, buffer);
         } finally { buffer.release(); }
         UUID owner = UUID.randomUUID(), weapon = UUID.randomUUID(), id = UUID.randomUUID();
         var state = new WorldState(); var card = expected.card("yagens_attributes:multishot", 0);
@@ -103,6 +105,55 @@ public final class ModContracts {
         texture("/assets/yagens_attributes/textures/item/mod.png", true);
         System.out.println("Passed " + checks + " generated Mod data, save migration, reload, item/wire and texture checks");
     }
+
+    private static void phaseValidation(JsonObject encoded) {
+        var invalid = encoded.deepCopy();
+        var mods = invalid.getAsJsonObject("mods");
+        var late = mods.getAsJsonObject("yagens_attributes:galvanized_gaze_of_pain").deepCopy();
+        var effect = late.getAsJsonArray("entries").get(1).getAsJsonObject();
+        effect.addProperty("stat", Stats.MULTISHOT);
+        mods.add("example:extra_round", late);
+        try {
+            ModJson.catalog(invalid);
+            throw new AssertionError("Accepted multishot that requires an impact target");
+        } catch (IllegalArgumentException failure) {
+            check(failure.getMessage().contains("example:extra_round") && failure.getMessage().contains(Stats.MULTISHOT)
+                    && failure.getMessage().contains("per_target_status"));
+        }
+        effect.addProperty("stat", Stats.ATTACK_SPEED);
+        rejects(() -> ModJson.catalog(invalid));
+        effect.addProperty("stat", Stats.COMBO_DURATION);
+        rejects(() -> ModJson.catalog(invalid));
+        effect.addProperty("stat", Stats.STATUS_CHANCE);
+        check(ModJson.catalog(invalid).card("example:extra_round", 10).info().details().conditional().size() == 1);
+    }
+
+    private static void largePanelCard(ModCatalog baseline, RegistryFriendlyByteBuf buffer) {
+        var mods = new HashMap<>(baseline.definitions());
+        var template = mods.get("yagens_attributes:galvanized_argon_scope");
+        var condition = new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 2.25, 8,
+                false, ConditionalModifier.Decay.INDEPENDENT, true);
+        var effects = new ArrayList<ModDefinition.Effect>();
+        for (int i = 0; i < ModDefinition.MAX_EFFECTS; i++) {
+            String stat = i % 2 == 0 ? Stats.MULTISHOT : Stats.FIRE_RATE;
+            effects.add(new ModDefinition.Effect(stat, ModDefinition.Operation.ADDITION, .01, ModDefinition.Basis.FLAT,
+                    "Rank-scaled launch bonus.", condition));
+        }
+        String id = "example:extra_round";
+        var style = new ModStyle(template.style().visual(), Set.of("example:common"),
+                Map.of(ModInfo.Category.BOW, Set.of("example:launcher")));
+        mods.put(id, new ModDefinition(template.name(), template.rarity(), template.polarity(), 2, 1, 10,
+                template.applicability(), template.texture(), effects, style));
+        var catalog = new ModCatalog(mods, baseline.qualities(), baseline.polarities(), baseline.rivenRules());
+        var card = catalog.card(id, 5);
+        var view = PanelPayload.ModView.of(new ModLedger.Entry(UUID.randomUUID(), UUID.randomUUID(), null, false, card.bonuses(), card.info(), -1));
+
+        check(ModJson.details(view.info().details()).length() > 4096);
+        PanelPayload.writeMods(buffer, List.of(view));
+        check(PanelPayload.readMods(buffer, 1).equals(List.of(view)));
+        check(!buffer.isReadable());
+    }
+
     private static JsonObject resource(String... paths) {
         for (var path : paths) try (var stream = ModContracts.class.getResourceAsStream(path)) {
             if (stream != null) return JsonParser.parseString(new String(stream.readAllBytes(), StandardCharsets.UTF_8)).getAsJsonObject();

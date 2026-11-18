@@ -22,15 +22,35 @@ public record ShotData(WeaponProfile profile, List<Map<String, Bonus>> sources, 
     }, ShotData::encode);
     public ShotData {
         Objects.requireNonNull(attackKind).validateWeapon(weapon);
-        sources = sources.stream().map(source -> Collections.unmodifiableMap(new LinkedHashMap<>(source))).toList();
         targetModifiers = List.copyOf(targetModifiers);
         if (targetModifiers.size() > 128 || targetModifiers.stream().anyMatch(modifier -> modifier.condition().trigger() != ConditionalModifier.Trigger.TARGET_STATUS_TYPES))
             throw new IllegalArgumentException("Invalid deferred target modifiers");
         if (sources.size() > 129 || !Double.isFinite(scale) || scale < 0 || scale > RangedStats.LIMIT) throw new IllegalArgumentException("Invalid shot snapshot");
-        for (var source : sources) if (!Stats.KEYS.containsAll(source.keySet())) throw new IllegalArgumentException("Unknown shot stat");
         if (profile == null && (!sources.isEmpty() || !targetModifiers.isEmpty() || scale != 1 || virtual)) throw new IllegalArgumentException("Invalid empty shot");
+        if (!(sources instanceof FrozenSources)) sources = new FrozenSources(sources);
     }
-    public ShotData projectile(double factor, boolean additional) { return new ShotData(profile, sources, factor, additional, weapon, targetModifiers, owner, attackKind); }
+    public ShotData projectile(double factor, boolean additional) {
+        return Double.compare(scale, factor) == 0 && virtual == additional
+                ? this : new ShotData(profile, sources, factor, additional, weapon, targetModifiers, owner, attackKind);
+    }
+
+    private static final class FrozenSources extends AbstractList<Map<String, Bonus>> implements RandomAccess {
+        private final List<Map<String, Bonus>> ordered;
+
+        private FrozenSources(List<Map<String, Bonus>> sources) {
+            var copies = new ArrayList<Map<String, Bonus>>(sources.size());
+            for (var source : sources) {
+                if (!Stats.KEYS.containsAll(source.keySet())) throw new IllegalArgumentException("Unknown shot stat");
+                // Element fusion uses iteration order within each source.
+                copies.add(Collections.unmodifiableMap(new LinkedHashMap<>(source)));
+            }
+            ordered = List.copyOf(copies);
+        }
+
+        @Override public Map<String, Bonus> get(int index) { return ordered.get(index); }
+        @Override public int size() { return ordered.size(); }
+        @Override public Iterator<Map<String, Bonus>> iterator() { return ordered.iterator(); }
+    }
     public ShotData baseMultishot(double value) {
         var p = profile;
         return new ShotData(new WeaponProfile(p.criticalChance(), p.criticalDamage(), p.statusChance(), p.statusDuration(),

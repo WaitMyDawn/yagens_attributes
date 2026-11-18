@@ -28,6 +28,9 @@ import java.util.*;
 public final class StatusEffects {
     private static final TagKey<EntityType<?>> CONTROL_IMMUNE = tag("control_immune");
     private static final TagKey<EntityType<?>> STATUS_IMMUNE = tag("status_immune");
+    private static final ResourceLocation CORROSION_MODIFIER = id("status/corrosion");
+    private static final ResourceLocation HEAT_MODIFIER = id("status/heat_strip");
+    private static final ResourceLocation COLD_MODIFIER = id("status/cold_slow");
     private static final Map<DamageType, TagKey<EntityType<?>>> IMMUNITIES = new EnumMap<>(DamageType.class);
     private static final Deque<Detonation> BLASTS = new ArrayDeque<>();
 
@@ -227,14 +230,23 @@ public final class StatusEffects {
             var cold = value.layers.stream().filter(layer -> layer.type() == DamageType.COLD).limit(3).toList();
             value.layers.removeIf(layer -> layer.type() == DamageType.COLD);
             value.layers.addAll(cold);
+            value.dirty = true;
         }
         int gasStacks = value.count(DamageType.GAS);
         var due = value.advance(value.frozen > 0);
-        var heat = value.layers.stream().filter(layer -> layer.type() == DamageType.HEAT).findFirst();
-        if (heat.isPresent()) value.heatStrip = Math.max(value.heatStrip, Math.min(.5, (heat.get().age() / 10) * .125));
-        else value.heatStrip = Math.max(0, value.heatStrip - .5 / 30);
-        update(target);
+        double previousHeat = value.heatStrip;
+        value.heatStrip = heatStrip(value);
+        if (value.dirty || previousHeat != value.heatStrip) update(target);
         pulses(target, due, gasStacks);
+    }
+
+    private static double heatStrip(StatusState value) {
+        for (var layer : value.layers) {
+            if (layer.type() == DamageType.HEAT) {
+                return Math.max(value.heatStrip, Math.min(.5, (layer.age() / 10) * .125));
+            }
+        }
+        return Math.max(0, value.heatStrip - .5 / 30);
     }
 
     private record Origin(UUID owner, UUID weapon, AttackKind attackKind) {}
@@ -243,20 +255,31 @@ public final class StatusEffects {
     }
 
     private static void pulses(LivingEntity target, List<StatusState.Layer> due) {
+        if (due.isEmpty()) return;
         pulses(target, due, count(target, DamageType.GAS));
     }
 
     private static void pulses(LivingEntity target, List<StatusState.Layer> due, int gasStacks) {
+        if (due.isEmpty()) return;
         var groups = new LinkedHashMap<Pulse, List<Double>>();
         var tiers = new HashMap<Pulse, Integer>();
+        boolean pulseElectric = false, pulseGas = false, pulseBlast = false;
+        int slashLifetime = 0;
         for (var layer : due) {
             var key = new Pulse(layer.type(), layer.owner(), layer.weapon(), layer.attackKind());
             groups.computeIfAbsent(key, unused -> new ArrayList<>()).add(layer.base() * StatusRules.coefficient(layer.type()));
             tiers.merge(key, layer.criticalTier(), Math::max);
+            switch (layer.type()) {
+                case ELECTRICITY -> pulseElectric = true;
+                case GAS -> pulseGas = true;
+                case BLAST -> pulseBlast = true;
+                case SLASH -> slashLifetime = Math.max(slashLifetime, (layer.remaining() + layer.age() + 1) / 2);
+                default -> {}
+            }
         }
-        List<LivingEntity> electric = due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY) ? area(target, 3) : List.of();
-        List<LivingEntity> gas = due.stream().anyMatch(layer -> layer.type() == DamageType.GAS) ? area(target, StatusRules.gasRadius(Math.max(1, gasStacks))) : List.of();
-        var struck = new LinkedHashSet<LivingEntity>();
+        List<LivingEntity> electric = pulseElectric ? area(target, 3) : List.of();
+        List<LivingEntity> gas = pulseGas ? area(target, StatusRules.gasRadius(Math.max(1, gasStacks))) : List.of();
+        Set<LivingEntity> struck = pulseElectric ? new LinkedHashSet<>() : Set.of();
         boolean heatHit = false, toxinHit = false;
         for (var entry : groups.entrySet()) {
             var key = entry.getKey();
@@ -277,10 +300,9 @@ public final class StatusEffects {
         }
         if (heatHit) StatusEffectService.emit(target, DamageType.HEAT, 8, false, List.of());
         if (toxinHit) StatusEffectService.emit(target, DamageType.TOXIN, 16, false, List.of());
-        if (due.stream().anyMatch(layer -> layer.type() == DamageType.ELECTRICITY)) StatusEffectService.emit(target, DamageType.ELECTRICITY, 10, false, struck);
-        due.stream().filter(layer -> layer.type() == DamageType.SLASH).mapToInt(layer -> (layer.remaining() + layer.age() + 1) / 2).max()
-                .ifPresent(lifetime -> StatusEffectService.emit(target, DamageType.SLASH, lifetime, false, List.of()));
-        if (due.stream().anyMatch(layer -> layer.type() == DamageType.BLAST)) StatusEffectService.emit(target, DamageType.BLAST, 12, false, List.of());
+        if (pulseElectric) StatusEffectService.emit(target, DamageType.ELECTRICITY, 10, false, struck);
+        if (slashLifetime > 0) StatusEffectService.emit(target, DamageType.SLASH, slashLifetime, false, List.of());
+        if (pulseBlast) StatusEffectService.emit(target, DamageType.BLAST, 12, false, List.of());
     }
 
     private static List<LivingEntity> area(Entity source, double radius) {
@@ -312,24 +334,25 @@ public final class StatusEffects {
         }
         StatusMarkerSync.changed(target, value, counts);
         double corrosion = StatusRules.corrosive(counts[DamageType.CORROSIVE.ordinal()]);
-        modifier(target, Attributes.ARMOR, "corrosion", -corrosion);
-        modifier(target, Attributes.ARMOR_TOUGHNESS, "corrosion", -corrosion);
-        modifier(target, Attributes.ARMOR, "heat_strip", -value.heatStrip);
+        modifier(target, Attributes.ARMOR, CORROSION_MODIFIER, -corrosion);
+        modifier(target, Attributes.ARMOR_TOUGHNESS, CORROSION_MODIFIER, -corrosion);
+        modifier(target, Attributes.ARMOR, HEAT_MODIFIER, -value.heatStrip);
         double slow = StatusRules.coldSlow(counts[DamageType.COLD.ordinal()], target instanceof Player);
-        modifier(target, Attributes.MOVEMENT_SPEED, "cold_slow", -slow);
-        modifier(target, Attributes.FLYING_SPEED, "cold_slow", -slow);
-        modifier(target, Attributes.ATTACK_SPEED, "cold_slow", -slow);
+        modifier(target, Attributes.MOVEMENT_SPEED, COLD_MODIFIER, -slow);
+        modifier(target, Attributes.FLYING_SPEED, COLD_MODIFIER, -slow);
+        modifier(target, Attributes.ATTACK_SPEED, COLD_MODIFIER, -slow);
     }
 
-    private static void modifier(LivingEntity target, net.minecraft.core.Holder<Attribute> attribute, String key, double amount) {
+    private static void modifier(LivingEntity target, net.minecraft.core.Holder<Attribute> attribute, ResourceLocation key, double amount) {
         var instance = target.getAttribute(attribute);
         if (instance == null) return;
-        var keyId = id("status/" + key);
-        var old = instance.getModifier(keyId);
-        if (old != null && old.amount() == amount) return;
-        instance.removeModifier(keyId);
+        var old = instance.getModifier(key);
+        if (old != null) {
+            if (old.amount() == amount) return;
+            instance.removeModifier(key);
+        }
         if (amount != 0)
-            instance.addTransientModifier(new AttributeModifier(keyId, amount, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+            instance.addTransientModifier(new AttributeModifier(key, amount, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
     }
 
     @SubscribeEvent

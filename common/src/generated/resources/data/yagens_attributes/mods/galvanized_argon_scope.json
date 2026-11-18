@@ -44,7 +44,7 @@
         "trigger": "ranged_weak_point_kills",
         "duration_seconds": 12.0,
         "max_stacks": 5,
-        "decay": "independent",
+        "decay": "one_at_a_time",
         "description": "Direct ranged weak point kills build the weapon buff. The bonus applies at launch. Qualifying kills add a stack, capped at max_stacks. all_at_once refreshes all layers and expires together; one_at_a_time refreshes the next expiry then removes one layer per duration_seconds; independent gives each layer its own expiry and replaces the earliest expiry at capacity. per_target_status multiplies the active kill count by distinct independent target proc types before this hit, ignoring potion effects. Duration and stack cap do not scale with rank."
       }
     }

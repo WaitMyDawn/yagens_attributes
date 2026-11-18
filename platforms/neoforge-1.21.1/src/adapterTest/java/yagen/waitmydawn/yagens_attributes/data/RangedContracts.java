@@ -33,6 +33,8 @@ public final class RangedContracts {
         var targetRule = new ConditionalModifier(Stats.DIRECT_DAMAGE, .8, ConditionalModifier.Condition.STATUS_TYPES);
         var deferred = new ShotData(profile, shot.sources(), .75, true, UUID.randomUUID(), List.of(targetRule));
         equal(deferred, ShotData.decode(deferred.encode()));
+        equal(true, shot.sources() == deferred.projectile(.5, false).sources());
+        equal(true, deferred.sources() == deferred.baseMultishot(3).sources());
         equal(deferred.targetModifiers(), deferred.projectile(.5, false).targetModifiers());
         equal(deferred, ShotData.CODEC.parse(JsonOps.INSTANCE, ShotData.CODEC.encodeStart(JsonOps.INSTANCE, deferred).getOrThrow()).getOrThrow());
         var nativeSource = new ShotData(profile, shot.sources(), .75, true, UUID.randomUUID(), List.of(targetRule), UUID.randomUUID(), AttackKind.MELEE);

@@ -73,6 +73,8 @@ public final class ModTextContracts {
                         .stream().anyMatch(line -> line.getString().equals(data.get("stat.yagens_attributes.attack_speed") + ": 1.3x")));
                 equal(language.equals("zh_cn") ? "冰冻附加 Prime" : "Cold Addition Prime",
                         data.get("mod.yagens_attributes.primed_cold_addition"));
+                equal(language.equals("zh_cn") ? "毒素附加 Prime" : "Toxin Addition Prime",
+                        ModText.localizedName(catalog.card("yagens_attributes:primed_toxin_addition", 10).info()).getString());
                 equal(2, WeaponTooltip.lines(profile, null, false).size());
                 equal(data.get("tooltip.yagens_attributes.syncing"), WeaponTooltip.lines(profile, null, false).get(1).getString());
                 equal(2, WeaponTooltip.lines(profile, new WeaponInspectionData(Map.of(), WeaponProgress.ZERO, 0, false), false).size());

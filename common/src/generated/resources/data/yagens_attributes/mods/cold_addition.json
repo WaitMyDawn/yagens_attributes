@@ -14,6 +14,12 @@
     "weapon"
   ],
   "texture": "yagens_attributes:status/cold_status",
+  "style": {
+    "visual": "none",
+    "exclusive_groups": [
+      "yagens_attributes:cold_addition"
+    ]
+  },
   "entries": [
     {
       "stat": "damage.cold",

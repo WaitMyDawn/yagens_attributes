@@ -6,6 +6,7 @@ import java.util.function.DoubleSupplier;
 public final class Combat {
     public record Result(double damage, int criticalTier, List<DamageType> procs, double durationSeconds) {
     }
+    public record Evaluation(Result result, Map<DamageType, Double> components, double componentTotal) {}
 
     private Combat() {
     }
@@ -20,7 +21,12 @@ public final class Combat {
 
     public static Result calculate(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses,
                                    Map<DamageType, Double> material, DoubleSupplier random, double addedChance, double addedCriticalDamage) {
-        if (!Double.isFinite(input) || input < 0) throw new IllegalArgumentException("Invalid incoming damage");
+        return evaluate(input, weapon, bonuses, material, random, addedChance, addedCriticalDamage).result();
+    }
+
+    /** A hit and its pre-material components, shared by offense and defense resolution. */
+    public static Evaluation evaluate(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses,
+                                      Map<DamageType, Double> material, DoubleSupplier random, double addedChance, double addedCriticalDamage) {
         var amounts = components(input, weapon, bonuses);
         double total = 0, adjusted = 0;
         for (DamageType type : DamageType.values()) {
@@ -50,8 +56,9 @@ public final class Combat {
         }
         double result = adjusted * (1 + tier * (criticalDamage - 1));
         if (!Double.isFinite(result)) throw new IllegalArgumentException("Damage overflow");
-        return new Result(Math.min(Float.MAX_VALUE, result), tier, List.copyOf(procs),
+        var hit = new Result(Math.min(Float.MAX_VALUE, result), tier, List.copyOf(procs),
                 Math.min(3600, Stats.resolve(weapon.statusDuration(), Stats.STATUS_DURATION, bonuses)));
+        return new Evaluation(hit, amounts, total);
     }
 
     /**
@@ -68,11 +75,12 @@ public final class Combat {
         // Direct-hit Addition shares the base-damage bucket, while status snapshots only read DAMAGE.
         double global = Math.max(0, Bonus.evaluate(1, damageBonuses));
         for (DamageType type : DamageType.values()) {
-            double amount = Stats.resolve(input * weapon.distribution().getOrDefault(type, 0D), "damage." + type.key(), bonuses, input) * global;
+            double amount = Stats.resolve(input * weapon.distribution().getOrDefault(type, 0D), type.statKey(), bonuses, input) * global;
             if (!Double.isFinite(amount)) throw new IllegalArgumentException("Component damage overflow");
             amounts.put(type, amount);
         }
-        return ElementFusion.apply(amounts, bonuses);
+        ElementFusion.combineInPlace(amounts, bonuses);
+        return Collections.unmodifiableMap(amounts);
     }
 
     /** Status bases exclude direct-hit material/defense and already include the original critical and volley share. */
@@ -84,7 +92,7 @@ public final class Combat {
         double global = Stats.resolve(1, Stats.DAMAGE, bonuses) * critical * share;
         var bases = new EnumMap<DamageType, Double>(DamageType.class);
         for (var type : DamageType.values()) {
-            double base = switch (type) { case HEAT, ELECTRICITY, TOXIN -> Stats.resolve(input, "damage." + type.key(), bonuses, input); default -> input; };
+            double base = switch (type) { case HEAT, ELECTRICITY, TOXIN -> Stats.resolve(input, type.statKey(), bonuses, input); default -> input; };
             double amount = base * global;
             if (!Double.isFinite(amount)) throw new IllegalArgumentException("Status damage overflow");
             bases.put(type, Math.min(Float.MAX_VALUE, amount));

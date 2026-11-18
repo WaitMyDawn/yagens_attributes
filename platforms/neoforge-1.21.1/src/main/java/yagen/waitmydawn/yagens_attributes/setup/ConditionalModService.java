@@ -83,12 +83,17 @@ public final class ConditionalModService {
     }
     /** Freeze the relevant buff stacks at launch; target statuses are evaluated separately on impact. */
     public static List<ConditionalModifier> targetModifiers(ServerPlayer player, ItemStack weapon) {
+        return targetModifiers(player, weapon, AttackKind.RANGED);
+    }
+
+    static List<ConditionalModifier> targetModifiers(ServerPlayer player, ItemStack weapon, AttackKind kind) {
         if (!ServerConfigs.ENABLE_COMBAT.get()) return List.of();
         var result = new ArrayList<ConditionalModifier>();
         long now = now(player);
         for (var key : modifiers(player, weapon)) {
             var modifier = key.modifier();
-            if (!modifier.condition().needsTarget()) continue;
+            if (!modifier.condition().needsTarget()
+                    || modifier.condition().trigger().requiresRangedLaunch() && kind != AttackKind.RANGED) continue;
             int count = modifier.condition().onKill() ? player.hasData(RangedAttachments.KILL_BUFFS)
                     ? player.getData(RangedAttachments.KILL_BUFFS).counters.getOrDefault(key, ConditionalModifier.Counter.EMPTY).count(now, modifier.condition()) : 0 : 1;
             if (count > 0) result.add(new ConditionalModifier(modifier.stat(), modifier.addition() * count, ConditionalModifier.Condition.STATUS_TYPES));

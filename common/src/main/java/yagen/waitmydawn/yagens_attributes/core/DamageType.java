@@ -11,9 +11,11 @@ public enum DamageType {
             COLD, HEAT, ELECTRICITY, TOXIN,
             SLASH, PUNCTURE, IMPACT);
 
-    public String key() {
-        return name().toLowerCase(java.util.Locale.ROOT);
-    }
+    private final String key = name().toLowerCase(java.util.Locale.ROOT);
+    private final String statKey = "damage." + key;
+
+    public String key() { return key; }
+    String statKey() { return statKey; }
 
     public static DamageType parse(String key) { return valueOf(key.toUpperCase(java.util.Locale.ROOT)); }
 }

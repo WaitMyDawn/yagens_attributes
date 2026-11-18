@@ -17,6 +17,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
@@ -39,6 +40,7 @@ public final class RuntimeCombatChecks {
     private static final Map<LivingEntity, Float> INCOMING_AMOUNTS = new IdentityHashMap<>();
     private static LivingEntity penetrationTarget;
     private static LivingEntity potionBlockedTarget;
+    private static UUID rejectVolley;
     private static int potionChecks;
     private RuntimeCombatChecks() {}
     @SubscribeEvent public static void started(ServerStartedEvent event) {
@@ -80,6 +82,13 @@ public final class RuntimeCombatChecks {
     @SubscribeEvent(priority = EventPriority.LOWEST) public static void observe(LivingIncomingDamageEvent event) {
         if (Boolean.getBoolean("yagens_attributes.validateCombat") && TARGETS.contains(event.getEntity()))
             INCOMING_AMOUNTS.put(event.getEntity(), event.getAmount());
+    }
+    @SubscribeEvent public static void rejectProjectile(EntityJoinLevelEvent event) {
+        if (rejectVolley == null || !(event.getEntity() instanceof Arrow arrow)) return;
+        var shot = RangedShooting.shot(arrow);
+        if (shot == null || !rejectVolley.equals(shot.weapon()) || !shot.virtual()) return;
+        rejectVolley = null;
+        event.setCanceled(true);
     }
     @SubscribeEvent public static void penetration(ArmorPenetrationEvent event) {
         if (event.target() == penetrationTarget) event.add(new ArmorPenetration(5, .25, 2, .25));
@@ -149,6 +158,7 @@ public final class RuntimeCombatChecks {
         hitArrow(level, player, bow, shot, multiple, .75); hitArrow(level, player, bow, shot, multiple, .75);
         close(one, before - multiple.getHealth());
         close(15, INCOMING_AMOUNTS.get(multiple));
+        partialVolley(level, player, bow);
 
         var bypass = target(level); before = bypass.getHealth(); check(bypass.hurt(level.damageSources().fellOutOfWorld(), 10)); close(10, before - bypass.getHealth());
         try {
@@ -487,6 +497,32 @@ public final class RuntimeCombatChecks {
         for (var id : List.of(hunterId, obsoleteId)) { world.ledger.uninstall(player.getUUID(), id, weapon, false); world.ledger.withdraw(player.getUUID(), id); }
         for (var stat : List.of(Stats.CRITICAL_CHANCE, Stats.STATUS_CHANCE, Stats.CRITICAL_SLASH_CHANCE)) world.bonus(player.getUUID(), stat, Bonus.NONE);
         report.addProperty("critical_hit_proc_checks", checks - start);
+    }
+    private static void partialVolley(ServerLevel level, ServerPlayer player, ItemStack bow) {
+        var snapshot = new ShotData(CombatData.WEAPONS.weapon(bow), List.of(), 1, false, UUID.randomUUID()).baseMultishot(3);
+        var arrow = new Arrow(level, player, new ItemStack(Items.ARROW), bow);
+        arrow.setPos(8.5, 220, 8.5);
+        level.getChunk(0, 0);
+        rejectVolley = snapshot.weapon();
+        try {
+            check(RangedShooting.spawn(level, arrow, snapshot, new RangedStats.Volley(3, 1)));
+            check(rejectVolley == null);
+            var accepted = level.getEntitiesOfClass(Arrow.class, arrow.getBoundingBox().inflate(1), candidate -> {
+                var source = RangedShooting.shot(candidate);
+                return source != null && snapshot.weapon().equals(source.weapon());
+            });
+            check(accepted.size() == 2);
+            for (var projectile : accepted) {
+                var source = RangedShooting.shot(projectile);
+                close(1.5, source.scale());
+                check(source.virtual() == (projectile != arrow));
+                if (source.virtual()) check(projectile.pickup == Arrow.Pickup.DISALLOWED);
+                projectile.discard();
+            }
+        } finally {
+            rejectVolley = null;
+            arrow.discard();
+        }
     }
     private static void hitArrow(ServerLevel level, ServerPlayer player, ItemStack bow, ShotData shot, Cow target, double share) {
         var arrow = new Arrow(level, player, new ItemStack(Items.ARROW), bow);

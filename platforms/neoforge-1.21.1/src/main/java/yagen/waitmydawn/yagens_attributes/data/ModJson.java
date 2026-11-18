@@ -199,7 +199,13 @@ public final class ModJson {
     public static ModCatalog catalog(JsonObject object) {
         JsonData.fields(object, "mods", "qualities", "polarities", "rivens");
         var mods = new LinkedHashMap<String, ModDefinition>();
-        object.getAsJsonObject("mods").entrySet().forEach(entry -> mods.put(entry.getKey(), definition(entry.getValue().getAsJsonObject())));
+        for (var entry : object.getAsJsonObject("mods").entrySet()) {
+            try {
+                mods.put(entry.getKey(), definition(entry.getValue().getAsJsonObject()));
+            } catch (IllegalArgumentException exception) {
+                throw new IllegalArgumentException("Invalid Mod " + entry.getKey() + ": " + exception.getMessage(), exception);
+            }
+        }
         var qualities = new EnumMap<ModInfo.Rarity, ModCatalog.Quality>(ModInfo.Rarity.class);
         for (var value : object.getAsJsonArray("qualities")) {
             var quality = quality(value.getAsJsonObject());

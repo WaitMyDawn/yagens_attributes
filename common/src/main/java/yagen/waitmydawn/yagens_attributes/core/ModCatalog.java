@@ -6,7 +6,9 @@ import java.util.*;
  * Immutable reload snapshot; each type/rank is compiled once rather than during attacks.
  */
 public final class ModCatalog {
-    private static final Map<String, String> RENAMED_IDS = Map.of("yagens_attributes:primed_winter_talisman", "yagens_attributes:primed_cold_addition");
+    private static final Map<String, String> RENAMED_IDS = Map.of(
+            "yagens_attributes:primed_winter_talisman", "yagens_attributes:primed_cold_addition",
+            "yagens_attributes:primed_shattered_venom_doll", "yagens_attributes:primed_toxin_addition");
     public record Quality(ModInfo.Rarity type, String name, int color, int baseEndo, int order, String description) {
         public Quality {
             Objects.requireNonNull(type);

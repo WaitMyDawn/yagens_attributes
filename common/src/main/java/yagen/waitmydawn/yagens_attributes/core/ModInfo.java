@@ -39,7 +39,7 @@ public record ModInfo(String name, Category category, Rarity rarity, Polarity po
         public Details {
             Objects.requireNonNull(style);
             conditional = List.copyOf(conditional);
-            if (conditional.size() > 64) throw new IllegalArgumentException("Too many conditional modifiers");
+            if (conditional.size() > ModDefinition.MAX_EFFECTS) throw new IllegalArgumentException("Too many conditional modifiers");
             Objects.requireNonNull(type);
             Objects.requireNonNull(texture);
             Objects.requireNonNull(symbol);
@@ -48,7 +48,7 @@ public record ModInfo(String name, Category category, Rarity rarity, Polarity po
             applicability = Set.copyOf(applicability);
             if (riven != null && (!type.equals(RivenRules.TYPE) || maxLevel != 8 || !applicability.equals(Set.of(riven.category()))))
                 throw new IllegalArgumentException("Invalid Riven definition details");
-            if (type.length() > 256 || texture.length() > 256 || symbol.length() > 8 || level < 0 || maxLevel < level || maxLevel > 60
+            if (symbol.length() > 8 || level < 0 || maxLevel < level || maxLevel > 60
                     || applicability.isEmpty() || applicability.contains(Category.ALL) || upgradeCost < 0 || color < 0 || color > 0xFFFFFF)
                 throw new IllegalArgumentException("Invalid Mod details");
         }

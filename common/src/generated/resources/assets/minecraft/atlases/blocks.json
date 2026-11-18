@@ -74,7 +74,7 @@
     },
     {
       "type": "minecraft:single",
-      "resource": "yagens_attributes:item/mods/effects/primed_shattered_venom_doll"
+      "resource": "yagens_attributes:item/mods/effects/primed_toxin_addition"
     },
     {
       "type": "minecraft:single",

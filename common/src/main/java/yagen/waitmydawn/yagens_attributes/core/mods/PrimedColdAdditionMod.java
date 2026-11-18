@@ -9,6 +9,6 @@ public final class PrimedColdAdditionMod extends BuiltinMod {
     @Override public ModDefinition definition() {
         return define(Rarity.LEGENDARY, Polarity.VAZARIN, 6, 10, Set.of(Category.RANGED),
                 "yagens_attributes:status/cold_status", ModEffects.element(DamageType.COLD, .15))
-                .withStyle(new ModStyle(ModStyle.Visual.OROKIN, Set.of("yagens_attributes:winter_talisman")));
+                .withStyle(new ModStyle(ModStyle.Visual.OROKIN, Set.of(ColdAdditionMod.FAMILY)));
     }
 }

@@ -72,6 +72,7 @@ public final class StatusState {
     public StatusState() { this(List.of(), 0, 0, 0, 0, 0); }
     private StatusState(List<Layer> layers, int frozen, int impactStun, int electricStun, int heatPanic, double heatStrip) {
         this.layers = new ArrayList<>(layers); this.frozen = frozen; this.impactStun = impactStun; this.electricStun = electricStun; this.heatPanic = heatPanic; this.heatStrip = heatStrip;
+        dirty = !empty();
     }
     public int count(DamageType type) { int total = 0; for (var layer : layers) if (layer.type == type) total++; return total; }
     public int duration(DamageType type) { int result = 0; for (var layer : layers) if (layer.type == type) result = Math.max(result, layer.remaining); return result; }
@@ -87,14 +88,22 @@ public final class StatusState {
         dirty = true;
     }
     public List<Layer> advance(boolean freezeCold) {
-        var due = new ArrayList<Layer>();
+        List<Layer> due = null;
         for (int i = layers.size() - 1; i >= 0; i--) {
             var layer = layers.get(i);
             if (freezeCold && layer.type() == DamageType.COLD) continue;
             boolean damage = switch (layer.type()) { case SLASH, HEAT, ELECTRICITY, TOXIN, GAS -> layer.pulse() <= 1; case BLAST -> layer.remaining() == 1; default -> false; };
-            if (damage) due.add(layer);
-            if (layer.remaining() <= 1) layers.remove(i); else layers.set(i, layer.tick());
+            if (damage) {
+                if (due == null) due = new ArrayList<>();
+                due.add(layer);
+            }
+            if (layer.remaining() <= 1) {
+                layers.remove(i);
+                dirty = true;
+            } else {
+                layers.set(i, layer.tick());
+            }
         }
-        return due;
+        return due == null ? List.of() : due;
     }
 }

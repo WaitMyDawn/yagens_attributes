@@ -89,9 +89,7 @@ public record PanelPayload(int requestId, int view, int page, int pages, int tot
         for (ModView mod : mods) {
             buffer.writeUUID(mod.id).writeUUID(mod.owner); CombatCodecs.uuid(buffer, mod.weapon);
             buffer.writeBoolean(mod.shared); CombatCodecs.bonuses(buffer, mod.bonuses);
-            buffer.writeUtf(mod.info.name(), 80).writeEnum(mod.info.category()).writeEnum(mod.info.rarity()).writeEnum(mod.info.polarity());
-            buffer.writeVarInt(mod.info.capacityCost());
-            buffer.writeUtf(yagen.waitmydawn.yagens_attributes.data.ModJson.details(mod.info.details()), 4096);
+            PanelModCodec.write(buffer, mod.info);
             buffer.writeUtf(mod.name, 80).writeVarInt(mod.slot).writeVarInt(mod.quantity).writeVarInt(mod.available);
         }
     }
@@ -102,7 +100,7 @@ public record PanelPayload(int requestId, int view, int page, int pages, int tot
         for (int i = 0; i < count; i++) {
             UUID id = buffer.readUUID(), owner = buffer.readUUID(), target = CombatCodecs.uuid(buffer);
             boolean shared = buffer.readBoolean(); var bonuses = CombatCodecs.bonuses(buffer);
-            var info = new ModInfo(buffer.readUtf(80), buffer.readEnum(ModInfo.Category.class), buffer.readEnum(ModInfo.Rarity.class), buffer.readEnum(ModInfo.Polarity.class), buffer.readVarInt(), yagen.waitmydawn.yagens_attributes.data.ModJson.details(buffer.readUtf(4096)));
+            var info = PanelModCodec.read(buffer);
             String name = buffer.readUtf(80); int slot = buffer.readVarInt(), quantity = buffer.readVarInt(), available = buffer.readVarInt();
             if (slot < -1 || slot >= 64 || quantity < 1 || available < 0 || available > quantity) throw new IllegalArgumentException("Invalid Mod summary");
             result.add(new ModView(id, owner, target, shared, bonuses, info, name, slot, quantity, available));

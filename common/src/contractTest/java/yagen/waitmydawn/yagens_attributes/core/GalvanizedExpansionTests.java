@@ -8,7 +8,7 @@ public final class GalvanizedExpansionTests {
     private GalvanizedExpansionTests() {}
     public static void run() {
         var catalog = BuiltinMods.catalog();
-        for (var id : List.of("primed_shattered_venom_doll", "primed_cold_addition", "galvanized_bone_finger_box",
+        for (var id : List.of("primed_toxin_addition", "primed_cold_addition", "galvanized_bone_finger_box",
                 "galvanized_gaze_of_pain", "galvanized_argon_scope")) {
             var definition = catalog.definitions().get("yagens_attributes:" + id);
             check(definition.maxLevel() == 10);
@@ -18,7 +18,7 @@ public final class GalvanizedExpansionTests {
                 check(card.info().details().style().visual() != ModStyle.Visual.NONE);
             }
         }
-        var toxin = catalog.card("yagens_attributes:primed_shattered_venom_doll", 10);
+        var toxin = catalog.card("yagens_attributes:primed_toxin_addition", 10);
         var cold = catalog.card("yagens_attributes:primed_cold_addition", 10);
         check(catalog.definitions().get("yagens_attributes:primed_cold_addition").texture().equals("yagens_attributes:status/cold_status"));
         close(1.65, toxin.bonuses().get("damage.toxin").inputAddition());
@@ -30,8 +30,11 @@ public final class GalvanizedExpansionTests {
             var ordinary = catalog.card("yagens_attributes:" + id, 5);
             check(ordinary.info().compatible(Category.BOW) && ordinary.info().compatible(Category.SWORD));
             close(.6, ordinary.bonuses().get(Stats.STATUS_CHANCE).addition());
-            check(ordinary.info().conflicts(catalog.card("yagens_attributes:primed_" + id, 10).info()));
         }
+        check(!toxin.info().conflicts(catalog.card("yagens_attributes:shattered_venom_doll", 5).info(), Category.SWORD));
+        check(!cold.info().conflicts(catalog.card("yagens_attributes:winter_talisman", 5).info(), Category.BOW));
+        check(toxin.info().conflicts(catalog.card("yagens_attributes:toxin_addition", 5).info(), Category.SWORD));
+        check(cold.info().conflicts(catalog.card("yagens_attributes:cold_addition", 5).info(), Category.BOW));
         close(1.2, catalog.card("yagens_attributes:bone_finger_box", 5).bonuses().get(Stats.CRITICAL_CHANCE).addition());
         close(.9, catalog.card("yagens_attributes:gaze_of_pain", 5).bonuses().get(Stats.STATUS_CHANCE).addition());
         var steel = catalog.card("yagens_attributes:galvanized_bone_finger_box", 10);
@@ -57,10 +60,10 @@ public final class GalvanizedExpansionTests {
         check(scopeHit.condition().durationTicks() == 240 && scopeKill.condition().durationTicks() == 240);
         close(4.2, Stats.resolve(1, Stats.CRITICAL_CHANCE, List.of(scopeHit.source(1), scopeKill.source(5))));
         var weakPointDecay = scopeKill.condition();
-        check(weakPointDecay.decay() == ConditionalModifier.Decay.INDEPENDENT);
+        check(weakPointDecay.decay() == ConditionalModifier.Decay.ONE_AT_A_TIME);
         var weakPointStacks = ConditionalModifier.Counter.EMPTY.hit(100, weakPointDecay).hit(120, weakPointDecay);
-        check(weakPointStacks.count(339, weakPointDecay) == 2 && weakPointStacks.count(340, weakPointDecay) == 1
-                && weakPointStacks.count(360, weakPointDecay) == 0);
+        check(weakPointStacks.count(359, weakPointDecay) == 2 && weakPointStacks.count(360, weakPointDecay) == 1
+                && weakPointStacks.count(599, weakPointDecay) == 1 && weakPointStacks.count(600, weakPointDecay) == 0);
         var direct = aptitude.info().details().conditional().get(0);
         check(direct.source(0, 3).isEmpty() && direct.source(2, 0).isEmpty());
         close(2.4, direct.source(2, 3).get(Stats.DIRECT_DAMAGE).addition());
@@ -78,8 +81,7 @@ public final class GalvanizedExpansionTests {
         var legacy = new ConditionalModifier.Condition(ConditionalModifier.Trigger.RANGED_KILLS, 20, 4);
         check(new ConditionalModifier.Counter(4, 500).count(500, legacy) == 0);
         for (var definition : catalog.definitions().values()) if (definition.rarity() == Rarity.GALVANIZED) {
-            for (var effect : definition.entries()) if (AttackKind.MELEE.credits(effect.condition().trigger())
-                    || AttackKind.RANGED.credits(effect.condition().trigger())) {
+            for (var effect : definition.entries()) if (effect.condition().trigger().timed() && effect.condition().maxStacks() > 1) {
                 var decay = effect.condition(); check(decay.decay() == ConditionalModifier.Decay.ONE_AT_A_TIME);
                 var full = new ConditionalModifier.Counter(decay.maxStacks(), 100);
                 check(full.count(99, decay) == decay.maxStacks());
@@ -91,6 +93,10 @@ public final class GalvanizedExpansionTests {
                 check(refreshed.count(100 + decay.durationTicks(), decay) == decay.maxStacks());
             }
         }
+        var independentlyTimed = catalog.definitions().entrySet().stream()
+                .filter(entry -> entry.getValue().entries().stream().anyMatch(effect -> effect.condition().decay() == ConditionalModifier.Decay.INDEPENDENT))
+                .map(Map.Entry::getKey).toList();
+        check(independentlyTimed.equals(List.of("yagens_attributes:berserker_fury")));
         check(AttackKind.MELEE.credits(ConditionalModifier.Trigger.MELEE_KILLS));
         check(!AttackKind.MELEE.credits(ConditionalModifier.Trigger.RANGED_KILLS));
         check(AttackKind.RANGED.credits(ConditionalModifier.Trigger.RANGED_KILLS));
