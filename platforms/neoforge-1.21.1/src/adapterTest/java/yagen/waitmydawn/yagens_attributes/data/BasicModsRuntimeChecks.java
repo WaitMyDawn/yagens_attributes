@@ -58,10 +58,17 @@ final class BasicModsRuntimeChecks {
         var stale = new PanelRequest(901, PanelRequest.WEAPON, 0, PanelRequest.TOGGLE_EXPERIENCE, UUID.randomUUID(), null);
         PanelService.handle(player, stale); check(!Components.absorbsExperience(sword));
         check(!new PanelRequest(902, PanelRequest.STORAGE, 0, PanelRequest.TOGGLE_EXPERIENCE, main, null).valid());
-        state.progress(off, new WeaponProgress(30, 0));
+        PanelService.handle(player, toggle); check(Components.absorbsExperience(sword));
+        state.progress(main, new WeaponProgress(29, 64));
+        player.giveExperiencePoints(5);
+        check(state.progress(main).equals(new WeaponProgress(30, 0)));
+        check(state.progress(off).equals(new WeaponProgress(1, 1)) && player.totalExperience == 10);
+        state.progress(off, new WeaponProgress(29, 64));
+        player.giveExperiencePoints(3);
+        check(state.progress(off).equals(new WeaponProgress(30, 0)) && player.totalExperience == 12);
         var stowed = new ItemStack(Items.DIAMOND_AXE); stowed.set(Components.ABSORB_EXPERIENCE.get(), true); UUID stowedId = Components.identify(stowed); player.getInventory().setItem(8, stowed);
         var armor = new ItemStack(Items.DIAMOND_CHESTPLATE); armor.set(Components.ABSORB_EXPERIENCE.get(), true); player.setItemSlot(EquipmentSlot.CHEST, armor);
-        player.giveExperiencePoints(3); check(player.totalExperience == 13); check(state.progress(stowedId).equals(WeaponProgress.ZERO));
+        player.giveExperiencePoints(3); check(player.totalExperience == 15); check(state.progress(stowedId).equals(WeaponProgress.ZERO));
         player.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY); player.setItemSlot(EquipmentSlot.CHEST, ItemStack.EMPTY);
     }
     private static UUID install(ServerPlayer player, WorldState state, UUID weapon, String type, int rank, int slot) {

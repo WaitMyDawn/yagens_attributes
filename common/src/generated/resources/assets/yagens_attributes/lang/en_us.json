@@ -335,7 +335,7 @@
   "mod.yagens_attributes.primed_reach": "Reach Prime",
   "gui.yagens_attributes.experience_on": "XP: On",
   "gui.yagens_attributes.experience_off": "XP: Off",
-  "gui.yagens_attributes.experience_absorption_help": "Absorb earned experience to level this weapon. Disabled by default; only enabled held weapons below max rank share experience.",
+  "gui.yagens_attributes.experience_absorption_help": "While held, this weapon gains experience first when absorption is on. Experience left over goes to you.",
   "gui.yagens_attributes.per_status_type": "%1$s %2$s per status type on the target",
   "gui.yagens_attributes.per_melee_kill": "On melee kill: %1$s %2$s for %3$s s; stacks up to %4$s times",
   "gui.yagens_attributes.mod_conflict": "An incompatible Mod from the same family is already installed",

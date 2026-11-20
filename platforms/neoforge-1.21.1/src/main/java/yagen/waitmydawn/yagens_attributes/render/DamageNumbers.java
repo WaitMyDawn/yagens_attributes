@@ -56,8 +56,10 @@ public final class DamageNumbers {
         int color = tier == 0 ? 0xFFFFFF : tier == 1 ? 0xFFFF00 : tier == 2 ? 0xFF8800 : 0xFF0000;
         MutableComponent text = Component.literal(String.format(Locale.ROOT, "%.1f", payload.amount()) + "!".repeat(Math.max(0, tier - 3)));
         for (DamageType type : DamageType.DISPLAY_ORDER) {
-            if ((payload.procMask() & (1 << type.ordinal())) != 0)
-                text.append(Component.literal(" " + (char) (0xE000 + type.ordinal())).withStyle(Style.EMPTY.withFont(ICON_FONT).withColor(0xFFFFFF)));
+            if ((payload.procMask() & (1 << type.ordinal())) != 0) {
+                text.append(" ").append(Component.literal(String.valueOf((char) (0xE000 + type.ordinal())))
+                        .withStyle(Style.EMPTY.withFont(ICON_FONT).withColor(0xFFFFFF)));
+            }
         }
         while (NUMBERS.size() >= ClientConfigs.MAX_NUMBERS.get()) NUMBERS.removeFirst();
         int textWidth = minecraft.font.width(text);

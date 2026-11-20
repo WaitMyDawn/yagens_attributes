@@ -212,6 +212,11 @@ public final class CoreTests {
         equal(0, max.progress().gain(100).consumed()); close(1, max.progress().fraction());
         var split = WeaponProgress.distribute(1, List.of(WeaponProgress.ZERO, WeaponProgress.ZERO));
         equal(1, split.gains().get(0).consumed()); equal(0, split.gains().get(1).consumed()); equal(0, split.remaining());
+        var almostMaxed = new WeaponProgress(29, 64);
+        var mainOverflow = WeaponProgress.distribute(11, List.of(almostMaxed, WeaponProgress.ZERO));
+        equal(List.of(almostMaxed.gain(1), WeaponProgress.ZERO.gain(10)), mainOverflow.gains()); equal(0, mainOverflow.remaining());
+        var offOverflow = WeaponProgress.distribute(11, List.of(WeaponProgress.ZERO, almostMaxed));
+        equal(List.of(WeaponProgress.ZERO.gain(10), almostMaxed.gain(1)), offOverflow.gains()); equal(0, offOverflow.remaining());
         var surplus = WeaponProgress.distribute(2167, List.of(WeaponProgress.ZERO, WeaponProgress.ZERO));
         equal(7, surplus.remaining()); equal(1080, surplus.gains().get(0).consumed()); equal(1080, surplus.gains().get(1).consumed());
         rejects(() -> new WeaponProgress(31, 0)); rejects(() -> new WeaponProgress(0, 7)); rejects(() -> new WeaponProgress(30, 1));

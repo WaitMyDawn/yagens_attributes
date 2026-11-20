@@ -68,7 +68,11 @@ repo/
 !**/src/**/repo/
 
 ### Local Design and Verification Notes ###
-/docs/
+/docs/*
+!/docs/assets-for-readme/
+!/docs/changelog/
+!/docs/player-guide.md
+!/docs/player-guide.zh-CN.md
 /artwork/
 /art/*
 Spec.md

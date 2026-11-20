@@ -15,14 +15,23 @@ public record WeaponProgress(int level, int experience) {
     public static Allocation distribute(int amount, List<WeaponProgress> recipients) {
         if (amount < 0) throw new IllegalArgumentException("Negative experience allocation");
         if (recipients.isEmpty()) return new Allocation(List.of(), amount);
-        List<Gain> gains = new ArrayList<>();
-        int consumed = 0;
+        List<Gain> gains = new ArrayList<>(recipients.size());
+        int share = amount / recipients.size();
+        int remainder = amount % recipients.size();
+        int remaining = amount;
         for (int i = 0; i < recipients.size(); i++) {
-            var gain = recipients.get(i).gain(amount / recipients.size() + (i < amount % recipients.size() ? 1 : 0));
+            var gain = recipients.get(i).gain(share + (i < remainder ? 1 : 0));
             gains.add(gain);
-            consumed += gain.consumed();
+            remaining -= gain.consumed();
         }
-        return new Allocation(List.copyOf(gains), amount - consumed);
+        for (int i = 0; i < gains.size() && remaining > 0; i++) {
+            var initial = gains.get(i);
+            if (initial.progress().level() == MAX_LEVEL) continue;
+            var extra = initial.progress().gain(remaining);
+            gains.set(i, new Gain(extra.progress(), initial.consumed() + extra.consumed()));
+            remaining -= extra.consumed();
+        }
+        return new Allocation(List.copyOf(gains), remaining);
     }
 
     public WeaponProgress {

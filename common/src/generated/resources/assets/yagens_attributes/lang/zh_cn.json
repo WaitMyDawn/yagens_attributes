@@ -335,7 +335,7 @@
   "mod.yagens_attributes.primed_reach": "剑风 Prime",
   "gui.yagens_attributes.experience_on": "经验吸收：开",
   "gui.yagens_attributes.experience_off": "经验吸收：关",
-  "gui.yagens_attributes.experience_absorption_help": "吸收获得的经验用于此武器升级。默认关闭，仅手持且开启吸收的未满级武器参与分配。",
+  "gui.yagens_attributes.experience_absorption_help": "开启后，手持此武器时优先用经验升级武器，剩余经验归玩家。",
   "gui.yagens_attributes.per_status_type": "目标每种触发：%1$s %2$s",
   "gui.yagens_attributes.per_melee_kill": "近战击杀：%1$s %2$s，持续 %3$s 秒，最多 %4$s 层",
   "gui.yagens_attributes.mod_conflict": "已装有同系列互斥 Mod",
