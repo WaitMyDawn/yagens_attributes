@@ -12,7 +12,9 @@ public final class ClientConfigs {
     public static final ModConfigSpec.BooleanValue BUFF_HUD_SECONDS = BUILDER.define("weaponBuffHudCountdown", true);
     public static final ModConfigSpec.IntValue BUFF_HUD_X = BUILDER.defineInRange("weaponBuffHudOffsetX", 16, 0, HudLayout.MAX_OFFSET);
     public static final ModConfigSpec.IntValue BUFF_HUD_Y = BUILDER.defineInRange("weaponBuffHudOffsetY", 96, 0, HudLayout.MAX_OFFSET);
-    public static final ModConfigSpec.DoubleValue BUFF_HUD_SCALE = BUILDER.defineInRange("weaponBuffHudScale", 1D, HudLayout.MIN_SCALE, HudLayout.MAX_SCALE);
+    public static final ModConfigSpec.DoubleValue BUFF_HUD_SCALE = BUILDER
+            .comment("Overall weapon buff HUD scale, including icons, stack counts and countdowns.")
+            .defineInRange("weaponBuffHudScale", 1D, HudLayout.MIN_BUFF_SCALE, HudLayout.MAX_SCALE);
     public static final ModConfigSpec.IntValue BUFF_HUD_COLUMNS = BUILDER.defineInRange("weaponBuffHudColumns", 4, 1, 8);
     public static final ModConfigSpec.IntValue COMBO_HUD_X = BUILDER.comment("Combo HUD distance from the right edge in GUI pixels.").defineInRange("comboHudOffsetX", 16, 0, HudLayout.MAX_OFFSET);
     public static final ModConfigSpec.IntValue COMBO_HUD_Y = BUILDER.comment("Combo HUD distance from the bottom edge in GUI pixels.").defineInRange("comboHudOffsetY", 48, 0, HudLayout.MAX_OFFSET);

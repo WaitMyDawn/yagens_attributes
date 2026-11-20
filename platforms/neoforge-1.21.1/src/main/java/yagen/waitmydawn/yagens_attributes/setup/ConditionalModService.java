@@ -125,7 +125,7 @@ public final class ConditionalModService {
         var keys = melee ? modifiers(player, player.getMainHandItem()) : weaponModifiers(player, weapon);
         AttackKind creditedKind = kind;
         boolean weakPointKill = kind == AttackKind.RANGED && !keys.isEmpty()
-                && !StatusDamage.isSecondary(source) && !source.is(DamageTypeTags.IS_EXPLOSION)
+                && !StatusDamage.isSecondary(source) && !CombatEvents.isAreaDamage(source)
                 && WeakPointApi.current(source, event.getEntity()) != null;
         award(player, keys, trigger -> creditedKind.credits(trigger)
                 || weakPointKill && trigger == ConditionalModifier.Trigger.RANGED_WEAK_POINT_KILLS);

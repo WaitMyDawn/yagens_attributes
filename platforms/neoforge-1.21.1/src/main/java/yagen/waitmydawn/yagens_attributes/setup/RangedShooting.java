@@ -29,8 +29,10 @@ public final class RangedShooting {
         return snapshot(player, weapon, AttackKind.RANGED);
     }
     public static ShotData snapshot(ServerPlayer player, ItemStack weapon, AttackKind kind) {
-        if (!ServerConfigs.ENABLE_COMBAT.get()) return null;
-        var profile = CombatData.WEAPONS.weapon(weapon); if (profile == null) return null;
+        return snapshot(player, weapon, kind, CombatData.WEAPONS.weapon(weapon));
+    }
+    public static ShotData snapshot(ServerPlayer player, ItemStack weapon, AttackKind kind, WeaponProfile profile) {
+        if (!ServerConfigs.ENABLE_COMBAT.get() || profile == null) return null;
         var state = WorldState.get(player.server);
         List<Map<String, Bonus>> sources = new ArrayList<>();
         UUID id = WeaponEligibility.operable(weapon, profile) ? Components.identify(weapon) : null;

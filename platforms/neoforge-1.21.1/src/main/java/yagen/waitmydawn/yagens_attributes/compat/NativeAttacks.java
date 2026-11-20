@@ -70,6 +70,8 @@ public final class NativeAttacks {
     }
 
     public static ShotData source(DamageSource source) {
+        var external = yagen.waitmydawn.yagens_attributes.api.WeaponAttackApi.scopedShot(source);
+        if (external != null) return external;
         var frames = FRAMES.get();
         if (frames.isEmpty() || source.getEntity() == null) return null;
         var shot = frames.peek().shot();

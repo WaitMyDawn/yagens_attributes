@@ -103,6 +103,8 @@ def verify_jar(project, target, jar):
                 mixins = json.loads(archive.read("yagens_attributes.mixins.json"))
                 required_mixins = {
                     "ArmorFormulaMixin", "RangedAttributeAccessor", "ProjectileWeaponItemMixin", "ArrowWeakPointMixin", "GoatWeakPointStateMixin", "NativeItemStackMixin",
+                    "ProjectileUtilWeakPointMixin", "ProjectileWeakPointMixin",
+                    "MeleeEnchantmentAttackMixin", "MeleeEnchantmentValueMixin",
                     "NativeSpawnMixin", "NativeCooldownMixin", "CataclysmLeftClickMixin", "CrossbowItemMixin",
                     "TridentItemMixin", "VirtualArrowMixin", "VirtualTridentMixin", "RangedCooldownMixin",
                     "ShieldAbsorptionMixin", "AbsorptionEffectMixin", "StatusArmorMixin", "StatusControlMixin",

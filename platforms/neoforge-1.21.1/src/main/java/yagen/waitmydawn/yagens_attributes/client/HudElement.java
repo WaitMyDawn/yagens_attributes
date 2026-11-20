@@ -27,6 +27,7 @@ public enum HudElement {
     public Component title() { return Component.translatable("gui.yagens_attributes.hud_" + id); }
     public Settings settings() { return new Settings(x.get(), y.get(), scale.get(), visible.get(), this != BUFFS || ClientConfigs.BUFF_HUD_SECONDS.get()); }
     public Settings defaults() { return new Settings(x.getDefault(), y.getDefault(), scale.getDefault(), visible.getDefault(), this != BUFFS || ClientConfigs.BUFF_HUD_SECONDS.getDefault()); }
+    double minimumScale() { return this == BUFFS ? HudLayout.MIN_BUFF_SCALE : HudLayout.MIN_SCALE; }
     public HudLayout.Placement place(int viewportWidth, int viewportHeight, Settings settings) {
         return HudLayout.place(viewportWidth, viewportHeight, this == BUFFS ? WeaponBuffHud.logicalWidth() : width,
                 this == BUFFS ? WeaponBuffHud.logicalHeight(settings.countdown()) : height, settings.scale(), settings.offsetX(), settings.offsetY());
@@ -39,7 +40,7 @@ public enum HudElement {
     }
     public void save(Settings settings) {
         if (settings.offsetX() < 0 || settings.offsetX() > HudLayout.MAX_OFFSET || settings.offsetY() < 0 || settings.offsetY() > HudLayout.MAX_OFFSET
-                || !Double.isFinite(settings.scale()) || settings.scale() < HudLayout.MIN_SCALE || settings.scale() > HudLayout.MAX_SCALE)
+                || !Double.isFinite(settings.scale()) || settings.scale() < minimumScale() || settings.scale() > HudLayout.MAX_SCALE)
             throw new IllegalArgumentException("Invalid HUD settings");
         var previous = settings();
         try { write(settings); ClientConfigs.SPEC.save(); }

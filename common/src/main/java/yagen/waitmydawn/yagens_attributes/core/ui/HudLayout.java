@@ -2,7 +2,7 @@ package yagen.waitmydawn.yagens_attributes.core.ui;
 
 public final class HudLayout {
     public static final int MAX_OFFSET = 4096;
-    public static final double MIN_SCALE = .5, MAX_SCALE = 4;
+    public static final double MIN_SCALE = .5, MIN_BUFF_SCALE = .1, MAX_SCALE = 4;
     private HudLayout() {}
 
     public record Offsets(int x, int y) {}

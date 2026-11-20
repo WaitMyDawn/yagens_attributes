@@ -56,7 +56,7 @@ public final class AdapterTests {
         ModCommands.register(dispatcher);
         for (String name : List.of("mods", "stats", "grant", "install", "uninstall", "take", "upgrade", "withdrawmod", "share", "shareweapon", "visibility", "playerbonus", "clearbonus", "modmeta", "modcost", "weaponxp"))
             equal(true, dispatcher.getRoot().getChild("ya").getChild(name) != null);
-        defaults(); endo();
+        defaults(); weaponAttacks(); endo();
         System.out.println("Passed " + checks + " NeoForge adapter contract checks");
         PanelContracts.run();
         LootContracts.run();
@@ -78,6 +78,30 @@ public final class AdapterTests {
         MarkerPreview.render();
         ShieldPreview.render();
         StatusIconPreview.render();
+    }
+
+    private static void weaponAttacks() {
+        var item = net.minecraft.resources.ResourceLocation.parse("example:irregular_tool");
+        var attack = net.minecraft.resources.ResourceLocation.parse("other:arc");
+        var base = new WeaponProfile(.2, 2.2, .24, 7, Map.of(DamageType.IMPACT, 1D), 11,
+                ModInfo.Category.SWORD, List.of(ModInfo.Polarity.MADURAI), 1, 1, .8);
+        var document = JsonParser.parseString("""
+                {"attacks":{"other:arc":{"kind":"melee","critical_chance":0.35,"critical_damage":2.5,
+                    "status_chance":0.1,"damage_distribution":{"blast":2},"forced_procs":["slash"]}}}
+                """);
+        var result = WeaponProfiles.attacks(Map.of(item, document), Map.of(item, base));
+        var mode = result.get(item).get(attack);
+        equal(AttackKind.MELEE, mode.kind());
+        equal(.35, mode.profile().criticalChance());
+        equal(7D, mode.profile().statusDuration());
+        equal(11D, mode.profile().baseDamage());
+        equal(base.slots(), mode.profile().slots());
+        equal(Map.of(DamageType.BLAST, 1D), mode.profile().distribution());
+        equal(List.of(DamageType.SLASH), mode.forcedProcs());
+        equal(Map.of(), WeaponProfiles.attacks(Map.of(item, document), Map.of()));
+        var invalidDocument = document.deepCopy();
+        invalidDocument.getAsJsonObject().getAsJsonObject("attacks").getAsJsonObject("other:arc").remove("critical_damage");
+        rejects(() -> WeaponProfiles.attacks(Map.of(item, invalidDocument), Map.of(item, base)));
     }
 
     private static void endo() {

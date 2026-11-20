@@ -1,11 +1,14 @@
 package yagen.waitmydawn.yagens_attributes.setup;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.neoforged.bus.api.*;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.NeoForge;
@@ -18,6 +21,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.yagens_attributes.YagensAttributes;
 import yagen.waitmydawn.yagens_attributes.api.StatusProcEvent;
 import yagen.waitmydawn.yagens_attributes.api.StatusContext;
+import yagen.waitmydawn.yagens_attributes.api.WeaponAttackApi;
 import yagen.waitmydawn.yagens_attributes.api.WeakPointApi;
 import yagen.waitmydawn.yagens_attributes.api.WeakPointHitEvent;
 import net.neoforged.neoforge.common.damagesource.DamageContainer.Reduction;
@@ -32,11 +36,18 @@ import java.util.*;
 
 @EventBusSubscriber(modid = YagensAttributes.MODID)
 public final class CombatEvents {
-    private record Hit(Combat.Result result, StatusContext context, double toxinFraction, UUID meleeWeapon, int comboDuration, double comboChance,
+    private record Hit(int criticalTier, int statusDuration, List<StatusProcEvent.Application> applications, StatusContext context,
+                       double toxinFraction, UUID meleeWeapon, int comboDuration, double comboChance,
                        Map<DamageType, Double> components, WeakPointGeometry.Match weakPoint) {}
     private static final Map<DamageContainer, Hit> INCOMING = new IdentityHashMap<>();
     private static final Map<DamageSource, Map<LivingEntity, Deque<Hit>>> PENDING = new IdentityHashMap<>();
+    private static final TagKey<net.minecraft.world.damagesource.DamageType> AREA_DAMAGE = TagKey.create(
+            Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(YagensAttributes.MODID, "area_damage"));
     private CombatEvents() {}
+
+    static boolean isAreaDamage(DamageSource source) {
+        return source.is(DamageTypeTags.IS_EXPLOSION) || source.is(AREA_DAMAGE);
+    }
 
     @SubscribeEvent public static void reload(AddReloadListenerEvent event) { event.addListener(CombatData.WEAPONS); event.addListener(CombatData.MATERIALS); event.addListener(ShieldMaterials.INSTANCE); event.addListener(ModDefinitions.INSTANCE); }
     @SubscribeEvent public static void commands(RegisterCommandsEvent event) { ModCommands.register(event.getDispatcher()); }
@@ -47,7 +58,8 @@ public final class CombatEvents {
     public static void incoming(LivingIncomingDamageEvent event) {
         if (!ServerConfigs.ENABLE_COMBAT.get() || StatusDamage.isSecondary(event.getSource()) || !(event.getSource().getEntity() instanceof ServerPlayer player) || event.getAmount() <= 0) return;
         DamageSource source = event.getSource();
-        var shot = RangedShooting.shot(source.getDirectEntity());
+        var impact = WeaponAttackApi.impact(source, event.getEntity());
+        var shot = impact == null ? RangedShooting.shot(source.getDirectEntity()) : impact.shot();
         if (shot == null) shot = yagen.waitmydawn.yagens_attributes.compat.NativeAttacks.source(source);
         WeaponProfile profile;
         var bonuses = new ArrayList<Map<String, Bonus>>();
@@ -82,30 +94,59 @@ public final class CombatEvents {
             } else if (liveWeapon != null) {
                 bonuses = new ArrayList<>(ConditionalModService.sources(player, liveWeapon, bonuses, event.getEntity()));
             }
-            if (source.is(DamageTypeTags.IS_EXPLOSION)) bonuses.replaceAll(bonus -> {
+            boolean areaDamage = isAreaDamage(source);
+            if (areaDamage) bonuses.replaceAll(bonus -> {
                 if (!bonus.containsKey(Stats.DIRECT_DAMAGE)) return bonus;
                 var copy = new LinkedHashMap<>(bonus); copy.remove(Stats.DIRECT_DAMAGE); return copy;
             });
-            double input = event.getAmount();
-            double chance = source.is(DamageTypeTags.IS_EXPLOSION) ? 0 : StatusEffects.criticalChance(event.getEntity());
+            double flatDamage = MeleeEnchantments.take(event.getEntity(), source, event.getAmount());
+            int hits = impact == null ? 1 : impact.hits();
+            int portions = impact == null ? 1 : impact.portions();
+            // Undo the move and pellet scaling of the incoming event so flat bonuses are scaled exactly once.
+            double multiplier = impact == null ? 1 : impact.multiplier();
+            double scale = (double) portions / hits / multiplier;
+            double input = (event.getAmount() - flatDamage) * scale;
+            double chance = areaDamage ? 0 : StatusEffects.criticalChance(event.getEntity());
             double extraCritical = StatusEffects.criticalDamage(event.getEntity());
-            var hit = Combat.evaluate(input, profile, bonuses, Map.of(), player.getRandom()::nextDouble, chance, extraCritical);
-            var result = hit.result();
-            double share = shot != null && shot.profile() != null ? shot.scale() : 1;
+            var hit = Combat.prepare(input, profile, bonuses, Map.of(), chance, extraCritical, flatDamage * scale);
+            boolean hasShot = shot != null && shot.profile() != null;
+            double share = (hasShot ? shot.scale() : 1) * multiplier / portions;
             var amounts = hit.components();
             double toxin = hit.componentTotal() <= 0 ? 0 : Math.min(1, Math.max(0, amounts.get(DamageType.TOXIN) / hit.componentTotal()));
-            var bases = Combat.statusBases(input, profile, bonuses, result.criticalTier(), extraCritical, share);
-            if (shot != null && shot.profile() != null) result = new Combat.Result(Math.min(Float.MAX_VALUE, result.damage() * shot.scale()), result.criticalTier(), result.procs(), result.durationSeconds());
-            event.setAmount((float) result.damage());
-            var context = shot != null && shot.profile() != null ? new StatusContext(bases, result.criticalTier(), shot.weapon(), shot.attackKind())
-                    : meleeWeapon == null ? new StatusContext(bases, result.criticalTier(), rangedWeapon)
-                    : new StatusContext(bases, result.criticalTier(), meleeWeapon, AttackKind.MELEE);
+            UUID weaponId = hasShot ? shot.weapon() : meleeWeapon != null ? meleeWeapon : rangedWeapon;
+            var kind = hasShot ? shot.attackKind() : meleeWeapon != null ? AttackKind.MELEE : rangedWeapon != null ? AttackKind.RANGED : AttackKind.UNKNOWN;
+            List<DamageType> forced = impact == null ? List.of() : impact.forcedProcs();
+            var applications = new ArrayList<StatusProcEvent.Application>();
+            var contexts = hits > 1 ? new HashMap<Integer, StatusContext>() : null;
+            var random = (java.util.function.DoubleSupplier) player.getRandom()::nextDouble;
+            double damage = 0;
+            int criticalTier = 0;
+            for (int i = 0; i < hits; i++) {
+                var roll = hit.rollHit(random);
+                damage += roll.damage() * share;
+                criticalTier = Math.max(criticalTier, roll.criticalTier());
+                if (roll.durationSeconds() <= 0 || (roll.procs().isEmpty() && forced.isEmpty())) continue;
+                int tier = roll.criticalTier();
+                var context = contexts == null ? null : contexts.get(tier);
+                if (context == null) {
+                    context = new StatusContext(Combat.statusBases(input, profile, bonuses, tier, extraCritical, share), tier, weaponId, kind);
+                    if (contexts != null) contexts.put(tier, context);
+                }
+                List<DamageType> types = roll.procs();
+                if (!forced.isEmpty()) {
+                    types = new ArrayList<>(types);
+                    types.addAll(forced);
+                }
+                applications.add(new StatusProcEvent.Application(types, context));
+            }
             if (shot != null && shot.attackKind() == AttackKind.MELEE && shot.weapon() != null) {
                 meleeWeapon = shot.weapon(); comboDuration = ComboService.duration(bonuses);
             }
-            var weakPoint = source.is(DamageTypeTags.IS_EXPLOSION) ? null : WeakPointApi.current(source, event.getEntity());
-            INCOMING.put(event.getContainer(), new Hit(result, context, toxin, meleeWeapon, comboDuration,
+            var weakPoint = areaDamage ? null : WeakPointApi.current(source, event.getEntity());
+            var context = new StatusContext(Map.of(), criticalTier, weaponId, kind);
+            INCOMING.put(event.getContainer(), new Hit(criticalTier, (int) Math.ceil(hit.statusDuration() * 20), applications, context, toxin, meleeWeapon, comboDuration,
                     Math.min(64, Stats.resolve(1, Stats.COMBO_COUNT_CHANCE, bonuses)), amounts, weakPoint));
+            event.setAmount((float) Math.min(Float.MAX_VALUE, damage));
         } catch (IllegalArgumentException exception) {
             if (shot != null && shot.profile() != null) event.setAmount((float) Math.min(Float.MAX_VALUE, event.getAmount() * shot.scale()));
             YagensAttributes.LOGGER.error("Rejected combat modifiers for player {}: {}", player.getUUID(), exception.getMessage());
@@ -136,7 +177,7 @@ public final class CombatEvents {
         var targets = PENDING.get(event.getSource());
         var stack = targets == null ? null : targets.get(event.getEntity());
         Hit hit = stack == null || stack.isEmpty() ? null : stack.pop();
-        Combat.Result result = hit == null ? new Combat.Result(event.getNewDamage(), event.getSource() instanceof StatusDamage secondary ? secondary.criticalTier : 0, List.of(), 0) : hit.result;
+        int criticalTier = hit == null ? event.getSource() instanceof StatusDamage secondary ? secondary.criticalTier : 0 : hit.criticalTier();
         if (stack != null && stack.isEmpty()) targets.remove(event.getEntity());
         if (targets != null && targets.isEmpty()) PENDING.remove(event.getSource());
         float dealt = event.getNewDamage() + event.getReduction(Reduction.ABSORPTION);
@@ -149,11 +190,12 @@ public final class CombatEvents {
         }
         var secondaryType = StatusDamage.damageType(event.getSource());
         int mask = secondaryType == null ? 0 : 1 << secondaryType.ordinal();
-        if (result.durationSeconds() > 0) {
-            for (DamageType type : result.procs()) mask |= 1 << type.ordinal();
-            if (!result.procs().isEmpty()) NeoForge.EVENT_BUS.post(new StatusProcEvent(attacker, event.getEntity(), result.procs(), (int) Math.ceil(result.durationSeconds() * 20), hit == null ? StatusContext.EMPTY : hit.context));
+        if (hit != null && !hit.applications().isEmpty()) {
+            var procs = new StatusProcEvent(attacker, event.getEntity(), hit.statusDuration(), hit.applications());
+            for (DamageType type : procs.procs()) mask |= 1 << type.ordinal();
+            NeoForge.EVENT_BUS.post(procs);
         }
-        var packet = new DamagePayload(event.getEntity().getId(), event.getEntity().position().add(0, event.getEntity().getBbHeight() * 0.65, 0), attacker.getUUID(), dealt, result.criticalTier(), mask);
+        var packet = new DamagePayload(event.getEntity().getId(), event.getEntity().position().add(0, event.getEntity().getBbHeight() * 0.65, 0), attacker.getUUID(), dealt, criticalTier, mask);
         WorldState state = WorldState.get(attacker.server);
         int range = ServerConfigs.DAMAGE_VISIBILITY_RANGE.get();
         for (ServerPlayer viewer : ((net.minecraft.server.level.ServerLevel) event.getEntity().level()).players()) {

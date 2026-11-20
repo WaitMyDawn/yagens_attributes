@@ -232,6 +232,7 @@
   "stat.yagens_attributes.melee_range": "Melee Range Bonus",
   "gui.yagens_attributes.hud_combo": "Melee Combo",
   "gui.yagens_attributes.hud_editor": "%s HUD Position",
+  "gui.yagens_attributes.hud_scale": "Overall Size %s",
   "gui.yagens_attributes.hud_drag_hint": "Drag the preview to move; scroll over it to resize. Arrow keys: 1 px; Shift: 10 px. Done / Enter: save; Cancel / Esc: discard. The preview remains visible when disabled.",
   "gui.yagens_attributes.status_settings.title": "Status effect display",
   "gui.yagens_attributes.status_settings.marker_title": "Overhead status counts",

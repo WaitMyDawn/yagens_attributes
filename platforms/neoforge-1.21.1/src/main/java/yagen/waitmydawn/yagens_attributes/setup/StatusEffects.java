@@ -96,10 +96,15 @@ public final class StatusEffects {
     public static void proc(StatusProcEvent event) {
         if (event.durationTicks() <= 0) return;
         var immediate = new ArrayList<StatusState.Layer>();
-        for (var type : event.procs()) {
-            boolean applied = apply(event.target(), type, event.attacker().getUUID(), event.context().base(type), event.durationTicks(), false, event.context().criticalTier(), event.context().weapon(), event.context().attackKind());
-            if (applied && (type == DamageType.ELECTRICITY || type == DamageType.GAS))
-                immediate.add(new StatusState.Layer(type, event.attacker().getUUID(), event.context().base(type), 1, 20, 0, event.context().criticalTier(), event.context().weapon(), event.context().attackKind()));
+        for (var application : event.applications()) {
+            var context = application.context();
+            for (var type : application.types()) {
+                boolean applied = apply(event.target(), type, event.attacker().getUUID(), context.base(type), event.durationTicks(),
+                        false, context.criticalTier(), context.weapon(), context.attackKind());
+                if (applied && (type == DamageType.ELECTRICITY || type == DamageType.GAS))
+                    immediate.add(new StatusState.Layer(type, event.attacker().getUUID(), context.base(type), 1, 20, 0,
+                            context.criticalTier(), context.weapon(), context.attackKind()));
+            }
         }
         pulses(event.target(), immediate);
     }

@@ -1,10 +1,13 @@
 package yagen.waitmydawn.yagens_attributes.compat;
 
 import com.github.L_Ender.cataclysm.config.CMCommonConfig;
+import com.github.L_Ender.cataclysm.init.ModEntities;
 import com.github.L_Ender.cataclysm.init.ModItems;
 import com.github.L_Ender.cataclysm.entity.projectile.*;
 import net.minecraft.world.item.*;
+import net.minecraft.world.level.ClipContext;
 import yagen.waitmydawn.yagens_attributes.core.AttackKind;
+import yagen.waitmydawn.yagens_attributes.data.ProjectileWeakPointTrace;
 import java.util.function.ToDoubleFunction;
 
 /** References to Cataclysm are confined to this conditionally initialized adapter. */
@@ -14,6 +17,7 @@ final class CataclysmCompat {
         ranged(ModItems.CURSED_BOW.get(), 3, 0, stack -> CMCommonConfig.CursedBow.damage * 3);
         ranged(ModItems.WRATH_OF_THE_DESERT.get(), 0, 0, stack -> CMCommonConfig.WrathOfTheDesert.damage);
         ranged(ModItems.LASER_GATLING.get(), 0, 2, stack -> CMCommonConfig.LaserGatling.damage);
+        ProjectileWeakPointTrace.register(ModEntities.LASER_BEAM.get(), ClipContext.Block.COLLIDER);
         ranged(ModItems.VOID_ASSULT_SHOULDER_WEAPON.get(), 0, 0, stack -> 8);
         ranged(ModItems.WITHER_ASSULT_SHOULDER_WEAPON.get(), 0, 0, stack -> CMCommonConfig.WASW.missileDamage);
         for (Item item : new Item[]{ModItems.CORAL_SPEAR.get(), ModItems.CORAL_BARDICHE.get(), ModItems.ASTRAPE.get(), ModItems.CERAUNUS.get(), ModItems.BRONTES.get()})

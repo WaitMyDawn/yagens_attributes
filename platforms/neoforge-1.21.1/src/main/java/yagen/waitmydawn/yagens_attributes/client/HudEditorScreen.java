@@ -1,6 +1,7 @@
 package yagen.waitmydawn.yagens_attributes.client;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,8 @@ public final class HudEditorScreen extends Screen {
     private Component error;
     private Button visibility;
     private Button countdown;
+    private ScaleSlider scaleSlider;
+    private int headerBottom;
 
     public HudEditorScreen(HudElement element) {
         super(text("hud_editor", element.title()));
@@ -34,16 +37,56 @@ public final class HudEditorScreen extends Screen {
         addRenderableWidget(Button.builder(Component.translatable("controls.reset"), button -> {
             draft = element.defaults(); moving = false; error = null; visibility.setMessage(visibilityLabel());
             if (countdown != null) countdown.setMessage(countdownLabel());
+            if (scaleSlider != null) scaleSlider.sync();
         }).bounds(left + 76, y, 70, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.cancel"), button -> onClose()).bounds(left + 152, y, 70, 20).build());
         addRenderableWidget(Button.builder(Component.translatable("gui.done"), button -> save()).bounds(left + 228, y, 70, 20).build());
-        if (element == HudElement.BUFFS) countdown = addRenderableWidget(Button.builder(countdownLabel(), button -> {
-            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), draft.scale(), draft.visible(), !draft.countdown());
-            countdown.setMessage(countdownLabel()); error = null;
-        }).bounds(width / 2 - 58, 48, 116, 20).build());
+        headerBottom = 64;
+        if (element == HudElement.BUFFS) {
+            int countdownWidth = 116, sliderWidth = 154, gap = 8;
+            int groupWidth = countdownWidth + gap + sliderWidth;
+            boolean stacked = width < groupWidth + 24;
+            int controlsY = Math.max(48, 26 + font.split(text("hud_drag_hint"), Math.max(1, width - 24)).size() * font.lineHeight + 6);
+            int controlsX = (width - groupWidth) / 2;
+            countdown = addRenderableWidget(Button.builder(countdownLabel(), button -> {
+                draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), draft.scale(), draft.visible(), !draft.countdown());
+                countdown.setMessage(countdownLabel()); error = null;
+            }).bounds(stacked ? (width - countdownWidth) / 2 : controlsX, controlsY, countdownWidth, 20).build());
+            if (stacked) sliderWidth = Math.min(sliderWidth, width - 24);
+            int sliderY = stacked ? controlsY + 24 : controlsY;
+            int sliderX = stacked ? (width - sliderWidth) / 2 : controlsX + countdownWidth + gap;
+            scaleSlider = addRenderableWidget(new ScaleSlider(sliderX, sliderY, sliderWidth));
+            headerBottom = sliderY + 28;
+        }
     }
     private Component countdownLabel() { return text("hud_countdown", Component.translatable(draft.countdown() ? "options.on" : "options.off")); }
     private Component visibilityLabel() { return text("hud_visibility", Component.translatable(draft.visible() ? "options.on" : "options.off")); }
+    private void scale(double value) {
+        draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), value, draft.visible(), draft.countdown());
+        error = null;
+    }
+
+    private final class ScaleSlider extends AbstractSliderButton {
+        private ScaleSlider(int x, int y, int width) {
+            super(x, y, width, 20, Component.empty(), 0);
+            sync();
+        }
+
+        private void sync() {
+            double minimum = element.minimumScale();
+            value = (draft.scale() - minimum) / (HudLayout.MAX_SCALE - minimum);
+            updateMessage();
+        }
+
+        @Override protected void updateMessage() {
+            setMessage(text("hud_scale", Math.round(draft.scale() * 100) + "%"));
+        }
+
+        @Override protected void applyValue() {
+            double minimum = element.minimumScale();
+            scale(Math.round((minimum + value * (HudLayout.MAX_SCALE - minimum)) * 100) / 100D);
+        }
+    }
     private void move(double left, double top) {
         var offsets = placement().move(width, height, left, top);
         draft = new HudElement.Settings(offsets.x(), offsets.y(), draft.scale(), draft.visible(), draft.countdown()); error = null;
@@ -59,12 +102,12 @@ public final class HudEditorScreen extends Screen {
     @Override public boolean isPauseScreen() { return false; }
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         var box = placement();
-        graphics.fill(0, 0, width, element == HudElement.BUFFS ? 76 : 64, 0xB0101B23);
+        graphics.fill(0, 0, width, headerBottom, 0xB0101B23);
         graphics.fill(0, height - 40, width, height, 0xB0101B23);
         graphics.drawCenteredString(font, title, width / 2, 9, 0xFFE1CE90);
         graphics.drawWordWrap(font, text("hud_drag_hint"), 12, 26, Math.max(1, width - 24), 0xFFCBD6DA);
         if (moving) {
-            graphics.fill(box.x(), 64, box.x() + 1, height - 40, 0x605DB4C5);
+            graphics.fill(box.x(), headerBottom, box.x() + 1, height - 40, 0x605DB4C5);
             graphics.fill(0, box.y(), width, box.y() + 1, 0x605DB4C5);
         }
         graphics.fill(box.x(), box.y(), box.x() + box.width(), box.y() + box.height(), 0x5013212A);
@@ -92,9 +135,10 @@ public final class HudEditorScreen extends Screen {
     }
     @Override public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         var box = placement();
-        if (box.contains(mouseX, mouseY) && scrollY != 0) {
-            double scale = Math.max(HudLayout.MIN_SCALE, Math.min(HudLayout.MAX_SCALE, Math.round((draft.scale() + Math.signum(scrollY) * .1) * 10) / 10D));
-            draft = new HudElement.Settings(draft.offsetX(), draft.offsetY(), scale, draft.visible(), draft.countdown());
+        if (box.contains(mouseX, mouseY) && scrollY != 0 && (scaleSlider == null || !scaleSlider.isMouseOver(mouseX, mouseY))) {
+            double scale = Math.max(element.minimumScale(), Math.min(HudLayout.MAX_SCALE, Math.round((draft.scale() + Math.signum(scrollY) * .1) * 10) / 10D));
+            scale(scale);
+            if (scaleSlider != null) scaleSlider.sync();
             var resized = placement();
             move(mouseX - (mouseX - box.x()) * resized.width() / box.width(), mouseY - (mouseY - box.y()) * resized.height() / box.height());
             if (moving) { var moved = placement(); grabX = mouseX - moved.x(); grabY = mouseY - moved.y(); }
@@ -103,6 +147,8 @@ public final class HudEditorScreen extends Screen {
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
     @Override public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (scaleSlider != null && getFocused() == scaleSlider && (keyCode == GLFW.GLFW_KEY_LEFT || keyCode == GLFW.GLFW_KEY_RIGHT))
+            return super.keyPressed(keyCode, scanCode, modifiers);
         int step = hasShiftDown() ? 10 : 1;
         var box = placement();
         switch (keyCode) {

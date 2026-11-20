@@ -9,6 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import net.neoforged.neoforge.network.PacketDistributor;
 import yagen.waitmydawn.yagens_attributes.core.*;
 import yagen.waitmydawn.yagens_attributes.core.ui.*;
+import yagen.waitmydawn.yagens_attributes.data.MeleeEnchantments;
 import yagen.waitmydawn.yagens_attributes.network.*;
 import yagen.waitmydawn.yagens_attributes.text.ModText;
 import java.util.*;
@@ -18,6 +19,7 @@ public final class ModPanelScreen extends Screen {
     private static int nextRequestId;
     private final int view;
     private PanelPayload snapshot;
+    private List<MeleeEnchantments.Preview> damageEnchantments = List.of();
     private WeaponProgress progress = WeaponProgress.ZERO;
     private UUID selected;
     private int selectedSlot, slotPage, pendingId = -1, pendingAction, waitingTicks, debounce, detailsScroll, detailLineCount;
@@ -156,6 +158,7 @@ public final class ModPanelScreen extends Screen {
         if (payload.requestId() != pendingId || payload.view() != view) return;
         cancelGesture();
         snapshot = payload; progress = payload.progress(); pendingId = -1;
+        damageEnchantments = view == PanelRequest.WEAPON ? MeleeEnchantments.preview(payload.weaponStack()) : List.of();
         if (pendingAction == PanelRequest.INSTALL && "gui.yagens_attributes.mod_conflict".equals(payload.error()) && pendingInstall != null) {
             var incoming = payload.mods().stream().filter(mod -> mod.id().equals(pendingInstall.id()) || mod.info().equals(pendingInstall.info())).findFirst().orElse(pendingInstall);
             rejectConflict(incoming);
@@ -427,7 +430,14 @@ public final class ModPanelScreen extends Screen {
             canvas.component(StatText.damageLabel(type), 32, y, 10, PanelPainter.MUTED, 123);
             canvas.text(StatText.number(amount), 162, y, 10, color, 54); y += 12;
         }
-        y = Math.min(444, y + 13); statLine(canvas, text("total_damage").getString(), StatText.number(total), y, PanelPainter.GOLD);
+        y = Math.min(444, y + 13);
+        String totalLabel = text("total_damage").getString();
+        String totalValue = StatText.number(total);
+        if (damageEnchantments.isEmpty()) statLine(canvas, totalLabel, totalValue, y, PanelPainter.GOLD);
+        else {
+            var enchantment = WeaponDamageEnchantmentsUi.render(canvas, totalLabel, totalValue, damageEnchantments, y, mx, my);
+            if (enchantment != null) hoveredTooltip = List.of(enchantment);
+        }
     }
     private void statLine(PanelCanvas canvas, String label, String value, int y, int color) { canvas.text(label, 32, y, 10, PanelPainter.MUTED, 123); canvas.text(value, 162, y, 10, color, 54); }
 

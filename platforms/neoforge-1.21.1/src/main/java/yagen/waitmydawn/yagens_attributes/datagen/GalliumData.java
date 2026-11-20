@@ -94,9 +94,8 @@ public final class GalliumData {
                             ModBlocks.GALLIUM_ORE.get().defaultBlockState());
                     var deepslate = OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
                             ModBlocks.DEEPSLATE_GALLIUM_ORE.get().defaultBlockState());
-                    // Match the main gold batch's count, size, and exposure rule within the gallium height range.
                     context.register(CONFIGURED_ORE, new ConfiguredFeature<>(Feature.ORE,
-                            new OreConfiguration(List.of(stone, deepslate), 9, 0.5F)));
+                            new OreConfiguration(List.of(stone, deepslate), 9, 0F)));
                 })
                 .add(Registries.PLACED_FEATURE, context -> {
                     var ore = context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(CONFIGURED_ORE);

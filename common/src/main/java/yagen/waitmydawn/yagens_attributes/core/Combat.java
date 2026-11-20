@@ -8,6 +8,34 @@ public final class Combat {
     }
     public record Evaluation(Result result, Map<DamageType, Double> components, double componentTotal) {}
 
+    public record Prepared(Map<DamageType, Double> components, double componentTotal, double adjustedDamage,
+                           double criticalChance, double criticalDamage, double statusChance, double statusDuration,
+                           List<Map<String, Bonus>> bonuses) {
+        public double criticalMultiplier(int tier) { return 1 + tier * (criticalDamage - 1); }
+
+        public Result rollHit(DoubleSupplier random) {
+            int tier = roll(criticalChance, random);
+            int count = roll(statusChance, random);
+            List<DamageType> procs = new ArrayList<>();
+            if (componentTotal > 0) {
+                for (int i = 0; i < count; i++) {
+                    double position = random.getAsDouble() * componentTotal;
+                    for (DamageType type : DamageType.values()) {
+                        position -= components.get(type);
+                        if (position < 0) {
+                            procs.add(type);
+                            break;
+                        }
+                    }
+                }
+                HitProcs.append(procs, tier, bonuses, random);
+            }
+            double result = adjustedDamage * criticalMultiplier(tier);
+            if (!Double.isFinite(result)) throw new IllegalArgumentException("Damage overflow");
+            return new Result(Math.min(Float.MAX_VALUE, result), tier, List.copyOf(procs), statusDuration);
+        }
+    }
+
     private Combat() {
     }
 
@@ -27,7 +55,21 @@ public final class Combat {
     /** A hit and its pre-material components, shared by offense and defense resolution. */
     public static Evaluation evaluate(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses,
                                       Map<DamageType, Double> material, DoubleSupplier random, double addedChance, double addedCriticalDamage) {
-        var amounts = components(input, weapon, bonuses);
+        return evaluate(input, weapon, bonuses, material, random, addedChance, addedCriticalDamage, 0);
+    }
+
+    public static Evaluation evaluate(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses,
+                                      Map<DamageType, Double> material, DoubleSupplier random, double addedChance,
+                                      double addedCriticalDamage, double flatDamage) {
+        var prepared = prepare(input, weapon, bonuses, material, addedChance, addedCriticalDamage, flatDamage);
+        return new Evaluation(prepared.rollHit(random), prepared.components(), prepared.componentTotal());
+    }
+
+    /** Component weights and modifiers are shared by the independent rolls of a single hit batch. */
+    public static Prepared prepare(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses,
+                                   Map<DamageType, Double> material, double addedChance,
+                                   double addedCriticalDamage, double flatDamage) {
+        var amounts = components(input, weapon, bonuses, flatDamage);
         double total = 0, adjusted = 0;
         for (DamageType type : DamageType.values()) {
             double amount = amounts.get(type);
@@ -37,35 +79,23 @@ public final class Combat {
             total += amount;
             adjusted += amount * multiplier;
         }
-        int tier = roll(Math.min(100, Stats.resolve(weapon.criticalChance(), Stats.CRITICAL_CHANCE, bonuses) + addedChance), random);
+        double criticalChance = Math.min(100, Stats.resolve(weapon.criticalChance(), Stats.CRITICAL_CHANCE, bonuses) + addedChance);
         double criticalDamage = Math.max(1, Stats.resolve(weapon.criticalDamage(), Stats.CRITICAL_DAMAGE, bonuses) + addedCriticalDamage);
-        int count = roll(Math.min(64, Stats.resolve(weapon.statusChance(), Stats.STATUS_CHANCE, bonuses)), random);
-        List<DamageType> procs = new ArrayList<>();
-        if (total > 0) {
-            for (int i = 0; i < count; i++) {
-                double position = random.getAsDouble() * total;
-                for (DamageType type : DamageType.values()) {
-                    position -= amounts.get(type);
-                    if (position < 0) {
-                        procs.add(type);
-                        break;
-                    }
-                }
-            }
-            HitProcs.append(procs, tier, bonuses, random);
-        }
-        double result = adjusted * (1 + tier * (criticalDamage - 1));
-        if (!Double.isFinite(result)) throw new IllegalArgumentException("Damage overflow");
-        var hit = new Result(Math.min(Float.MAX_VALUE, result), tier, List.copyOf(procs),
-                Math.min(3600, Stats.resolve(weapon.statusDuration(), Stats.STATUS_DURATION, bonuses)));
-        return new Evaluation(hit, amounts, total);
+        double statusChance = Math.min(64, Stats.resolve(weapon.statusChance(), Stats.STATUS_CHANCE, bonuses));
+        double statusDuration = Math.min(3600, Stats.resolve(weapon.statusDuration(), Stats.STATUS_DURATION, bonuses));
+        return new Prepared(amounts, total, adjusted, criticalChance, criticalDamage, statusChance, statusDuration, List.copyOf(bonuses));
     }
 
     /**
      * Component values before material and critical multipliers; absolute bonuses depend on input.
      */
     public static Map<DamageType, Double> components(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses) {
+        return components(input, weapon, bonuses, 0);
+    }
+
+    private static Map<DamageType, Double> components(double input, WeaponProfile weapon, List<Map<String, Bonus>> bonuses, double flatDamage) {
         if (!Double.isFinite(input) || input < 0) throw new IllegalArgumentException("Invalid incoming damage");
+        if (!Double.isFinite(flatDamage) || flatDamage < 0) throw new IllegalArgumentException("Invalid flat damage");
         var amounts = new EnumMap<DamageType, Double>(DamageType.class);
         var damageBonuses = new ArrayList<Bonus>();
         for (var source : bonuses) {
@@ -80,6 +110,10 @@ public final class Combat {
             amounts.put(type, amount);
         }
         ElementFusion.combineInPlace(amounts, bonuses);
+        if (flatDamage != 0) {
+            double total = amounts.values().stream().mapToDouble(Double::doubleValue).sum();
+            amounts.replaceAll((type, amount) -> amount + flatDamage * (total > 0 ? amount / total : weapon.distribution().getOrDefault(type, 0D)));
+        }
         return Collections.unmodifiableMap(amounts);
     }
 

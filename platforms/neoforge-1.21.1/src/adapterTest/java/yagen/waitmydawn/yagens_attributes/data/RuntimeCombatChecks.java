@@ -51,11 +51,15 @@ public final class RuntimeCombatChecks {
             var suite = System.getProperty("yagens_attributes.validationSuite", "all");
             if (suite.equals("argon-scope")) {
                 checks += ArgonScopeRuntimeChecks.run(event.getServer().overworld());
+            } else if (suite.equals("gatling-weak-points")) {
+                checks += GatlingWeakPointRuntimeChecks.run(event.getServer().overworld());
             } else if (suite.equals("weak-points")) {
                 checks += WeakPointRuntimeChecks.run(event.getServer().overworld());
                 checks += VanillaWeakPointRuntimeChecks.run(event.getServer().overworld());
             } else if (suite.equals("weapon-lifecycle")) {
                 checks += WeaponLifecycleRuntimeChecks.run(event.getServer().overworld());
+            } else if (suite.equals("melee-enchantments")) {
+                checks += MeleeEnchantmentRuntimeChecks.run(event.getServer().overworld());
             } else {
                 if (!suite.equals("galvanized")) {
                     run(event.getServer().overworld(), report);

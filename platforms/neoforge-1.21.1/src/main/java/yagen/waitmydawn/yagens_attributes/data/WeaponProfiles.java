@@ -13,7 +13,12 @@ import yagen.waitmydawn.yagens_attributes.core.*;
 import java.util.*;
 
 public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponProfiles.Prepared> {
-    public record Prepared(Map<ResourceLocation, JsonElement> exact, Map<ResourceLocation, JsonElement> defaults) {}
+    public record Prepared(Map<ResourceLocation, JsonElement> exact, Map<ResourceLocation, JsonElement> defaults,
+                           Map<ResourceLocation, JsonElement> attacks) {
+        public Prepared(Map<ResourceLocation, JsonElement> exact, Map<ResourceLocation, JsonElement> defaults) {
+            this(exact, defaults, Map.of());
+        }
+    }
     public record Rule(WeaponProfile profile, boolean deriveDamage) {
         public WeaponProfile resolve(double nativeDamage) {
             return deriveDamage ? new WeaponProfile(profile.criticalChance(), profile.criticalDamage(), profile.statusChance(),
@@ -21,14 +26,24 @@ public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponP
                     profile.fireRate(), profile.multishot(), profile.rivenDisposition()) : profile;
         }
     }
-    private record Snapshot(Map<Item, WeaponProfile> byItem, Map<ResourceLocation, WeaponProfile> byId) {}
-    private volatile Snapshot snapshot = new Snapshot(Map.of(), Map.of());
+    public record Attack(WeaponProfile profile, AttackKind kind, List<DamageType> forcedProcs) {}
+    private record AttackRule(WeaponProfile stats, boolean overrideDuration, AttackKind kind, List<DamageType> forcedProcs) {
+        Attack resolve(WeaponProfile base) {
+            return new Attack(new WeaponProfile(stats.criticalChance(), stats.criticalDamage(), stats.statusChance(),
+                    overrideDuration ? stats.statusDuration() : base.statusDuration(), stats.distribution(), base.baseDamage(),
+                    base.category(), base.slots(), base.fireRate(), base.multishot(), base.rivenDisposition()), kind, forcedProcs);
+        }
+    }
+    private record Snapshot(Map<Item, WeaponProfile> byItem, Map<ResourceLocation, WeaponProfile> byId,
+                            Map<ResourceLocation, Map<ResourceLocation, Attack>> attacks) {}
+    private volatile Snapshot snapshot = new Snapshot(Map.of(), Map.of(), Map.of());
 
     @Override protected Prepared prepare(ResourceManager manager, ProfilerFiller profiler) {
-        Map<ResourceLocation, JsonElement> exact = new HashMap<>(), defaults = new HashMap<>();
+        Map<ResourceLocation, JsonElement> exact = new HashMap<>(), defaults = new HashMap<>(), attacks = new HashMap<>();
         SimpleJsonResourceReloadListener.scanDirectory(manager, "weapon_stats", new Gson(), exact);
         SimpleJsonResourceReloadListener.scanDirectory(manager, "weapon_defaults", new Gson(), defaults);
-        return new Prepared(Map.copyOf(exact), Map.copyOf(defaults));
+        SimpleJsonResourceReloadListener.scanDirectory(manager, "weapon_attacks", new Gson(), attacks);
+        return new Prepared(Map.copyOf(exact), Map.copyOf(defaults), Map.copyOf(attacks));
     }
 
     public static Map<WeaponFamilies.Family, Rule> defaults(Map<ResourceLocation, JsonElement> documents) {
@@ -77,8 +92,48 @@ public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponP
             }
             byItem.put(item, profile); byId.put(id, profile);
         }
-        snapshot = new Snapshot(Collections.unmodifiableMap(byItem), Map.copyOf(byId));
-        YagensAttributes.LOGGER.info("Loaded {} exact weapon profiles, {} class defaults, {} resolved items", exact.size(), defaults.size(), byItem.size());
+        var attacks = attacks(prepared.attacks(), byId);
+        snapshot = new Snapshot(Collections.unmodifiableMap(byItem), Map.copyOf(byId), attacks);
+        YagensAttributes.LOGGER.info("Loaded {} exact weapon profiles, {} class defaults, {} resolved items, {} items with attack profiles",
+                exact.size(), defaults.size(), byItem.size(), attacks.size());
+    }
+
+    static Map<ResourceLocation, Map<ResourceLocation, Attack>> attacks(Map<ResourceLocation, JsonElement> documents,
+                                                                         Map<ResourceLocation, WeaponProfile> weapons) {
+        var result = new HashMap<ResourceLocation, Map<ResourceLocation, Attack>>();
+        documents.forEach((item, json) -> {
+            var modes = new HashMap<ResourceLocation, Attack>();
+            WeaponProfile base = weapons.get(item);
+            try {
+                var root = json.getAsJsonObject();
+                JsonData.fields(root, "attacks");
+                root.getAsJsonObject("attacks").entrySet().forEach(entry -> {
+                    ResourceLocation attackId = ResourceLocation.parse(entry.getKey());
+                    AttackRule rule = attackRule(entry.getValue().getAsJsonObject());
+                    if (base != null && modes.put(attackId, rule.resolve(base)) != null)
+                        throw new IllegalArgumentException("Duplicate attack " + attackId);
+                });
+            } catch (RuntimeException exception) {
+                throw new IllegalArgumentException("Invalid weapon attacks " + item, exception);
+            }
+            if (!modes.isEmpty()) result.put(item, Map.copyOf(modes));
+        });
+        return Map.copyOf(result);
+    }
+
+    private static AttackRule attackRule(JsonObject object) {
+        JsonData.fields(object, "kind", "critical_chance", "critical_damage", "status_chance", "status_duration",
+                "damage_distribution", "forced_procs");
+        var kind = AttackKind.parse(object.get("kind").getAsString());
+        if (kind == AttackKind.UNKNOWN) throw new IllegalArgumentException("Attack kind must be melee or ranged");
+        var forced = EnumSet.noneOf(DamageType.class);
+        if (object.has("forced_procs")) for (var type : object.getAsJsonArray("forced_procs")) {
+            if (!forced.add(DamageType.parse(type.getAsString()))) throw new IllegalArgumentException("Duplicate forced proc " + type);
+        }
+        var stats = new WeaponProfile(JsonData.number(object, "critical_chance", Double.NaN),
+                JsonData.number(object, "critical_damage", Double.NaN), JsonData.number(object, "status_chance", Double.NaN),
+                JsonData.number(object, "status_duration", 0), JsonData.damage(object.getAsJsonObject("damage_distribution")));
+        return new AttackRule(stats, object.has("status_duration"), kind, List.copyOf(forced));
     }
 
     private static double nativeDamage(ItemStack stack) {
@@ -98,4 +153,7 @@ public final class WeaponProfiles extends SimplePreparableReloadListener<WeaponP
     }
     public WeaponProfile weapon(ItemStack stack) { return stack.isEmpty() ? null : snapshot.byItem().get(stack.getItem()); }
     public Map<ResourceLocation, WeaponProfile> profiles() { return snapshot.byId(); }
+    public Attack attack(ResourceLocation item, ResourceLocation attack) {
+        return snapshot.attacks().getOrDefault(item, Map.of()).get(attack);
+    }
 }

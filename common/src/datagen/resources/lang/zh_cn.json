@@ -232,6 +232,7 @@
   "stat.yagens_attributes.melee_range": "近战范围加成",
   "gui.yagens_attributes.hud_combo": "近战连击",
   "gui.yagens_attributes.hud_editor": "%s显示位置",
+  "gui.yagens_attributes.hud_scale": "整体大小 %s",
   "gui.yagens_attributes.hud_drag_hint": "拖动预览调整位置，预览上滚轮缩放。方向键微调 1 像素，Shift 加速至 10 像素。完成 / Enter 保存，取消 / Esc 放弃。关闭显示时仍提供预览。",
   "gui.yagens_attributes.status_settings.title": "触发效果显示",
   "gui.yagens_attributes.status_settings.marker_title": "头顶状态计数",
